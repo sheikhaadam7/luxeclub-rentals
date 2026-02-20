@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-20)
 
 **Core value:** Customers can select a luxury car, book instantly with dynamic pricing, and watch it come to them on a live map
-**Current focus:** Phase 3 in progress — Plans 01, 02, and 03 complete, Plan 04 next (payment)
+**Current focus:** Phase 3 in progress — Plans 01, 02, 03, and 04 complete, Plan 05 next (booking confirmation page)
 
 ## Current Position
 
 Phase: 3 of 4 (Booking, Identity, Payment) — IN PROGRESS
-Plan: 03-01, 03-02, 03-03 complete, starting 03-04
-Status: Phase 3 booking wizard UI complete — multi-step wizard, live pricing, Mapbox address, deposit choice, Book Now CTA
-Last activity: 2026-02-20 — Phase 3 Plan 02 complete. BookingWizard shell + StepDuration + StepDelivery + StepDepositChoice + PriceSummary + /book/[slug] page + Book Now button on catalogue detail.
+Plan: 03-01, 03-02, 03-03, 03-04 complete, starting 03-05
+Status: Phase 3 payment flow complete — booking creation Server Action, PaymentIntents, Stripe webhook, StepPayment component, fully wired 5-step wizard
+Last activity: 2026-02-20 — Phase 3 Plan 04 complete. createBooking + createRentalPaymentIntent + createDepositPaymentIntent + captureDeposit + voidDeposit + Stripe webhook handler + StepPayment + fully wired BookingWizard.
 
-Progress: [███████░░░] 70% (Phase 1 + 2 complete, Phase 3 Plans 01 + 02 + 03 complete, 2 more Phase 3 plans remaining)
+Progress: [████████░░] 80% (Phase 1 + 2 complete, Phase 3 Plans 01 + 02 + 03 + 04 complete, 1 more Phase 3 plan remaining)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8 (01-01, 01-02, 01-03, 02-01, 02-02, 03-01, 03-02, 03-03)
+- Total plans completed: 9 (01-01, 01-02, 01-03, 02-01, 02-02, 03-01, 03-02, 03-03, 03-04)
 - Average duration: 6 min
-- Total execution time: 0.81 hours
+- Total execution time: 0.88 hours
 
 **By Phase:**
 
@@ -29,7 +29,7 @@ Progress: [███████░░░] 70% (Phase 1 + 2 complete, Phase 3 Pl
 |-------|-------|-------|----------|
 | 01-foundation-auth-gate | 3/3 | 18 min | 6 min |
 | 02-inventory-catalogue | 2/2 | 18 min | 9 min |
-| 03-booking-identity-payment | 3/5 | 12 min | 4 min |
+| 03-booking-identity-payment | 4/5 | 16 min | 4 min |
 
 *Updated after each plan completion*
 
@@ -71,6 +71,12 @@ Recent decisions affecting current work:
 - PriceSummary rendered outside step area as sticky sidebar — price always visible from Step 1 onward
 - MinimapFeature typed as GeoJSON.Feature<Point> — satisfies Mapbox AddressMinimap prop type requirements
 - Fallback plain input rendered when NEXT_PUBLIC_MAPBOX_TOKEN not set — avoids crash in dev without token
+- Server-side price revalidation in createBooking — vehicle rates fetched fresh, calculateBookingTotal called server-side, client-side prices never trusted
+- Separate PaymentIntents for rental (automatic) and deposit (manual + extended auth) — independent capture/void lifecycle
+- Stripe webhook idempotency via stripe_webhook_events unique constraint — code 23505 = already processed, return 200
+- payment_intent.requires_capture handled via string comparison — not in all Stripe SDK typed event unions
+- Back-from-payment guard in BookingWizard — bookingId preserved in state, advanceToPayment skips recreation on re-call
+- PAY-04 (crypto payments) explicitly deferred — Stripe stablecoin US-only, NOWPayments for future phase
 
 ### Pending Todos
 
@@ -79,15 +85,17 @@ Recent decisions affecting current work:
 - Apply migration 20260220200000_extend_bookings_phase3.sql to Supabase (supabase db push) before Plan 02+ can be tested
 - Add Stripe, Veriff, Mapbox, and Resend env vars to .env.local before Phase 3 end-to-end testing
 - Register Veriff webhook URL: {NEXT_PUBLIC_APP_URL}/api/webhooks/veriff in Veriff Dashboard
+- Register Stripe webhook URL: {NEXT_PUBLIC_APP_URL}/api/webhooks/stripe with events: payment_intent.succeeded, payment_intent.requires_capture, payment_intent.canceled, payment_intent.payment_failed
 
 ### Blockers/Concerns
 
 - UAE legal review required before production PII storage (PDPL, RTA, VARA)
 - GPS tracker hardware vendor not yet selected — needed before Phase 4
 - Veriff env vars (VERIFF_API_KEY, VERIFF_SHARED_SECRET, NEXT_PUBLIC_APP_URL) needed before KYC flow can be tested end-to-end
+- Stripe env vars (STRIPE_SECRET_KEY, NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY, STRIPE_WEBHOOK_SECRET) needed before payment flow can be tested end-to-end
 
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 03-02-PLAN.md — booking wizard UI (BookingWizard, StepDuration, StepDelivery, StepDepositChoice, PriceSummary, /book/[slug] page, Book Now button)
+Stopped at: Completed 03-04-PLAN.md — payment step (StepPayment, Stripe PaymentElement + ExpressCheckoutElement), booking creation Server Actions (createBooking, createRentalPaymentIntent, createDepositPaymentIntent), Stripe webhook handler, fully wired BookingWizard
 Resume file: None
