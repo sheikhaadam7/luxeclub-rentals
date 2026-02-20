@@ -508,7 +508,10 @@ export async function getAllBookings(): Promise<
   }
 
   const result: AdminBooking[] = (bookings ?? []).map((b) => {
-    const vehicleData = b.vehicles as { name: string; slug: string } | null
+    const rawVehicle = b.vehicles
+    const vehicleData = Array.isArray(rawVehicle)
+      ? (rawVehicle[0] as { name: string; slug: string } | undefined) ?? null
+      : (rawVehicle as { name: string; slug: string } | null)
     return {
       id: b.id,
       vehicle_id: b.vehicle_id,
@@ -572,4 +575,344 @@ export async function updateBookingStatus(
   }
 
   return { error: null }
+}
+
+// ============================================================
+// KYC Review Types
+// ============================================================
+
+export interface PendingKYCEntry {
+  userId: string
+  email: string
+  kycStatus: string
+  kycSessionId: string | null
+  createdAt: string
+}
+
+// ============================================================
+// KYC Actions
+// ============================================================
+
+/**
+ * Returns all profiles with pending or submitted KYC status.
+ * Fetches user emails via auth.admin.getUserById for each profile.
+ * Ordered by created_at ASC (FIFO queue — oldest first).
+ */
+export async function getPendingKYC(): Promise<
+  PendingKYCEntry[] | { error: string }
+> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) {
+    return { error: auth.error }
+  }
+
+  const admin = createAdminClient()
+
+  const { data: profiles, error: profilesError } = await admin
+    .from('profiles')
+    .select('id, kyc_status, kyc_session_id, created_at')
+    .in('kyc_status', ['submitted', 'pending'])
+    .order('created_at', { ascending: true })
+
+  if (profilesError) {
+    console.error('getPendingKYC profiles error:', profilesError)
+    return { error: profilesError.message }
+  }
+
+  if (!profiles || profiles.length === 0) {
+    return []
+  }
+
+  // Fetch user emails via auth admin API
+  const results: PendingKYCEntry[] = []
+  for (const profile of profiles) {
+    let email = ''
+    try {
+      const { data: userData, error: userError } =
+        await admin.auth.admin.getUserById(profile.id)
+      if (!userError && userData?.user?.email) {
+        email = userData.user.email
+      }
+    } catch {
+      // Non-fatal: email lookup failure should not block the queue
+      console.warn('getPendingKYC: could not fetch email for', profile.id)
+    }
+    results.push({
+      userId: profile.id,
+      email,
+      kycStatus: profile.kyc_status ?? 'pending',
+      kycSessionId: profile.kyc_session_id ?? null,
+      createdAt: profile.created_at,
+    })
+  }
+
+  return results
+}
+
+/**
+ * Approve or reject a KYC verification.
+ * Uses optimistic locking — only updates profiles currently in submitted/pending state.
+ * Returns an error if the profile was already processed.
+ */
+export async function reviewKYC(
+  userId: string,
+  decision: 'verified' | 'rejected'
+): Promise<{ error: string | null }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) {
+    return { error: auth.error }
+  }
+
+  const admin = createAdminClient()
+
+  const { data, error } = await admin
+    .from('profiles')
+    .update({
+      kyc_status: decision,
+      kyc_verified_at:
+        decision === 'verified' ? new Date().toISOString() : null,
+    })
+    .eq('id', userId)
+    .in('kyc_status', ['submitted', 'pending'])
+    .select('id')
+
+  if (error) {
+    console.error('reviewKYC error:', error)
+    return { error: error.message }
+  }
+
+  if (!data?.length) {
+    return { error: 'Already processed or not in pending state' }
+  }
+
+  return { error: null }
+}
+
+// ============================================================
+// Payment Management Types
+// ============================================================
+
+export interface PaymentBooking {
+  id: string
+  vehicle_id: string
+  user_id: string
+  total_due: number | null
+  payment_status: string
+  payment_method: string | null
+  status: string
+  created_at: string
+  vehicle_name: string | null
+}
+
+// ============================================================
+// Payment Actions
+// ============================================================
+
+/**
+ * Returns all bookings where payment_status is pending_cash or unpaid,
+ * or where payment_method is cash or bank_transfer.
+ * Ordered by created_at DESC.
+ */
+export async function getPaymentBookings(): Promise<
+  PaymentBooking[] | { error: string }
+> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) {
+    return { error: auth.error }
+  }
+
+  const admin = createAdminClient()
+
+  const { data: bookings, error: bookingsError } = await admin
+    .from('bookings')
+    .select(
+      'id, vehicle_id, user_id, total_due, payment_status, payment_method, status, created_at, vehicles(name)'
+    )
+    .or(
+      "payment_status.in.(pending_cash,unpaid),payment_method.in.(cash,bank_transfer)"
+    )
+    .order('created_at', { ascending: false })
+
+  if (bookingsError) {
+    console.error('getPaymentBookings error:', bookingsError)
+    return { error: bookingsError.message }
+  }
+
+  return (bookings ?? []).map((b) => {
+    const rawVehicle = b.vehicles
+    const vehicleData = Array.isArray(rawVehicle)
+      ? (rawVehicle[0] as { name: string } | undefined) ?? null
+      : (rawVehicle as { name: string } | null)
+    return {
+      id: b.id,
+      vehicle_id: b.vehicle_id,
+      user_id: b.user_id,
+      total_due: b.total_due,
+      payment_status: b.payment_status,
+      payment_method: b.payment_method,
+      status: b.status,
+      created_at: b.created_at,
+      vehicle_name: vehicleData?.name ?? null,
+    }
+  })
+}
+
+/**
+ * Confirm a manual (cash or bank transfer) payment for a booking.
+ * Uses optimistic locking — only updates bookings currently in pending_cash state.
+ */
+export async function confirmManualPayment(
+  bookingId: string,
+  method: 'cash' | 'bank_transfer'
+): Promise<{ error: string | null }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) {
+    return { error: auth.error }
+  }
+
+  const admin = createAdminClient()
+
+  const { data, error } = await admin
+    .from('bookings')
+    .update({
+      payment_status: 'paid',
+      payment_method: method,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', bookingId)
+    .eq('payment_status', 'pending_cash')
+    .select('id')
+
+  if (error) {
+    console.error('confirmManualPayment error:', error)
+    return { error: error.message }
+  }
+
+  if (!data?.length) {
+    return { error: 'Booking not in pending cash state' }
+  }
+
+  return { error: null }
+}
+
+// ============================================================
+// Analytics Types
+// ============================================================
+
+export interface AnalyticsSummary {
+  thisMonth: {
+    bookings: number
+    revenue: number
+  }
+  allTime: {
+    bookings: number
+    revenue: number
+  }
+  fleet: {
+    total: number
+    utilized: number
+    utilizationRate: number
+  }
+}
+
+// ============================================================
+// Analytics Actions
+// ============================================================
+
+/**
+ * Returns analytics summary: this month's bookings + revenue, all-time totals,
+ * and current fleet utilization rate.
+ * Uses lightweight queries — only selects required columns.
+ */
+export async function getAnalyticsSummary(): Promise<
+  AnalyticsSummary | { error: string }
+> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) {
+    return { error: auth.error }
+  }
+
+  const admin = createAdminClient()
+
+  // This month's bookings and revenue
+  const startOfMonth = new Date()
+  startOfMonth.setDate(1)
+  startOfMonth.setHours(0, 0, 0, 0)
+
+  const { data: monthlyStats, error: monthlyError } = await admin
+    .from('bookings')
+    .select('total_due, status')
+    .gte('created_at', startOfMonth.toISOString())
+    .in('status', ['confirmed', 'car_on_the_way', 'car_delivered', 'completed'])
+
+  if (monthlyError) {
+    console.error('getAnalyticsSummary monthly error:', monthlyError)
+    return { error: monthlyError.message }
+  }
+
+  const thisMonthBookings = monthlyStats?.length ?? 0
+  const thisMonthRevenue =
+    monthlyStats?.reduce((sum, b) => sum + (b.total_due ?? 0), 0) ?? 0
+
+  // All-time bookings and revenue
+  const { data: allTimeStats, error: allTimeError } = await admin
+    .from('bookings')
+    .select('total_due, status')
+    .in('status', ['confirmed', 'car_on_the_way', 'car_delivered', 'completed'])
+
+  if (allTimeError) {
+    console.error('getAnalyticsSummary all-time error:', allTimeError)
+    return { error: allTimeError.message }
+  }
+
+  const allTimeBookings = allTimeStats?.length ?? 0
+  const allTimeRevenue =
+    allTimeStats?.reduce((sum, b) => sum + (b.total_due ?? 0), 0) ?? 0
+
+  // Fleet utilization: vehicles with active bookings today
+  const today = new Date().toISOString().split('T')[0]
+
+  const { data: activeBookings, error: activeError } = await admin
+    .from('bookings')
+    .select('vehicle_id')
+    .lte('start_date', today)
+    .gte('end_date', today)
+    .in('status', ['confirmed', 'car_on_the_way', 'car_delivered'])
+
+  if (activeError) {
+    console.error('getAnalyticsSummary active bookings error:', activeError)
+    return { error: activeError.message }
+  }
+
+  const { count: totalVehicles, error: vehiclesError } = await admin
+    .from('vehicles')
+    .select('*', { count: 'exact', head: true })
+    .eq('is_active', true)
+    .eq('is_available', true)
+
+  if (vehiclesError) {
+    console.error('getAnalyticsSummary vehicles error:', vehiclesError)
+    return { error: vehiclesError.message }
+  }
+
+  const utilizedCount = new Set(
+    (activeBookings ?? []).map((b) => b.vehicle_id)
+  ).size
+  const total = totalVehicles ?? 0
+
+  return {
+    thisMonth: {
+      bookings: thisMonthBookings,
+      revenue: thisMonthRevenue,
+    },
+    allTime: {
+      bookings: allTimeBookings,
+      revenue: allTimeRevenue,
+    },
+    fleet: {
+      total,
+      utilized: utilizedCount,
+      utilizationRate: total > 0 ? Math.round((utilizedCount / total) * 100) : 0,
+    },
+  }
 }
