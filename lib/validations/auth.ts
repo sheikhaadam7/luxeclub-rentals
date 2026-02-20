@@ -13,26 +13,28 @@ export const loginSchema = z.object({
   password: z.string().min(1, 'Password is required'),
 })
 
-// Accepts UAE local format (0501234567) or E.164 (+971501234567)
 export const phoneSchema = z.object({
   phone: z
     .string()
-    .regex(
-      /^(\+971|0)(5[024568]|2[234679]|3[0-9]|4[0-9]|6[0-9]|7[0-9]|9[0-9])\d{7}$/,
-      'Enter a valid UAE phone number (e.g. 0501234567)'
-    ),
+    .min(9, 'Enter a valid phone number')
+    .max(15, 'Enter a valid phone number'),
 })
 
 export const otpSchema = z.object({
   code: z
     .string()
-    .length(6, 'OTP code must be 6 digits')
-    .regex(/^\d{6}$/, 'OTP code must be digits only'),
+    .length(6, 'Verification code must be 6 digits')
+    .regex(/^\d{6}$/, 'Verification code must be digits only'),
 })
 
-// Normalize UAE phone to E.164 format for Supabase MFA enrollment
+/**
+ * Normalises UAE phone numbers to E.164 (+971XXXXXXXXX).
+ * Accepts local format (0501234567) or international (+971501234567).
+ */
 export function normalizeUAEPhone(phone: string): string {
-  if (phone.startsWith('+971')) return phone
-  if (phone.startsWith('0')) return '+971' + phone.slice(1)
-  return '+971' + phone
+  const cleaned = phone.replace(/\s+/g, '').replace(/-/g, '')
+  if (cleaned.startsWith('+971')) return cleaned
+  if (cleaned.startsWith('00971')) return '+' + cleaned.slice(2)
+  if (cleaned.startsWith('0')) return '+971' + cleaned.slice(1)
+  return '+971' + cleaned
 }
