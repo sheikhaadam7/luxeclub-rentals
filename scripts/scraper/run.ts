@@ -1,3 +1,6 @@
+import { config } from 'dotenv'
+config({ path: '.env.local' })
+
 import { chromium } from 'playwright'
 import { createClient } from '@supabase/supabase-js'
 import { scrapeVehicles } from './scrape-vehicles'
