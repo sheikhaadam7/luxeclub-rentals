@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { logout } from '@/app/actions/auth'
 
@@ -24,17 +25,41 @@ export default async function DashboardPage() {
         </form>
       </nav>
 
-      {/* Content area — placeholder until Phase 2 */}
-      <div className="flex-1 flex flex-col items-center justify-center gap-4 px-4">
+      {/* Content area */}
+      <div className="flex-1 flex flex-col items-center justify-center gap-6 px-4">
         <h2 className="font-display text-2xl text-white font-medium">
           Your fleet awaits
         </h2>
         <p className="text-sm text-brand-muted text-center max-w-xs">
-          Car catalogue coming in the next phase. You&apos;re authenticated.
+          Browse our collection of luxury vehicles and find your perfect ride.
         </p>
         {claims?.email && (
           <p className="text-[11px] text-white/20">{claims.email}</p>
         )}
+
+        {/* Catalogue CTA */}
+        <Link
+          href="/catalogue"
+          className="mt-2 flex items-center gap-3 bg-brand-surface border border-brand-border rounded-[--radius-card] px-6 py-4 hover:border-brand-cyan/30 transition-colors duration-200 group"
+        >
+          <div className="space-y-0.5">
+            <p className="font-display text-base font-medium text-white group-hover:text-brand-cyan transition-colors">
+              Explore Our Collection
+            </p>
+            <p className="text-xs text-brand-muted">
+              View available vehicles, specs, and rates
+            </p>
+          </div>
+          <svg
+            className="w-4 h-4 text-brand-cyan flex-shrink-0"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </Link>
       </div>
     </main>
   )
