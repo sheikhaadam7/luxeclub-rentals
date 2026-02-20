@@ -1,14 +1,31 @@
+import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { AdminTabs } from '@/components/admin/AdminTabs'
 import { FleetTab } from '@/components/admin/FleetTab'
 import { BookingsTab } from '@/components/admin/BookingsTab'
+import { KYCTab } from '@/components/admin/KYCTab'
+import { PaymentsTab } from '@/components/admin/PaymentsTab'
+import { AnalyticsTab } from '@/components/admin/AnalyticsTab'
 
 type TabId = 'fleet' | 'bookings' | 'kyc' | 'payments' | 'analytics'
 const VALID_TABS: TabId[] = ['fleet', 'bookings', 'kyc', 'payments', 'analytics']
 
 interface AdminPageProps {
   searchParams: Promise<{ tab?: string }>
+}
+
+function TabSkeleton() {
+  return (
+    <div className="space-y-4">
+      {[1, 2, 3].map((i) => (
+        <div
+          key={i}
+          className="h-20 bg-brand-surface border border-brand-border rounded-[--radius-card] animate-pulse"
+        />
+      ))}
+    </div>
+  )
 }
 
 export default async function AdminPage({ searchParams }: AdminPageProps) {
@@ -51,22 +68,30 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
         <AdminTabs activeTab={activeTab} />
 
         {/* Tab content */}
-        {activeTab === 'fleet' && <FleetTab />}
-        {activeTab === 'bookings' && <BookingsTab />}
+        {activeTab === 'fleet' && (
+          <Suspense fallback={<TabSkeleton />}>
+            <FleetTab />
+          </Suspense>
+        )}
+        {activeTab === 'bookings' && (
+          <Suspense fallback={<TabSkeleton />}>
+            <BookingsTab />
+          </Suspense>
+        )}
         {activeTab === 'kyc' && (
-          <div className="text-brand-muted text-sm">
-            Identity verification management — coming soon
-          </div>
+          <Suspense fallback={<TabSkeleton />}>
+            <KYCTab />
+          </Suspense>
         )}
         {activeTab === 'payments' && (
-          <div className="text-brand-muted text-sm">
-            Payment management — coming soon
-          </div>
+          <Suspense fallback={<TabSkeleton />}>
+            <PaymentsTab />
+          </Suspense>
         )}
         {activeTab === 'analytics' && (
-          <div className="text-brand-muted text-sm">
-            Analytics dashboard — coming soon
-          </div>
+          <Suspense fallback={<TabSkeleton />}>
+            <AnalyticsTab />
+          </Suspense>
         )}
 
       </div>
