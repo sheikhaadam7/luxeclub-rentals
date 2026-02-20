@@ -96,36 +96,52 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
         {/* Rates card */}
         {(vehicle.daily_rate || vehicle.weekly_rate || vehicle.monthly_rate) && (
-          <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-6">
-            <h2 className="font-display text-xl font-medium text-white mb-4">
-              Rental Rates
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {vehicle.daily_rate && (
-                <div className="space-y-1">
-                  <p className="text-xs text-brand-muted uppercase tracking-wider">Daily</p>
-                  <p className="text-2xl font-semibold text-white">
-                    AED {formatRate(vehicle.daily_rate)}
-                  </p>
-                </div>
-              )}
-              {vehicle.weekly_rate && (
-                <div className="space-y-1">
-                  <p className="text-xs text-brand-muted uppercase tracking-wider">Weekly</p>
-                  <p className="text-2xl font-semibold text-white">
-                    AED {formatRate(vehicle.weekly_rate)}
-                  </p>
-                </div>
-              )}
-              {vehicle.monthly_rate && (
-                <div className="space-y-1">
-                  <p className="text-xs text-brand-muted uppercase tracking-wider">Monthly</p>
-                  <p className="text-2xl font-semibold text-white">
-                    AED {formatRate(vehicle.monthly_rate)}
-                  </p>
-                </div>
-              )}
+          <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-6 space-y-6">
+            <div>
+              <h2 className="font-display text-xl font-medium text-white mb-4">
+                Rental Rates
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {vehicle.daily_rate && (
+                  <div className="space-y-1">
+                    <p className="text-xs text-brand-muted uppercase tracking-wider">Daily</p>
+                    <p className="text-2xl font-semibold text-white">
+                      AED {formatRate(vehicle.daily_rate)}
+                    </p>
+                  </div>
+                )}
+                {vehicle.weekly_rate && (
+                  <div className="space-y-1">
+                    <p className="text-xs text-brand-muted uppercase tracking-wider">Weekly</p>
+                    <p className="text-2xl font-semibold text-white">
+                      AED {formatRate(vehicle.weekly_rate)}
+                    </p>
+                  </div>
+                )}
+                {vehicle.monthly_rate && (
+                  <div className="space-y-1">
+                    <p className="text-xs text-brand-muted uppercase tracking-wider">Monthly</p>
+                    <p className="text-2xl font-semibold text-white">
+                      AED {formatRate(vehicle.monthly_rate)}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
+
+            {/* Book Now CTA */}
+            {vehicle.is_available ? (
+              <Link
+                href={`/book/${vehicle.slug}`}
+                className="block w-full text-center bg-brand-cyan text-black font-semibold py-3 rounded-[--radius-card] hover:bg-brand-cyan-hover transition-colors"
+              >
+                Book Now
+              </Link>
+            ) : (
+              <p className="text-center text-sm text-brand-muted py-2">
+                Currently Unavailable
+              </p>
+            )}
           </div>
         )}
 
