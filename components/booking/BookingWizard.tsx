@@ -1,13 +1,17 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { bookingSchema, type BookingFormValues } from '@/lib/validations/booking'
 import { StepDuration } from '@/components/booking/StepDuration'
 import { StepDelivery } from '@/components/booking/StepDelivery'
 import { StepDepositChoice } from '@/components/booking/StepDepositChoice'
+import { StepIdentity } from '@/components/booking/StepIdentity'
+import { StepPayment } from '@/components/booking/StepPayment'
 import { PriceSummary } from '@/components/booking/PriceSummary'
+import { createBooking } from '@/app/actions/bookings'
 
 const STEPS = ['duration', 'delivery', 'deposit', 'identity', 'payment'] as const
 type Step = (typeof STEPS)[number]
@@ -47,8 +51,18 @@ interface BookingWizardProps {
 }
 
 export function BookingWizard({ vehicle, bookedRanges }: BookingWizardProps) {
+  const router = useRouter()
   const [step, setStep] = useState(0)
   const [isPending, startTransition] = useTransition()
+
+  // Booking state — set when advancing from identity to payment
+  const [bookingId, setBookingId] = useState<string | null>(null)
+  const [rentalClientSecret, setRentalClientSecret] = useState<string | null>(null)
+  const [depositClientSecret, setDepositClientSecret] = useState<string | null>(null)
+  const [bookingTotalDue, setBookingTotalDue] = useState<number>(0)
+  const [bookingDepositAmount, setBookingDepositAmount] = useState<number>(0)
+  const [bookingError, setBookingError] = useState<string | null>(null)
+  const [isCreatingBooking, setIsCreatingBooking] = useState(false)
 
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
@@ -71,8 +85,53 @@ export function BookingWizard({ vehicle, bookedRanges }: BookingWizardProps) {
     })
   }
 
+  /**
+   * Advances from Step 3 (identity) to Step 4 (payment).
+   * Creates the booking server-side with revalidated pricing before showing payment.
+   */
+  async function advanceToPayment() {
+    if (bookingId) {
+      // Booking already created (e.g. user went back) — go directly to payment
+      setStep(4)
+      return
+    }
+
+    setIsCreatingBooking(true)
+    setBookingError(null)
+
+    const formValues = form.getValues()
+    const result = await createBooking(formValues, vehicle.id)
+
+    if ('error' in result) {
+      setBookingError(result.error)
+      setIsCreatingBooking(false)
+      return
+    }
+
+    setBookingId(result.bookingId)
+    setRentalClientSecret(result.rentalClientSecret)
+    setDepositClientSecret(result.depositClientSecret)
+    setBookingTotalDue(result.totalDue)
+    setBookingDepositAmount(result.depositAmount)
+    setIsCreatingBooking(false)
+    setStep(4)
+  }
+
   const back = () => {
+    if (step === 4 && bookingId) {
+      // Booking already created — going back shows a notice, not an empty payment step
+      setStep(3)
+      return
+    }
     setStep((s) => Math.max(s - 1, 0))
+  }
+
+  /**
+   * Called by StepPayment on successful payment.
+   * Redirects to booking confirmation page.
+   */
+  function handlePaymentSuccess(confirmedBookingId: string) {
+    router.push(`/bookings/${confirmedBookingId}`)
   }
 
   const currentStep = STEPS[step]
@@ -147,34 +206,38 @@ export function BookingWizard({ vehicle, bookedRanges }: BookingWizardProps) {
             <StepDepositChoice form={form} vehicle={vehicle} />
           )}
           {currentStep === 'identity' && (
-            <div className="space-y-4 py-4 text-center">
-              <div className="w-16 h-16 rounded-full bg-brand-cyan/10 border border-brand-cyan/30 flex items-center justify-center mx-auto">
-                <svg className="w-8 h-8 text-brand-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z" />
-                </svg>
-              </div>
-              <h3 className="font-display text-xl text-white">Identity Verification</h3>
-              <p className="text-brand-muted text-sm max-w-sm mx-auto">
-                Identity verification will be available shortly. You will need to provide your passport and driving licence to complete your booking.
-              </p>
-              <p className="text-xs text-brand-muted/60">Coming soon — Plan 03</p>
-            </div>
+            <>
+              {/* Back-from-payment notice when booking already created */}
+              {bookingId && (
+                <div className="mb-4 rounded-lg border border-amber-700/40 bg-amber-950/30 p-4 text-sm text-amber-200">
+                  Your booking has already been created. Complete payment to confirm your rental.
+                </div>
+              )}
+              <StepIdentity
+                vehicleSlug={vehicle.slug}
+                onNext={advanceToPayment}
+              />
+            </>
           )}
           {currentStep === 'payment' && (
-            <div className="space-y-4 py-4 text-center">
-              <div className="w-16 h-16 rounded-full bg-brand-cyan/10 border border-brand-cyan/30 flex items-center justify-center mx-auto">
-                <svg className="w-8 h-8 text-brand-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
-                </svg>
-              </div>
-              <h3 className="font-display text-xl text-white">Payment</h3>
-              <p className="text-brand-muted text-sm max-w-sm mx-auto">
-                Secure payment via card, Apple Pay, and Google Pay will be available shortly. Your booking details are saved.
-              </p>
-              <p className="text-xs text-brand-muted/60">Coming soon — Plan 04</p>
-            </div>
+            <StepPayment
+              clientSecret={rentalClientSecret}
+              depositClientSecret={depositClientSecret}
+              cashSelected={form.getValues('paymentMethod') === 'cash'}
+              onSuccess={handlePaymentSuccess}
+              bookingId={bookingId ?? ''}
+              totalDue={bookingTotalDue}
+              depositAmount={bookingDepositAmount}
+            />
           )}
         </div>
+
+        {/* Booking creation error */}
+        {bookingError && (
+          <div className="rounded-lg border border-red-800 bg-red-950/40 p-4 text-sm text-red-300">
+            {bookingError}
+          </div>
+        )}
 
         {/* Navigation buttons */}
         <div className="flex items-center justify-between gap-4">
@@ -187,22 +250,16 @@ export function BookingWizard({ vehicle, bookedRanges }: BookingWizardProps) {
             Back
           </button>
 
-          {step < STEPS.length - 1 ? (
+          {/* On the identity step, the StepIdentity component handles advancement via onNext */}
+          {/* On the payment step, StepPayment handles its own submission */}
+          {step < STEPS.length - 1 && currentStep !== 'identity' && (
             <button
               type="button"
               onClick={advance}
-              disabled={isPending}
+              disabled={isPending || isCreatingBooking}
               className="px-8 py-2.5 rounded-[--radius-card] bg-brand-cyan text-black text-sm font-semibold hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isPending ? 'Checking...' : 'Continue'}
-            </button>
-          ) : (
-            <button
-              type="button"
-              disabled
-              className="px-8 py-2.5 rounded-[--radius-card] bg-brand-cyan/30 text-brand-muted text-sm font-semibold cursor-not-allowed"
-            >
-              Submit Booking
+              {isPending || isCreatingBooking ? 'Please wait...' : 'Continue'}
             </button>
           )}
         </div>
