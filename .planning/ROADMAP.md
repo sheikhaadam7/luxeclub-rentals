@@ -79,12 +79,16 @@ Plans:
   4. User receives booking confirmation in-app and by email, can view upcoming and past bookings, and sees cancellation policy before paying
   5. User can choose self-drop-off (free) or collection (50 AED) as their return method during booking
 
-**Plans:** TBD
+**Plans:** 5 plans
 
 Plans:
-- [ ] 03-01: Multi-step booking wizard — car, dates, delivery/pickup, pricing, return method
-- [ ] 03-02: Identity verification flow — document upload, face ID, KYC API integration, status display
-- [ ] 03-03: Payment integration — Stripe (card/Apple Pay/Google Pay), crypto (NOWPayments), COD/bank transfer, deposit authorize/capture/void
+- [ ] 03-01-PLAN.md — Database migration (extend bookings, KYC columns, webhook events), install dependencies (Stripe, Veriff, Mapbox, Resend), server clients, pricing calculator, booking Zod schemas
+- [ ] 03-02-PLAN.md — Booking wizard UI: multi-step shell, duration/dates step, delivery/address step, deposit step, live PriceSummary, "Book Now" on catalogue
+- [ ] 03-03-PLAN.md — Identity verification: Veriff session creation, redirect widget, webhook handler, StepIdentity component with status polling
+- [ ] 03-04-PLAN.md — Payment integration: Stripe PaymentElement + ExpressCheckoutElement, COD path, createBooking with server-side price validation, Stripe webhook handler
+- [ ] 03-05-PLAN.md — Post-booking: React Email confirmation template, booking detail page, My Bookings list, dashboard navigation
+
+**Note:** PAY-04 (cryptocurrency) deferred — Stripe stablecoin is US-only; a separate crypto processor (NOWPayments) adds significant scope. Will revisit in a future phase if needed.
 
 ---
 
@@ -120,10 +124,10 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Foundation + Auth Gate | 3/3 | Complete | 2026-02-20 |
 | 2. Inventory + Catalogue | 2/2 | Complete | 2026-02-20 |
-| 3. Booking, Identity, and Payment | 0/3 | Not started | - |
+| 3. Booking, Identity, and Payment | 0/5 | Planned | - |
 | 4. Tracking + Admin | 0/3 | Not started | - |
 
 ---
 
 *Roadmap created: 2026-02-20*
-*Last updated: 2026-02-20 after Phase 2 execution*
+*Last updated: 2026-02-20 after Phase 3 planning*
