@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-20)
 
 **Core value:** Customers can select a luxury car, book instantly with dynamic pricing, and watch it come to them on a live map
-**Current focus:** Phase 3 in progress — Plans 01 and 03 complete, Plan 02 next (booking wizard UI)
+**Current focus:** Phase 3 in progress — Plans 01, 02, and 03 complete, Plan 04 next (payment)
 
 ## Current Position
 
 Phase: 3 of 4 (Booking, Identity, Payment) — IN PROGRESS
-Plan: 03-01 complete, 03-03 complete, starting 03-02
-Status: Phase 3 identity verification complete — Veriff session creation, HMAC webhook, StepIdentity component, verify-callback page
-Last activity: 2026-02-20 — Phase 3 Plan 03 complete. Veriff redirect-flow KYC with HMAC-signed webhook, StepIdentity polling component, verify-callback page.
+Plan: 03-01, 03-02, 03-03 complete, starting 03-04
+Status: Phase 3 booking wizard UI complete — multi-step wizard, live pricing, Mapbox address, deposit choice, Book Now CTA
+Last activity: 2026-02-20 — Phase 3 Plan 02 complete. BookingWizard shell + StepDuration + StepDelivery + StepDepositChoice + PriceSummary + /book/[slug] page + Book Now button on catalogue detail.
 
-Progress: [██████░░░░] 60% (Phase 1 + 2 complete, Phase 3 Plans 01 + 03 complete, 3 more Phase 3 plans remaining)
+Progress: [███████░░░] 70% (Phase 1 + 2 complete, Phase 3 Plans 01 + 02 + 03 complete, 2 more Phase 3 plans remaining)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7 (01-01, 01-02, 01-03, 02-01, 02-02, 03-01, 03-03)
+- Total plans completed: 8 (01-01, 01-02, 01-03, 02-01, 02-02, 03-01, 03-02, 03-03)
 - Average duration: 6 min
-- Total execution time: 0.75 hours
+- Total execution time: 0.81 hours
 
 **By Phase:**
 
@@ -29,7 +29,7 @@ Progress: [██████░░░░] 60% (Phase 1 + 2 complete, Phase 3 Pl
 |-------|-------|-------|----------|
 | 01-foundation-auth-gate | 3/3 | 18 min | 6 min |
 | 02-inventory-catalogue | 2/2 | 18 min | 9 min |
-| 03-booking-identity-payment | 2/5 | 6 min | 3 min |
+| 03-booking-identity-payment | 3/5 | 12 min | 4 min |
 
 *Updated after each plan completion*
 
@@ -67,6 +67,10 @@ Recent decisions affecting current work:
 - sessionStorage used for booking context across Veriff redirect — preserves vehicle slug for return routing
 - Admin client used in Veriff webhook handler — webhook has no user session, RLS bypass required
 - 5-second polling interval in StepIdentity for submitted/pending KYC status auto-advancement
+- Single useForm instance shared across all wizard steps — form.trigger() with step-specific field arrays
+- PriceSummary rendered outside step area as sticky sidebar — price always visible from Step 1 onward
+- MinimapFeature typed as GeoJSON.Feature<Point> — satisfies Mapbox AddressMinimap prop type requirements
+- Fallback plain input rendered when NEXT_PUBLIC_MAPBOX_TOKEN not set — avoids crash in dev without token
 
 ### Pending Todos
 
@@ -85,5 +89,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 03-03-PLAN.md — Veriff identity verification (session creation, webhook, StepIdentity, verify-callback)
+Stopped at: Completed 03-02-PLAN.md — booking wizard UI (BookingWizard, StepDuration, StepDelivery, StepDepositChoice, PriceSummary, /book/[slug] page, Book Now button)
 Resume file: None
