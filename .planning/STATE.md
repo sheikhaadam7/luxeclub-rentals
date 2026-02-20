@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-20)
 
 **Core value:** Customers can select a luxury car, book instantly with dynamic pricing, and watch it come to them on a live map
-**Current focus:** Phase 4 (tracking/admin) — Plans 01-02 complete. Plans 03+ remaining.
+**Current focus:** Phase 4 (tracking/admin) — Plans 01-03 complete. Plan 04 remaining.
 
 ## Current Position
 
 Phase: 4 of 4 (Tracking + Admin) — IN PROGRESS
-Plan: 04-02 complete. 04-03, 04-04+ remaining.
-Status: Phase 4 Plan 02 complete — LiveTrackingMap, BookingStatusTimeline, booking detail page integration
-Last activity: 2026-02-20 — Phase 4 Plan 02 complete. LiveTrackingMap (Mapbox v3, Standard style + night preset, GeoJSON car layer), BookingStatusTimeline (3-step realtime stepper), booking detail page extended with tracking section + getBookingDetail now includes delivery_lat/delivery_lng/vehicle_id.
+Plan: 04-03 complete. 04-04 remaining.
+Status: Phase 4 Plan 03 complete — multi-tab admin operations dashboard (Fleet, Bookings) with full vehicle CRUD, availability blocks, and 6-status booking pipeline
+Last activity: 2026-02-20 — Phase 4 Plan 03 complete. Multi-tab admin dashboard at /admin with URL ?tab= routing. FleetTab: scraper status, add vehicle, edit pricing/GPS/notes, is_active/is_available toggles, per-vehicle availability blocks. BookingsTab: all bookings with 6-status dropdown (including car_on_the_way/car_delivered), filters by status/vehicle/email/ref. 8 new admin Server Actions, all auth-gated.
 
-Progress: [█████████░] 94% (Phase 1 + 2 + 3 complete, Phase 4 Plans 01-02 complete)
+Progress: [█████████░] 96% (Phase 1 + 2 + 3 complete, Phase 4 Plans 01-03 complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12 (01-01, 01-02, 01-03, 02-01, 02-02, 03-01, 03-02, 03-03, 03-04, 03-05, 04-01, 04-02)
+- Total plans completed: 13 (01-01, 01-02, 01-03, 02-01, 02-02, 03-01, 03-02, 03-03, 03-04, 03-05, 04-01, 04-02, 04-03)
 - Average duration: 5.2 min
-- Total execution time: ~1.0 hours
+- Total execution time: ~1.1 hours
 
 **By Phase:**
 
@@ -30,11 +30,12 @@ Progress: [█████████░] 94% (Phase 1 + 2 + 3 complete, Phase 
 | 01-foundation-auth-gate | 3/3 | 18 min | 6 min |
 | 02-inventory-catalogue | 2/2 | 18 min | 9 min |
 | 03-booking-identity-payment | 5/5 | 20 min | 4 min |
-| 04-tracking-admin | 2/? | 7 min | 3.5 min |
+| 04-tracking-admin | 3/? | 15 min | 5 min |
 
 *Updated after each plan completion*
 | Phase 04-tracking-admin P01 | 3 | 3 tasks | 4 files |
 | Phase 04-tracking-admin P02 | 4 | 2 tasks | 4 files |
+| Phase 04-tracking-admin P03 | 8 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -91,6 +92,9 @@ Recent decisions affecting current work:
 - [Phase 04-tracking-admin]: LiveTrackingMap uses useRef<mapboxgl.Map> (never useState) — prevents React reconciliation destroying map instance
 - [Phase 04-tracking-admin]: showMap gated on pickup_method === 'delivery' + delivery_lat/delivery_lng — office pickup bookings don't get map (no coordinates)
 - [Phase 04-tracking-admin]: Server-side vehicle_locations fetch in booking detail page is non-fatal (try/catch) — map degrades gracefully to destination-pin-only until GPS data arrives
+- [Phase 04-tracking-admin]: FleetTab/BookingsTab are 'use client' components that self-fetch via useEffect — enables useTransition mutations + explicit refetch after mutation without full page reload
+- [Phase 04-tracking-admin]: getAllBookings fetches profiles separately (not joined) — avoids Supabase join array type issues, cleaner TypeScript
+- [Phase 04-tracking-admin]: Optimistic booking status update in BookingsTab — immediate setLocalStatus with revert on Server Action error
 
 ### Pending Todos
 
@@ -114,5 +118,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 04-02-PLAN.md — LiveTrackingMap (Mapbox GL JS v3, Standard style + night preset, GeoJSON car circle layer, useVehicleLocation), BookingStatusTimeline (3-step horizontal/vertical stepper, useRealtimeBooking, pulse on active step), booking detail page tracking section integration (getBookingDetail extended with delivery_lat/delivery_lng/vehicle_id). Phase 4 Plan 02 complete.
+Stopped at: Completed 04-03-PLAN.md — Multi-tab admin operations dashboard. FleetTab with vehicle CRUD (add/edit pricing/GPS/notes, is_active/is_available toggles, per-vehicle availability blocks), BookingsTab with all-bookings list and 6-status pipeline dropdown (triggers Realtime), AdminTabs 5-tab URL navigation, admin page rebuilt with ?tab= routing. 8 new Server Actions in app/actions/admin.ts. Phase 4 Plan 03 complete.
 Resume file: None
