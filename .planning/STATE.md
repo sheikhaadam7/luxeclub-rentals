@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-20)
 
 **Core value:** Customers can select a luxury car, book instantly with dynamic pricing, and watch it come to them on a live map
-**Current focus:** Phase 3 COMPLETE — all 5 plans complete. Phase 4 (tracking/admin) next.
+**Current focus:** Phase 4 (tracking/admin) — Plan 01 complete. Plans 02+ remaining.
 
 ## Current Position
 
-Phase: 3 of 4 (Booking, Identity, Payment) — COMPLETE
-Plan: 03-01, 03-02, 03-03, 03-04, 03-05 all complete. Phase 4 next.
-Status: Phase 3 fully complete — booking confirmation email, /bookings list, /bookings/[id] detail page, dashboard My Bookings card
-Last activity: 2026-02-20 — Phase 3 Plan 05 complete. BookingConfirmationEmail + /bookings page + /bookings/[bookingId] detail page + email send in createBooking + dashboard My Bookings card.
+Phase: 4 of 4 (Tracking + Admin) — IN PROGRESS
+Plan: 04-01 complete. 04-02, 04-03, 04-04+ remaining.
+Status: Phase 4 Plan 01 complete — DB migration, GPS ingest route, Realtime hooks
+Last activity: 2026-02-20 — Phase 4 Plan 01 complete. Migration extends booking status (6 values), vehicle_locations table, gps_device_id + is_active on vehicles, vehicle_availability_blocks, POST /api/gps ingest, useRealtimeBooking + useVehicleLocation hooks.
 
-Progress: [█████████░] 90% (Phase 1 + 2 + 3 complete, Phase 4 remaining)
+Progress: [█████████░] 92% (Phase 1 + 2 + 3 complete, Phase 4 Plan 01 complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 10 (01-01, 01-02, 01-03, 02-01, 02-02, 03-01, 03-02, 03-03, 03-04, 03-05)
-- Average duration: 5.6 min
-- Total execution time: 0.95 hours
+- Total plans completed: 11 (01-01, 01-02, 01-03, 02-01, 02-02, 03-01, 03-02, 03-03, 03-04, 03-05, 04-01)
+- Average duration: 5.4 min
+- Total execution time: ~1.0 hours
 
 **By Phase:**
 
@@ -30,9 +30,10 @@ Progress: [█████████░] 90% (Phase 1 + 2 + 3 complete, Phase 
 | 01-foundation-auth-gate | 3/3 | 18 min | 6 min |
 | 02-inventory-catalogue | 2/2 | 18 min | 9 min |
 | 03-booking-identity-payment | 5/5 | 20 min | 4 min |
+| 04-tracking-admin | 1/? | 3 min | 3 min |
 
 *Updated after each plan completion*
-| Phase 03-booking-identity-payment P05 | 4 | 2 tasks | 5 files |
+| Phase 04-tracking-admin P01 | 3 | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -81,25 +82,33 @@ Recent decisions affecting current work:
 - [Phase 03-booking-identity-payment]: Email failure never fails the booking — sendEmail wrapped in try/catch, error logged only
 - [Phase 03-booking-identity-payment]: Pickup/return method types: delivery/self_pickup and collection/self_dropoff (match Zod schema, not office/delivery)
 - [Phase 03-booking-identity-payment]: Upcoming/past booking split done at render time via UTC date comparison — no DB filter
+- [Phase 04-tracking-admin]: vehicle_locations upsert-only — onConflict vehicle_id keeps one row per vehicle, prevents unbounded growth at GPS ping intervals
+- [Phase 04-tracking-admin]: Upsert on PK triggers UPDATE Realtime event (not INSERT) — useVehicleLocation uses event '*' to catch both INSERT (first ping) and UPDATE (subsequent)
+- [Phase 04-tracking-admin]: Unknown GPS device IDs return 200 with warning — prevents hardware retry storm on 4xx/5xx
+- [Phase 04-tracking-admin]: is_active (admin permanent deactivation) distinct from is_available (scraper-managed) — both columns needed, different semantics
+- [Phase 04-tracking-admin]: GPS ingest auth via x-gps-secret shared secret header validated against GPS_INGEST_SECRET env var
 
 ### Pending Todos
 
 - User must register UAE Twilio Sender ID (required before production SMS)
 - Phone verification to be re-added after Supabase MFA/phone setup resolved
 - Apply migration 20260220200000_extend_bookings_phase3.sql to Supabase (supabase db push) before Plan 02+ can be tested
+- Apply migration 20260220300000_tracking_admin_phase4.sql to Supabase (supabase db push) before Phase 4 features can be tested
 - Add Stripe, Veriff, Mapbox, and Resend env vars to .env.local before Phase 3 end-to-end testing
+- Add GPS_INGEST_SECRET env var to .env.local and production for GPS ingest route
 - Register Veriff webhook URL: {NEXT_PUBLIC_APP_URL}/api/webhooks/veriff in Veriff Dashboard
 - Register Stripe webhook URL: {NEXT_PUBLIC_APP_URL}/api/webhooks/stripe with events: payment_intent.succeeded, payment_intent.requires_capture, payment_intent.canceled, payment_intent.payment_failed
+- Configure GPS hardware to POST to {NEXT_PUBLIC_APP_URL}/api/gps with x-gps-secret header
 
 ### Blockers/Concerns
 
 - UAE legal review required before production PII storage (PDPL, RTA, VARA)
-- GPS tracker hardware vendor not yet selected — needed before Phase 4
+- GPS tracker hardware vendor not yet selected — needed before Phase 4 end-to-end GPS testing
 - Veriff env vars (VERIFF_API_KEY, VERIFF_SHARED_SECRET, NEXT_PUBLIC_APP_URL) needed before KYC flow can be tested end-to-end
 - Stripe env vars (STRIPE_SECRET_KEY, NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY, STRIPE_WEBHOOK_SECRET) needed before payment flow can be tested end-to-end
 
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 03-05-PLAN.md — BookingConfirmationEmail React Email template, email send wired into createBooking (failure-tolerant), getUserBookings + getBookingDetail Server Actions, /bookings list page, /bookings/[bookingId] detail page, dashboard My Bookings card. Phase 3 COMPLETE.
+Stopped at: Completed 04-01-PLAN.md — Phase 4 DB migration (vehicle_locations, extended booking status 6 values, gps_device_id, is_active, vehicle_availability_blocks), POST /api/gps GPS ingest endpoint, useRealtimeBooking + useVehicleLocation Realtime hooks. Phase 4 Plan 01 complete.
 Resume file: None
