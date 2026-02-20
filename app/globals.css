@@ -32,3 +32,12 @@
 .input-focus-glow:focus {
   box-shadow: 0 0 0 1px #0099ff40;
 }
+
+/* Hide scrollbar but keep scroll functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

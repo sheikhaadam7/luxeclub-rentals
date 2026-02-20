@@ -1,8 +1,8 @@
 import { notFound } from 'next/navigation'
-import Image from 'next/image'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { AvailabilityCalendar } from '@/components/ui/AvailabilityCalendar'
+import { ImageGallery } from '@/components/catalogue/ImageGallery'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -16,7 +16,6 @@ export default async function VehicleDetailPage({ params }: PageProps) {
   const { slug } = await params
   const supabase = await createClient()
 
-  // Fetch vehicle by slug
   const { data: vehicle, error } = await supabase
     .from('vehicles')
     .select('*')
@@ -32,7 +31,6 @@ export default async function VehicleDetailPage({ params }: PageProps) {
     p_vehicle_id: vehicle.id,
   })
 
-  // Transform to { from: Date, to: Date } pairs for react-day-picker
   const bookedRanges = (blockedDatesRaw ?? []).map(
     (r: { start_date: string; end_date: string }) => ({
       from: new Date(r.start_date),
@@ -40,14 +38,19 @@ export default async function VehicleDetailPage({ params }: PageProps) {
     })
   )
 
-  // Build extra image list (exclude primary to avoid duplicate)
-  const extraImages: string[] = Array.isArray(vehicle.image_urls)
-    ? (vehicle.image_urls as string[]).filter(
-        (url: string) => url !== vehicle.primary_image_url
-      )
-    : []
+  // Build full image list with primary first
+  const allImages: string[] = []
+  if (vehicle.primary_image_url) {
+    allImages.push(vehicle.primary_image_url)
+  }
+  if (Array.isArray(vehicle.image_urls)) {
+    for (const url of vehicle.image_urls as string[]) {
+      if (url !== vehicle.primary_image_url) {
+        allImages.push(url)
+      }
+    }
+  }
 
-  // Parse specs JSONB
   const specs = vehicle.specs as Record<string, string> | null
 
   return (
@@ -71,39 +74,8 @@ export default async function VehicleDetailPage({ params }: PageProps) {
           Back to Fleet
         </Link>
 
-        {/* Hero image */}
-        {vehicle.primary_image_url && (
-          <div className="relative aspect-[16/9] w-full rounded-[--radius-card] overflow-hidden border border-brand-border">
-            <Image
-              src={vehicle.primary_image_url}
-              alt={vehicle.name}
-              fill
-              className="object-cover"
-              priority
-              sizes="(max-width: 1280px) 100vw, 1280px"
-            />
-          </div>
-        )}
-
-        {/* Image gallery — horizontal scroll row of additional images */}
-        {extraImages.length > 0 && (
-          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-            {extraImages.map((url, i) => (
-              <div
-                key={i}
-                className="relative flex-shrink-0 w-40 h-28 rounded-[--radius-card] overflow-hidden border border-brand-border"
-              >
-                <Image
-                  src={url}
-                  alt={`${vehicle.name} image ${i + 2}`}
-                  fill
-                  className="object-cover"
-                  sizes="160px"
-                />
-              </div>
-            ))}
-          </div>
-        )}
+        {/* Image gallery with clickable thumbnails */}
+        <ImageGallery images={allImages} alt={vehicle.name} />
 
         {/* Vehicle header */}
         <div className="space-y-2">
@@ -185,7 +157,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
             Availability
           </h2>
           <p className="text-sm text-brand-muted">
-            Greyed-out dates are unavailable. Select dates when booking.
+            View available dates for this vehicle. Booking dates are selected during the reservation process.
           </p>
           <AvailabilityCalendar bookedRanges={bookedRanges} />
         </div>
