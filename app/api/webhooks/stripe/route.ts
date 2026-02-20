@@ -51,7 +51,7 @@ export async function POST(req: Request): Promise<Response> {
   // 4. Idempotency — insert event record; skip if already processed
   const { error: idempotencyError } = await admin
     .from('stripe_webhook_events')
-    .insert({ event_id: event.id, event_type: event.type })
+    .insert({ stripe_event_id: event.id, event_type: event.type })
 
   if (idempotencyError) {
     // PostgreSQL unique constraint violation code
