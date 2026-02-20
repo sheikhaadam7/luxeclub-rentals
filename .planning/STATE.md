@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-20)
 
 **Core value:** Customers can select a luxury car, book instantly with dynamic pricing, and watch it come to them on a live map
-**Current focus:** Phase 3 in progress — Plans 01, 02, 03, and 04 complete, Plan 05 next (booking confirmation page)
+**Current focus:** Phase 3 COMPLETE — all 5 plans complete. Phase 4 (tracking/admin) next.
 
 ## Current Position
 
-Phase: 3 of 4 (Booking, Identity, Payment) — IN PROGRESS
-Plan: 03-01, 03-02, 03-03, 03-04 complete, starting 03-05
-Status: Phase 3 payment flow complete — booking creation Server Action, PaymentIntents, Stripe webhook, StepPayment component, fully wired 5-step wizard
-Last activity: 2026-02-20 — Phase 3 Plan 04 complete. createBooking + createRentalPaymentIntent + createDepositPaymentIntent + captureDeposit + voidDeposit + Stripe webhook handler + StepPayment + fully wired BookingWizard.
+Phase: 3 of 4 (Booking, Identity, Payment) — COMPLETE
+Plan: 03-01, 03-02, 03-03, 03-04, 03-05 all complete. Phase 4 next.
+Status: Phase 3 fully complete — booking confirmation email, /bookings list, /bookings/[id] detail page, dashboard My Bookings card
+Last activity: 2026-02-20 — Phase 3 Plan 05 complete. BookingConfirmationEmail + /bookings page + /bookings/[bookingId] detail page + email send in createBooking + dashboard My Bookings card.
 
-Progress: [████████░░] 80% (Phase 1 + 2 complete, Phase 3 Plans 01 + 02 + 03 + 04 complete, 1 more Phase 3 plan remaining)
+Progress: [█████████░] 90% (Phase 1 + 2 + 3 complete, Phase 4 remaining)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9 (01-01, 01-02, 01-03, 02-01, 02-02, 03-01, 03-02, 03-03, 03-04)
-- Average duration: 6 min
-- Total execution time: 0.88 hours
+- Total plans completed: 10 (01-01, 01-02, 01-03, 02-01, 02-02, 03-01, 03-02, 03-03, 03-04, 03-05)
+- Average duration: 5.6 min
+- Total execution time: 0.95 hours
 
 **By Phase:**
 
@@ -29,9 +29,10 @@ Progress: [████████░░] 80% (Phase 1 + 2 complete, Phase 3 Pl
 |-------|-------|-------|----------|
 | 01-foundation-auth-gate | 3/3 | 18 min | 6 min |
 | 02-inventory-catalogue | 2/2 | 18 min | 9 min |
-| 03-booking-identity-payment | 4/5 | 16 min | 4 min |
+| 03-booking-identity-payment | 5/5 | 20 min | 4 min |
 
 *Updated after each plan completion*
+| Phase 03-booking-identity-payment P05 | 4 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -77,6 +78,9 @@ Recent decisions affecting current work:
 - payment_intent.requires_capture handled via string comparison — not in all Stripe SDK typed event unions
 - Back-from-payment guard in BookingWizard — bookingId preserved in state, advanceToPayment skips recreation on re-call
 - PAY-04 (crypto payments) explicitly deferred — Stripe stablecoin US-only, NOWPayments for future phase
+- [Phase 03-booking-identity-payment]: Email failure never fails the booking — sendEmail wrapped in try/catch, error logged only
+- [Phase 03-booking-identity-payment]: Pickup/return method types: delivery/self_pickup and collection/self_dropoff (match Zod schema, not office/delivery)
+- [Phase 03-booking-identity-payment]: Upcoming/past booking split done at render time via UTC date comparison — no DB filter
 
 ### Pending Todos
 
@@ -97,5 +101,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 03-04-PLAN.md — payment step (StepPayment, Stripe PaymentElement + ExpressCheckoutElement), booking creation Server Actions (createBooking, createRentalPaymentIntent, createDepositPaymentIntent), Stripe webhook handler, fully wired BookingWizard
+Stopped at: Completed 03-05-PLAN.md — BookingConfirmationEmail React Email template, email send wired into createBooking (failure-tolerant), getUserBookings + getBookingDetail Server Actions, /bookings list page, /bookings/[bookingId] detail page, dashboard My Bookings card. Phase 3 COMPLETE.
 Resume file: None
