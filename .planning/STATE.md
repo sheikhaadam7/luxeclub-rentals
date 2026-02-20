@@ -5,33 +5,35 @@
 See: .planning/PROJECT.md (updated 2026-02-20)
 
 **Core value:** Customers can select a luxury car, book instantly with dynamic pricing, and watch it come to them on a live map
-**Current focus:** Phase 1 — Foundation + Auth Gate
+**Current focus:** Phase 2 — Inventory Catalogue
 
 ## Current Position
 
-Phase: 1 of 4 (Foundation + Auth Gate)
-Plan: 3 of 3 in current phase
+Phase: 2 of 4 (Inventory Catalogue)
+Plan: 1 of 3 in current phase (02-01 Tasks 1+2 complete, paused at Task 3 checkpoint:human-verify)
 Status: Awaiting checkpoint (human-verify)
-Last activity: 2026-02-20 — Plan 03 Task 1 complete: dark luxury design tokens + landing page. Paused at Task 2 checkpoint for end-to-end auth flow verification.
+Last activity: 2026-02-20 — Plan 02-01 Tasks 1+2 complete: migration SQL, admin client, Playwright scraper. Paused at Task 3 checkpoint for Supabase setup and scraper verification.
 
-Progress: [██░░░░░░░░] 17% (2 of 12 total plans complete, Plan 03 in progress)
+Progress: [███░░░░░░░] 25% (3 of 12 total plans in progress, awaiting human checkpoints for 01-03 and 02-01)
 
 ## Performance Metrics
 
 **Velocity:**
 - Total plans completed: 2
+- Plans in progress: 2 (01-03, 02-01 — both paused at checkpoints)
 - Average duration: 6 min
-- Total execution time: 0.20 hours
+- Total execution time: 0.30 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation-auth-gate | 2/3 | 12 min | 6 min |
+| 02-inventory-catalogue | 0/3 | 6 min | — |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (8 min), 01-02 (4 min)
-- Trend: Accelerating
+- Last 5 plans: 01-01 (8 min), 01-02 (4 min), 02-01 (6 min)
+- Trend: Consistent 6 min average
 
 *Updated after each plan completion*
 
@@ -56,14 +58,22 @@ Recent decisions affecting current work:
 - Defense-in-depth: both middleware and protected layout validate getClaims() — guards against CVE-2025-29927 bypass
 - Tailwind v4 @theme block for design tokens — auto-generates utility classes (bg-brand-cyan, font-display, border-brand-border, etc.)
 - No motion/animation in Phase 1 — clean static layout for mobile-first (80% tourist devices, variable connections)
+- Multi-page scrape pattern: /garage listing has daily rate only; visit each /garage/{slug} detail page for full specs/description/images
+- Weekly/monthly rates null in DB: confirmed by DOM inspection — site only shows daily rates
+- Vehicle images uploaded to Supabase Storage as {slug}/{index}.ext — framerusercontent.com CDN URLs are not stable
+- Slugs extracted from URL path (/garage/{slug}) — more stable than generating from name for ON CONFLICT upsert
 
 ### Pending Todos
 
-- User must configure Supabase in .env.local (NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY)
+- User must configure Supabase in .env.local (NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) — DONE
 - User must run supabase/migrations/20260220000000_create_profiles.sql in Supabase SQL Editor
 - User must enable Phone provider + Twilio credentials in Supabase Dashboard
 - User must register UAE Twilio Sender ID (required before production SMS to +971 numbers)
-- User must complete end-to-end auth flow verification (Plan 03 checkpoint:human-verify)
+- User must complete end-to-end auth flow verification (Plan 01-03 checkpoint:human-verify)
+- **User must add SUPABASE_SERVICE_ROLE_KEY to .env.local** (placeholder added)
+- **User must run migration SQL: supabase/migrations/20260220100000_create_vehicles_bookings.sql**
+- **User must create 'vehicle-images' storage bucket (public) in Supabase Dashboard**
+- **User must run `npm run scrape` and verify output in Supabase Dashboard (Plan 02-01 checkpoint)**
 
 ### Blockers/Concerns
 
@@ -75,5 +85,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Plan 03 Task 1 committed (d492d6f) — paused at Task 2 checkpoint:human-verify for end-to-end auth flow and visual verification
+Stopped at: Plan 02-01 Tasks 1+2 committed (a7bb771, d6f087e) — paused at Task 3 checkpoint:human-verify for migration + scraper verification
 Resume file: None
