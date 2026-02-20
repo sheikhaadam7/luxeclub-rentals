@@ -10,30 +10,30 @@ See: .planning/PROJECT.md (updated 2026-02-20)
 ## Current Position
 
 Phase: 2 of 4 (Inventory Catalogue)
-Plan: 1 of 3 in current phase (02-01 Tasks 1+2 complete, paused at Task 3 checkpoint:human-verify)
+Plan: 2 of 3 in current phase (02-02 Tasks 1+2 complete, paused at Task 3 checkpoint:human-verify)
 Status: Awaiting checkpoint (human-verify)
-Last activity: 2026-02-20 — Plan 02-01 Tasks 1+2 complete: migration SQL, admin client, Playwright scraper. Paused at Task 3 checkpoint for Supabase setup and scraper verification.
+Last activity: 2026-02-20 — Plan 02-02 Tasks 1+2 complete: catalogue UI, vehicle cards, detail pages, availability calendar, admin page, vehicle override. Paused at Task 3 checkpoint for end-to-end catalogue and admin verification.
 
-Progress: [███░░░░░░░] 25% (3 of 12 total plans in progress, awaiting human checkpoints for 01-03 and 02-01)
+Progress: [████░░░░░░] 33% (4 of 12 total plans — 02-02 Tasks 1+2 complete, awaiting human checkpoints for 01-03, 02-01, and 02-02)
 
 ## Performance Metrics
 
 **Velocity:**
 - Total plans completed: 2
-- Plans in progress: 2 (01-03, 02-01 — both paused at checkpoints)
-- Average duration: 6 min
-- Total execution time: 0.30 hours
+- Plans in progress: 3 (01-03, 02-01, 02-02 — all paused at checkpoints)
+- Average duration: 8 min
+- Total execution time: 0.40 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation-auth-gate | 2/3 | 12 min | 6 min |
-| 02-inventory-catalogue | 0/3 | 6 min | — |
+| 02-inventory-catalogue | 0/3 | 18 min | — |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (8 min), 01-02 (4 min), 02-01 (6 min)
-- Trend: Consistent 6 min average
+- Last 5 plans: 01-01 (8 min), 01-02 (4 min), 02-01 (6 min), 02-02 (12 min)
+- Trend: Consistent 6-12 min per plan
 
 *Updated after each plan completion*
 
@@ -62,6 +62,9 @@ Recent decisions affecting current work:
 - Weekly/monthly rates null in DB: confirmed by DOM inspection — site only shows daily rates
 - Vehicle images uploaded to Supabase Storage as {slug}/{index}.ext — framerusercontent.com CDN URLs are not stable
 - Slugs extracted from URL path (/garage/{slug}) — more stable than generating from name for ON CONFLICT upsert
+- react-day-picker v9 classNames keys verified from TypeScript types — differ from v8 (month_caption, caption_label, button_previous/next, day_button — NOT nav_button, caption)
+- VehicleOverrideForm as Client Component island in /admin — keeps Server Component data fetching while isolating interactivity
+- verifyAdmin() shared helper in admin.ts — reused across all admin Server Actions for DRY auth guard
 
 ### Pending Todos
 
@@ -74,6 +77,8 @@ Recent decisions affecting current work:
 - **User must run migration SQL: supabase/migrations/20260220100000_create_vehicles_bookings.sql**
 - **User must create 'vehicle-images' storage bucket (public) in Supabase Dashboard**
 - **User must run `npm run scrape` and verify output in Supabase Dashboard (Plan 02-01 checkpoint)**
+- **User must verify catalogue UI and admin page (Plan 02-02 checkpoint:human-verify)**
+- **To test /admin: UPDATE profiles SET role = 'admin' WHERE email = 'your-email@example.com';**
 
 ### Blockers/Concerns
 
@@ -85,5 +90,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Plan 02-01 Tasks 1+2 committed (a7bb771, d6f087e) — paused at Task 3 checkpoint:human-verify for migration + scraper verification
+Stopped at: Plan 02-02 Tasks 1+2 committed (0797735, fc9e978) — paused at Task 3 checkpoint:human-verify for catalogue and admin page verification
 Resume file: None
