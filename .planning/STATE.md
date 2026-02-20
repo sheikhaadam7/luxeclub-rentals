@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-20)
 
 **Core value:** Customers can select a luxury car, book instantly with dynamic pricing, and watch it come to them on a live map
-**Current focus:** Phase 3 in progress — Plan 01 complete, Plan 02 next
+**Current focus:** Phase 3 in progress — Plans 01 and 03 complete, Plan 02 next (booking wizard UI)
 
 ## Current Position
 
 Phase: 3 of 4 (Booking, Identity, Payment) — IN PROGRESS
-Plan: 03-01 complete, starting 03-02
-Status: Phase 3 foundation complete — DB migration, Stripe/Resend clients, pricing calculator, Zod validation schemas
-Last activity: 2026-02-20 — Phase 3 Plan 01 complete. Migration SQL with all Phase 3 columns, 8 npm packages installed, pure pricing calculator, booking wizard Zod schemas.
+Plan: 03-01 complete, 03-03 complete, starting 03-02
+Status: Phase 3 identity verification complete — Veriff session creation, HMAC webhook, StepIdentity component, verify-callback page
+Last activity: 2026-02-20 — Phase 3 Plan 03 complete. Veriff redirect-flow KYC with HMAC-signed webhook, StepIdentity polling component, verify-callback page.
 
-Progress: [█████░░░░░] 50% (Phase 1 + 2 complete, Phase 3 Plan 01 complete, 4 more Phase 3 plans remaining)
+Progress: [██████░░░░] 60% (Phase 1 + 2 complete, Phase 3 Plans 01 + 03 complete, 3 more Phase 3 plans remaining)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6 (01-01, 01-02, 01-03, 02-01, 02-02, 03-01)
-- Average duration: 7 min
-- Total execution time: 0.70 hours
+- Total plans completed: 7 (01-01, 01-02, 01-03, 02-01, 02-02, 03-01, 03-03)
+- Average duration: 6 min
+- Total execution time: 0.75 hours
 
 **By Phase:**
 
@@ -29,7 +29,7 @@ Progress: [█████░░░░░] 50% (Phase 1 + 2 complete, Phase 3 Pl
 |-------|-------|-------|----------|
 | 01-foundation-auth-gate | 3/3 | 18 min | 6 min |
 | 02-inventory-catalogue | 2/2 | 18 min | 9 min |
-| 03-booking-identity-payment | 1/5 | 3 min | 3 min |
+| 03-booking-identity-payment | 2/5 | 6 min | 3 min |
 
 *Updated after each plan completion*
 
@@ -63,6 +63,10 @@ Recent decisions affecting current work:
 - noDepositSurcharge uses daily_rate not weekly/monthly rate — consistent pricing incentive regardless of duration type
 - vehicles.deposit_amount falls back to 5000 AED when NULL — matches current LuxeClub deposit pricing
 - Zod v4 API: use 'error' not 'required_error' for date/required field error customization
+- Veriff redirect flow chosen over iframe — mobile-first for UAE tourist demographic (80% mobile)
+- sessionStorage used for booking context across Veriff redirect — preserves vehicle slug for return routing
+- Admin client used in Veriff webhook handler — webhook has no user session, RLS bypass required
+- 5-second polling interval in StepIdentity for submitted/pending KYC status auto-advancement
 
 ### Pending Todos
 
@@ -70,15 +74,16 @@ Recent decisions affecting current work:
 - Phone verification to be re-added after Supabase MFA/phone setup resolved
 - Apply migration 20260220200000_extend_bookings_phase3.sql to Supabase (supabase db push) before Plan 02+ can be tested
 - Add Stripe, Veriff, Mapbox, and Resend env vars to .env.local before Phase 3 end-to-end testing
+- Register Veriff webhook URL: {NEXT_PUBLIC_APP_URL}/api/webhooks/veriff in Veriff Dashboard
 
 ### Blockers/Concerns
 
 - UAE legal review required before production PII storage (PDPL, RTA, VARA)
 - GPS tracker hardware vendor not yet selected — needed before Phase 4
-- KYC provider selected as Veriff (from plan frontmatter) — env vars needed before Plan 03 IDV build
+- Veriff env vars (VERIFF_API_KEY, VERIFF_SHARED_SECRET, NEXT_PUBLIC_APP_URL) needed before KYC flow can be tested end-to-end
 
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 03-01-PLAN.md — Phase 3 foundation (migration, deps, pricing calculator, validation schemas)
+Stopped at: Completed 03-03-PLAN.md — Veriff identity verification (session creation, webhook, StepIdentity, verify-callback)
 Resume file: None
