@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-20)
 ## Current Position
 
 Phase: 1 of 4 (Foundation + Auth Gate)
-Plan: 2 of 3 in current phase
-Status: In progress
-Last activity: 2026-02-20 — Completed Plan 02: Middleware route protection + auth form components
+Plan: 3 of 3 in current phase
+Status: Awaiting checkpoint (human-verify)
+Last activity: 2026-02-20 — Plan 03 Task 1 complete: dark luxury design tokens + landing page. Paused at Task 2 checkpoint for end-to-end auth flow verification.
 
-Progress: [██░░░░░░░░] 17% (2 of 12 total plans)
+Progress: [██░░░░░░░░] 17% (2 of 12 total plans complete, Plan 03 in progress)
 
 ## Performance Metrics
 
@@ -51,10 +51,11 @@ Recent decisions affecting current work:
 - Phone MFA via mfa.enroll/challenge/verify — NOT signInWithOtp (creates separate phone-only account)
 - All auth operations via Server Actions — no auth logic in Client Components
 - UAE phone accepts local format (0501234567), normalizes to E.164 (+971501234567) before Supabase MFA
-- Tailwind globals.css kept minimal for Plan 01 — design tokens deferred to Plan 03
 - getClaims() returns { claims: JwtPayload } not { user } — Supabase v2.97 API; use claimsData?.claims for auth signal
 - Middleware uses inline createServerClient (not async createClient) — required by Next.js middleware constraints
 - Defense-in-depth: both middleware and protected layout validate getClaims() — guards against CVE-2025-29927 bypass
+- Tailwind v4 @theme block for design tokens — auto-generates utility classes (bg-brand-cyan, font-display, border-brand-border, etc.)
+- No motion/animation in Phase 1 — clean static layout for mobile-first (80% tourist devices, variable connections)
 
 ### Pending Todos
 
@@ -62,6 +63,7 @@ Recent decisions affecting current work:
 - User must run supabase/migrations/20260220000000_create_profiles.sql in Supabase SQL Editor
 - User must enable Phone provider + Twilio credentials in Supabase Dashboard
 - User must register UAE Twilio Sender ID (required before production SMS to +971 numbers)
+- User must complete end-to-end auth flow verification (Plan 03 checkpoint:human-verify)
 
 ### Blockers/Concerns
 
@@ -73,5 +75,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 01-02-PLAN.md — Middleware route protection + auth form components (AuthGate, LoginForm, SignupForm, OTPForm)
+Stopped at: Plan 03 Task 1 committed (d492d6f) — paused at Task 2 checkpoint:human-verify for end-to-end auth flow and visual verification
 Resume file: None
