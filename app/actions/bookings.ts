@@ -11,6 +11,8 @@ import {
   createRentalPaymentIntent,
   createDepositPaymentIntent,
 } from '@/app/actions/payments'
+import { sendEmail } from '@/lib/email/send'
+import { BookingConfirmationEmail } from '@/components/email/BookingConfirmationEmail'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -27,6 +29,49 @@ export interface CreateBookingResult {
   depositAmount: number
 }
 
+export interface UserBooking {
+  id: string
+  start_date: string
+  end_date: string
+  duration_type: string
+  status: string
+  payment_status: string
+  payment_method: string
+  total_due: number
+  vehicles: {
+    name: string
+    slug: string
+    primary_image_url: string | null
+  } | null
+}
+
+export interface BookingDetail {
+  id: string
+  start_date: string
+  end_date: string
+  duration_type: string
+  start_time: string | null
+  pickup_method: string
+  delivery_address: string | null
+  return_method: string
+  deposit_choice: string
+  rental_subtotal: number
+  delivery_fee: number
+  return_fee: number
+  no_deposit_surcharge: number
+  deposit_amount: number
+  total_due: number
+  payment_method: string
+  payment_status: string
+  status: string
+  vehicles: {
+    name: string
+    slug: string
+    primary_image_url: string | null
+    daily_rate: number | null
+  } | null
+}
+
 // ---------------------------------------------------------------------------
 // createBooking
 // ---------------------------------------------------------------------------
@@ -40,6 +85,9 @@ export interface CreateBookingResult {
  *
  * For cash payments: booking is created with status 'pending_cash'.
  * For card/wallet: rental and (optionally) deposit PaymentIntents are created.
+ *
+ * Email: confirmation email sent via Resend after booking insert. Wrapped in
+ * try/catch so email failure never fails the booking.
  */
 export async function createBooking(
   formData: BookingFormValues,
@@ -60,7 +108,7 @@ export async function createBooking(
   const admin = createAdminClient()
   const { data: vehicle, error: vehicleError } = await admin
     .from('vehicles')
-    .select('id, daily_rate, weekly_rate, monthly_rate, deposit_amount, is_available')
+    .select('id, name, slug, primary_image_url, daily_rate, weekly_rate, monthly_rate, deposit_amount, is_available')
     .eq('id', vehicleId)
     .single()
 
@@ -121,7 +169,46 @@ export async function createBooking(
 
   const bookingId = booking.id
 
-  // 5. Cash path — no Stripe involvement
+  // 5. Send confirmation email (non-blocking — failure does not fail booking)
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user?.email) {
+      const startDateStr = formData.startDate.toISOString().split('T')[0]
+      const endDateStr = formData.endDate.toISOString().split('T')[0]
+
+      await sendEmail({
+        to: user.email,
+        subject: `Booking Confirmed — ${vehicle.name}`,
+        react: BookingConfirmationEmail({
+          booking: {
+            id: bookingId,
+            vehicleName: vehicle.name,
+            vehicleImage: vehicle.primary_image_url ?? null,
+            startDate: startDateStr,
+            endDate: endDateStr,
+            durationType: formData.durationType as 'daily' | 'weekly' | 'monthly',
+            pickupMethod: formData.pickupMethod as 'delivery' | 'self_pickup',
+            returnMethod: formData.returnMethod as 'collection' | 'self_dropoff',
+            deliveryAddress: formData.deliveryAddress ?? null,
+            depositChoice: formData.depositChoice,
+            rentalSubtotal: pricing.rentalSubtotal,
+            deliveryFee: pricing.deliveryFee,
+            returnFee: pricing.returnFee,
+            noDepositSurcharge: pricing.noDepositSurcharge,
+            depositAmount: pricing.depositAmount,
+            totalDue: pricing.totalDue,
+            paymentMethod: formData.paymentMethod,
+            status: formData.paymentMethod === 'cash' ? 'pending_cash' : 'pending',
+          },
+        }),
+      })
+    }
+  } catch (emailError) {
+    // Email failure must never fail the booking — log and continue
+    console.error('createBooking: email send failed (non-fatal)', emailError)
+  }
+
+  // 6. Cash path — no Stripe involvement
   if (formData.paymentMethod === 'cash') {
     return {
       bookingId,
@@ -132,7 +219,7 @@ export async function createBooking(
     }
   }
 
-  // 6. Card / wallet path — create PaymentIntents
+  // 7. Card / wallet path — create PaymentIntents
   const rentalResult = await createRentalPaymentIntent(bookingId, pricing.totalDue)
   if ('error' in rentalResult) {
     return { error: rentalResult.error }
@@ -157,4 +244,114 @@ export async function createBooking(
     totalDue: pricing.totalDue,
     depositAmount: pricing.depositAmount,
   }
+}
+
+// ---------------------------------------------------------------------------
+// getUserBookings
+// ---------------------------------------------------------------------------
+
+/**
+ * Server Action — returns all bookings for the authenticated user,
+ * joined with vehicle name, slug, and primary_image_url.
+ * Ordered by start_date descending (most recent first).
+ */
+export async function getUserBookings(): Promise<UserBooking[] | { error: string }> {
+  const supabase = await createClient()
+  const { data: claimsData } = await supabase.auth.getClaims()
+  const claims = claimsData?.claims
+
+  if (!claims?.sub) {
+    return { error: 'You must be logged in to view bookings' }
+  }
+
+  const { data, error } = await supabase
+    .from('bookings')
+    .select(`
+      id,
+      start_date,
+      end_date,
+      duration_type,
+      status,
+      payment_status,
+      payment_method,
+      total_due,
+      vehicles (
+        name,
+        slug,
+        primary_image_url
+      )
+    `)
+    .eq('user_id', claims.sub)
+    .order('start_date', { ascending: false })
+
+  if (error) {
+    console.error('getUserBookings error', error)
+    return { error: error.message }
+  }
+
+  return (data ?? []) as unknown as UserBooking[]
+}
+
+// ---------------------------------------------------------------------------
+// getBookingDetail
+// ---------------------------------------------------------------------------
+
+/**
+ * Server Action — returns full detail for a single booking by ID,
+ * joined with vehicle name, slug, primary_image_url, and daily_rate.
+ * Returns null if not found or not owned by the authenticated user.
+ */
+export async function getBookingDetail(
+  bookingId: string
+): Promise<BookingDetail | null | { error: string }> {
+  const supabase = await createClient()
+  const { data: claimsData } = await supabase.auth.getClaims()
+  const claims = claimsData?.claims
+
+  if (!claims?.sub) {
+    return { error: 'You must be logged in to view booking details' }
+  }
+
+  const { data, error } = await supabase
+    .from('bookings')
+    .select(`
+      id,
+      start_date,
+      end_date,
+      duration_type,
+      start_time,
+      pickup_method,
+      delivery_address,
+      return_method,
+      deposit_choice,
+      rental_subtotal,
+      delivery_fee,
+      return_fee,
+      no_deposit_surcharge,
+      deposit_amount,
+      total_due,
+      payment_method,
+      payment_status,
+      status,
+      vehicles (
+        name,
+        slug,
+        primary_image_url,
+        daily_rate
+      )
+    `)
+    .eq('id', bookingId)
+    .eq('user_id', claims.sub)
+    .single()
+
+  if (error) {
+    if (error.code === 'PGRST116') {
+      // "not found" from PostgREST
+      return null
+    }
+    console.error('getBookingDetail error', error)
+    return { error: error.message }
+  }
+
+  return data as unknown as BookingDetail
 }
