@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-20)
 ## Current Position
 
 Phase: 1 of 4 (Foundation + Auth Gate)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-02-20 — Completed Plan 01: Next.js scaffold, Supabase clients, auth Server Actions
+Last activity: 2026-02-20 — Completed Plan 02: Middleware route protection + auth form components
 
-Progress: [█░░░░░░░░░] 8% (1 of 12 total plans)
+Progress: [██░░░░░░░░] 17% (2 of 12 total plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 8 min
-- Total execution time: 0.13 hours
+- Total plans completed: 2
+- Average duration: 6 min
+- Total execution time: 0.20 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-foundation-auth-gate | 1/3 | 8 min | 8 min |
+| 01-foundation-auth-gate | 2/3 | 12 min | 6 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (8 min)
-- Trend: —
+- Last 5 plans: 01-01 (8 min), 01-02 (4 min)
+- Trend: Accelerating
 
 *Updated after each plan completion*
 
@@ -52,6 +52,9 @@ Recent decisions affecting current work:
 - All auth operations via Server Actions — no auth logic in Client Components
 - UAE phone accepts local format (0501234567), normalizes to E.164 (+971501234567) before Supabase MFA
 - Tailwind globals.css kept minimal for Plan 01 — design tokens deferred to Plan 03
+- getClaims() returns { claims: JwtPayload } not { user } — Supabase v2.97 API; use claimsData?.claims for auth signal
+- Middleware uses inline createServerClient (not async createClient) — required by Next.js middleware constraints
+- Defense-in-depth: both middleware and protected layout validate getClaims() — guards against CVE-2025-29927 bypass
 
 ### Pending Todos
 
@@ -70,5 +73,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 01-01-PLAN.md — Next.js scaffold + auth Server Actions
+Stopped at: Completed 01-02-PLAN.md — Middleware route protection + auth form components (AuthGate, LoginForm, SignupForm, OTPForm)
 Resume file: None
