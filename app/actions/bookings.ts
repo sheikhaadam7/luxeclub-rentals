@@ -53,6 +53,8 @@ export interface BookingDetail {
   start_time: string | null
   pickup_method: string
   delivery_address: string | null
+  delivery_lat: number | null
+  delivery_lng: number | null
   return_method: string
   deposit_choice: string
   rental_subtotal: number
@@ -64,6 +66,7 @@ export interface BookingDetail {
   payment_method: string
   payment_status: string
   status: string
+  vehicle_id: string
   vehicles: {
     name: string
     slug: string
@@ -322,6 +325,8 @@ export async function getBookingDetail(
       start_time,
       pickup_method,
       delivery_address,
+      delivery_lat,
+      delivery_lng,
       return_method,
       deposit_choice,
       rental_subtotal,
@@ -333,6 +338,7 @@ export async function getBookingDetail(
       payment_method,
       payment_status,
       status,
+      vehicle_id,
       vehicles (
         name,
         slug,

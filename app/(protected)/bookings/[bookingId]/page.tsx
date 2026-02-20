@@ -2,6 +2,9 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { getBookingDetail } from '@/app/actions/bookings'
+import { createClient } from '@/lib/supabase/server'
+import LiveTrackingMap from '@/components/tracking/LiveTrackingMap'
+import BookingStatusTimeline from '@/components/tracking/BookingStatusTimeline'
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -10,6 +13,8 @@ import { getBookingDetail } from '@/app/actions/bookings'
 interface PageProps {
   params: Promise<{ bookingId: string }>
 }
+
+const TRACKABLE_STATUSES = new Set(['confirmed', 'car_on_the_way', 'car_delivered'])
 
 function formatDate(isoDate: string): string {
   const date = new Date(isoDate + 'T00:00:00Z')
@@ -69,6 +74,10 @@ function formatStatus(status: string): { label: string; className: string } {
       return { label: 'Completed', className: 'text-green-400' }
     case 'cancelled':
       return { label: 'Cancelled', className: 'text-red-400' }
+    case 'car_on_the_way':
+      return { label: 'Car On The Way', className: 'text-amber-400' }
+    case 'car_delivered':
+      return { label: 'Car Delivered', className: 'text-green-400' }
     default:
       return { label: status, className: 'text-brand-muted' }
   }
@@ -117,6 +126,32 @@ export default async function BookingDetailPage({ params }: PageProps) {
   const statusConfig = formatStatus(booking.status)
   const paymentStatusConfig = formatPaymentStatus(booking.payment_status)
   const bookingRef = booking.id.replace(/-/g, '').substring(0, 8).toUpperCase()
+
+  const isTrackable = TRACKABLE_STATUSES.has(booking.status)
+  const hasDelivery = booking.pickup_method === 'delivery'
+  const showMap = isTrackable && hasDelivery && !!booking.delivery_lat && !!booking.delivery_lng
+
+  // Fetch initial vehicle location server-side to avoid empty-state flash on map mount
+  let initialLat: number | undefined
+  let initialLng: number | undefined
+
+  if (showMap && booking.vehicle_id) {
+    try {
+      const supabase = await createClient()
+      const { data: locationRow } = await supabase
+        .from('vehicle_locations')
+        .select('lat, lng')
+        .eq('vehicle_id', booking.vehicle_id)
+        .single()
+
+      if (locationRow) {
+        initialLat = locationRow.lat
+        initialLng = locationRow.lng
+      }
+    } catch {
+      // Non-fatal — map will show destination pin without car position until first GPS update
+    }
+  }
 
   return (
     <main className="min-h-screen bg-luxury">
@@ -170,6 +205,30 @@ export default async function BookingDetailPage({ params }: PageProps) {
             </Link>
           )}
         </div>
+
+        {/* Tracking section — shown for confirmed / car_on_the_way / car_delivered */}
+        {isTrackable && (
+          <section className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-6 space-y-6">
+            <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Delivery Status</h2>
+
+            {/* Status timeline — live updates via Realtime subscription */}
+            <BookingStatusTimeline
+              bookingId={booking.id}
+              initialStatus={booking.status}
+            />
+
+            {/* Live map — rendered when delivery method is set and coordinates available */}
+            {showMap && (
+              <LiveTrackingMap
+                vehicleId={booking.vehicle_id}
+                deliveryLat={booking.delivery_lat!}
+                deliveryLng={booking.delivery_lng!}
+                initialLat={initialLat}
+                initialLng={initialLng}
+              />
+            )}
+          </section>
+        )}
 
         {/* Booking details section */}
         <section className="bg-brand-surface border border-brand-border rounded-[--radius-card] divide-y divide-brand-border">
