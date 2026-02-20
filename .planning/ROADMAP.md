@@ -56,11 +56,11 @@ Plans:
   3. Car inventory is auto-populated from the Playwright scraper running against luxeclubrentals.com
   4. Admin sees a staleness alert if scraper results drop or data is stale, and can manually override any vehicle record
 
-**Plans:** TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 02-01: Playwright scraper with monitoring, staleness alerts, and DB import
-- [ ] 02-02: Car catalogue UI — vehicle cards, detail pages, availability calendar
+- [ ] 02-01-PLAN.md — Database schema (vehicles, bookings, scraper_runs), admin client, Playwright scraper with image upload and idempotent upsert
+- [ ] 02-02-PLAN.md — Car catalogue UI (vehicle grid, detail pages, availability calendar), admin page with staleness alerts and vehicle override
 
 ---
 
@@ -126,4 +126,4 @@ Plans:
 ---
 
 *Roadmap created: 2026-02-20*
-*Last updated: 2026-02-20 after Phase 1 planning*
+*Last updated: 2026-02-20 after Phase 2 planning*
