@@ -33,12 +33,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. User can log out from any page and is returned to the login gate
   4. The full signup and login flow works end-to-end on iOS Safari and Android Chrome
 
-**Plans:** TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 01-01: Project scaffold, Supabase setup, and database schema
-- [ ] 01-02: Auth flows — signup, OTP, login, session persistence, logout
-- [ ] 01-03: Dark luxury design system and login-gate shell (all routes protected)
+- [ ] 01-01-PLAN.md — Scaffold Next.js 16, wire Supabase clients, implement auth Server Actions and profiles schema
+- [ ] 01-02-PLAN.md — Middleware route protection, protected layout, auth form components (LoginForm, SignupForm, OTPForm, AuthGate)
+- [ ] 01-03-PLAN.md — Dark luxury design tokens, login-gate landing page, dashboard shell, end-to-end verification
 
 ---
 
@@ -126,4 +126,4 @@ Plans:
 ---
 
 *Roadmap created: 2026-02-20*
-*Last updated: 2026-02-20 after initial creation*
+*Last updated: 2026-02-20 after Phase 1 planning*
