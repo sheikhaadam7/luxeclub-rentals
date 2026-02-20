@@ -118,12 +118,12 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation + Auth Gate | 0/3 | Not started | - |
-| 2. Inventory + Catalogue | 0/2 | Not started | - |
+| 1. Foundation + Auth Gate | 3/3 | Complete | 2026-02-20 |
+| 2. Inventory + Catalogue | 2/2 | Complete | 2026-02-20 |
 | 3. Booking, Identity, and Payment | 0/3 | Not started | - |
 | 4. Tracking + Admin | 0/3 | Not started | - |
 
 ---
 
 *Roadmap created: 2026-02-20*
-*Last updated: 2026-02-20 after Phase 2 planning*
+*Last updated: 2026-02-20 after Phase 2 execution*
