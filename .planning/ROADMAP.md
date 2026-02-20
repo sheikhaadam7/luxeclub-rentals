@@ -107,12 +107,13 @@ Plans:
   4. Admin can add, edit, and deactivate vehicles; set pricing and availability blocks; and view analytics (bookings, revenue, fleet utilization)
   5. Admin can review and approve or reject identity verifications, confirm cash and bank transfer payments, and manage the full booking status pipeline
 
-**Plans:** TBD
+**Plans:** 4 plans
 
 Plans:
-- [ ] 04-01: Supabase Realtime tracking layer — GPS ingestion, tracking_log, useDriverLocation and useRealtimeBooking hooks
-- [ ] 04-02: Customer-facing live map and booking status timeline (Mapbox dark style)
-- [ ] 04-03: Admin dashboard — fleet, bookings, ID verification queue, payments, analytics
+- [ ] 04-01-PLAN.md — Database migration (vehicle_locations, extended booking status CHECK, GPS device mapping, availability blocks), GPS ingest API route, Supabase Realtime hooks
+- [ ] 04-02-PLAN.md — Customer-facing live tracking map (Mapbox GL JS v3 dark theme) and booking status timeline on booking detail page
+- [ ] 04-03-PLAN.md — Admin dashboard rebuild: tab routing, Fleet tab (vehicle CRUD, pricing, availability blocks), Bookings tab (status pipeline)
+- [ ] 04-04-PLAN.md — Admin KYC review tab, Payments confirmation tab, Analytics overview tab
 
 ---
 
@@ -125,9 +126,9 @@ Plans:
 | 1. Foundation + Auth Gate | 3/3 | Complete | 2026-02-20 |
 | 2. Inventory + Catalogue | 2/2 | Complete | 2026-02-20 |
 | 3. Booking, Identity, and Payment | 5/5 | Complete | 2026-02-20 |
-| 4. Tracking + Admin | 0/3 | Not started | - |
+| 4. Tracking + Admin | 0/4 | Not started | - |
 
 ---
 
 *Roadmap created: 2026-02-20*
-*Last updated: 2026-02-20 after Phase 3 execution*
+*Last updated: 2026-02-20 after Phase 4 planning*
