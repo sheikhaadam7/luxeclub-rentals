@@ -5,22 +5,22 @@
 See: .planning/PROJECT.md (updated 2026-02-20)
 
 **Core value:** Customers can select a luxury car, book instantly with dynamic pricing, and watch it come to them on a live map
-**Current focus:** Phase 4 (tracking/admin) — Plan 01 complete. Plans 02+ remaining.
+**Current focus:** Phase 4 (tracking/admin) — Plans 01-02 complete. Plans 03+ remaining.
 
 ## Current Position
 
 Phase: 4 of 4 (Tracking + Admin) — IN PROGRESS
-Plan: 04-01 complete. 04-02, 04-03, 04-04+ remaining.
-Status: Phase 4 Plan 01 complete — DB migration, GPS ingest route, Realtime hooks
-Last activity: 2026-02-20 — Phase 4 Plan 01 complete. Migration extends booking status (6 values), vehicle_locations table, gps_device_id + is_active on vehicles, vehicle_availability_blocks, POST /api/gps ingest, useRealtimeBooking + useVehicleLocation hooks.
+Plan: 04-02 complete. 04-03, 04-04+ remaining.
+Status: Phase 4 Plan 02 complete — LiveTrackingMap, BookingStatusTimeline, booking detail page integration
+Last activity: 2026-02-20 — Phase 4 Plan 02 complete. LiveTrackingMap (Mapbox v3, Standard style + night preset, GeoJSON car layer), BookingStatusTimeline (3-step realtime stepper), booking detail page extended with tracking section + getBookingDetail now includes delivery_lat/delivery_lng/vehicle_id.
 
-Progress: [█████████░] 92% (Phase 1 + 2 + 3 complete, Phase 4 Plan 01 complete)
+Progress: [█████████░] 94% (Phase 1 + 2 + 3 complete, Phase 4 Plans 01-02 complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11 (01-01, 01-02, 01-03, 02-01, 02-02, 03-01, 03-02, 03-03, 03-04, 03-05, 04-01)
-- Average duration: 5.4 min
+- Total plans completed: 12 (01-01, 01-02, 01-03, 02-01, 02-02, 03-01, 03-02, 03-03, 03-04, 03-05, 04-01, 04-02)
+- Average duration: 5.2 min
 - Total execution time: ~1.0 hours
 
 **By Phase:**
@@ -30,10 +30,11 @@ Progress: [█████████░] 92% (Phase 1 + 2 + 3 complete, Phase 
 | 01-foundation-auth-gate | 3/3 | 18 min | 6 min |
 | 02-inventory-catalogue | 2/2 | 18 min | 9 min |
 | 03-booking-identity-payment | 5/5 | 20 min | 4 min |
-| 04-tracking-admin | 1/? | 3 min | 3 min |
+| 04-tracking-admin | 2/? | 7 min | 3.5 min |
 
 *Updated after each plan completion*
 | Phase 04-tracking-admin P01 | 3 | 3 tasks | 4 files |
+| Phase 04-tracking-admin P02 | 4 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -87,6 +88,9 @@ Recent decisions affecting current work:
 - [Phase 04-tracking-admin]: Unknown GPS device IDs return 200 with warning — prevents hardware retry storm on 4xx/5xx
 - [Phase 04-tracking-admin]: is_active (admin permanent deactivation) distinct from is_available (scraper-managed) — both columns needed, different semantics
 - [Phase 04-tracking-admin]: GPS ingest auth via x-gps-secret shared secret header validated against GPS_INGEST_SECRET env var
+- [Phase 04-tracking-admin]: LiveTrackingMap uses useRef<mapboxgl.Map> (never useState) — prevents React reconciliation destroying map instance
+- [Phase 04-tracking-admin]: showMap gated on pickup_method === 'delivery' + delivery_lat/delivery_lng — office pickup bookings don't get map (no coordinates)
+- [Phase 04-tracking-admin]: Server-side vehicle_locations fetch in booking detail page is non-fatal (try/catch) — map degrades gracefully to destination-pin-only until GPS data arrives
 
 ### Pending Todos
 
@@ -110,5 +114,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 04-01-PLAN.md — Phase 4 DB migration (vehicle_locations, extended booking status 6 values, gps_device_id, is_active, vehicle_availability_blocks), POST /api/gps GPS ingest endpoint, useRealtimeBooking + useVehicleLocation Realtime hooks. Phase 4 Plan 01 complete.
+Stopped at: Completed 04-02-PLAN.md — LiveTrackingMap (Mapbox GL JS v3, Standard style + night preset, GeoJSON car circle layer, useVehicleLocation), BookingStatusTimeline (3-step horizontal/vertical stepper, useRealtimeBooking, pulse on active step), booking detail page tracking section integration (getBookingDetail extended with delivery_lat/delivery_lng/vehicle_id). Phase 4 Plan 02 complete.
 Resume file: None
