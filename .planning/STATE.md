@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-20)
 
 **Core value:** Customers can select a luxury car, book instantly with dynamic pricing, and watch it come to them on a live map
-**Current focus:** Phase 4 (tracking/admin) — Plans 01-03 complete. Plan 04 remaining.
+**Current focus:** Phase 4 (tracking/admin) — ALL PLANS COMPLETE. Project complete.
 
 ## Current Position
 
-Phase: 4 of 4 (Tracking + Admin) — IN PROGRESS
-Plan: 04-03 complete. 04-04 remaining.
-Status: Phase 4 Plan 03 complete — multi-tab admin operations dashboard (Fleet, Bookings) with full vehicle CRUD, availability blocks, and 6-status booking pipeline
-Last activity: 2026-02-20 — Phase 4 Plan 03 complete. Multi-tab admin dashboard at /admin with URL ?tab= routing. FleetTab: scraper status, add vehicle, edit pricing/GPS/notes, is_active/is_available toggles, per-vehicle availability blocks. BookingsTab: all bookings with 6-status dropdown (including car_on_the_way/car_delivered), filters by status/vehicle/email/ref. 8 new admin Server Actions, all auth-gated.
+Phase: 4 of 4 (Tracking + Admin) — COMPLETE
+Plan: 04-04 complete. All plans complete.
+Status: Phase 4 Plan 04 complete — KYCTab (approve/reject), PaymentsTab (cash/bank confirm), AnalyticsTab (4 summary cards). All 5 admin tabs fully functional. Admin operations dashboard complete.
+Last activity: 2026-02-20 — Phase 4 Plan 04 complete. KYCTab with pending KYC queue + approve/reject with optimistic locking, PaymentsTab with cash/bank_transfer confirm flow, AnalyticsTab with this-month/all-time bookings/revenue + fleet utilization. 5 new Server Actions. Admin dashboard complete. Project v1 fully built.
 
-Progress: [█████████░] 96% (Phase 1 + 2 + 3 complete, Phase 4 Plans 01-03 complete)
+Progress: [██████████] 100% (All 4 phases complete, all 14 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 13 (01-01, 01-02, 01-03, 02-01, 02-02, 03-01, 03-02, 03-03, 03-04, 03-05, 04-01, 04-02, 04-03)
-- Average duration: 5.2 min
-- Total execution time: ~1.1 hours
+- Total plans completed: 14 (01-01, 01-02, 01-03, 02-01, 02-02, 03-01, 03-02, 03-03, 03-04, 03-05, 04-01, 04-02, 04-03, 04-04)
+- Average duration: 5.1 min
+- Total execution time: ~1.2 hours
 
 **By Phase:**
 
@@ -30,12 +30,13 @@ Progress: [█████████░] 96% (Phase 1 + 2 + 3 complete, Phase 
 | 01-foundation-auth-gate | 3/3 | 18 min | 6 min |
 | 02-inventory-catalogue | 2/2 | 18 min | 9 min |
 | 03-booking-identity-payment | 5/5 | 20 min | 4 min |
-| 04-tracking-admin | 3/? | 15 min | 5 min |
+| 04-tracking-admin | 4/4 | 21 min | 5 min |
 
 *Updated after each plan completion*
 | Phase 04-tracking-admin P01 | 3 | 3 tasks | 4 files |
 | Phase 04-tracking-admin P02 | 4 | 2 tasks | 4 files |
 | Phase 04-tracking-admin P03 | 8 | 2 tasks | 5 files |
+| Phase 04-tracking-admin P04 | 6 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -95,6 +96,10 @@ Recent decisions affecting current work:
 - [Phase 04-tracking-admin]: FleetTab/BookingsTab are 'use client' components that self-fetch via useEffect — enables useTransition mutations + explicit refetch after mutation without full page reload
 - [Phase 04-tracking-admin]: getAllBookings fetches profiles separately (not joined) — avoids Supabase join array type issues, cleaner TypeScript
 - [Phase 04-tracking-admin]: Optimistic booking status update in BookingsTab — immediate setLocalStatus with revert on Server Action error
+- [Phase 04-tracking-admin]: getPendingKYC uses N+1 auth.admin.getUserById for emails — acceptable for small KYC queue (<50), non-fatal on failure
+- [Phase 04-tracking-admin]: reviewKYC uses .in() for optimistic lock — accepts both 'submitted' and 'pending' kyc_status values
+- [Phase 04-tracking-admin]: getPaymentBookings uses .or() filter — catches pending_cash status AND cash/bank_transfer method to prevent missed manual payments
+- [Phase 04-tracking-admin]: Suspense + TabSkeleton added to all 5 admin tabs — consistent tab switch behavior, prevents full-page flash
 
 ### Pending Todos
 
@@ -118,5 +123,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 04-03-PLAN.md — Multi-tab admin operations dashboard. FleetTab with vehicle CRUD (add/edit pricing/GPS/notes, is_active/is_available toggles, per-vehicle availability blocks), BookingsTab with all-bookings list and 6-status pipeline dropdown (triggers Realtime), AdminTabs 5-tab URL navigation, admin page rebuilt with ?tab= routing. 8 new Server Actions in app/actions/admin.ts. Phase 4 Plan 03 complete.
+Stopped at: Completed 04-04-PLAN.md — KYCTab (approve/reject with optimistic locking), PaymentsTab (cash/bank_transfer confirm flow), AnalyticsTab (4 summary cards: bookings this month, revenue this month, fleet utilization, all-time revenue). 5 new Server Actions in app/actions/admin.ts. Admin page updated with Suspense wrappers on all 5 tabs. Phase 4 Plan 04 complete. ALL PHASES COMPLETE. Project v1 fully built.
 Resume file: None
