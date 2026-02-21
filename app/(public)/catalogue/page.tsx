@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { VehicleGrid } from '@/components/catalogue/VehicleGrid'
 
 export const metadata: Metadata = {
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 }
 
 export default async function CataloguePage() {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data: vehicles, error } = await supabase
     .from('vehicles')

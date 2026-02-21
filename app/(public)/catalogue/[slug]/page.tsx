@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { AvailabilityCalendar } from '@/components/ui/AvailabilityCalendar'
 import { ImageGallery } from '@/components/catalogue/ImageGallery'
 import { PriceDisplay } from '@/components/catalogue/PriceDisplay'
@@ -12,7 +12,7 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   const { data: vehicle } = await supabase
     .from('vehicles')
     .select('name, daily_rate, primary_image_url, category')
@@ -58,7 +58,7 @@ const WHATSAPP_NUMBER = '971588086137'
 
 export default async function VehicleDetailPage({ params }: PageProps) {
   const { slug } = await params
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data: vehicle, error } = await supabase
     .from('vehicles')

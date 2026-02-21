@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { VehicleCard } from '@/components/catalogue/VehicleCard'
 import { NavBar } from '@/components/nav/NavBar'
 import { Footer } from '@/components/nav/Footer'
@@ -59,7 +60,9 @@ export default async function HomePage() {
   const isAuthenticated = !!claimsData?.claims
 
   // Fetch 3 vehicles for the preview — rotate daily using a date-based offset
-  const { data: featuredVehicles } = await supabase
+  // Use admin client to bypass RLS so vehicles show for unauthenticated visitors
+  const adminSupabase = createAdminClient()
+  const { data: featuredVehicles } = await adminSupabase
     .from('vehicles')
     .select('slug, name, category, primary_image_url, daily_rate, weekly_rate, monthly_rate')
     .eq('is_available', true)
