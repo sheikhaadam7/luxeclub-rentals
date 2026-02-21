@@ -334,7 +334,7 @@ export function StepPayment({
         appearance: {
           theme: 'night',
           variables: {
-            colorPrimary: '#0099ff',
+            colorPrimary: '#C9A96E',
             colorBackground: '#0a0a0a',
             colorText: '#ffffff',
             borderRadius: '0.75rem',

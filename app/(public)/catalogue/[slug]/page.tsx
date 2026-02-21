@@ -245,7 +245,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
               {vehicle.is_available ? (
                 <Link
                   href={`/book/${vehicle.slug}`}
-                  className="block w-full text-center bg-brand-cyan text-white font-semibold py-3.5 rounded-xl hover:bg-brand-cyan-hover shadow-[0_0_20px_rgba(0,153,255,0.15)] hover:shadow-[0_0_30px_rgba(0,153,255,0.25)] transition-all duration-300"
+                  className="block w-full text-center bg-brand-cyan text-white font-semibold py-3.5 rounded-xl hover:bg-brand-cyan-hover shadow-[0_0_20px_rgba(201,169,110,0.15)] hover:shadow-[0_0_30px_rgba(201,169,110,0.25)] transition-all duration-300"
                 >
                   Book Now
                 </Link>

@@ -11,8 +11,8 @@ html {
   --color-brand-glass: rgba(18, 18, 18, 0.72);
   --color-brand-border: rgba(255, 255, 255, 0.08);
   --color-brand-border-hover: rgba(255, 255, 255, 0.18);
-  --color-brand-cyan: #0099ff;
-  --color-brand-cyan-hover: #33adff;
+  --color-brand-cyan: #C9A96E;
+  --color-brand-cyan-hover: #D4B97A;
   --color-brand-text: #ffffff;
   --color-brand-muted: rgba(255, 255, 255, 0.5);
   --color-brand-subtle: rgba(255, 255, 255, 0.08);
@@ -48,7 +48,7 @@ html {
 
 /* Subtle border glow on focus for inputs */
 .input-focus-glow:focus {
-  box-shadow: 0 0 0 1px rgba(0, 153, 255, 0.3), 0 0 20px rgba(0, 153, 255, 0.08);
+  box-shadow: 0 0 0 1px rgba(201, 169, 110, 0.3), 0 0 20px rgba(201, 169, 110, 0.08);
 }
 
 /* Hide scrollbar but keep scroll functionality */
@@ -169,6 +169,6 @@ iframe[src*="js.stripe.com/v3/controller-"] {
 
 /* Smooth selection color */
 ::selection {
-  background: rgba(0, 153, 255, 0.3);
+  background: rgba(201, 169, 110, 0.3);
   color: white;
 }

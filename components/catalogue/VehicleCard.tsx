@@ -86,7 +86,7 @@ export function VehicleCard({
       <div className="px-5 pb-5 flex gap-3">
         <Link
           href={`/book/${slug}`}
-          className="flex-1 text-center py-2.5 rounded-xl bg-brand-cyan text-white text-sm font-semibold hover:bg-brand-cyan-hover shadow-[0_0_20px_rgba(0,153,255,0.15)] hover:shadow-[0_0_30px_rgba(0,153,255,0.25)] transition-all duration-300"
+          className="flex-1 text-center py-2.5 rounded-xl bg-brand-cyan text-white text-sm font-semibold hover:bg-brand-cyan-hover shadow-[0_0_20px_rgba(201,169,110,0.15)] hover:shadow-[0_0_30px_rgba(201,169,110,0.25)] transition-all duration-300"
         >
           Book Now
         </Link>
