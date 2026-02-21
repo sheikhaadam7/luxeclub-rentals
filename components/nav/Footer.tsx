@@ -8,7 +8,7 @@ export function Footer() {
 
           {/* Brand */}
           <div className="space-y-3">
-            <h4 className="font-display text-xl font-medium text-white">LuxeClub</h4>
+            <h4 className="font-display text-xl font-medium text-brand-cyan">LuxeClub</h4>
             <p className="text-sm text-white/40 leading-relaxed italic">
               Dubai&apos;s most trusted luxury car rental — built on relationships, not transactions.
             </p>

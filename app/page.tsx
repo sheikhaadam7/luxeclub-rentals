@@ -98,7 +98,7 @@ export default async function HomePage() {
           <div className="relative z-10 text-center space-y-6">
             <h1 className="font-display text-6xl sm:text-7xl lg:text-8xl font-medium tracking-tight leading-[1.05]">
               <span className="animate-fade-in-left block" style={{ animationDelay: '0ms' }}>
-                <span className="text-white/50">LuxeClub,</span>
+                <span className="text-brand-cyan/70">LuxeClub,</span>
               </span>
               <span className="animate-fade-in-left block" style={{ animationDelay: '200ms' }}>
                 <span className="text-white">Car Rentals</span>
@@ -113,7 +113,7 @@ export default async function HomePage() {
           {/* Garage CTA */}
           <Link
             href="/catalogue"
-            className="animate-fade-in-left relative z-10 px-16 py-5 rounded-xl bg-white text-black text-lg font-semibold hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] transition-all duration-300 ease-out"
+            className="animate-fade-in-left relative z-10 px-16 py-5 rounded-xl bg-brand-cyan text-[#080604] text-lg font-semibold hover:scale-105 hover:shadow-[0_0_40px_rgba(201,169,110,0.35)] transition-all duration-300 ease-out"
             style={{ animationDelay: '600ms' }}
           >
             Explore Our Fleet
@@ -121,7 +121,7 @@ export default async function HomePage() {
         </div>
 
         {/* Trust stats bar */}
-        <section className="border-y border-white/[0.06] bg-white/[0.02]">
+        <section className="border-y border-brand-border bg-brand-subtle">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
               <div className="space-y-1">
