@@ -31,7 +31,7 @@ export function CurrencySelector() {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[13px] font-medium tracking-wide text-brand-muted hover:text-white hover:bg-white/[0.04] transition-all duration-200"
+        className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[13px] font-medium tracking-wide text-white border border-white/20 bg-white/[0.06] hover:bg-white/[0.12] hover:border-white/30 transition-all duration-200"
       >
         {currency}
         <svg
@@ -76,18 +76,18 @@ export function CurrencySelectorInline() {
   const { currency, setCurrency } = useCurrency()
 
   return (
-    <div className="flex items-center gap-1 px-4 py-2">
-      <span className="text-xs text-brand-muted uppercase tracking-wider mr-2">Currency</span>
+    <div className="flex items-center gap-1.5 px-4 py-3 mx-1 rounded-xl border border-white/[0.1] bg-white/[0.04]">
+      <span className="text-xs text-white uppercase tracking-wider mr-1.5 font-medium">Currency</span>
       {OPTIONS.map(({ code }) => (
         <button
           key={code}
           type="button"
           onClick={() => setCurrency(code)}
           className={[
-            'px-2.5 py-1 rounded-lg text-xs font-medium transition-colors',
+            'px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors',
             code === currency
-              ? 'text-brand-cyan bg-white/[0.08]'
-              : 'text-brand-muted hover:text-white hover:bg-white/[0.04]',
+              ? 'text-black bg-white'
+              : 'text-white/50 border border-white/15 hover:text-white hover:border-white/30',
           ].join(' ')}
         >
           {code}

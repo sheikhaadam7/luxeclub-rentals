@@ -57,32 +57,26 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
             </Link>
           ))}
 
+          <CurrencySelector />
+
+          <div className="w-px h-4 bg-brand-border mx-2" />
+
           {isAuthenticated ? (
-            <>
-              <CurrencySelector />
-
-              <div className="w-px h-4 bg-brand-border mx-2" />
-
-              <form action={logout}>
-                <button
-                  type="submit"
-                  className="px-3.5 py-1.5 rounded-lg text-[13px] font-medium tracking-wide text-brand-muted hover:text-white hover:bg-white/[0.04] transition-all duration-200"
-                >
-                  Logout
-                </button>
-              </form>
-            </>
-          ) : (
-            <>
-              <div className="w-px h-4 bg-brand-border mx-2" />
-
-              <Link
-                href="/sign-in"
+            <form action={logout}>
+              <button
+                type="submit"
                 className="px-3.5 py-1.5 rounded-lg text-[13px] font-medium tracking-wide text-brand-muted hover:text-white hover:bg-white/[0.04] transition-all duration-200"
               >
-                Sign In
-              </Link>
-            </>
+                Logout
+              </button>
+            </form>
+          ) : (
+            <Link
+              href="/sign-in"
+              className="px-3.5 py-1.5 rounded-lg text-[13px] font-medium tracking-wide text-brand-muted hover:text-white hover:bg-white/[0.04] transition-all duration-200"
+            >
+              Sign In
+            </Link>
           )}
         </div>
 
@@ -136,18 +130,16 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
               {label}
             </Link>
           ))}
+          <CurrencySelectorInline />
           {isAuthenticated ? (
-            <>
-              <CurrencySelectorInline />
-              <form action={logout}>
-                <button
-                  type="submit"
-                  className="w-full text-left px-4 py-3 rounded-xl text-[15px] font-medium text-brand-muted hover:text-white hover:bg-white/[0.04] transition-all duration-200"
-                >
-                  Logout
-                </button>
-              </form>
-            </>
+            <form action={logout}>
+              <button
+                type="submit"
+                className="w-full text-left px-4 py-3 rounded-xl text-[15px] font-medium text-brand-muted hover:text-white hover:bg-white/[0.04] transition-all duration-200"
+              >
+                Logout
+              </button>
+            </form>
           ) : (
             <Link
               href="/sign-in"
