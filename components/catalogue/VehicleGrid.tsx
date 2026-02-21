@@ -58,7 +58,10 @@ function extractBrand(name: string): string {
   if (lower.includes('mercedes') || lower.includes('amg') || lower.startsWith('g63')) {
     return 'Mercedes'
   }
-  return name.split(' ')[0] ?? name
+  // Match single-word brands case-insensitively against BRANDS list
+  const firstWord = name.split(' ')[0] ?? name
+  const matchedBrand = BRANDS.find((b) => b.toLowerCase() === firstWord.toLowerCase())
+  return matchedBrand ?? firstWord
 }
 
 /**
