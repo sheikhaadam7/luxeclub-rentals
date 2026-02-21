@@ -110,7 +110,7 @@ export default function LiveTrackingMap({
       map.current.setConfigProperty('basemap', 'showPointOfInterestLabels', false)
 
       // Static delivery destination marker — brand cyan
-      new mapboxgl.Marker({ color: '#0099ff' })
+      new mapboxgl.Marker({ color: '#00875A' })
         .setLngLat([deliveryLng, deliveryLat])
         .addTo(map.current)
 
@@ -129,7 +129,7 @@ export default function LiveTrackingMap({
           'circle-radius': 10,
           'circle-color': '#ffffff',
           'circle-stroke-width': 2,
-          'circle-stroke-color': '#0099ff',
+          'circle-stroke-color': '#00875A',
           'circle-emissive-strength': 1,
         },
       })
