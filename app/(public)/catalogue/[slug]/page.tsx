@@ -47,9 +47,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 /** Derive a car type label from the vehicle name (mirrors VehicleGrid logic) */
 function deriveCarType(name: string): string {
   const lower = name.toLowerCase()
-  const convertibleKw = ['spyder', 'spider', 'dawn', 'gtc', 'cabriolet', 'cabrio', 'roadster', 'convertible']
+  const convertibleKw = ['spyder', 'spider', 'dawn', 'gtc', 'cabriolet', 'cabrio', 'roadster', 'convertible', 'portofino']
   if (convertibleKw.some((kw) => lower.includes(kw))) return 'Convertible Cars'
-  const suvKw = ['range rover', 'vogue', 'cayenne', 'bentayga', 'cullinan', 'escalade', 'dbx', 'rsq8', 'sq7', 'sq8', 'g63', 'gle', 'gls', 'x5', 'x7', 'urus', 'levante', 'macan']
+  const suvKw = ['range rover', 'vogue', 'cayenne', 'bentayga', 'cullinan', 'escalade', 'dbx', 'rsq8', 'sq7', 'sq8', 'g63', 'gle', 'gls', 'x5', 'x7', 'urus', 'levante', 'macan', 'purosangue', 'x6']
   if (suvKw.some((kw) => lower.includes(kw))) return 'SUV Cars'
   return 'Sports Cars'
 }

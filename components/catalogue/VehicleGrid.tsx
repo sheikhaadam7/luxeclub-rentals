@@ -21,8 +21,8 @@ interface VehicleGridProps {
 // Brand & type matching — mirrors LuxeClub /garage filters
 // ---------------------------------------------------------------------------
 
-/** Brands in the exact order shown on luxeclubrentals.com/garage */
-const LUXECLUB_BRANDS = [
+/** All brands available across scraped sources */
+const BRANDS = [
   'Audi',
   'Porsche',
   'Bentley',
@@ -32,10 +32,14 @@ const LUXECLUB_BRANDS = [
   'Cadillac',
   'Rolls Royce',
   'Mercedes',
+  'Lamborghini',
+  'Ferrari',
+  'McLaren',
+  'BMW',
 ] as const
 
-/** Car types in the exact order shown on luxeclubrentals.com/garage */
-const LUXECLUB_CAR_TYPES = [
+/** Car types for filtering */
+const CAR_TYPES = [
   'Sports Cars',
   'SUV Cars',
   'Convertible Cars',
@@ -66,6 +70,7 @@ const SUV_KEYWORDS = [
   'range rover', 'vogue', 'cayenne', 'bentayga', 'cullinan',
   'escalade', 'dbx', 'rsq8', 'sq7', 'sq8', 'g63', 'gle',
   'gls', 'x5', 'x7', 'urus', 'levante', 'macan', 'trackhawk',
+  'purosangue', 'x6',
 ]
 
 /**
@@ -74,7 +79,7 @@ const SUV_KEYWORDS = [
  */
 const CONVERTIBLE_KEYWORDS = [
   'spyder', 'spider', 'dawn', 'gtc', 'cabriolet', 'cabrio',
-  'roadster', 'convertible', 'carrera s spyder',
+  'roadster', 'convertible', 'carrera s spyder', 'portofino',
 ]
 
 /**
@@ -218,7 +223,7 @@ export function VehicleGrid({ vehicles }: VehicleGridProps) {
   const availableBrands = useMemo(() => {
     const set = new Set<string>()
     vehiclesWithMeta.forEach((v) => {
-      if (!LUXECLUB_BRANDS.includes(v.brand as typeof LUXECLUB_BRANDS[number])) return
+      if (!BRANDS.includes(v.brand as typeof BRANDS[number])) return
       if (selectedType && v.carType !== selectedType) return
       set.add(v.brand)
     })
@@ -229,7 +234,7 @@ export function VehicleGrid({ vehicles }: VehicleGridProps) {
   const availableTypes = useMemo(() => {
     const set = new Set<string>()
     vehiclesWithMeta.forEach((v) => {
-      if (!v.carType || !LUXECLUB_CAR_TYPES.includes(v.carType as typeof LUXECLUB_CAR_TYPES[number])) return
+      if (!v.carType || !CAR_TYPES.includes(v.carType as typeof CAR_TYPES[number])) return
       if (selectedBrand && v.brand !== selectedBrand) return
       set.add(v.carType)
     })
@@ -262,7 +267,7 @@ export function VehicleGrid({ vehicles }: VehicleGridProps) {
         <div data-lenis-prevent className="lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:overscroll-contain space-y-0 scrollbar-hide">
           <FilterDropdown
             label="Brands"
-            options={LUXECLUB_BRANDS}
+            options={BRANDS}
             selected={selectedBrand}
             onSelect={setSelectedBrand}
             availableOptions={availableBrands}
@@ -273,7 +278,7 @@ export function VehicleGrid({ vehicles }: VehicleGridProps) {
 
           <FilterDropdown
             label="Cars Types"
-            options={LUXECLUB_CAR_TYPES}
+            options={CAR_TYPES}
             selected={selectedType}
             onSelect={setSelectedType}
             availableOptions={availableTypes}
