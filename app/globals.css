@@ -7,15 +7,15 @@ html {
 @theme {
   /* Brand Colors */
   --color-brand-black: #000000;
-  --color-brand-surface: #0a0a0a;
-  --color-brand-glass: rgba(18, 18, 18, 0.72);
-  --color-brand-border: rgba(255, 255, 255, 0.08);
-  --color-brand-border-hover: rgba(255, 255, 255, 0.18);
-  --color-brand-cyan: #0099ff;
-  --color-brand-cyan-hover: #33adff;
+  --color-brand-surface: #060A08;
+  --color-brand-glass: rgba(10, 18, 14, 0.72);
+  --color-brand-border: rgba(220, 255, 240, 0.08);
+  --color-brand-border-hover: rgba(220, 255, 240, 0.18);
+  --color-brand-cyan: #00A86B;
+  --color-brand-cyan-hover: #2DBF85;
   --color-brand-text: #ffffff;
-  --color-brand-muted: rgba(255, 255, 255, 0.5);
-  --color-brand-subtle: rgba(255, 255, 255, 0.08);
+  --color-brand-muted: rgba(220, 255, 240, 0.5);
+  --color-brand-subtle: rgba(220, 255, 240, 0.08);
 
   /* Typography */
   --font-display: var(--font-display), Georgia, serif;
@@ -41,14 +41,14 @@ html {
 .bg-luxury {
   background: radial-gradient(
     ellipse at 50% 0%,
-    #111111 0%,
+    #0A1210 0%,
     #000000 70%
   );
 }
 
 /* Subtle border glow on focus for inputs */
 .input-focus-glow:focus {
-  box-shadow: 0 0 0 1px rgba(0, 153, 255, 0.3), 0 0 20px rgba(0, 153, 255, 0.08);
+  box-shadow: 0 0 0 1px rgba(0, 168, 107, 0.3), 0 0 20px rgba(0, 168, 107, 0.08);
 }
 
 /* Hide scrollbar but keep scroll functionality */
@@ -109,7 +109,7 @@ main {
 
 /* Glass card effect */
 .glass {
-  background: rgba(18, 18, 18, 0.72);
+  background: rgba(10, 18, 14, 0.72);
   backdrop-filter: blur(20px) saturate(1.4);
   -webkit-backdrop-filter: blur(20px) saturate(1.4);
 }
@@ -169,6 +169,6 @@ iframe[src*="js.stripe.com/v3/controller-"] {
 
 /* Smooth selection color */
 ::selection {
-  background: rgba(0, 153, 255, 0.3);
+  background: rgba(0, 168, 107, 0.3);
   color: white;
 }
