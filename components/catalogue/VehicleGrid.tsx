@@ -102,100 +102,53 @@ function extractCarType(name: string, category: string | null): string | null {
 }
 
 // ---------------------------------------------------------------------------
-// Accordion filter dropdown — matches LuxeClub /garage design
+// Pill chip filter row
 // ---------------------------------------------------------------------------
 
-interface FilterDropdownProps {
-  label: string
+interface PillFilterProps {
   options: readonly string[]
   selected: string | null
   onSelect: (value: string | null) => void
-  /** Only show options that have at least one vehicle */
   availableOptions?: Set<string>
 }
 
-function FilterDropdown({ label, options, selected, onSelect, availableOptions }: FilterDropdownProps) {
-  const [open, setOpen] = useState(false)
-
+function PillFilter({ options, selected, onSelect, availableOptions }: PillFilterProps) {
   return (
-    <div>
-      {/* Header */}
+    <div className="flex flex-wrap gap-2">
+      {/* All pill */}
       <button
         type="button"
-        onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center justify-between py-4 group"
-      >
-        <span className="font-display text-2xl sm:text-3xl font-medium text-white tracking-tight">
-          {label}
-        </span>
-        <svg
-          className={[
-            'w-5 h-5 text-white/70 transition-transform duration-300',
-            open ? 'rotate-180' : '',
-          ].join(' ')}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
-
-      {/* Options list */}
-      <div
+        onClick={() => onSelect(null)}
         className={[
-          'overflow-hidden transition-all duration-500',
-          open ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0',
+          'px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border whitespace-nowrap',
+          !selected
+            ? 'bg-white text-black border-white'
+            : 'bg-transparent text-white/60 border-white/[0.12] hover:border-white/30 hover:text-white',
         ].join(' ')}
-        style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
       >
-        <div className="pb-2 space-y-0.5">
-          {options.map((option) => {
-            const isSelected = selected === option
-            const isAvailable = !availableOptions || availableOptions.has(option)
-            return (
-              <button
-                key={option}
-                type="button"
-                onClick={() => isAvailable && onSelect(isSelected ? null : option)}
-                className={[
-                  'w-full flex items-center justify-between py-3 px-1 group/item',
-                  !isAvailable ? 'opacity-25 cursor-default' : '',
-                ].join(' ')}
-              >
-                <span
-                  className={[
-                    'text-base sm:text-lg transition-colors duration-200',
-                    isSelected
-                      ? 'text-white font-medium'
-                      : isAvailable
-                        ? 'text-white/40 group-hover/item:text-white/70'
-                        : 'text-white/20',
-                  ].join(' ')}
-                >
-                  {option}
-                </span>
-                {/* Radio circle */}
-                <span
-                  className={[
-                    'w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all duration-300',
-                    isSelected
-                      ? 'border-white bg-white'
-                      : isAvailable
-                        ? 'border-white/25 group-hover/item:border-white/40'
-                        : 'border-white/10',
-                  ].join(' ')}
-                >
-                  {isSelected && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-black" />
-                  )}
-                </span>
-              </button>
-            )
-          })}
-        </div>
-      </div>
+        All
+      </button>
+      {options.map((option) => {
+        const isSelected = selected === option
+        const isAvailable = !availableOptions || availableOptions.has(option)
+        return (
+          <button
+            key={option}
+            type="button"
+            onClick={() => isAvailable && onSelect(isSelected ? null : option)}
+            className={[
+              'px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border whitespace-nowrap',
+              isSelected
+                ? 'bg-white text-black border-white'
+                : isAvailable
+                  ? 'bg-transparent text-white/60 border-white/[0.12] hover:border-white/30 hover:text-white'
+                  : 'bg-transparent text-white/20 border-white/[0.06] cursor-default',
+            ].join(' ')}
+          >
+            {option}
+          </button>
+        )
+      })}
     </div>
   )
 }
@@ -261,79 +214,61 @@ export function VehicleGrid({ vehicles }: VehicleGridProps) {
   const hasActiveFilter = selectedBrand || selectedType
 
   return (
-    <div className="flex flex-col lg:flex-row gap-10">
-      {/* Filter sidebar */}
-      <aside className="w-full lg:w-72 flex-shrink-0">
-        <div data-lenis-prevent className="lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:overscroll-contain space-y-0 scrollbar-hide">
-          <FilterDropdown
-            label="Brands"
+    <div className="space-y-8">
+      {/* Filter pills */}
+      <div className="space-y-4">
+        {/* Brand pills */}
+        <div>
+          <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">Brand</p>
+          <PillFilter
             options={BRANDS}
             selected={selectedBrand}
             onSelect={setSelectedBrand}
             availableOptions={availableBrands}
           />
+        </div>
 
-          {/* Separator */}
-          <div className="h-px bg-white/[0.08]" />
-
-          <FilterDropdown
-            label="Cars Types"
+        {/* Type pills */}
+        <div>
+          <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">Type</p>
+          <PillFilter
             options={CAR_TYPES}
             selected={selectedType}
             onSelect={setSelectedType}
             availableOptions={availableTypes}
           />
-
-          {/* Clear filters */}
-          {hasActiveFilter && (
-            <>
-              <div className="h-px bg-white/[0.08] mt-2" />
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedBrand(null)
-                  setSelectedType(null)
-                }}
-                className="w-full mt-4 py-3 rounded-xl text-[13px] font-medium text-brand-muted hover:text-white border border-white/[0.08] hover:border-white/[0.15] transition-all duration-300"
-              >
-                Clear Filters
-              </button>
-            </>
-          )}
         </div>
-      </aside>
+      </div>
+
+      {/* Results count */}
+      <p className="text-[13px] text-brand-muted">
+        {filtered.length} {filtered.length === 1 ? 'vehicle' : 'vehicles'}
+        {selectedBrand && (
+          <> by <span className="text-white font-medium">{selectedBrand}</span></>
+        )}
+        {selectedType && (
+          <> in <span className="text-white font-medium">{selectedType}</span></>
+        )}
+      </p>
 
       {/* Grid */}
-      <div className="flex-1 min-w-0">
-        {/* Results count */}
-        <p className="text-[13px] text-brand-muted mb-6">
-          {filtered.length} {filtered.length === 1 ? 'vehicle' : 'vehicles'}
-          {selectedBrand && (
-            <> by <span className="text-white font-medium">{selectedBrand}</span></>
-          )}
-          {selectedType && (
-            <> in <span className="text-white font-medium">{selectedType}</span></>
-          )}
-        </p>
-
-        {filtered.length === 0 ? (
-          <div className="flex items-center justify-center py-20">
-            <p className="text-brand-muted text-sm">No vehicles match your filters</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {filtered.map((vehicle, i) => (
-              <div
-                key={vehicle.slug}
-                className="animate-fade-in-up"
-                style={{ animationDelay: `${i * 60}ms` }}
-              >
-                <VehicleCard {...vehicle} />
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      {filtered.length === 0 ? (
+        <div className="flex items-center justify-center py-20">
+          <p className="text-brand-muted text-sm">No vehicles match your filters</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filtered.map((vehicle, i) => (
+            <div
+              key={vehicle.slug}
+              className="animate-fade-in-up"
+              style={{ animationDelay: `${i * 60}ms` }}
+            >
+              <VehicleCard {...vehicle} />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
