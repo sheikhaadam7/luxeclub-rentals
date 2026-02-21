@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -9,24 +9,28 @@ import { StepDuration } from '@/components/booking/StepDuration'
 import { StepDelivery } from '@/components/booking/StepDelivery'
 import { StepDepositChoice } from '@/components/booking/StepDepositChoice'
 import { StepPayment } from '@/components/booking/StepPayment'
+import { StepAuth } from '@/components/booking/StepAuth'
 import { PriceSummary } from '@/components/booking/PriceSummary'
 import { createBooking } from '@/app/actions/bookings'
 
-const STEPS = ['duration', 'delivery', 'deposit', 'payment'] as const
-type Step = (typeof STEPS)[number]
+const AUTHED_STEPS = ['duration', 'delivery', 'deposit', 'payment'] as const
+const UNAUTHED_STEPS = ['duration', 'delivery', 'deposit', 'account', 'payment'] as const
 
-// Fields to validate per step before advancing
-const STEP_FIELDS: Record<number, (keyof BookingFormValues)[]> = {
-  0: ['durationType', 'startDate', 'endDate'],
-  1: ['pickupMethod', 'deliveryAddress', 'returnMethod', 'collectionAddress'],
-  2: ['depositChoice'],
-  3: ['paymentMethod'],
+type Step = 'duration' | 'delivery' | 'deposit' | 'account' | 'payment'
+
+// Fields to validate per step name before advancing
+const STEP_FIELDS: Partial<Record<Step, (keyof BookingFormValues)[]>> = {
+  duration: ['durationType', 'startDate', 'endDate'],
+  delivery: ['pickupMethod', 'deliveryAddress', 'returnMethod', 'collectionAddress'],
+  deposit: ['depositChoice'],
+  payment: ['paymentMethod'],
 }
 
 const STEP_LABELS: Record<Step, string> = {
   duration: 'Duration',
   delivery: 'Delivery',
   deposit: 'Deposit',
+  account: 'Account',
   payment: 'Payment',
 }
 
@@ -45,12 +49,14 @@ export interface Vehicle {
 interface BookingWizardProps {
   vehicle: Vehicle
   bookedRanges: Array<{ from: Date; to: Date }>
+  isAuthenticated?: boolean
 }
 
-export function BookingWizard({ vehicle, bookedRanges }: BookingWizardProps) {
+export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialAuth = false }: BookingWizardProps) {
   const router = useRouter()
   const [step, setStep] = useState(0)
   const [isPending, startTransition] = useTransition()
+  const [isAuthed, setIsAuthed] = useState(initialAuth)
 
   // Booking state — set when advancing from deposit to payment
   const [bookingId, setBookingId] = useState<string | null>(null)
@@ -60,6 +66,13 @@ export function BookingWizard({ vehicle, bookedRanges }: BookingWizardProps) {
   const [bookingDepositAmount, setBookingDepositAmount] = useState<number>(0)
   const [bookingError, setBookingError] = useState<string | null>(null)
   const [isCreatingBooking, setIsCreatingBooking] = useState(false)
+
+  const steps = useMemo<readonly Step[]>(
+    () => (isAuthed ? AUTHED_STEPS : UNAUTHED_STEPS),
+    [isAuthed]
+  )
+
+  const currentStep = steps[step]
 
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
@@ -74,12 +87,14 @@ export function BookingWizard({ vehicle, bookedRanges }: BookingWizardProps) {
 
   /**
    * Creates the booking server-side with revalidated pricing before showing payment.
-   * Called when advancing from deposit (step 2) to payment (step 3).
+   * Called when advancing to the payment step.
    */
-  async function advanceToPayment() {
+  const advanceToPayment = useCallback(async () => {
+    const paymentIndex = steps.indexOf('payment')
+
     if (bookingId) {
       // Booking already created (e.g. user went back) — go directly to payment
-      setStep(3)
+      setStep(paymentIndex)
       return
     }
 
@@ -100,37 +115,49 @@ export function BookingWizard({ vehicle, bookedRanges }: BookingWizardProps) {
       setDepositClientSecret(result.depositClientSecret)
       setBookingTotalDue(result.totalDue)
       setBookingDepositAmount(result.depositAmount)
-      setStep(3)
+      setStep(paymentIndex)
     } catch {
       setBookingError('Something went wrong. Please try again.')
     } finally {
       setIsCreatingBooking(false)
     }
-  }
+  }, [bookingId, form, steps, vehicle.id])
 
   const advance = () => {
     startTransition(async () => {
-      const fields = STEP_FIELDS[step] ?? []
+      const fields = STEP_FIELDS[currentStep] ?? []
       const valid = await form.trigger(fields)
       if (!valid) return
 
-      // When advancing from deposit to payment, create booking
-      if (step === 2) {
+      // The step before payment triggers booking creation
+      if (currentStep === 'deposit' && isAuthed) {
         await advanceToPayment()
         return
       }
 
-      setStep((s) => Math.min(s + 1, STEPS.length - 1))
+      // For unauthed users, account step is next — just advance
+      setStep((s) => Math.min(s + 1, steps.length - 1))
     })
   }
 
   const back = () => {
-    if (step === 3 && bookingId) {
-      // Booking already created — going back shows a notice on deposit step
-      setStep(2)
+    const paymentIndex = steps.indexOf('payment')
+    if (step === paymentIndex && bookingId) {
+      // Booking already created — going back shows a notice on the previous step
+      setStep(paymentIndex - 1)
       return
     }
     setStep((s) => Math.max(s - 1, 0))
+  }
+
+  /**
+   * Called by StepAuth when the user successfully authenticates.
+   * Updates auth state and auto-advances to payment.
+   */
+  function handleAuthenticated() {
+    setIsAuthed(true)
+    // After auth, advance to payment (creates booking)
+    advanceToPayment()
   }
 
   /**
@@ -141,8 +168,6 @@ export function BookingWizard({ vehicle, bookedRanges }: BookingWizardProps) {
     router.push(`/bookings/${confirmedBookingId}`)
   }
 
-  const currentStep = STEPS[step]
-
   return (
     <div className="flex flex-col lg:flex-row gap-8 items-start">
       {/* Left column: step content */}
@@ -150,10 +175,10 @@ export function BookingWizard({ vehicle, bookedRanges }: BookingWizardProps) {
         {/* Step indicator */}
         <nav aria-label="Booking steps">
           <ol className="flex items-center">
-            {STEPS.map((s, i) => {
+            {steps.map((s, i) => {
               const isCompleted = i < step
               const isCurrent = i === step
-              const isLast = i === STEPS.length - 1
+              const isLast = i === steps.length - 1
               return (
                 <li key={s} className="flex items-center flex-1 last:flex-none">
                   <div className="flex flex-col items-center gap-1">
@@ -221,6 +246,9 @@ export function BookingWizard({ vehicle, bookedRanges }: BookingWizardProps) {
               <StepDepositChoice form={form} vehicle={vehicle} />
             </>
           )}
+          {currentStep === 'account' && (
+            <StepAuth onAuthenticated={handleAuthenticated} />
+          )}
           {currentStep === 'payment' && (
             <StepPayment
               clientSecret={rentalClientSecret}
@@ -252,8 +280,8 @@ export function BookingWizard({ vehicle, bookedRanges }: BookingWizardProps) {
             Back
           </button>
 
-          {/* On the payment step, StepPayment handles its own submission */}
-          {step < STEPS.length - 1 && (
+          {/* On the payment step and account step, their own components handle submission */}
+          {currentStep !== 'payment' && currentStep !== 'account' && (
             <button
               type="button"
               onClick={advance}

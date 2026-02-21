@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { BookingWizard } from '@/components/booking/BookingWizard'
 
 interface PageProps {
@@ -9,9 +10,11 @@ interface PageProps {
 
 export default async function BookingPage({ params }: PageProps) {
   const { slug } = await params
-  const supabase = await createClient()
 
-  const { data: vehicle, error } = await supabase
+  // Use admin client to bypass RLS for public vehicle queries
+  const adminSupabase = createAdminClient()
+
+  const { data: vehicle, error } = await adminSupabase
     .from('vehicles')
     .select('id, slug, name, daily_rate, weekly_rate, monthly_rate, deposit_amount, primary_image_url, is_available')
     .eq('slug', slug)
@@ -22,7 +25,7 @@ export default async function BookingPage({ params }: PageProps) {
   }
 
   // Fetch blocked date ranges via RPC
-  const { data: blockedDatesRaw } = await supabase.rpc('get_blocked_dates', {
+  const { data: blockedDatesRaw } = await adminSupabase.rpc('get_blocked_dates', {
     p_vehicle_id: vehicle.id,
   })
 
@@ -32,6 +35,11 @@ export default async function BookingPage({ params }: PageProps) {
       to: new Date(r.end_date),
     })
   )
+
+  // Check auth state to determine if Account step is needed
+  const supabase = await createClient()
+  const { data: claimsData } = await supabase.auth.getClaims()
+  const isAuthenticated = !!claimsData?.claims
 
   return (
     <main className="min-h-screen bg-luxury">
@@ -60,7 +68,7 @@ export default async function BookingPage({ params }: PageProps) {
         </div>
 
         {/* Booking wizard */}
-        <BookingWizard vehicle={vehicle} bookedRanges={bookedRanges} />
+        <BookingWizard vehicle={vehicle} bookedRanges={bookedRanges} isAuthenticated={isAuthenticated} />
       </div>
     </main>
   )

@@ -38,7 +38,7 @@ export async function middleware(request: NextRequest) {
 
   // Public routes — accessible without auth
   const publicPaths = ['/', '/sign-in', '/about', '/contact', '/faq', '/catalogue']
-  const isPublicRoute = publicPaths.includes(pathname) || pathname.startsWith('/catalogue/')
+  const isPublicRoute = publicPaths.includes(pathname) || pathname.startsWith('/catalogue/') || pathname.startsWith('/book/')
 
   // Unauthenticated user trying to access a protected route — redirect to sign-in
   // Preserve the intended destination so we can redirect back after login
