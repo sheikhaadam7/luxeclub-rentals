@@ -42,10 +42,16 @@ async function verifyAdmin(): Promise<{ error: string } | { userId: string }> {
  */
 export async function createRentalPaymentIntent(
   bookingId: string,
-  amountAed: number
+  amountAed: number,
+  guestUserId?: string | null
 ): Promise<{ clientSecret: string } | { error: string }> {
-  const auth = await getAuthenticatedUser()
-  if ('error' in auth) return { error: auth.error }
+  let userId = guestUserId ?? null
+
+  if (!userId) {
+    const auth = await getAuthenticatedUser()
+    if ('error' in auth) return { error: auth.error }
+    userId = auth.userId
+  }
 
   try {
     const paymentIntent = await stripe.paymentIntents.create({
@@ -54,18 +60,24 @@ export async function createRentalPaymentIntent(
       capture_method: 'automatic',
       metadata: {
         booking_id: bookingId,
-        user_id: auth.userId,
+        user_id: userId ?? 'guest',
         type: 'rental',
       },
     })
 
     // Persist the PaymentIntent ID on the booking
     const admin = createAdminClient()
-    const { error: updateError } = await admin
+    const updateQuery = admin
       .from('bookings')
       .update({ stripe_rental_pi_id: paymentIntent.id })
       .eq('id', bookingId)
-      .eq('user_id', auth.userId) // row-level ownership check
+
+    // For authenticated users, add ownership check
+    if (userId && userId !== 'guest') {
+      updateQuery.eq('user_id', userId)
+    }
+
+    const { error: updateError } = await updateQuery
 
     if (updateError) {
       console.error('createRentalPaymentIntent: booking update error', updateError)
@@ -90,10 +102,16 @@ export async function createRentalPaymentIntent(
  */
 export async function createDepositPaymentIntent(
   bookingId: string,
-  depositAmountAed: number
+  depositAmountAed: number,
+  guestUserId?: string | null
 ): Promise<{ clientSecret: string } | { error: string }> {
-  const auth = await getAuthenticatedUser()
-  if ('error' in auth) return { error: auth.error }
+  let userId = guestUserId ?? null
+
+  if (!userId) {
+    const auth = await getAuthenticatedUser()
+    if ('error' in auth) return { error: auth.error }
+    userId = auth.userId
+  }
 
   try {
     const paymentIntent = await stripe.paymentIntents.create({
@@ -107,17 +125,22 @@ export async function createDepositPaymentIntent(
       },
       metadata: {
         booking_id: bookingId,
-        user_id: auth.userId,
+        user_id: userId ?? 'guest',
         type: 'deposit',
       },
     })
 
     const admin = createAdminClient()
-    const { error: updateError } = await admin
+    const updateQuery = admin
       .from('bookings')
       .update({ stripe_deposit_pi_id: paymentIntent.id })
       .eq('id', bookingId)
-      .eq('user_id', auth.userId)
+
+    if (userId && userId !== 'guest') {
+      updateQuery.eq('user_id', userId)
+    }
+
+    const { error: updateError } = await updateQuery
 
     if (updateError) {
       console.error('createDepositPaymentIntent: booking update error', updateError)

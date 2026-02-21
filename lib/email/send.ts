@@ -1,5 +1,6 @@
 import 'server-only'
 import { Resend } from 'resend'
+import { render } from '@react-email/render'
 import type { ReactElement } from 'react'
 
 /**
@@ -30,10 +31,20 @@ export async function sendEmail({ to, subject, react }: SendEmailOptions) {
     return null
   }
 
-  return resend.emails.send({
-    from: 'LuxeClub Rentals <bookings@luxeclubrentals.com>',
+  const html = await render(react)
+
+  const result = await resend.emails.send({
+    from: process.env.RESEND_FROM_EMAIL ?? 'LuxeClub Rentals <onboarding@resend.dev>',
     to,
     subject,
-    react,
+    html,
   })
+
+  if (result.error) {
+    console.error('sendEmail: Resend API error', result.error)
+  } else {
+    console.log('sendEmail: sent successfully', result.data?.id)
+  }
+
+  return result
 }

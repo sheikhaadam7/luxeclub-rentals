@@ -252,7 +252,7 @@ export async function createBooking(
     }
   }
 
-  const rentalResult = await createRentalPaymentIntent(bookingId, pricing.totalDue)
+  const rentalResult = await createRentalPaymentIntent(bookingId, pricing.totalDue, userId ?? 'guest')
   if ('error' in rentalResult) {
     return { error: rentalResult.error }
   }
@@ -261,7 +261,8 @@ export async function createBooking(
   if (formData.depositChoice === 'deposit' && pricing.depositAmount > 0) {
     const depositResult = await createDepositPaymentIntent(
       bookingId,
-      pricing.depositAmount
+      pricing.depositAmount,
+      userId ?? 'guest'
     )
     if ('error' in depositResult) {
       return { error: depositResult.error }
