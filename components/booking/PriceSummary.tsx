@@ -7,22 +7,15 @@ import {
   calculateBookingTotal,
   type BookingPricingInput,
 } from '@/lib/pricing/calculator'
+import { useCurrency } from '@/lib/currency/context'
 
 interface PriceSummaryProps {
   vehicle: Vehicle
   form: UseFormReturn<BookingFormValues>
 }
 
-function formatAmount(amount: number): string {
-  return amount.toLocaleString('en-US')
-}
-
-function formatDurationType(type: 'daily' | 'weekly' | 'monthly'): string {
-  const map: Record<string, string> = { daily: 'Daily', weekly: 'Weekly', monthly: 'Monthly' }
-  return map[type] ?? type
-}
-
 export function PriceSummary({ vehicle, form }: PriceSummaryProps) {
+  const { formatPrice } = useCurrency()
   // Reactively watch all pricing-relevant fields
   const durationType = useWatch({ control: form.control, name: 'durationType' })
   const startDate = useWatch({ control: form.control, name: 'startDate' })
@@ -71,27 +64,36 @@ export function PriceSummary({ vehicle, form }: PriceSummaryProps) {
             {/* Rental */}
             <div className="flex justify-between gap-2">
               <span className="text-brand-muted">
-                Rental ({formatDurationType(durationType ?? 'daily')}){' '}
+                Rental{' '}
                 <span className="text-brand-muted/60 text-xs">
-                  {breakdown.rentalDays} day{breakdown.rentalDays !== 1 ? 's' : ''}
+                  {breakdown.rentalDays} day{breakdown.rentalDays !== 1 ? 's' : ''} @ {formatPrice(breakdown.baseRate)}/day
                 </span>
               </span>
-              <span className="text-white shrink-0">AED {formatAmount(breakdown.rentalSubtotal)}</span>
+              <span className="text-white shrink-0">{formatPrice(breakdown.rentalSubtotal)}</span>
             </div>
+
+            {/* Discount badge */}
+            {breakdown.discountPercent > 0 && (
+              <div className="flex justify-between gap-2">
+                <span className="text-green-400 text-xs font-medium">
+                  {breakdown.discountPercent}% long-term discount applied
+                </span>
+              </div>
+            )}
 
             {/* Delivery fee */}
             {breakdown.deliveryFee > 0 && (
               <div className="flex justify-between gap-2">
                 <span className="text-brand-muted">Delivery fee</span>
-                <span className="text-white shrink-0">AED {formatAmount(breakdown.deliveryFee)}</span>
+                <span className="text-white shrink-0">{formatPrice(breakdown.deliveryFee, { exact: true })}</span>
               </div>
             )}
 
-            {/* Return/collection fee */}
+            {/* Collection fee */}
             {breakdown.returnFee > 0 && (
               <div className="flex justify-between gap-2">
-                <span className="text-brand-muted">Return collection</span>
-                <span className="text-white shrink-0">AED {formatAmount(breakdown.returnFee)}</span>
+                <span className="text-brand-muted">Collection fee</span>
+                <span className="text-white shrink-0">{formatPrice(breakdown.returnFee, { exact: true })}</span>
               </div>
             )}
 
@@ -99,7 +101,7 @@ export function PriceSummary({ vehicle, form }: PriceSummaryProps) {
             {breakdown.noDepositSurcharge > 0 && (
               <div className="flex justify-between gap-2">
                 <span className="text-brand-muted">No-deposit surcharge</span>
-                <span className="text-white shrink-0">AED {formatAmount(breakdown.noDepositSurcharge)}</span>
+                <span className="text-white shrink-0">{formatPrice(breakdown.noDepositSurcharge)}</span>
               </div>
             )}
           </div>
@@ -111,7 +113,7 @@ export function PriceSummary({ vehicle, form }: PriceSummaryProps) {
           <div className="flex justify-between items-baseline gap-2">
             <span className="text-sm font-medium text-white">Total Due</span>
             <span className="text-xl font-semibold text-brand-cyan">
-              AED {formatAmount(breakdown.totalDue)}
+              {formatPrice(breakdown.totalDue)}
             </span>
           </div>
 
@@ -120,7 +122,7 @@ export function PriceSummary({ vehicle, form }: PriceSummaryProps) {
             <div className="bg-black/20 rounded-[--radius-card] px-3 py-2.5 text-xs space-y-0.5">
               <div className="flex justify-between gap-2">
                 <span className="text-brand-muted">Deposit hold</span>
-                <span className="text-white">AED {formatAmount(breakdown.depositAmount)}</span>
+                <span className="text-white">{formatPrice(breakdown.depositAmount)}</span>
               </div>
               <p className="text-brand-muted/60">(authorized, not charged — released on return)</p>
             </div>

@@ -1,55 +1,155 @@
 'use client'
 
 import { UseFormReturn } from 'react-hook-form'
-import { useState } from 'react'
-import { AddressAutofill, AddressMinimap } from '@mapbox/search-js-react'
-import type { AddressAutofillRetrieveResponse } from '@mapbox/search-js-core'
+import { useRef, useState, useCallback, useEffect } from 'react'
+import { useLoadScript, Autocomplete, GoogleMap, MarkerF } from '@react-google-maps/api'
 import { BookingFormValues } from '@/lib/validations/booking'
+
+const LIBRARIES: ('places')[] = ['places']
+
+const DARK_MAP_STYLES: google.maps.MapTypeStyle[] = [
+  { elementType: 'geometry', stylers: [{ color: '#1a1a2e' }] },
+  { elementType: 'labels.text.stroke', stylers: [{ color: '#1a1a2e' }] },
+  { elementType: 'labels.text.fill', stylers: [{ color: '#8a8a9a' }] },
+  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#2a2a3e' }] },
+  { featureType: 'road', elementType: 'labels.text.fill', stylers: [{ color: '#6a6a7a' }] },
+  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0e0e1a' }] },
+  { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] },
+]
 
 interface StepDeliveryProps {
   form: UseFormReturn<BookingFormValues>
 }
 
-import type { Feature, Point } from 'geojson'
-type MinimapFeature = Feature<Point>
-
 export function StepDelivery({ form }: StepDeliveryProps) {
   const pickupMethod = form.watch('pickupMethod')
   const returnMethod = form.watch('returnMethod')
   const deliveryAddress = form.watch('deliveryAddress')
-  const [miniMapFeature, setMiniMapFeature] = useState<MinimapFeature | null>(null)
+  const collectionAddress = form.watch('collectionAddress')
+  const [mapCenter, setMapCenter] = useState<google.maps.LatLngLiteral | null>(null)
+  const [collectionMapCenter, setCollectionMapCenter] = useState<google.maps.LatLngLiteral | null>(null)
+  const [sameAsDelivery, setSameAsDelivery] = useState(false)
+  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null)
+  const collectionAutocompleteRef = useRef<google.maps.places.Autocomplete | null>(null)
+  const inputRef = useRef<HTMLInputElement | null>(null)
+  const collectionInputRef = useRef<HTMLInputElement | null>(null)
 
   const addressError = form.formState.errors.deliveryAddress
+  const collectionAddressError = form.formState.errors.collectionAddress
 
-  function handleAddressRetrieve(res: AddressAutofillRetrieveResponse) {
-    const feature = res.features[0]
-    if (!feature) return
+  const googleApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? ''
 
-    const coords = feature.geometry.coordinates
-    const lng = coords[0] as number
-    const lat = coords[1] as number
-    const props = feature.properties as { full_address?: string; place_name?: string }
-    const fullAddress = props.full_address ?? props.place_name ?? ''
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: googleApiKey,
+    libraries: LIBRARIES,
+  })
 
-    form.setValue('deliveryLng', lng, { shouldValidate: true })
+  // --- Delivery autocomplete callbacks ---
+
+  const onAutocompleteLoad = useCallback((ac: google.maps.places.Autocomplete) => {
+    autocompleteRef.current = ac
+  }, [])
+
+  const onPlaceChanged = useCallback(() => {
+    const place = autocompleteRef.current?.getPlace()
+    if (!place?.geometry?.location) return
+
+    const lat = place.geometry.location.lat()
+    const lng = place.geometry.location.lng()
+    const address = place.formatted_address ?? ''
+
     form.setValue('deliveryLat', lat, { shouldValidate: true })
-    form.setValue('deliveryAddress', fullAddress, { shouldValidate: true })
-
-    setMiniMapFeature({
-      type: 'Feature',
-      geometry: { type: 'Point', coordinates: [lng, lat] },
-      properties: null,
-    })
-  }
-
-  function handleMarkerSave(coordinates: [number, number]) {
-    const lng = coordinates[0]
-    const lat = coordinates[1]
     form.setValue('deliveryLng', lng, { shouldValidate: true })
-    form.setValue('deliveryLat', lat, { shouldValidate: true })
-  }
+    form.setValue('deliveryAddress', address, { shouldValidate: true })
 
-  const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? ''
+    // Sync the DOM input value so it shows the selected address
+    if (inputRef.current) inputRef.current.value = address
+
+    setMapCenter({ lat, lng })
+  }, [form])
+
+  const onMarkerDragEnd = useCallback((e: google.maps.MapMouseEvent) => {
+    const lat = e.latLng?.lat()
+    const lng = e.latLng?.lng()
+    if (lat == null || lng == null) return
+
+    form.setValue('deliveryLat', lat, { shouldValidate: true })
+    form.setValue('deliveryLng', lng, { shouldValidate: true })
+    setMapCenter({ lat, lng })
+  }, [form])
+
+  // --- Collection autocomplete callbacks ---
+
+  const onCollectionAutocompleteLoad = useCallback((ac: google.maps.places.Autocomplete) => {
+    collectionAutocompleteRef.current = ac
+  }, [])
+
+  const onCollectionPlaceChanged = useCallback(() => {
+    const place = collectionAutocompleteRef.current?.getPlace()
+    if (!place?.geometry?.location) return
+
+    const lat = place.geometry.location.lat()
+    const lng = place.geometry.location.lng()
+    const address = place.formatted_address ?? ''
+
+    form.setValue('collectionLat', lat, { shouldValidate: true })
+    form.setValue('collectionLng', lng, { shouldValidate: true })
+    form.setValue('collectionAddress', address, { shouldValidate: true })
+
+    if (collectionInputRef.current) collectionInputRef.current.value = address
+
+    setCollectionMapCenter({ lat, lng })
+  }, [form])
+
+  const onCollectionMarkerDragEnd = useCallback((e: google.maps.MapMouseEvent) => {
+    const lat = e.latLng?.lat()
+    const lng = e.latLng?.lng()
+    if (lat == null || lng == null) return
+
+    form.setValue('collectionLat', lat, { shouldValidate: true })
+    form.setValue('collectionLng', lng, { shouldValidate: true })
+    setCollectionMapCenter({ lat, lng })
+  }, [form])
+
+  // --- Helper: clear collection fields ---
+
+  const clearCollectionFields = useCallback(() => {
+    form.setValue('collectionAddress', undefined)
+    form.setValue('collectionLat', undefined)
+    form.setValue('collectionLng', undefined)
+    setCollectionMapCenter(null)
+    if (collectionInputRef.current) collectionInputRef.current.value = ''
+  }, [form])
+
+  // When pickupMethod changes to self_pickup, uncheck sameAsDelivery and clear collection if needed
+  useEffect(() => {
+    if (pickupMethod === 'self_pickup' && sameAsDelivery) {
+      setSameAsDelivery(false)
+      clearCollectionFields()
+    }
+  }, [pickupMethod, sameAsDelivery, clearCollectionFields])
+
+  // --- Checkbox handler ---
+
+  const handleSameAsDeliveryChange = useCallback((checked: boolean) => {
+    setSameAsDelivery(checked)
+    if (checked) {
+      const dAddr = form.getValues('deliveryAddress')
+      const dLat = form.getValues('deliveryLat')
+      const dLng = form.getValues('deliveryLng')
+      form.setValue('collectionAddress', dAddr, { shouldValidate: true })
+      form.setValue('collectionLat', dLat, { shouldValidate: true })
+      form.setValue('collectionLng', dLng, { shouldValidate: true })
+      if (dLat != null && dLng != null) {
+        setCollectionMapCenter({ lat: dLat, lng: dLng })
+      }
+    } else {
+      clearCollectionFields()
+    }
+  }, [form, clearCollectionFields])
+
+  // Whether the "same as delivery" checkbox should be visible
+  const canShowSameAsDelivery = pickupMethod === 'delivery' && !!deliveryAddress
 
   return (
     <div className="space-y-6">
@@ -97,11 +197,10 @@ export function StepDelivery({ form }: StepDeliveryProps) {
             type="button"
             onClick={() => {
               form.setValue('pickupMethod', 'self_pickup', { shouldValidate: true })
-              // Clear delivery address fields when switching to self_pickup
               form.setValue('deliveryAddress', undefined)
               form.setValue('deliveryLat', undefined)
               form.setValue('deliveryLng', undefined)
-              setMiniMapFeature(null)
+              setMapCenter(null)
             }}
             className={[
               'p-4 rounded-[--radius-card] border text-left transition-all',
@@ -137,40 +236,51 @@ export function StepDelivery({ form }: StepDeliveryProps) {
         <div className="space-y-3">
           <p className="text-xs text-brand-muted uppercase tracking-wider">Delivery Address</p>
 
-          {mapboxToken ? (
+          {googleApiKey && isLoaded ? (
             <>
-              {/* Mapbox AddressAutofill */}
-              <AddressAutofill
-                accessToken={mapboxToken}
-                onRetrieve={handleAddressRetrieve}
+              <Autocomplete
+                onLoad={onAutocompleteLoad}
+                onPlaceChanged={onPlaceChanged}
+                options={{
+                  componentRestrictions: { country: 'ae' },
+                  fields: ['address_components', 'geometry', 'formatted_address'],
+                }}
               >
                 <input
+                  ref={inputRef}
                   type="text"
                   placeholder="Enter delivery address"
-                  autoComplete="address-line1"
-                  {...form.register('deliveryAddress')}
+                  defaultValue={deliveryAddress ?? ''}
+                  onChange={(e) => form.setValue('deliveryAddress', e.target.value)}
                   className={[
                     'w-full bg-black/30 border rounded-[--radius-card] px-4 py-3 text-sm text-white placeholder:text-brand-muted focus:outline-none focus:border-brand-cyan input-focus-glow transition-colors',
                     addressError ? 'border-red-500' : 'border-brand-border',
                   ].join(' ')}
                 />
-              </AddressAutofill>
+              </Autocomplete>
 
-              {/* Validation error */}
               {addressError && (
                 <p className="text-xs text-red-400">{addressError.message}</p>
               )}
 
-              {/* Minimap pin confirmation */}
-              {miniMapFeature && (
+              {mapCenter && (
                 <div className="mt-3 rounded-[--radius-card] overflow-hidden border border-brand-border" style={{ height: 200 }}>
-                  <AddressMinimap
-                    accessToken={mapboxToken}
-                    feature={miniMapFeature ?? undefined}
-                    onSaveMarkerLocation={handleMarkerSave}
-                    canAdjustMarker
-                    satelliteToggle
-                  />
+                  <GoogleMap
+                    mapContainerStyle={{ width: '100%', height: '100%' }}
+                    center={mapCenter}
+                    zoom={16}
+                    options={{
+                      disableDefaultUI: true,
+                      zoomControl: true,
+                      styles: DARK_MAP_STYLES,
+                    }}
+                  >
+                    <MarkerF
+                      position={mapCenter}
+                      draggable
+                      onDragEnd={onMarkerDragEnd}
+                    />
+                  </GoogleMap>
                 </div>
               )}
 
@@ -179,7 +289,6 @@ export function StepDelivery({ form }: StepDeliveryProps) {
               </p>
             </>
           ) : (
-            /* Fallback plain input if Mapbox token not configured */
             <div className="space-y-2">
               <input
                 type="text"
@@ -194,7 +303,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
                 <p className="text-xs text-red-400">{addressError.message}</p>
               )}
               <p className="text-xs text-amber-500/80">
-                Map address lookup requires NEXT_PUBLIC_MAPBOX_TOKEN to be configured.
+                Map address lookup requires NEXT_PUBLIC_GOOGLE_MAPS_API_KEY to be configured.
               </p>
             </div>
           )}
@@ -208,7 +317,11 @@ export function StepDelivery({ form }: StepDeliveryProps) {
           {/* Self drop-off card */}
           <button
             type="button"
-            onClick={() => form.setValue('returnMethod', 'self_dropoff', { shouldValidate: true })}
+            onClick={() => {
+              form.setValue('returnMethod', 'self_dropoff', { shouldValidate: true })
+              clearCollectionFields()
+              setSameAsDelivery(false)
+            }}
             className={[
               'p-4 rounded-[--radius-card] border text-left transition-all',
               returnMethod === 'self_dropoff'
@@ -267,6 +380,105 @@ export function StepDelivery({ form }: StepDeliveryProps) {
         </div>
       </div>
 
+      {/* Collection address (conditional) */}
+      {returnMethod === 'collection' && (
+        <div className="space-y-3">
+          <p className="text-xs text-brand-muted uppercase tracking-wider">Collection Address</p>
+
+          {/* Same as delivery checkbox */}
+          {canShowSameAsDelivery && (
+            <label className="flex items-center gap-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={sameAsDelivery}
+                onChange={(e) => handleSameAsDeliveryChange(e.target.checked)}
+                className="w-4 h-4 rounded border-brand-border bg-black/30 text-brand-cyan focus:ring-brand-cyan focus:ring-offset-0 accent-[var(--color-brand-cyan)]"
+              />
+              <span className="text-sm text-brand-muted group-hover:text-white transition-colors">
+                Same as delivery address
+              </span>
+            </label>
+          )}
+
+          {/* Show address input + map when NOT using same-as-delivery */}
+          {!sameAsDelivery && (
+            <>
+              {googleApiKey && isLoaded ? (
+                <>
+                  <Autocomplete
+                    onLoad={onCollectionAutocompleteLoad}
+                    onPlaceChanged={onCollectionPlaceChanged}
+                    options={{
+                      componentRestrictions: { country: 'ae' },
+                      fields: ['address_components', 'geometry', 'formatted_address'],
+                    }}
+                  >
+                    <input
+                      ref={collectionInputRef}
+                      type="text"
+                      placeholder="Enter collection address"
+                      defaultValue={collectionAddress ?? ''}
+                      onChange={(e) => form.setValue('collectionAddress', e.target.value)}
+                      className={[
+                        'w-full bg-black/30 border rounded-[--radius-card] px-4 py-3 text-sm text-white placeholder:text-brand-muted focus:outline-none focus:border-brand-cyan input-focus-glow transition-colors',
+                        collectionAddressError ? 'border-red-500' : 'border-brand-border',
+                      ].join(' ')}
+                    />
+                  </Autocomplete>
+
+                  {collectionAddressError && (
+                    <p className="text-xs text-red-400">{collectionAddressError.message}</p>
+                  )}
+
+                  {collectionMapCenter && (
+                    <div className="mt-3 rounded-[--radius-card] overflow-hidden border border-brand-border" style={{ height: 200 }}>
+                      <GoogleMap
+                        mapContainerStyle={{ width: '100%', height: '100%' }}
+                        center={collectionMapCenter}
+                        zoom={16}
+                        options={{
+                          disableDefaultUI: true,
+                          zoomControl: true,
+                          styles: DARK_MAP_STYLES,
+                        }}
+                      >
+                        <MarkerF
+                          position={collectionMapCenter}
+                          draggable
+                          onDragEnd={onCollectionMarkerDragEnd}
+                        />
+                      </GoogleMap>
+                    </div>
+                  )}
+
+                  <p className="text-xs text-brand-muted">
+                    Pin your exact location on the map for precise collection.
+                  </p>
+                </>
+              ) : (
+                <div className="space-y-2">
+                  <input
+                    type="text"
+                    placeholder="Enter collection address"
+                    {...form.register('collectionAddress')}
+                    className={[
+                      'w-full bg-black/30 border rounded-[--radius-card] px-4 py-3 text-sm text-white placeholder:text-brand-muted focus:outline-none focus:border-brand-cyan input-focus-glow transition-colors',
+                      collectionAddressError ? 'border-red-500' : 'border-brand-border',
+                    ].join(' ')}
+                  />
+                  {collectionAddressError && (
+                    <p className="text-xs text-red-400">{collectionAddressError.message}</p>
+                  )}
+                  <p className="text-xs text-amber-500/80">
+                    Map address lookup requires NEXT_PUBLIC_GOOGLE_MAPS_API_KEY to be configured.
+                  </p>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
+
       {/* Summary */}
       {(deliveryAddress || pickupMethod === 'self_pickup') && (
         <div className="bg-black/20 border border-brand-border rounded-[--radius-card] p-4 text-sm space-y-1">
@@ -289,6 +501,12 @@ export function StepDelivery({ form }: StepDeliveryProps) {
               {returnMethod === 'collection' ? 'Collection (AED 50)' : 'Self Drop-Off (Free)'}
             </span>
           </div>
+          {returnMethod === 'collection' && collectionAddress && (
+            <div className="flex justify-between gap-4">
+              <span className="text-brand-muted shrink-0">Collection Address:</span>
+              <span className="text-white text-right text-xs">{collectionAddress}</span>
+            </div>
+          )}
         </div>
       )}
     </div>

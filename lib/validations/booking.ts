@@ -30,6 +30,10 @@ export const deliveryStepSchema = z
     deliveryLat: z.number().optional(),
     deliveryLng: z.number().optional(),
     returnMethod: z.enum(['collection', 'self_dropoff']),
+    /** Required when returnMethod is 'collection' */
+    collectionAddress: z.string().optional(),
+    collectionLat: z.number().optional(),
+    collectionLng: z.number().optional(),
   })
   .refine(
     (data) => {
@@ -41,6 +45,18 @@ export const deliveryStepSchema = z
     {
       message: 'Delivery address is required when delivery is selected',
       path: ['deliveryAddress'],
+    }
+  )
+  .refine(
+    (data) => {
+      if (data.returnMethod === 'collection') {
+        return !!data.collectionAddress && data.collectionAddress.trim().length > 0
+      }
+      return true
+    },
+    {
+      message: 'Collection address is required when collection is selected',
+      path: ['collectionAddress'],
     }
   )
 
@@ -78,6 +94,9 @@ export const bookingSchema = z
     deliveryLat: z.number().optional(),
     deliveryLng: z.number().optional(),
     returnMethod: z.enum(['collection', 'self_dropoff']),
+    collectionAddress: z.string().optional(),
+    collectionLat: z.number().optional(),
+    collectionLng: z.number().optional(),
     // Deposit step
     depositChoice: z.enum(['deposit', 'no_deposit']),
     // Payment step
@@ -97,6 +116,18 @@ export const bookingSchema = z
     {
       message: 'Delivery address is required when delivery is selected',
       path: ['deliveryAddress'],
+    }
+  )
+  .refine(
+    (data) => {
+      if (data.returnMethod === 'collection') {
+        return !!data.collectionAddress && data.collectionAddress.trim().length > 0
+      }
+      return true
+    },
+    {
+      message: 'Collection address is required when collection is selected',
+      path: ['collectionAddress'],
     }
   )
 

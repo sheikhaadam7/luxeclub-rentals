@@ -56,6 +56,9 @@ export interface BookingDetail {
   delivery_lat: number | null
   delivery_lng: number | null
   return_method: string
+  collection_address: string | null
+  collection_lat: number | null
+  collection_lng: number | null
   deposit_choice: string
   rental_subtotal: number
   delivery_fee: number
@@ -106,9 +109,9 @@ export async function createBooking(
   }
 
   const userId = claims.sub
+  const admin = createAdminClient()
 
   // 2. Fetch vehicle from DB (authoritative rates — never trust client)
-  const admin = createAdminClient()
   const { data: vehicle, error: vehicleError } = await admin
     .from('vehicles')
     .select('id, name, slug, primary_image_url, daily_rate, weekly_rate, monthly_rate, deposit_amount, is_available')
@@ -150,6 +153,9 @@ export async function createBooking(
       delivery_lat: formData.deliveryLat ?? null,
       delivery_lng: formData.deliveryLng ?? null,
       return_method: formData.returnMethod,
+      collection_address: formData.collectionAddress ?? null,
+      collection_lat: formData.collectionLat ?? null,
+      collection_lng: formData.collectionLng ?? null,
       deposit_choice: formData.depositChoice,
       deposit_amount: pricing.depositAmount,
       rental_subtotal: pricing.rentalSubtotal,
@@ -223,6 +229,17 @@ export async function createBooking(
   }
 
   // 7. Card / wallet path — create PaymentIntents
+  // Test mode: skip Stripe when key is not configured
+  if (!process.env.STRIPE_SECRET_KEY) {
+    return {
+      bookingId,
+      rentalClientSecret: null,
+      depositClientSecret: null,
+      totalDue: pricing.totalDue,
+      depositAmount: pricing.depositAmount,
+    }
+  }
+
   const rentalResult = await createRentalPaymentIntent(bookingId, pricing.totalDue)
   if ('error' in rentalResult) {
     return { error: rentalResult.error }
@@ -328,6 +345,9 @@ export async function getBookingDetail(
       delivery_lat,
       delivery_lng,
       return_method,
+      collection_address,
+      collection_lat,
+      collection_lng,
       deposit_choice,
       rental_subtotal,
       delivery_fee,
@@ -360,4 +380,55 @@ export async function getBookingDetail(
   }
 
   return data as unknown as BookingDetail
+}
+
+// ---------------------------------------------------------------------------
+// acceptDelivery
+// ---------------------------------------------------------------------------
+
+/**
+ * Server Action — customer accepts delivery of the vehicle.
+ * Validates ownership and that the booking is in 'car_delivered' status,
+ * then updates status to 'completed'.
+ */
+export async function acceptDelivery(
+  bookingId: string
+): Promise<{ success: true } | { error: string }> {
+  const supabase = await createClient()
+  const { data: claimsData } = await supabase.auth.getClaims()
+  const claims = claimsData?.claims
+
+  if (!claims?.sub) {
+    return { error: 'You must be logged in to accept delivery' }
+  }
+
+  const admin = createAdminClient()
+
+  // Fetch the booking — verify ownership and current status
+  const { data: booking, error: fetchError } = await admin
+    .from('bookings')
+    .select('id, status')
+    .eq('id', bookingId)
+    .eq('user_id', claims.sub)
+    .single()
+
+  if (fetchError || !booking) {
+    return { error: 'Booking not found' }
+  }
+
+  if (booking.status !== 'car_delivered') {
+    return { error: 'This booking is not awaiting delivery acceptance' }
+  }
+
+  const { error: updateError } = await admin
+    .from('bookings')
+    .update({ status: 'completed' })
+    .eq('id', bookingId)
+
+  if (updateError) {
+    console.error('acceptDelivery: update error', updateError)
+    return { error: 'Failed to accept delivery' }
+  }
+
+  return { success: true }
 }

@@ -5,6 +5,8 @@ import { getBookingDetail } from '@/app/actions/bookings'
 import { createClient } from '@/lib/supabase/server'
 import LiveTrackingMap from '@/components/tracking/LiveTrackingMap'
 import BookingStatusTimeline from '@/components/tracking/BookingStatusTimeline'
+import AcceptDeliveryButton from './AcceptDeliveryButton'
+import { PriceDisplay } from '@/components/catalogue/PriceDisplay'
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -28,10 +30,6 @@ function formatDate(isoDate: string): string {
 
 function formatDateRange(start: string, end: string): string {
   return `${formatDate(start)} — ${formatDate(end)}`
-}
-
-function formatAED(amount: number): string {
-  return `AED ${amount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
 }
 
 function formatDurationType(type: string): string {
@@ -100,7 +98,7 @@ function DetailRow({ label, value, valueClassName }: { label: string; value: str
 // Pricing row component
 // ---------------------------------------------------------------------------
 
-function PricingRow({ label, value, bold }: { label: string; value: string; bold?: boolean }) {
+function PricingRow({ label, value, bold }: { label: string; value: React.ReactNode; bold?: boolean }) {
   return (
     <div className="flex items-center justify-between py-2">
       <span className={`text-sm ${bold ? 'text-white font-semibold' : 'text-brand-muted'}`}>{label}</span>
@@ -170,16 +168,15 @@ export default async function BookingDetailPage({ params }: PageProps) {
 
         {/* Hero: vehicle image */}
         {vehicle?.primary_image_url && (
-          <div className="relative w-full aspect-video rounded-[--radius-card] overflow-hidden bg-brand-surface">
-            <Image
-              src={vehicle.primary_image_url}
-              alt={vehicle.name ?? 'Vehicle'}
-              fill
-              className="object-cover"
-              priority
-              sizes="(max-width: 640px) 100vw, 672px"
-            />
-          </div>
+          <Image
+            src={vehicle.primary_image_url}
+            alt={vehicle.name ?? 'Vehicle'}
+            width={1200}
+            height={800}
+            className="w-full h-auto rounded-2xl"
+            priority
+            sizes="(max-width: 640px) 100vw, 672px"
+          />
         )}
 
         {/* Heading */}
@@ -230,6 +227,17 @@ export default async function BookingDetailPage({ params }: PageProps) {
           </section>
         )}
 
+        {/* Accept Delivery section — shown when car has been delivered */}
+        {booking.status === 'car_delivered' && (
+          <section className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-6 space-y-4">
+            <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Accept Delivery</h2>
+            <p className="text-sm text-brand-muted">
+              Your vehicle has been delivered. Please confirm you have received it and are satisfied with its condition.
+            </p>
+            <AcceptDeliveryButton bookingId={booking.id} />
+          </section>
+        )}
+
         {/* Booking details section */}
         <section className="bg-brand-surface border border-brand-border rounded-[--radius-card] divide-y divide-brand-border">
           <div className="px-6 py-4">
@@ -264,6 +272,12 @@ export default async function BookingDetailPage({ params }: PageProps) {
               label="Return"
               value={formatReturnMethod(booking.return_method)}
             />
+            {booking.return_method === 'collection' && booking.collection_address && (
+              <DetailRow
+                label="Collection Address"
+                value={booking.collection_address}
+              />
+            )}
           </div>
         </section>
 
@@ -273,18 +287,18 @@ export default async function BookingDetailPage({ params }: PageProps) {
             <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Pricing Breakdown</h2>
           </div>
           <div className="px-6 py-2">
-            <PricingRow label="Rental Subtotal" value={formatAED(booking.rental_subtotal)} />
+            <PricingRow label="Rental Subtotal" value={<PriceDisplay amount={booking.rental_subtotal} />} />
             {booking.delivery_fee > 0 && (
-              <PricingRow label="Delivery Fee" value={formatAED(booking.delivery_fee)} />
+              <PricingRow label="Delivery Fee" value={<PriceDisplay amount={booking.delivery_fee} />} />
             )}
             {booking.return_fee > 0 && (
-              <PricingRow label="Return Collection Fee" value={formatAED(booking.return_fee)} />
+              <PricingRow label="Return Collection Fee" value={<PriceDisplay amount={booking.return_fee} />} />
             )}
             {booking.no_deposit_surcharge > 0 && (
-              <PricingRow label="No-Deposit Surcharge" value={formatAED(booking.no_deposit_surcharge)} />
+              <PricingRow label="No-Deposit Surcharge" value={<PriceDisplay amount={booking.no_deposit_surcharge} />} />
             )}
             <div className="border-t border-brand-border mt-2 pt-2">
-              <PricingRow label="Total Due" value={formatAED(booking.total_due)} bold />
+              <PricingRow label="Total Due" value={<PriceDisplay amount={booking.total_due} />} bold />
             </div>
             {booking.deposit_choice === 'deposit' && booking.deposit_amount > 0 && (
               <div className="border-t border-brand-border mt-2 pt-2 pb-2">
@@ -293,7 +307,7 @@ export default async function BookingDetailPage({ params }: PageProps) {
                     <span className="text-sm text-brand-muted">Security Deposit Hold</span>
                     <p className="text-xs text-brand-muted/60 mt-0.5">Pre-authorized, not charged</p>
                   </div>
-                  <span className="text-sm text-brand-muted">{formatAED(booking.deposit_amount)}</span>
+                  <PriceDisplay amount={booking.deposit_amount} className="text-sm text-brand-muted" />
                 </div>
               </div>
             )}

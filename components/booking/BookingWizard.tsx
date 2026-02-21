@@ -8,28 +8,25 @@ import { bookingSchema, type BookingFormValues } from '@/lib/validations/booking
 import { StepDuration } from '@/components/booking/StepDuration'
 import { StepDelivery } from '@/components/booking/StepDelivery'
 import { StepDepositChoice } from '@/components/booking/StepDepositChoice'
-import { StepIdentity } from '@/components/booking/StepIdentity'
 import { StepPayment } from '@/components/booking/StepPayment'
 import { PriceSummary } from '@/components/booking/PriceSummary'
 import { createBooking } from '@/app/actions/bookings'
 
-const STEPS = ['duration', 'delivery', 'deposit', 'identity', 'payment'] as const
+const STEPS = ['duration', 'delivery', 'deposit', 'payment'] as const
 type Step = (typeof STEPS)[number]
 
 // Fields to validate per step before advancing
 const STEP_FIELDS: Record<number, (keyof BookingFormValues)[]> = {
   0: ['durationType', 'startDate', 'endDate'],
-  1: ['pickupMethod', 'deliveryAddress', 'returnMethod'],
+  1: ['pickupMethod', 'deliveryAddress', 'returnMethod', 'collectionAddress'],
   2: ['depositChoice'],
-  3: [],
-  4: ['paymentMethod'],
+  3: ['paymentMethod'],
 }
 
 const STEP_LABELS: Record<Step, string> = {
   duration: 'Duration',
   delivery: 'Delivery',
   deposit: 'Deposit',
-  identity: 'Identity',
   payment: 'Payment',
 }
 
@@ -55,7 +52,7 @@ export function BookingWizard({ vehicle, bookedRanges }: BookingWizardProps) {
   const [step, setStep] = useState(0)
   const [isPending, startTransition] = useTransition()
 
-  // Booking state — set when advancing from identity to payment
+  // Booking state — set when advancing from deposit to payment
   const [bookingId, setBookingId] = useState<string | null>(null)
   const [rentalClientSecret, setRentalClientSecret] = useState<string | null>(null)
   const [depositClientSecret, setDepositClientSecret] = useState<string | null>(null)
@@ -75,52 +72,62 @@ export function BookingWizard({ vehicle, bookedRanges }: BookingWizardProps) {
     },
   })
 
-  const advance = () => {
-    startTransition(async () => {
-      const fields = STEP_FIELDS[step] ?? []
-      const valid = await form.trigger(fields)
-      if (valid) {
-        setStep((s) => Math.min(s + 1, STEPS.length - 1))
-      }
-    })
-  }
-
   /**
-   * Advances from Step 3 (identity) to Step 4 (payment).
    * Creates the booking server-side with revalidated pricing before showing payment.
+   * Called when advancing from deposit (step 2) to payment (step 3).
    */
   async function advanceToPayment() {
     if (bookingId) {
       // Booking already created (e.g. user went back) — go directly to payment
-      setStep(4)
+      setStep(3)
       return
     }
 
     setIsCreatingBooking(true)
     setBookingError(null)
 
-    const formValues = form.getValues()
-    const result = await createBooking(formValues, vehicle.id)
+    try {
+      const formValues = form.getValues()
+      const result = await createBooking(formValues, vehicle.id)
 
-    if ('error' in result) {
-      setBookingError(result.error)
+      if ('error' in result) {
+        setBookingError(result.error)
+        return
+      }
+
+      setBookingId(result.bookingId)
+      setRentalClientSecret(result.rentalClientSecret)
+      setDepositClientSecret(result.depositClientSecret)
+      setBookingTotalDue(result.totalDue)
+      setBookingDepositAmount(result.depositAmount)
+      setStep(3)
+    } catch {
+      setBookingError('Something went wrong. Please try again.')
+    } finally {
       setIsCreatingBooking(false)
-      return
     }
+  }
 
-    setBookingId(result.bookingId)
-    setRentalClientSecret(result.rentalClientSecret)
-    setDepositClientSecret(result.depositClientSecret)
-    setBookingTotalDue(result.totalDue)
-    setBookingDepositAmount(result.depositAmount)
-    setIsCreatingBooking(false)
-    setStep(4)
+  const advance = () => {
+    startTransition(async () => {
+      const fields = STEP_FIELDS[step] ?? []
+      const valid = await form.trigger(fields)
+      if (!valid) return
+
+      // When advancing from deposit to payment, create booking
+      if (step === 2) {
+        await advanceToPayment()
+        return
+      }
+
+      setStep((s) => Math.min(s + 1, STEPS.length - 1))
+    })
   }
 
   const back = () => {
-    if (step === 4 && bookingId) {
-      // Booking already created — going back shows a notice, not an empty payment step
-      setStep(3)
+    if (step === 3 && bookingId) {
+      // Booking already created — going back shows a notice on deposit step
+      setStep(2)
       return
     }
     setStep((s) => Math.max(s - 1, 0))
@@ -203,20 +210,15 @@ export function BookingWizard({ vehicle, bookedRanges }: BookingWizardProps) {
             <StepDelivery form={form} />
           )}
           {currentStep === 'deposit' && (
-            <StepDepositChoice form={form} vehicle={vehicle} />
-          )}
-          {currentStep === 'identity' && (
             <>
-              {/* Back-from-payment notice when booking already created */}
+              {/* Notice when booking already created and user went back */}
               {bookingId && (
                 <div className="mb-4 rounded-lg border border-amber-700/40 bg-amber-950/30 p-4 text-sm text-amber-200">
                   Your booking has already been created. Complete payment to confirm your rental.
                 </div>
               )}
-              <StepIdentity
-                vehicleSlug={vehicle.slug}
-                onNext={advanceToPayment}
-              />
+
+              <StepDepositChoice form={form} vehicle={vehicle} />
             </>
           )}
           {currentStep === 'payment' && (
@@ -250,9 +252,8 @@ export function BookingWizard({ vehicle, bookedRanges }: BookingWizardProps) {
             Back
           </button>
 
-          {/* On the identity step, the StepIdentity component handles advancement via onNext */}
           {/* On the payment step, StepPayment handles its own submission */}
-          {step < STEPS.length - 1 && currentStep !== 'identity' && (
+          {step < STEPS.length - 1 && (
             <button
               type="button"
               onClick={advance}
