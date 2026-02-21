@@ -94,7 +94,7 @@ export default function ContactPage() {
                   onChange={(e) => setName(e.target.value)}
                   placeholder="firstname lastname"
                   required
-                  className="w-full bg-white/[0.05] border border-white/[0.08] rounded-xl px-4 py-3.5 text-sm text-white placeholder:text-white/25 outline-none focus:border-brand-cyan focus:bg-white/[0.06] focus:shadow-[0_0_0_1px_rgba(0,153,255,0.2),0_0_20px_rgba(0,153,255,0.06)] transition-all duration-300"
+                  className="w-full bg-white/[0.05] border border-white/[0.08] rounded-xl px-4 py-3.5 text-sm text-white placeholder:text-white/25 outline-none focus:border-brand-cyan focus:bg-white/[0.06] focus:shadow-[0_0_0_1px_rgba(160,165,173,0.2),0_0_20px_rgba(160,165,173,0.06)] transition-all duration-300"
                 />
               </div>
 
@@ -107,7 +107,7 @@ export default function ContactPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="email@email.com"
                   required
-                  className="w-full bg-white/[0.05] border border-white/[0.08] rounded-xl px-4 py-3.5 text-sm text-white placeholder:text-white/25 outline-none focus:border-brand-cyan focus:bg-white/[0.06] focus:shadow-[0_0_0_1px_rgba(0,153,255,0.2),0_0_20px_rgba(0,153,255,0.06)] transition-all duration-300"
+                  className="w-full bg-white/[0.05] border border-white/[0.08] rounded-xl px-4 py-3.5 text-sm text-white placeholder:text-white/25 outline-none focus:border-brand-cyan focus:bg-white/[0.06] focus:shadow-[0_0_0_1px_rgba(160,165,173,0.2),0_0_20px_rgba(160,165,173,0.06)] transition-all duration-300"
                 />
               </div>
 
@@ -127,7 +127,7 @@ export default function ContactPage() {
               {/* Submit */}
               <button
                 type="submit"
-                className="w-full py-4 rounded-xl bg-brand-cyan text-white text-base font-medium hover:bg-brand-cyan-hover shadow-[0_0_20px_rgba(0,153,255,0.15)] hover:shadow-[0_0_30px_rgba(0,153,255,0.25)] transition-all duration-300"
+                className="w-full py-4 rounded-xl bg-brand-cyan text-white text-base font-medium hover:bg-brand-cyan-hover shadow-[0_0_20px_rgba(160,165,173,0.15)] hover:shadow-[0_0_30px_rgba(160,165,173,0.25)] transition-all duration-300"
               >
                 Submit form
               </button>
