@@ -77,6 +77,10 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
 
   const currentStep = steps[step]
 
+  const scrollToTop = () => {
+    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50)
+  }
+
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
@@ -98,6 +102,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
     if (bookingId) {
       // Booking already created (e.g. user went back) — go directly to payment
       setStep(paymentIndex)
+      scrollToTop()
       return
     }
 
@@ -122,6 +127,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
       setBookingTotalDue(result.totalDue)
       setBookingDepositAmount(result.depositAmount)
       setStep(paymentIndex)
+      scrollToTop()
     } catch {
       setBookingError('Something went wrong. Please try again.')
     } finally {
@@ -149,6 +155,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
 
       // Otherwise just advance to the next step
       setStep((s) => Math.min(s + 1, steps.length - 1))
+      scrollToTop()
     })
   }
 
@@ -157,9 +164,11 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
     if (step === paymentIndex && bookingId) {
       // Booking already created — going back shows a notice on the previous step
       setStep(paymentIndex - 1)
+      scrollToTop()
       return
     }
     setStep((s) => Math.max(s - 1, 0))
+    scrollToTop()
   }
 
   /**
