@@ -10,19 +10,21 @@ import { StepDelivery } from '@/components/booking/StepDelivery'
 import { StepDepositChoice } from '@/components/booking/StepDepositChoice'
 import { StepPayment } from '@/components/booking/StepPayment'
 import { StepAuth } from '@/components/booking/StepAuth'
+import { StepGuestContact } from '@/components/booking/StepGuestContact'
 import { PriceSummary } from '@/components/booking/PriceSummary'
 import { createBooking } from '@/app/actions/bookings'
 
 const AUTHED_STEPS = ['duration', 'delivery', 'deposit', 'payment'] as const
-const UNAUTHED_STEPS = ['duration', 'delivery', 'deposit', 'account', 'payment'] as const
+const UNAUTHED_STEPS = ['duration', 'delivery', 'deposit', 'contact', 'payment'] as const
 
-type Step = 'duration' | 'delivery' | 'deposit' | 'account' | 'payment'
+type Step = 'duration' | 'delivery' | 'deposit' | 'account' | 'contact' | 'payment'
 
 // Fields to validate per step name before advancing
 const STEP_FIELDS: Partial<Record<Step, (keyof BookingFormValues)[]>> = {
   duration: ['durationType', 'startDate', 'endDate'],
   delivery: ['pickupMethod', 'deliveryAddress', 'returnMethod', 'collectionAddress'],
   deposit: ['depositChoice'],
+  contact: ['guestName', 'guestEmail', 'guestPhone'],
   payment: ['paymentMethod'],
 }
 
@@ -31,6 +33,7 @@ const STEP_LABELS: Record<Step, string> = {
   delivery: 'Delivery',
   deposit: 'Deposit',
   account: 'Account',
+  contact: 'Contact Details',
   payment: 'Payment',
 }
 
@@ -103,7 +106,10 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
 
     try {
       const formValues = form.getValues()
-      const result = await createBooking(formValues, vehicle.id)
+      const guestInfo = !isAuthed && formValues.guestName
+        ? { name: formValues.guestName, email: formValues.guestEmail!, phone: formValues.guestPhone! }
+        : undefined
+      const result = await createBooking(formValues, vehicle.id, guestInfo)
 
       if ('error' in result) {
         setBookingError(result.error)
@@ -121,7 +127,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
     } finally {
       setIsCreatingBooking(false)
     }
-  }, [bookingId, form, steps, vehicle.id])
+  }, [bookingId, form, isAuthed, steps, vehicle.id])
 
   const advance = () => {
     startTransition(async () => {
@@ -135,7 +141,13 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
         return
       }
 
-      // For unauthed users, account step is next — just advance
+      // Guest contact step → create booking then advance to payment
+      if (currentStep === 'contact') {
+        await advanceToPayment()
+        return
+      }
+
+      // Otherwise just advance to the next step
       setStep((s) => Math.min(s + 1, steps.length - 1))
     })
   }
@@ -160,12 +172,47 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
     advanceToPayment()
   }
 
+  // Inline confirmation state for guest bookings
+  const [guestConfirmedId, setGuestConfirmedId] = useState<string | null>(null)
+
   /**
    * Called by StepPayment on successful payment.
-   * Redirects to booking confirmation page.
+   * Authenticated users: redirect to booking detail page.
+   * Guests: show inline confirmation (no protected route to redirect to).
    */
   function handlePaymentSuccess(confirmedBookingId: string) {
-    router.push(`/bookings/${confirmedBookingId}`)
+    if (isAuthed) {
+      router.push(`/bookings/${confirmedBookingId}`)
+    } else {
+      setGuestConfirmedId(confirmedBookingId)
+    }
+  }
+
+  // Guest inline confirmation
+  if (guestConfirmedId) {
+    return (
+      <div className="max-w-lg mx-auto space-y-6 text-center py-12">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-cyan/10 border border-brand-cyan/30 mx-auto">
+          <svg className="h-8 w-8 text-brand-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <h2 className="font-display text-2xl font-semibold text-white">
+          Booking Confirmed
+        </h2>
+        <p className="text-sm text-brand-muted leading-relaxed">
+          Your booking reference is{' '}
+          <span className="text-white font-semibold font-mono">
+            {guestConfirmedId.slice(0, 8).toUpperCase()}
+          </span>
+          . We&apos;ve sent a confirmation to{' '}
+          <span className="text-white font-semibold">{form.getValues('guestEmail')}</span>.
+        </p>
+        <p className="text-xs text-brand-muted">
+          Save your booking reference for your records. Our team will be in touch shortly.
+        </p>
+      </div>
+    )
   }
 
   return (
@@ -249,6 +296,9 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
           {currentStep === 'account' && (
             <StepAuth onAuthenticated={handleAuthenticated} />
           )}
+          {currentStep === 'contact' && (
+            <StepGuestContact form={form} />
+          )}
           {currentStep === 'payment' && (
             <StepPayment
               clientSecret={rentalClientSecret}
@@ -258,6 +308,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
               bookingId={bookingId ?? ''}
               totalDue={bookingTotalDue}
               depositAmount={bookingDepositAmount}
+              isGuest={!isAuthed}
             />
           )}
         </div>

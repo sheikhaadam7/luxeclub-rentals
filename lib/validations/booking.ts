@@ -68,7 +68,16 @@ export const depositStepSchema = z.object({
 })
 
 /**
- * Step 4: Payment — method for paying the rental total
+ * Step 4 (guest): Contact — guest name, email, and phone
+ */
+export const contactStepSchema = z.object({
+  guestName: z.string().min(1, 'Name is required'),
+  guestEmail: z.string().email('Valid email is required'),
+  guestPhone: z.string().min(7, 'Valid phone number is required'),
+})
+
+/**
+ * Step 5: Payment — method for paying the rental total
  */
 export const paymentStepSchema = z.object({
   paymentMethod: z.enum(['card', 'apple_pay', 'google_pay', 'cash']),
@@ -99,6 +108,10 @@ export const bookingSchema = z
     collectionLng: z.number().optional(),
     // Deposit step
     depositChoice: z.enum(['deposit', 'no_deposit']),
+    // Guest contact step (optional — only present for guest checkout)
+    guestName: z.string().optional(),
+    guestEmail: z.string().optional(),
+    guestPhone: z.string().optional(),
     // Payment step
     paymentMethod: z.enum(['card', 'apple_pay', 'google_pay', 'cash']),
   })

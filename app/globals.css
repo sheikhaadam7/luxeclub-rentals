@@ -162,6 +162,11 @@ details[open] > summary ~ * {
   animation: whatsappPulse 2.5s ease-in-out infinite;
 }
 
+/* Hide Stripe test mode badge */
+iframe[src*="js.stripe.com/v3/controller-"] {
+  display: none !important;
+}
+
 /* Smooth selection color */
 ::selection {
   background: rgba(0, 153, 255, 0.3);

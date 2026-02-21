@@ -27,6 +27,7 @@ interface StepPaymentProps {
   bookingId: string
   totalDue: number
   depositAmount: number
+  isGuest?: boolean
 }
 
 // ---------------------------------------------------------------------------
@@ -206,6 +207,7 @@ export function StepPayment({
   bookingId,
   totalDue,
   depositAmount,
+  isGuest = false,
 }: StepPaymentProps) {
   const { formatPrice } = useCurrency()
 
