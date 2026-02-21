@@ -3,39 +3,19 @@
 import { useState } from 'react'
 import { LoginForm } from './LoginForm'
 import { SignupForm } from './SignupForm'
-import { OTPForm } from './OTPForm'
 
-type AuthView = 'login' | 'signup' | 'otp'
+type AuthView = 'login' | 'signup'
 
-interface PendingMFA {
-  factorId: string
-  challengeId: string
+interface AuthGateProps {
+  redirectTo?: string
 }
 
-export function AuthGate() {
+export function AuthGate({ redirectTo }: AuthGateProps) {
   const [view, setView] = useState<AuthView>('login')
-  const [pendingMFA, setPendingMFA] = useState<PendingMFA | null>(null)
-
-  if (view === 'otp' && pendingMFA) {
-    return (
-      <OTPForm
-        factorId={pendingMFA.factorId}
-        challengeId={pendingMFA.challengeId}
-      />
-    )
-  }
 
   if (view === 'signup') {
-    return (
-      <SignupForm
-        onSwitch={() => setView('login')}
-        onPhoneStep={(mfa) => {
-          setPendingMFA(mfa)
-          setView('otp')
-        }}
-      />
-    )
+    return <SignupForm onSwitch={() => setView('login')} redirectTo={redirectTo} />
   }
 
-  return <LoginForm onSwitch={() => setView('signup')} />
+  return <LoginForm onSwitch={() => setView('signup')} redirectTo={redirectTo} />
 }

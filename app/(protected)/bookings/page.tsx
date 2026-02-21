@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { getUserBookings, type UserBooking } from '@/app/actions/bookings'
+import { PriceDisplay } from '@/components/catalogue/PriceDisplay'
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -25,10 +26,6 @@ function formatDurationType(type: string): string {
   if (type === 'weekly') return 'Weekly'
   if (type === 'monthly') return 'Monthly'
   return type
-}
-
-function formatAED(amount: number): string {
-  return `AED ${amount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
 }
 
 // ---------------------------------------------------------------------------
@@ -83,10 +80,10 @@ function BookingCard({ booking }: { booking: UserBooking }) {
   return (
     <Link
       href={`/bookings/${booking.id}`}
-      className="flex items-center gap-4 bg-brand-surface border border-brand-border rounded-[--radius-card] p-4 hover:border-brand-cyan/30 transition-colors duration-200 group"
+      className="flex items-center gap-4 bg-brand-surface border border-brand-border rounded-[--radius-card] p-4 card-hover hover:border-brand-border-hover group"
     >
       {/* Thumbnail */}
-      <div className="flex-shrink-0 w-[80px] h-[60px] rounded overflow-hidden bg-white/5 relative">
+      <div className="flex-shrink-0 w-[80px] h-[60px] rounded-xl overflow-hidden bg-white/5 relative">
         {vehicle?.primary_image_url ? (
           <Image
             src={vehicle.primary_image_url}
@@ -126,7 +123,7 @@ function BookingCard({ booking }: { booking: UserBooking }) {
 
       {/* Price + arrow */}
       <div className="flex-shrink-0 text-right">
-        <p className="text-sm font-medium text-white">{formatAED(booking.total_due)}</p>
+        <PriceDisplay amount={booking.total_due} className="text-sm font-medium text-white" />
         <svg
           className="w-4 h-4 text-brand-cyan mt-1 ml-auto"
           fill="none"

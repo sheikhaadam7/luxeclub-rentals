@@ -13,9 +13,10 @@ type LoginFormData = z.infer<typeof loginSchema>
 
 interface LoginFormProps {
   onSwitch: () => void
+  redirectTo?: string
 }
 
-export function LoginForm({ onSwitch }: LoginFormProps) {
+export function LoginForm({ onSwitch, redirectTo }: LoginFormProps) {
   const [isPending, startTransition] = useTransition()
   const {
     register,
@@ -29,12 +30,12 @@ export function LoginForm({ onSwitch }: LoginFormProps) {
       const formData = new FormData()
       formData.set('email', data.email)
       formData.set('password', data.password)
+      if (redirectTo) formData.set('redirectTo', redirectTo)
 
       const result = await login(formData)
       if (result?.error) {
         setError('root', { message: result.error })
       }
-      // On success, login() calls redirect('/dashboard') server-side
     })
   }
 

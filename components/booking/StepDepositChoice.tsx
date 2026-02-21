@@ -1,36 +1,19 @@
 'use client'
 
-import { UseFormReturn, useWatch } from 'react-hook-form'
+import { UseFormReturn } from 'react-hook-form'
 import { BookingFormValues } from '@/lib/validations/booking'
 import { Vehicle } from '@/components/booking/BookingWizard'
-import { differenceInDays } from 'date-fns'
+import { useCurrency } from '@/lib/currency/context'
 
 interface StepDepositChoiceProps {
   form: UseFormReturn<BookingFormValues>
   vehicle: Vehicle
 }
 
-function formatAmount(amount: number): string {
-  return amount.toLocaleString('en-US')
-}
-
 export function StepDepositChoice({ form, vehicle }: StepDepositChoiceProps) {
+  const { formatPrice } = useCurrency()
   const depositChoice = form.watch('depositChoice')
-
-  // Watch form values for surcharge preview
-  const startDate = useWatch({ control: form.control, name: 'startDate' })
-  const endDate = useWatch({ control: form.control, name: 'endDate' })
-
-  const depositAmount = vehicle.deposit_amount ?? 5000
-
-  // Calculate surcharge preview
-  let surchargePreview = 0
-  let rentalDays = 0
-  if (startDate && endDate) {
-    rentalDays = differenceInDays(endDate, startDate) + 1
-    const dailyRate = vehicle.daily_rate ?? 0
-    surchargePreview = Math.round(dailyRate * 0.3 * rentalDays * 100) / 100
-  }
+  const depositAmount = vehicle.daily_rate ?? 0
 
   return (
     <div className="space-y-6">
@@ -71,7 +54,7 @@ export function StepDepositChoice({ form, vehicle }: StepDepositChoiceProps) {
                   Pay Deposit
                 </p>
                 <span className="text-sm font-semibold text-white shrink-0">
-                  AED {formatAmount(depositAmount)}
+                  {formatPrice(depositAmount)}
                 </span>
               </div>
               <p className="text-xs text-brand-muted mt-1.5 leading-relaxed">
@@ -110,25 +93,11 @@ export function StepDepositChoice({ form, vehicle }: StepDepositChoiceProps) {
                 <p className={['text-sm font-semibold', depositChoice === 'no_deposit' ? 'text-brand-cyan' : 'text-white'].join(' ')}>
                   No Deposit
                 </p>
-                <span className="text-sm font-semibold text-white shrink-0">+30% surcharge</span>
+                <span className="text-sm font-semibold text-white shrink-0">+{formatPrice(200)}</span>
               </div>
               <p className="text-xs text-brand-muted mt-1.5 leading-relaxed">
-                Skip the deposit hold entirely. Instead, a 30% daily surcharge is added to your rental total.
+                Skip the deposit hold entirely. A flat {formatPrice(200)} surcharge is added to your rental total.
               </p>
-
-              {/* Surcharge preview */}
-              {surchargePreview > 0 ? (
-                <div className="mt-3 bg-black/20 rounded-[--radius-card] px-3 py-2 text-xs">
-                  <div className="flex justify-between text-brand-muted">
-                    <span>Surcharge ({rentalDays} day{rentalDays !== 1 ? 's' : ''} × 30% daily rate):</span>
-                    <span className="text-white font-medium">AED {formatAmount(surchargePreview)}</span>
-                  </div>
-                </div>
-              ) : (
-                <p className="mt-2 text-xs text-brand-muted/60 italic">
-                  Select dates to see surcharge amount
-                </p>
-              )}
             </div>
           </div>
         </button>

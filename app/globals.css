@@ -1,36 +1,54 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+}
+
 @theme {
   /* Brand Colors */
   --color-brand-black: #000000;
   --color-brand-surface: #0a0a0a;
-  --color-brand-border: rgba(255, 255, 255, 0.15);
+  --color-brand-glass: rgba(18, 18, 18, 0.72);
+  --color-brand-border: rgba(255, 255, 255, 0.08);
+  --color-brand-border-hover: rgba(255, 255, 255, 0.18);
   --color-brand-cyan: #0099ff;
-  --color-brand-cyan-hover: #0077cc;
+  --color-brand-cyan-hover: #33adff;
   --color-brand-text: #ffffff;
-  --color-brand-muted: rgba(255, 255, 255, 0.6);
-  --color-brand-subtle: rgba(255, 255, 255, 0.15);
+  --color-brand-muted: rgba(255, 255, 255, 0.5);
+  --color-brand-subtle: rgba(255, 255, 255, 0.08);
 
-  /* Typography — CSS variable names must match what next/font assigns in layout.tsx */
+  /* Typography */
   --font-display: var(--font-display), Georgia, serif;
   --font-body: var(--font-body), system-ui, sans-serif;
 
   /* Radii */
-  --radius-card: 0.75rem;
+  --radius-card: 1rem;
+
+  /* Animations */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
 }
 
-/* Luxury radial gradient background — used on the landing page */
+/* Smooth global defaults */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Luxury radial gradient background */
 .bg-luxury {
   background: radial-gradient(
     ellipse at 50% 0%,
-    #1a1a1a 0%,
-    #000000 65%
+    #111111 0%,
+    #000000 70%
   );
 }
 
-/* Subtle border glow on focus for auth inputs */
+/* Subtle border glow on focus for inputs */
 .input-focus-glow:focus {
-  box-shadow: 0 0 0 1px #0099ff40;
+  box-shadow: 0 0 0 1px rgba(0, 153, 255, 0.3), 0 0 20px rgba(0, 153, 255, 0.08);
 }
 
 /* Hide scrollbar but keep scroll functionality */
@@ -40,4 +58,112 @@
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* Page-level fade-in for all main elements */
+main {
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Fade in from left */
+@keyframes fadeInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in-left {
+  opacity: 0;
+  animation: fadeInLeft 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Staggered fade-in for lists and grids */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp var(--duration-slow) var(--ease-out-expo) both;
+}
+
+/* Glass card effect */
+.glass {
+  background: rgba(18, 18, 18, 0.72);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+}
+
+/* Smooth card hover lift */
+.card-hover {
+  transition: transform var(--duration-normal) var(--ease-out-expo),
+              border-color var(--duration-normal) var(--ease-out-expo),
+              box-shadow var(--duration-normal) var(--ease-out-expo);
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+/* Image zoom on hover */
+.img-zoom {
+  transition: transform 0.6s var(--ease-out-expo);
+}
+.group:hover .img-zoom {
+  transform: scale(1.04);
+}
+
+/* Details/summary smooth open */
+details[open] > summary ~ * {
+  animation: detailsOpen var(--duration-normal) var(--ease-out-expo);
+}
+@keyframes detailsOpen {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* WhatsApp floating button pulse */
+@keyframes whatsappPulse {
+  0%, 100% {
+    box-shadow: 0 4px 14px rgba(37, 211, 102, 0.25);
+  }
+  50% {
+    box-shadow: 0 4px 24px rgba(37, 211, 102, 0.45);
+  }
+}
+
+.animate-whatsapp-pulse {
+  animation: whatsappPulse 2.5s ease-in-out infinite;
+}
+
+/* Smooth selection color */
+::selection {
+  background: rgba(0, 153, 255, 0.3);
+  color: white;
 }

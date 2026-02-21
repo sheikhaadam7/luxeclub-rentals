@@ -1,27 +1,21 @@
 import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
 import { NavBar } from '@/components/nav/NavBar'
 import { Footer } from '@/components/nav/Footer'
 import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat'
 import { CurrencyProvider } from '@/lib/currency/context'
 
-export default async function ProtectedLayout({
+export default async function PublicLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   const supabase = await createClient()
-  // SECURITY: getClaims() validates JWT signature — not spoofable like getSession().
-  // This is a defense-in-depth check against CVE-2025-29927 middleware bypass.
   const { data: claimsData } = await supabase.auth.getClaims()
-
-  if (!claimsData?.claims) {
-    redirect('/sign-in')
-  }
+  const isAuthenticated = !!claimsData?.claims
 
   return (
     <CurrencyProvider>
-      <NavBar />
+      <NavBar isAuthenticated={isAuthenticated} />
       {children}
       <Footer />
       <WhatsAppFloat />

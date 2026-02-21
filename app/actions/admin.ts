@@ -578,117 +578,6 @@ export async function updateBookingStatus(
 }
 
 // ============================================================
-// KYC Review Types
-// ============================================================
-
-export interface PendingKYCEntry {
-  userId: string
-  email: string
-  kycStatus: string
-  kycSessionId: string | null
-  createdAt: string
-}
-
-// ============================================================
-// KYC Actions
-// ============================================================
-
-/**
- * Returns all profiles with pending or submitted KYC status.
- * Fetches user emails via auth.admin.getUserById for each profile.
- * Ordered by created_at ASC (FIFO queue — oldest first).
- */
-export async function getPendingKYC(): Promise<
-  PendingKYCEntry[] | { error: string }
-> {
-  const auth = await verifyAdmin()
-  if ('error' in auth) {
-    return { error: auth.error }
-  }
-
-  const admin = createAdminClient()
-
-  const { data: profiles, error: profilesError } = await admin
-    .from('profiles')
-    .select('id, kyc_status, kyc_session_id, created_at')
-    .in('kyc_status', ['submitted', 'pending'])
-    .order('created_at', { ascending: true })
-
-  if (profilesError) {
-    console.error('getPendingKYC profiles error:', profilesError)
-    return { error: profilesError.message }
-  }
-
-  if (!profiles || profiles.length === 0) {
-    return []
-  }
-
-  // Fetch user emails via auth admin API
-  const results: PendingKYCEntry[] = []
-  for (const profile of profiles) {
-    let email = ''
-    try {
-      const { data: userData, error: userError } =
-        await admin.auth.admin.getUserById(profile.id)
-      if (!userError && userData?.user?.email) {
-        email = userData.user.email
-      }
-    } catch {
-      // Non-fatal: email lookup failure should not block the queue
-      console.warn('getPendingKYC: could not fetch email for', profile.id)
-    }
-    results.push({
-      userId: profile.id,
-      email,
-      kycStatus: profile.kyc_status ?? 'pending',
-      kycSessionId: profile.kyc_session_id ?? null,
-      createdAt: profile.created_at,
-    })
-  }
-
-  return results
-}
-
-/**
- * Approve or reject a KYC verification.
- * Uses optimistic locking — only updates profiles currently in submitted/pending state.
- * Returns an error if the profile was already processed.
- */
-export async function reviewKYC(
-  userId: string,
-  decision: 'verified' | 'rejected'
-): Promise<{ error: string | null }> {
-  const auth = await verifyAdmin()
-  if ('error' in auth) {
-    return { error: auth.error }
-  }
-
-  const admin = createAdminClient()
-
-  const { data, error } = await admin
-    .from('profiles')
-    .update({
-      kyc_status: decision,
-      kyc_verified_at:
-        decision === 'verified' ? new Date().toISOString() : null,
-    })
-    .eq('id', userId)
-    .in('kyc_status', ['submitted', 'pending'])
-    .select('id')
-
-  if (error) {
-    console.error('reviewKYC error:', error)
-    return { error: error.message }
-  }
-
-  if (!data?.length) {
-    return { error: 'Already processed or not in pending state' }
-  }
-
-  return { error: null }
-}
-
-// ============================================================
 // Payment Management Types
 // ============================================================
 
@@ -824,6 +713,134 @@ export interface AnalyticsSummary {
  * and current fleet utilization rate.
  * Uses lightweight queries — only selects required columns.
  */
+// ============================================================
+// Vehicle Location Types
+// ============================================================
+
+export interface VehicleLocation {
+  id: string
+  name: string
+  slug: string
+  lat: number | null
+  lng: number | null
+  speed_kmh: number | null
+  heading: number | null
+  recorded_at: string | null
+  location_updated_at: string | null
+}
+
+// ============================================================
+// Vehicle Location Actions
+// ============================================================
+
+/**
+ * Fetch all active vehicles joined with their current location from vehicle_locations.
+ * Returns vehicles regardless of whether a location row exists.
+ */
+export async function getVehicleLocations(): Promise<
+  VehicleLocation[] | { error: string }
+> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) {
+    return { error: auth.error }
+  }
+
+  const admin = createAdminClient()
+
+  const { data: vehicles, error: vehiclesError } = await admin
+    .from('vehicles')
+    .select('id, name, slug')
+    .eq('is_active', true)
+    .order('name')
+
+  if (vehiclesError) {
+    console.error('getVehicleLocations vehicles error:', vehiclesError)
+    return { error: vehiclesError.message }
+  }
+
+  if (!vehicles || vehicles.length === 0) {
+    return []
+  }
+
+  const vehicleIds = vehicles.map((v) => v.id)
+  const { data: locations, error: locationsError } = await admin
+    .from('vehicle_locations')
+    .select('vehicle_id, lat, lng, speed_kmh, heading, recorded_at, updated_at')
+    .in('vehicle_id', vehicleIds)
+
+  if (locationsError) {
+    console.error('getVehicleLocations locations error:', locationsError)
+    return { error: locationsError.message }
+  }
+
+  const locationMap: Record<string, (typeof locations)[number]> = {}
+  for (const loc of locations ?? []) {
+    locationMap[loc.vehicle_id] = loc
+  }
+
+  return vehicles.map((v) => {
+    const loc = locationMap[v.id]
+    return {
+      id: v.id,
+      name: v.name,
+      slug: v.slug,
+      lat: loc?.lat ?? null,
+      lng: loc?.lng ?? null,
+      speed_kmh: loc?.speed_kmh != null ? Number(loc.speed_kmh) : null,
+      heading: loc?.heading != null ? Number(loc.heading) : null,
+      recorded_at: loc?.recorded_at ?? null,
+      location_updated_at: loc?.updated_at ?? null,
+    }
+  })
+}
+
+/**
+ * Upsert a vehicle's location in vehicle_locations.
+ * Used by the admin Locations tab to manually set GPS coordinates.
+ */
+export async function updateVehicleLocation(
+  vehicleId: string,
+  lat: number,
+  lng: number
+): Promise<{ error: string | null }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) {
+    return { error: auth.error }
+  }
+
+  if (lat < -90 || lat > 90) {
+    return { error: 'Latitude must be between -90 and 90.' }
+  }
+  if (lng < -180 || lng > 180) {
+    return { error: 'Longitude must be between -180 and 180.' }
+  }
+
+  const admin = createAdminClient()
+  const now = new Date().toISOString()
+
+  const { error } = await admin
+    .from('vehicle_locations')
+    .upsert(
+      {
+        vehicle_id: vehicleId,
+        lat,
+        lng,
+        speed_kmh: null,
+        heading: null,
+        recorded_at: now,
+        updated_at: now,
+      },
+      { onConflict: 'vehicle_id' }
+    )
+
+  if (error) {
+    console.error('updateVehicleLocation error:', error)
+    return { error: error.message }
+  }
+
+  return { error: null }
+}
+
 export async function getAnalyticsSummary(): Promise<
   AnalyticsSummary | { error: string }
 > {

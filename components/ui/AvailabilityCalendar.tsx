@@ -7,11 +7,16 @@ interface AvailabilityCalendarProps {
 }
 
 export function AvailabilityCalendar({ bookedRanges }: AvailabilityCalendarProps) {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  const now = new Date()
+  const todayNum = now.getFullYear() * 10000 + now.getMonth() * 100 + now.getDate()
+
+  const isPastDay = (date: Date) => {
+    const dateNum = date.getFullYear() * 10000 + date.getMonth() * 100 + date.getDate()
+    return dateNum < todayNum
+  }
 
   const disabledMatchers = [
-    { before: today },
+    isPastDay,
     ...bookedRanges,
   ]
 
@@ -22,11 +27,11 @@ export function AvailabilityCalendar({ bookedRanges }: AvailabilityCalendarProps
         numberOfMonths={2}
         classNames={{
           root: 'text-white select-none',
-          months: 'flex flex-wrap gap-6',
-          month: 'space-y-3',
-          month_caption: 'flex items-center justify-between',
+          months: 'relative flex flex-wrap gap-6 justify-center',
+          month: 'space-y-3 w-[calc(9*2.25rem)]',
+          month_caption: 'flex items-center pl-16',
           caption_label: 'font-display text-base font-medium text-white',
-          nav: 'flex gap-1',
+          nav: 'absolute top-0 left-0 flex items-center gap-1 z-10',
           button_previous: 'p-1 text-brand-cyan hover:text-brand-cyan-hover transition-colors rounded',
           button_next: 'p-1 text-brand-cyan hover:text-brand-cyan-hover transition-colors rounded',
           month_grid: 'w-full border-collapse',

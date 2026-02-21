@@ -5,18 +5,17 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { otpSchema } from '@/lib/validations/auth'
-import { verifyPhoneMFA } from '@/app/actions/auth'
+import { verifyPhone } from '@/app/actions/auth'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
 
 type OTPFormData = z.infer<typeof otpSchema>
 
 interface OTPFormProps {
-  factorId: string
-  challengeId: string
+  phone: string
 }
 
-export function OTPForm({ factorId, challengeId }: OTPFormProps) {
+export function OTPForm({ phone }: OTPFormProps) {
   const [isPending, startTransition] = useTransition()
   const {
     register,
@@ -27,11 +26,11 @@ export function OTPForm({ factorId, challengeId }: OTPFormProps) {
 
   const onSubmit = (data: OTPFormData) => {
     startTransition(async () => {
-      const result = await verifyPhoneMFA(factorId, challengeId, data.code)
+      const result = await verifyPhone(phone, data.code)
       if (result?.error) {
         setError('root', { message: result.error })
       }
-      // On success, verifyPhoneMFA() calls redirect('/dashboard') server-side
+      // On success, verifyPhone() calls redirect('/dashboard') server-side
     })
   }
 

@@ -20,7 +20,9 @@ export async function signUp(formData: FormData) {
   })
 
   if (error) return { error: error.message }
-  redirect('/dashboard')
+
+  const redirectTo = formData.get('redirectTo') as string | null
+  redirect(redirectTo || '/')
 }
 
 export async function login(formData: FormData) {
@@ -39,13 +41,15 @@ export async function login(formData: FormData) {
   })
 
   if (error) return { error: error.message }
-  redirect('/dashboard')
+
+  const redirectTo = formData.get('redirectTo') as string | null
+  redirect(redirectTo || '/')
 }
 
 export async function logout() {
   const supabase = await createClient()
   await supabase.auth.signOut()
-  redirect('/')
+  redirect('/sign-in')
 }
 
 export async function enrollPhoneMFA(rawPhone: string) {
@@ -92,5 +96,5 @@ export async function verifyPhone(phone: string, code: string) {
   })
   if (verifyError) return { error: verifyError.message }
 
-  redirect('/dashboard')
+  redirect('/')
 }

@@ -21,6 +21,10 @@ import type Stripe from 'stripe'
  *  - payment_intent.payment_failed   → booking payment_status = 'failed'
  */
 export async function POST(req: Request): Promise<Response> {
+  if (!stripe || !process.env.STRIPE_WEBHOOK_SECRET) {
+    return new Response('Stripe not configured', { status: 503 })
+  }
+
   // 1. Read raw body — MUST use req.text(), not req.json()
   const body = await req.text()
 

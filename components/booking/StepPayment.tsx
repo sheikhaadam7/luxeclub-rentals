@@ -9,9 +9,11 @@ import {
   useStripe,
   useElements,
 } from '@stripe/react-stripe-js'
+import { useCurrency } from '@/lib/currency/context'
 
-// Initialize Stripe outside the component to avoid re-creating on every render
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
+// Dev/test mode: when Stripe key is missing, show a test payment UI
+const STRIPE_KEY = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+const stripePromise = STRIPE_KEY ? loadStripe(STRIPE_KEY) : null
 
 // ---------------------------------------------------------------------------
 // Types
@@ -44,6 +46,7 @@ function PaymentForm({
   bookingId,
   depositAmount,
 }: PaymentFormProps) {
+  const { formatPrice } = useCurrency()
   const stripe = useStripe()
   const elements = useElements()
   const [isProcessing, setIsProcessing] = useState(false)
@@ -146,7 +149,7 @@ function PaymentForm({
       {depositClientSecret && depositAmount > 0 && (
         <div className="rounded-lg border border-amber-700/40 bg-amber-950/30 p-4 text-sm text-amber-200">
           A deposit hold of{' '}
-          <span className="font-semibold">AED {depositAmount.toLocaleString()}</span>{' '}
+          <span className="font-semibold">{formatPrice(depositAmount)}</span>{' '}
           will also be placed on your card. This is not a charge — funds are only
           captured if there is damage to the vehicle.
         </div>
@@ -204,6 +207,8 @@ export function StepPayment({
   totalDue,
   depositAmount,
 }: StepPaymentProps) {
+  const { formatPrice } = useCurrency()
+
   // Cash on delivery path
   if (cashSelected) {
     return (
@@ -232,7 +237,7 @@ export function StepPayment({
           <p className="text-sm text-brand-muted leading-relaxed">
             Please have{' '}
             <span className="text-white font-semibold">
-              AED {totalDue.toLocaleString()}
+              {formatPrice(totalDue)}
             </span>{' '}
             ready when the car is delivered. Your booking will be confirmed once our
             team verifies the arrangement.
@@ -257,6 +262,54 @@ export function StepPayment({
           className="w-full rounded-[--radius-card] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors"
         >
           Confirm Booking
+        </button>
+      </div>
+    )
+  }
+
+  // Dev/test mode — no Stripe key configured
+  if (!stripePromise) {
+    return (
+      <div className="space-y-6">
+        <div className="rounded-[--radius-card] border border-amber-700/40 bg-amber-950/30 p-6 space-y-3">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-500/10 border border-amber-500/30">
+              <svg className="h-5 w-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="text-sm font-semibold text-amber-200">Test Mode</h3>
+          </div>
+          <p className="text-sm text-amber-200/80 leading-relaxed">
+            Stripe is not configured. Click below to simulate a successful payment and
+            proceed to booking confirmation.
+          </p>
+          <p className="text-xs text-amber-200/50">
+            Total: <span className="font-semibold text-white">{formatPrice(totalDue)}</span>
+            {depositAmount > 0 && (
+              <> + <span className="font-semibold text-white">{formatPrice(depositAmount)}</span> deposit hold</>
+            )}
+          </p>
+        </div>
+
+        {/* Cancellation policy */}
+        <div className="rounded-[--radius-card] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
+          <p className="font-semibold text-white/70 mb-1.5 text-xs uppercase tracking-wider">
+            Cancellation Policy
+          </p>
+          <p>
+            Free cancellation up to 24 hours before the rental start time.
+            Cancellations within 24 hours are subject to a one-day rental fee.
+            No-shows are charged the full rental amount.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => onSuccess(bookingId)}
+          className="w-full rounded-[--radius-card] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors"
+        >
+          Accept Payment (Test Mode)
         </button>
       </div>
     )

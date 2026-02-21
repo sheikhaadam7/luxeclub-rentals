@@ -1,10 +1,13 @@
 'use client'
 
+import { useEffect } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import { DayPicker, type DateRange } from 'react-day-picker'
+import { differenceInDays } from 'date-fns'
 import 'react-day-picker/style.css'
 import { BookingFormValues } from '@/lib/validations/booking'
 import { Vehicle } from '@/components/booking/BookingWizard'
+import { useCurrency } from '@/lib/currency/context'
 
 interface StepDurationProps {
   form: UseFormReturn<BookingFormValues>
@@ -12,50 +15,51 @@ interface StepDurationProps {
   bookedRanges: Array<{ from: Date; to: Date }>
 }
 
-const DURATION_OPTIONS = [
-  { value: 'daily' as const, label: 'Daily', unit: 'day' },
-  { value: 'weekly' as const, label: 'Weekly', unit: 'week' },
-  { value: 'monthly' as const, label: 'Monthly', unit: 'month' },
-]
-
-function formatRate(amount: number): string {
-  return amount.toLocaleString('en-US')
+function getDurationType(days: number): 'daily' | 'weekly' | 'monthly' {
+  if (days >= 30) return 'monthly'
+  if (days >= 7) return 'weekly'
+  return 'daily'
 }
 
+const DURATION_TIERS = [
+  { value: 'daily' as const, label: 'Daily', range: '1–6 days', discount: 0 },
+  { value: 'weekly' as const, label: 'Weekly', range: '7–29 days', discount: 10 },
+  { value: 'monthly' as const, label: 'Monthly', range: '30+ days', discount: 20 },
+]
+
 export function StepDuration({ form, vehicle, bookedRanges }: StepDurationProps) {
-  const durationType = form.watch('durationType')
+  const { formatPrice } = useCurrency()
   const startDate = form.watch('startDate')
   const endDate = form.watch('endDate')
+
+  // Calculate rental days and auto-set durationType
+  const rentalDays =
+    startDate instanceof Date && endDate instanceof Date
+      ? Math.max(differenceInDays(endDate, startDate), 1)
+      : 0
+
+  const activeTier = getDurationType(rentalDays)
+
+  useEffect(() => {
+    if (rentalDays > 0) {
+      form.setValue('durationType', activeTier, { shouldValidate: true })
+    }
+  }, [activeTier, rentalDays, form])
 
   const selectedRange: DateRange | undefined =
     startDate || endDate
       ? { from: startDate, to: endDate }
       : undefined
 
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  const now = new Date()
+  const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1)
 
-  const disabledMatchers = [{ before: today }, ...bookedRanges]
+  const disabledMatchers = [
+    { from: new Date(2020, 0, 1), to: yesterday },
+    ...bookedRanges,
+  ]
 
-  function getRateDisplay(type: 'daily' | 'weekly' | 'monthly'): string {
-    const dailyRate = vehicle.daily_rate ?? 0
-    switch (type) {
-      case 'daily':
-        return vehicle.daily_rate
-          ? `AED ${formatRate(vehicle.daily_rate)} / day`
-          : 'Contact for rate'
-      case 'weekly':
-        if (vehicle.weekly_rate) {
-          return `AED ${formatRate(vehicle.weekly_rate)} / week`
-        }
-        return `AED ${formatRate(dailyRate * 7)} / week (calculated)`
-      case 'monthly':
-        if (vehicle.monthly_rate) {
-          return `AED ${formatRate(vehicle.monthly_rate)} / month`
-        }
-        return `AED ${formatRate(dailyRate * 30)} / month (calculated)`
-    }
-  }
+  const dailyRate = vehicle.daily_rate ?? 0
 
   function handleRangeSelect(range: DateRange | undefined) {
     form.setValue('startDate', range?.from as Date, { shouldValidate: true })
@@ -69,32 +73,52 @@ export function StepDuration({ form, vehicle, bookedRanges }: StepDurationProps)
     <div className="space-y-6">
       <div>
         <h2 className="font-display text-xl font-medium text-white mb-1">Rental Duration</h2>
-        <p className="text-sm text-brand-muted">Select your preferred rental period and dates.</p>
+        <p className="text-sm text-brand-muted">Select your dates — longer rentals unlock bigger discounts.</p>
       </div>
 
-      {/* Duration type cards */}
+      {/* Duration tier cards (display-only) */}
       <div>
-        <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">Duration Type</p>
+        <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">Pricing Tiers</p>
         <div className="grid grid-cols-3 gap-3">
-          {DURATION_OPTIONS.map(({ value, label }) => {
-            const selected = durationType === value
+          {DURATION_TIERS.map(({ value, label, range, discount }) => {
+            const isActive = rentalDays > 0 && activeTier === value
+            const discountedRate = dailyRate * (1 - discount / 100)
             return (
-              <button
+              <div
                 key={value}
-                type="button"
-                onClick={() => form.setValue('durationType', value, { shouldValidate: true })}
                 className={[
                   'p-4 rounded-[--radius-card] border text-left transition-all',
-                  selected
+                  isActive
                     ? 'border-brand-cyan bg-brand-cyan/10'
-                    : 'border-brand-border hover:border-white/30',
+                    : 'border-brand-border',
                 ].join(' ')}
               >
-                <p className={['text-sm font-semibold', selected ? 'text-brand-cyan' : 'text-white'].join(' ')}>
-                  {label}
+                <div className="flex items-center gap-2">
+                  <p className={['text-sm font-semibold', isActive ? 'text-brand-cyan' : 'text-white'].join(' ')}>
+                    {label}
+                  </p>
+                  {discount > 0 && (
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-green-500/20 text-green-400">
+                      {discount}% off
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-brand-muted mt-1">{range}</p>
+                <p className={['text-sm font-medium mt-2', isActive ? 'text-brand-cyan' : 'text-white'].join(' ')}>
+                  {dailyRate > 0 ? (
+                    <>
+                      {formatPrice(discountedRate)} / day
+                      {discount > 0 && (
+                        <span className="text-xs text-brand-muted line-through ml-2">
+                          {formatPrice(dailyRate)}
+                        </span>
+                      )}
+                    </>
+                  ) : (
+                    'Contact for rate'
+                  )}
                 </p>
-                <p className="text-xs text-brand-muted mt-1">{getRateDisplay(value)}</p>
-              </button>
+              </div>
             )
           })}
         </div>
@@ -113,11 +137,11 @@ export function StepDuration({ form, vehicle, bookedRanges }: StepDurationProps)
             numberOfMonths={2}
             classNames={{
               root: 'text-white select-none',
-              months: 'flex flex-wrap gap-6',
-              month: 'space-y-3',
-              month_caption: 'flex items-center justify-between',
+              months: 'relative flex flex-wrap gap-6 justify-center',
+              month: 'space-y-3 w-[calc(9*2.25rem)]',
+              month_caption: 'flex items-center pl-16',
               caption_label: 'font-display text-base font-medium text-white',
-              nav: 'flex gap-1',
+              nav: 'absolute top-0 left-0 flex items-center gap-1 z-10',
               button_previous: 'p-1 text-brand-cyan hover:text-brand-cyan-hover transition-colors rounded',
               button_next: 'p-1 text-brand-cyan hover:text-brand-cyan-hover transition-colors rounded',
               month_grid: 'w-full border-collapse',
@@ -151,6 +175,11 @@ export function StepDuration({ form, vehicle, bookedRanges }: StepDurationProps)
             <span className="text-brand-muted">
               {endDate ? endDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Select end date'}
             </span>
+            {rentalDays > 0 && (
+              <span className="text-brand-cyan text-xs font-medium ml-1">
+                ({rentalDays} day{rentalDays !== 1 ? 's' : ''})
+              </span>
+            )}
           </div>
         )}
 

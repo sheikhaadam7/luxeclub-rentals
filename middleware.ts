@@ -36,17 +36,23 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
-  // Unauthenticated user trying to access any route other than / — redirect to login gate
-  if (!claims && pathname !== '/') {
+  // Public routes — accessible without auth
+  const publicPaths = ['/', '/sign-in', '/about', '/contact', '/faq', '/catalogue']
+  const isPublicRoute = publicPaths.includes(pathname) || pathname.startsWith('/catalogue/')
+
+  // Unauthenticated user trying to access a protected route — redirect to sign-in
+  // Preserve the intended destination so we can redirect back after login
+  if (!claims && !isPublicRoute) {
     const url = request.nextUrl.clone()
-    url.pathname = '/'
+    url.pathname = '/sign-in'
+    url.searchParams.set('redirectTo', pathname)
     return NextResponse.redirect(url)
   }
 
-  // Authenticated user visiting the login gate — redirect to dashboard
-  if (claims && pathname === '/') {
+  // Authenticated user visiting the sign-in page — redirect to home
+  if (claims && pathname === '/sign-in') {
     const url = request.nextUrl.clone()
-    url.pathname = '/dashboard'
+    url.pathname = '/'
     return NextResponse.redirect(url)
   }
 
@@ -65,6 +71,6 @@ export const config = {
      * The URL /dashboard is NOT /(protected)/dashboard.
      * This matcher protects ALL routes including /dashboard, /catalogue, etc.
      */
-    '/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|woff2?)$).*)',
+    '/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|mp4|woff2?)$).*)',
   ],
 }

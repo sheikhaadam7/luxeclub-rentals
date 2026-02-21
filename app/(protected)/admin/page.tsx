@@ -4,12 +4,12 @@ import { redirect } from 'next/navigation'
 import { AdminTabs } from '@/components/admin/AdminTabs'
 import { FleetTab } from '@/components/admin/FleetTab'
 import { BookingsTab } from '@/components/admin/BookingsTab'
-import { KYCTab } from '@/components/admin/KYCTab'
 import { PaymentsTab } from '@/components/admin/PaymentsTab'
 import { AnalyticsTab } from '@/components/admin/AnalyticsTab'
+import { LocationsTab } from '@/components/admin/LocationsTab'
 
-type TabId = 'fleet' | 'bookings' | 'kyc' | 'payments' | 'analytics'
-const VALID_TABS: TabId[] = ['fleet', 'bookings', 'kyc', 'payments', 'analytics']
+type TabId = 'fleet' | 'bookings' | 'payments' | 'analytics' | 'locations'
+const VALID_TABS: TabId[] = ['fleet', 'bookings', 'payments', 'analytics', 'locations']
 
 interface AdminPageProps {
   searchParams: Promise<{ tab?: string }>
@@ -60,7 +60,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             Operations Dashboard
           </h1>
           <p className="text-brand-muted text-sm mt-1">
-            Fleet, bookings, identity, payments, and analytics
+            Fleet, bookings, payments, analytics, and locations
           </p>
         </div>
 
@@ -78,11 +78,6 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             <BookingsTab />
           </Suspense>
         )}
-        {activeTab === 'kyc' && (
-          <Suspense fallback={<TabSkeleton />}>
-            <KYCTab />
-          </Suspense>
-        )}
         {activeTab === 'payments' && (
           <Suspense fallback={<TabSkeleton />}>
             <PaymentsTab />
@@ -91,6 +86,11 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
         {activeTab === 'analytics' && (
           <Suspense fallback={<TabSkeleton />}>
             <AnalyticsTab />
+          </Suspense>
+        )}
+        {activeTab === 'locations' && (
+          <Suspense fallback={<TabSkeleton />}>
+            <LocationsTab />
           </Suspense>
         )}
 

@@ -1,5 +1,19 @@
+import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { VehicleGrid } from '@/components/catalogue/VehicleGrid'
+
+export const metadata: Metadata = {
+  title: 'Luxury Car Fleet',
+  description:
+    'Browse our collection of luxury cars for rent in Dubai. Lamborghini, Ferrari, Rolls-Royce, Bentley, Range Rover and more. Book online with insurance included.',
+  openGraph: {
+    title: 'Luxury Car Fleet — LuxeClub Rentals Dubai',
+    description:
+      'Browse our collection of luxury cars for rent in Dubai. Lamborghini, Ferrari, Rolls-Royce, Bentley and more.',
+    url: 'https://www.luxeclubrentals.ae/catalogue',
+  },
+  alternates: { canonical: 'https://www.luxeclubrentals.ae/catalogue' },
+}
 
 export default async function CataloguePage() {
   const supabase = await createClient()

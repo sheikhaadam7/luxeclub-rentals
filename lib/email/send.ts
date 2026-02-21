@@ -8,7 +8,9 @@ import type { ReactElement } from 'react'
  * Used for sending transactional booking confirmation emails.
  */
 
-const resend = new Resend(process.env.RESEND_API_KEY!)
+const resend = process.env.RESEND_API_KEY
+  ? new Resend(process.env.RESEND_API_KEY)
+  : null
 
 interface SendEmailOptions {
   to: string | string[]
@@ -23,6 +25,11 @@ interface SendEmailOptions {
  * @param react   - React Email component to render as HTML
  */
 export async function sendEmail({ to, subject, react }: SendEmailOptions) {
+  if (!resend) {
+    console.log('sendEmail: skipped (RESEND_API_KEY not configured)')
+    return null
+  }
+
   return resend.emails.send({
     from: 'LuxeClub Rentals <bookings@luxeclubrentals.com>',
     to,

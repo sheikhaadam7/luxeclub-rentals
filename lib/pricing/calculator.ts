@@ -28,11 +28,13 @@ export interface BookingPricingInput {
  * All monetary values are in AED.
  */
 export interface BookingPriceBreakdown {
-  /** The per-unit rate (daily, weekly, or monthly) */
+  /** The per-day rate after any discount */
   baseRate: number
-  /** Number of days in the rental (inclusive) */
+  /** Number of days in the rental */
   rentalDays: number
-  /** baseRate * number of rental units (days/weeks/months) */
+  /** Discount percentage applied (0, 10, or 20) */
+  discountPercent: number
+  /** baseRate * rentalDays */
   rentalSubtotal: number
   /** 50 AED if delivery chosen, 0 if self-pickup */
   deliveryFee: number
@@ -51,6 +53,11 @@ export interface BookingPriceBreakdown {
  * Pure pricing function — no side effects, no network calls.
  * Calculates the complete price breakdown for a booking.
  *
+ * Discount tiers (based on rental days):
+ * - 1–6 days: daily rate (no discount)
+ * - 7–29 days: 10% off daily rate
+ * - 30+ days: 20% off daily rate
+ *
  * @param vehicle  - Vehicle with rate columns and deposit_amount
  * @param formValues - Booking wizard form values
  * @returns Complete pricing breakdown
@@ -62,54 +69,38 @@ export function calculateBookingTotal(
   const {
     startDate,
     endDate,
-    durationType,
     pickupMethod,
     returnMethod,
     depositChoice,
   } = formValues
 
-  // Number of days in the rental (inclusive: same-day rental = 1)
-  const rentalDays = differenceInDays(endDate, startDate) + 1
-
-  // Per-unit base rate and rental subtotal
-  let baseRate: number
-  let rentalSubtotal: number
+  // Number of rental days (minimum 1)
+  const rentalDays = Math.max(differenceInDays(endDate, startDate), 1)
 
   const dailyRate = vehicle.daily_rate ?? 0
 
-  switch (durationType) {
-    case 'daily':
-      baseRate = dailyRate
-      rentalSubtotal = Math.round(baseRate * rentalDays * 100) / 100
-      break
-
-    case 'weekly': {
-      baseRate = vehicle.weekly_rate ?? dailyRate * 7
-      const weeks = Math.ceil(rentalDays / 7)
-      rentalSubtotal = Math.round(baseRate * weeks * 100) / 100
-      break
-    }
-
-    case 'monthly': {
-      baseRate = vehicle.monthly_rate ?? dailyRate * 30
-      const months = Math.ceil(rentalDays / 30)
-      rentalSubtotal = Math.round(baseRate * months * 100) / 100
-      break
-    }
+  // Discount tier based on rental length
+  let discountPercent: number
+  if (rentalDays >= 30) {
+    discountPercent = 20
+  } else if (rentalDays >= 7) {
+    discountPercent = 10
+  } else {
+    discountPercent = 0
   }
+
+  const baseRate = Math.round(dailyRate * (1 - discountPercent / 100) * 100) / 100
+  const rentalSubtotal = Math.round(baseRate * rentalDays * 100) / 100
 
   // Delivery and return fees (50 AED flat)
   const deliveryFee = pickupMethod === 'delivery' ? 50 : 0
   const returnFee = returnMethod === 'collection' ? 50 : 0
 
-  // Deposit: either hold per-vehicle amount or charge a 30% daily surcharge
+  // Deposit: 1 day's rental at the full daily rate
   const depositAmount =
-    depositChoice === 'deposit' ? (vehicle.deposit_amount ?? 5000) : 0
+    depositChoice === 'deposit' ? dailyRate : 0
 
-  const noDepositSurcharge =
-    depositChoice === 'no_deposit'
-      ? Math.round(dailyRate * 0.3 * rentalDays * 100) / 100
-      : 0
+  const noDepositSurcharge = depositChoice === 'no_deposit' ? 200 : 0
 
   // Total due (deposit is authorized separately, NOT included)
   const totalDue =
@@ -120,6 +111,7 @@ export function calculateBookingTotal(
   return {
     baseRate,
     rentalDays,
+    discountPercent,
     rentalSubtotal,
     deliveryFee,
     returnFee,
