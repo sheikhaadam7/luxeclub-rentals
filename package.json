@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "scrape": "npx tsx scripts/scraper/run.ts"
+    "scrape": "npx tsx scripts/scraper/run.ts",
+    "scrape:luxury": "npx tsx scripts/scraper/run-luxury.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
