@@ -168,9 +168,21 @@ export default async function HomePage() {
         {/* Trusted by strip */}
         <section className="max-w-5xl mx-auto px-4 sm:px-6 py-12 text-center">
           <p className="text-xs text-white/25 uppercase tracking-[0.2em] font-medium mb-6">As Featured In</p>
-          <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12">
-            {['Gulf News', 'Time Out Dubai', 'Luxury Lifestyle', 'Arabian Business'].map((name) => (
-              <span key={name} className="text-sm font-medium text-white/15 tracking-wide">{name}</span>
+          <div className="flex flex-wrap items-center justify-center gap-12 sm:gap-16">
+            {[
+              { src: '/logos/gulf-news.svg', alt: 'Gulf News', width: 200 },
+              { src: '/logos/timeout.svg', alt: 'Time Out Dubai', width: 180 },
+              { src: '/logos/luxury-lifestyle.svg', alt: 'Luxury Lifestyle', width: 210 },
+              { src: '/logos/arabian-business.svg', alt: 'Arabian Business', width: 210 },
+            ].map((logo) => (
+              <img
+                key={logo.alt}
+                src={logo.src}
+                alt={logo.alt}
+                width={logo.width}
+                height={56}
+                className="opacity-60 hover:opacity-90 transition-opacity duration-300"
+              />
             ))}
           </div>
         </section>
