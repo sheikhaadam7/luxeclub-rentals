@@ -46,16 +46,15 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
 
   const closeMobile = useCallback(() => setMobileOpen(false), [])
 
-  // Build menu items array for stagger indexing
-  const menuItems: Array<{ type: 'link'; href: string; label: string } | { type: 'currency' } | { type: 'auth' }> = [
+  // Build menu items (links + auth — currency is separate at bottom)
+  const menuItems: Array<{ type: 'link'; href: string; label: string } | { type: 'auth' }> = [
     ...navItems.map((item) => ({ type: 'link' as const, ...item })),
-    { type: 'currency' },
     { type: 'auth' },
   ]
 
   return (
     <>
-      <nav className="glass border-b border-brand-border sticky top-0 z-50">
+      <nav className="glass border-b border-brand-border sticky top-0 z-[70]">
         <div className="max-w-7xl mx-auto px-5 sm:px-6 flex items-center justify-between h-14">
           {/* Logo */}
           <Link
@@ -142,8 +141,8 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
       {/* Mobile overlay + panel */}
       <div
         className={[
-          'fixed inset-0 z-40 md:hidden transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]',
-          mobileOpen ? 'visible' : 'invisible',
+          'fixed inset-0 z-[60] md:hidden transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]',
+          mobileOpen ? 'visible' : 'invisible pointer-events-none',
         ].join(' ')}
       >
         {/* Backdrop */}
@@ -155,20 +154,20 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
           ].join(' ')}
         />
 
-        {/* Panel */}
+        {/* Panel — full height below navbar, flex column so currency sticks to bottom */}
         <div
           className={[
-            'absolute top-14 left-0 right-0 bg-[#0a0a0a]/95 backdrop-blur-2xl border-b border-brand-border/50 transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]',
+            'absolute top-14 left-0 right-0 bottom-0 bg-[#0a0a0a]/95 backdrop-blur-2xl transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] flex flex-col',
             mobileOpen
               ? 'translate-y-0 opacity-100'
               : '-translate-y-4 opacity-0',
           ].join(' ')}
         >
-          <div className="px-5 pt-3 pb-6 space-y-1">
+          {/* Nav links + auth */}
+          <div className="px-5 pt-3 pb-4 space-y-1 flex-1">
             {menuItems.map((item, i) => {
               const delay = `${60 + i * 40}ms`
               const staggerStyle = {
-                transitionDelay: mobileOpen ? delay : '0ms',
                 opacity: mobileOpen ? 1 : 0,
                 transform: mobileOpen ? 'translateY(0)' : 'translateY(-8px)',
                 transition: `opacity 400ms cubic-bezier(0.32,0.72,0,1) ${mobileOpen ? delay : '0ms'}, transform 400ms cubic-bezier(0.32,0.72,0,1) ${mobileOpen ? delay : '0ms'}`,
@@ -193,17 +192,14 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
                 )
               }
 
-              if (item.type === 'currency') {
-                return (
-                  <div key="currency" style={staggerStyle} className="px-1">
-                    <CurrencySelectorInline />
-                  </div>
-                )
-              }
-
               // Auth item
+              const authDelay = `${60 + i * 40}ms`
               return (
-                <div key="auth" style={staggerStyle}>
+                <div key="auth" style={{
+                  opacity: mobileOpen ? 1 : 0,
+                  transform: mobileOpen ? 'translateY(0)' : 'translateY(-8px)',
+                  transition: `opacity 400ms cubic-bezier(0.32,0.72,0,1) ${mobileOpen ? authDelay : '0ms'}, transform 400ms cubic-bezier(0.32,0.72,0,1) ${mobileOpen ? authDelay : '0ms'}`,
+                }}>
                   <div className="mx-4 my-2 border-t border-white/[0.06]" />
                   {isAuthenticated ? (
                     <form action={logout}>
@@ -226,6 +222,18 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
                 </div>
               )
             })}
+          </div>
+
+          {/* Currency selector — pinned to bottom */}
+          <div
+            className="px-6 pb-8 pt-2 border-t border-white/[0.06]"
+            style={{
+              opacity: mobileOpen ? 1 : 0,
+              transform: mobileOpen ? 'translateY(0)' : 'translateY(8px)',
+              transition: `opacity 400ms cubic-bezier(0.32,0.72,0,1) ${mobileOpen ? `${60 + menuItems.length * 40}ms` : '0ms'}, transform 400ms cubic-bezier(0.32,0.72,0,1) ${mobileOpen ? `${60 + menuItems.length * 40}ms` : '0ms'}`,
+            }}
+          >
+            <CurrencySelectorInline />
           </div>
         </div>
       </div>
