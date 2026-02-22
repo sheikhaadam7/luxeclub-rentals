@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { logout } from '@/app/actions/auth'
 import { CurrencySelector, CurrencySelectorInline } from '@/components/nav/CurrencySelector'
 
@@ -29,128 +29,206 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
     return pathname.startsWith(href)
   }
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [mobileOpen])
+
+  // Close on route change
+  useEffect(() => {
+    setMobileOpen(false)
+  }, [pathname])
+
+  const closeMobile = useCallback(() => setMobileOpen(false), [])
+
+  // Build menu items array for stagger indexing
+  const menuItems: Array<{ type: 'link'; href: string; label: string } | { type: 'currency' } | { type: 'auth' }> = [
+    ...navItems.map((item) => ({ type: 'link' as const, ...item })),
+    { type: 'currency' },
+    { type: 'auth' },
+  ]
+
   return (
-    <nav className="glass border-b border-brand-border sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-5 sm:px-6 flex items-center justify-between h-14">
-        {/* Logo */}
-        <Link
-          href="/"
-          className="font-display text-2xl font-semibold text-brand-cyan tracking-tight transition-opacity duration-200 hover:opacity-70"
-        >
-          LuxeClub
-        </Link>
+    <>
+      <nav className="glass border-b border-brand-border sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 flex items-center justify-between h-14">
+          {/* Logo */}
+          <Link
+            href="/"
+            className="font-display text-2xl font-semibold text-brand-cyan tracking-tight transition-opacity duration-200 hover:opacity-70"
+          >
+            LuxeClub
+          </Link>
 
-        {/* Desktop nav links */}
-        <div className="hidden md:flex items-center gap-0.5">
-          {navItems.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className={[
-                'relative px-3.5 py-1.5 rounded-lg text-[13px] font-medium tracking-wide transition-all duration-200',
-                isActive(href)
-                  ? 'text-white bg-white/[0.08]'
-                  : 'text-brand-muted hover:text-white hover:bg-white/[0.04]',
-              ].join(' ')}
-            >
-              {label}
-            </Link>
-          ))}
+          {/* Desktop nav links */}
+          <div className="hidden md:flex items-center gap-0.5">
+            {navItems.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className={[
+                  'relative px-3.5 py-1.5 rounded-lg text-[13px] font-medium tracking-wide transition-all duration-200',
+                  isActive(href)
+                    ? 'text-white bg-white/[0.08]'
+                    : 'text-brand-muted hover:text-white hover:bg-white/[0.04]',
+                ].join(' ')}
+              >
+                {label}
+              </Link>
+            ))}
 
-          <CurrencySelector />
+            <CurrencySelector />
 
-          <div className="w-px h-4 bg-brand-border mx-2" />
+            <div className="w-px h-4 bg-brand-border mx-2" />
 
-          {isAuthenticated ? (
-            <form action={logout}>
-              <button
-                type="submit"
+            {isAuthenticated ? (
+              <form action={logout}>
+                <button
+                  type="submit"
+                  className="px-3.5 py-1.5 rounded-lg text-[13px] font-medium tracking-wide text-brand-muted hover:text-white hover:bg-white/[0.04] transition-all duration-200"
+                >
+                  Logout
+                </button>
+              </form>
+            ) : (
+              <Link
+                href="/sign-in"
                 className="px-3.5 py-1.5 rounded-lg text-[13px] font-medium tracking-wide text-brand-muted hover:text-white hover:bg-white/[0.04] transition-all duration-200"
               >
-                Logout
-              </button>
-            </form>
-          ) : (
-            <Link
-              href="/sign-in"
-              className="px-3.5 py-1.5 rounded-lg text-[13px] font-medium tracking-wide text-brand-muted hover:text-white hover:bg-white/[0.04] transition-all duration-200"
-            >
-              Sign In
-            </Link>
-          )}
-        </div>
-
-        {/* Mobile hamburger */}
-        <button
-          type="button"
-          onClick={() => setMobileOpen((o) => !o)}
-          className="md:hidden flex items-center justify-center w-9 h-9 rounded-lg text-brand-muted hover:text-white hover:bg-white/[0.06] transition-all duration-200"
-          aria-label="Toggle menu"
-        >
-          <svg
-            className={[
-              'w-[18px] h-[18px] transition-transform duration-300',
-              mobileOpen ? 'rotate-90' : '',
-            ].join(' ')}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={1.5}
-          >
-            {mobileOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+                Sign In
+              </Link>
             )}
-          </svg>
-        </button>
-      </div>
+          </div>
 
-      {/* Mobile dropdown */}
+          {/* Mobile hamburger — animated 3-line → X morph */}
+          <button
+            type="button"
+            onClick={() => setMobileOpen((o) => !o)}
+            className="md:hidden relative flex items-center justify-center w-10 h-10 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.06] transition-colors duration-200"
+            aria-label="Toggle menu"
+          >
+            <div className="w-[18px] h-[14px] relative">
+              <span
+                className="absolute left-0 w-full h-[1.5px] bg-current rounded-full transition-all duration-300 ease-[cubic-bezier(0.76,0,0.24,1)]"
+                style={{
+                  top: mobileOpen ? '6px' : '0px',
+                  transform: mobileOpen ? 'rotate(45deg)' : 'rotate(0)',
+                }}
+              />
+              <span
+                className="absolute left-0 top-[6px] w-full h-[1.5px] bg-current rounded-full transition-all duration-300 ease-[cubic-bezier(0.76,0,0.24,1)]"
+                style={{
+                  opacity: mobileOpen ? 0 : 1,
+                  transform: mobileOpen ? 'scaleX(0)' : 'scaleX(1)',
+                }}
+              />
+              <span
+                className="absolute left-0 w-full h-[1.5px] bg-current rounded-full transition-all duration-300 ease-[cubic-bezier(0.76,0,0.24,1)]"
+                style={{
+                  top: mobileOpen ? '6px' : '12px',
+                  transform: mobileOpen ? 'rotate(-45deg)' : 'rotate(0)',
+                }}
+              />
+            </div>
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile overlay + panel */}
       <div
         className={[
-          'md:hidden overflow-hidden transition-all duration-300',
-          mobileOpen ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0',
+          'fixed inset-0 z-40 md:hidden transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]',
+          mobileOpen ? 'visible' : 'invisible',
         ].join(' ')}
-        style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
       >
-        <div className="px-4 pb-4 pt-1 space-y-0.5">
-          {navItems.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              onClick={() => setMobileOpen(false)}
-              className={[
-                'block px-4 py-3 rounded-xl text-[15px] font-medium transition-all duration-200',
-                isActive(href)
-                  ? 'text-white bg-white/[0.08]'
-                  : 'text-brand-muted hover:text-white hover:bg-white/[0.04]',
-              ].join(' ')}
-            >
-              {label}
-            </Link>
-          ))}
-          <CurrencySelectorInline />
-          {isAuthenticated ? (
-            <form action={logout}>
-              <button
-                type="submit"
-                className="w-full text-left px-4 py-3 rounded-xl text-[15px] font-medium text-brand-muted hover:text-white hover:bg-white/[0.04] transition-all duration-200"
-              >
-                Logout
-              </button>
-            </form>
-          ) : (
-            <Link
-              href="/sign-in"
-              onClick={() => setMobileOpen(false)}
-              className="block px-4 py-3 rounded-xl text-[15px] font-medium text-brand-muted hover:text-white hover:bg-white/[0.04] transition-all duration-200"
-            >
-              Sign In
-            </Link>
-          )}
+        {/* Backdrop */}
+        <div
+          onClick={closeMobile}
+          className={[
+            'absolute inset-0 bg-black/60 backdrop-blur-xl transition-opacity duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]',
+            mobileOpen ? 'opacity-100' : 'opacity-0',
+          ].join(' ')}
+        />
+
+        {/* Panel */}
+        <div
+          className={[
+            'absolute top-14 left-0 right-0 bg-[#0a0a0a]/95 backdrop-blur-2xl border-b border-brand-border/50 transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]',
+            mobileOpen
+              ? 'translate-y-0 opacity-100'
+              : '-translate-y-4 opacity-0',
+          ].join(' ')}
+        >
+          <div className="px-5 pt-3 pb-6 space-y-1">
+            {menuItems.map((item, i) => {
+              const delay = `${60 + i * 40}ms`
+              const staggerStyle = {
+                transitionDelay: mobileOpen ? delay : '0ms',
+                opacity: mobileOpen ? 1 : 0,
+                transform: mobileOpen ? 'translateY(0)' : 'translateY(-8px)',
+                transition: `opacity 400ms cubic-bezier(0.32,0.72,0,1) ${mobileOpen ? delay : '0ms'}, transform 400ms cubic-bezier(0.32,0.72,0,1) ${mobileOpen ? delay : '0ms'}`,
+              }
+
+              if (item.type === 'link') {
+                return (
+                  <div key={item.href} style={staggerStyle}>
+                    <Link
+                      href={item.href}
+                      onClick={closeMobile}
+                      className={[
+                        'flex items-center px-4 py-3.5 rounded-2xl text-[16px] font-medium tracking-[-0.01em] transition-colors duration-200 active:scale-[0.98]',
+                        isActive(item.href)
+                          ? 'text-white bg-white/[0.08]'
+                          : 'text-white/60 hover:text-white hover:bg-white/[0.05] active:bg-white/[0.08]',
+                      ].join(' ')}
+                    >
+                      {item.label}
+                    </Link>
+                  </div>
+                )
+              }
+
+              if (item.type === 'currency') {
+                return (
+                  <div key="currency" style={staggerStyle} className="px-1">
+                    <CurrencySelectorInline />
+                  </div>
+                )
+              }
+
+              // Auth item
+              return (
+                <div key="auth" style={staggerStyle}>
+                  <div className="mx-4 my-2 border-t border-white/[0.06]" />
+                  {isAuthenticated ? (
+                    <form action={logout}>
+                      <button
+                        type="submit"
+                        className="w-full text-left flex items-center px-4 py-3.5 rounded-2xl text-[16px] font-medium tracking-[-0.01em] text-white/60 hover:text-white hover:bg-white/[0.05] active:bg-white/[0.08] transition-colors duration-200 active:scale-[0.98]"
+                      >
+                        Logout
+                      </button>
+                    </form>
+                  ) : (
+                    <Link
+                      href="/sign-in"
+                      onClick={closeMobile}
+                      className="flex items-center px-4 py-3.5 rounded-2xl text-[16px] font-medium tracking-[-0.01em] text-white/60 hover:text-white hover:bg-white/[0.05] active:bg-white/[0.08] transition-colors duration-200 active:scale-[0.98]"
+                    >
+                      Sign In
+                    </Link>
+                  )}
+                </div>
+              )
+            })}
+          </div>
         </div>
       </div>
-    </nav>
+    </>
   )
 }
