@@ -161,7 +161,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
       {/* Pickup method */}
       <div>
         <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">Pickup Method</p>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {/* Delivery card */}
           <button
             type="button"
@@ -313,7 +313,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
       {/* Return method */}
       <div>
         <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">Return Method</p>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {/* Self drop-off card */}
           <button
             type="button"

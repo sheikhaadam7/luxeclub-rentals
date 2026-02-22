@@ -42,7 +42,7 @@ export default async function BookingPage({ params }: PageProps) {
   const isAuthenticated = !!claimsData?.claims
 
   return (
-    <main className="min-h-screen bg-luxury">
+    <main className="min-h-screen bg-luxury overflow-x-hidden">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
         {/* Back link */}
         <Link

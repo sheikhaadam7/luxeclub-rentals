@@ -35,7 +35,7 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
         {/* Logo */}
         <Link
           href="/"
-          className="font-display text-lg font-semibold text-brand-cyan tracking-tight transition-opacity duration-200 hover:opacity-70"
+          className="font-display text-2xl font-semibold text-brand-cyan tracking-tight transition-opacity duration-200 hover:opacity-70"
         >
           LuxeClub
         </Link>

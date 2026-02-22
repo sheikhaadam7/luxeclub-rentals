@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import { DayPicker, type DateRange } from 'react-day-picker'
 import { differenceInDays } from 'date-fns'
@@ -31,6 +31,16 @@ export function StepDuration({ form, vehicle, bookedRanges }: StepDurationProps)
   const { formatPrice } = useCurrency()
   const startDate = form.watch('startDate')
   const endDate = form.watch('endDate')
+
+  // Responsive: show 1 month on mobile, 2 on wider screens
+  const [calMonths, setCalMonths] = useState(1)
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 640px)')
+    setCalMonths(mq.matches ? 2 : 1)
+    const handler = (e: MediaQueryListEvent) => setCalMonths(e.matches ? 2 : 1)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
 
   // Calculate rental days and auto-set durationType
   const rentalDays =
@@ -79,7 +89,7 @@ export function StepDuration({ form, vehicle, bookedRanges }: StepDurationProps)
       {/* Duration tier cards (display-only) */}
       <div>
         <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">Pricing Tiers</p>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {DURATION_TIERS.map(({ value, label, range, discount }) => {
             const isActive = rentalDays > 0 && activeTier === value
             const discountedRate = dailyRate * (1 - discount / 100)
@@ -134,11 +144,11 @@ export function StepDuration({ form, vehicle, bookedRanges }: StepDurationProps)
             onSelect={handleRangeSelect}
             disabled={disabledMatchers}
             excludeDisabled
-            numberOfMonths={2}
+            numberOfMonths={calMonths}
             classNames={{
               root: 'text-white select-none',
               months: 'relative flex flex-wrap gap-6 justify-center',
-              month: 'space-y-3 w-[calc(9*2.25rem)]',
+              month: 'space-y-3 w-full sm:w-[calc(9*2.25rem)]',
               month_caption: 'flex items-center pl-16',
               caption_label: 'font-display text-base font-medium text-white',
               nav: 'absolute top-0 left-0 flex items-center gap-1 z-10',

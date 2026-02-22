@@ -227,7 +227,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
   return (
     <div className="flex flex-col lg:flex-row gap-8 items-start">
       {/* Left column: step content */}
-      <div className="flex-1 min-w-0 space-y-6">
+      <div className="flex-1 min-w-0 overflow-hidden space-y-6">
         {/* Step indicator */}
         <nav aria-label="Booking steps">
           <ol className="flex items-center">
@@ -241,7 +241,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
                     {/* Circle */}
                     <div
                       className={[
-                        'w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all',
+                        'w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold transition-all',
                         isCompleted
                           ? 'bg-brand-cyan text-black'
                           : isCurrent
@@ -271,7 +271,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
                   {!isLast && (
                     <div
                       className={[
-                        'h-px flex-1 mx-2 mt-[-1rem] sm:mt-[-1.5rem] transition-colors',
+                        'h-px flex-1 mx-1 sm:mx-2 mt-[-0.875rem] sm:mt-[-1.5rem] transition-colors',
                         isCompleted ? 'bg-brand-cyan' : 'bg-brand-border',
                       ].join(' ')}
                     />
@@ -283,7 +283,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
         </nav>
 
         {/* Step content */}
-        <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-6">
+        <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-4 sm:p-6">
           {currentStep === 'duration' && (
             <StepDuration form={form} vehicle={vehicle} bookedRanges={bookedRanges} />
           )}
@@ -335,7 +335,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
             type="button"
             onClick={back}
             disabled={step === 0}
-            className="px-6 py-2.5 rounded-[--radius-card] border border-brand-border text-sm font-medium text-brand-muted hover:text-white hover:border-white/40 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            className="px-4 sm:px-6 py-2.5 rounded-[--radius-card] border border-brand-border text-sm font-medium text-brand-muted hover:text-white hover:border-white/40 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
             Back
           </button>
@@ -346,7 +346,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
               type="button"
               onClick={advance}
               disabled={isPending || isCreatingBooking}
-              className="px-8 py-2.5 rounded-[--radius-card] bg-brand-cyan text-black text-sm font-semibold hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 sm:px-8 py-2.5 rounded-[--radius-card] bg-brand-cyan text-black text-sm font-semibold hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isPending || isCreatingBooking ? 'Please wait...' : 'Continue'}
             </button>
