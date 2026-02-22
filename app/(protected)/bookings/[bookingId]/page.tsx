@@ -317,6 +317,12 @@ export default async function BookingDetailPage({ params }: PageProps) {
                 value={booking.start_time}
               />
             )}
+            {booking.end_time && (
+              <DetailRow
+                label="Dropoff Time"
+                value={booking.end_time}
+              />
+            )}
             <DetailRow
               label="Pickup"
               value={formatPickupMethod(booking.pickup_method)}

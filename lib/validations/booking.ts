@@ -13,6 +13,11 @@ export const durationStepSchema = z
       .string()
       .regex(/^\d{2}:\d{2}$/, 'Time must be in HH:MM format')
       .optional(),
+    /** Optional dropoff time in HH:MM format */
+    endTime: z
+      .string()
+      .regex(/^\d{2}:\d{2}$/, 'Time must be in HH:MM format')
+      .optional(),
   })
   .refine((data) => data.endDate >= data.startDate, {
     message: 'End date must be on or after start date',
@@ -94,6 +99,10 @@ export const bookingSchema = z
     startDate: z.date({ error: 'Start date is required' }),
     endDate: z.date({ error: 'End date is required' }),
     startTime: z
+      .string()
+      .regex(/^\d{2}:\d{2}$/, 'Time must be in HH:MM format')
+      .optional(),
+    endTime: z
       .string()
       .regex(/^\d{2}:\d{2}$/, 'Time must be in HH:MM format')
       .optional(),

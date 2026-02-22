@@ -27,6 +27,34 @@ const DURATION_TIERS = [
   { value: 'monthly' as const, label: 'Monthly', range: '30+ days', discount: 20 },
 ]
 
+const TIME_SLOTS = [
+  { value: '08:00', label: '8:00 AM' },
+  { value: '08:30', label: '8:30 AM' },
+  { value: '09:00', label: '9:00 AM' },
+  { value: '09:30', label: '9:30 AM' },
+  { value: '10:00', label: '10:00 AM' },
+  { value: '10:30', label: '10:30 AM' },
+  { value: '11:00', label: '11:00 AM' },
+  { value: '11:30', label: '11:30 AM' },
+  { value: '12:00', label: '12:00 PM' },
+  { value: '12:30', label: '12:30 PM' },
+  { value: '13:00', label: '1:00 PM' },
+  { value: '13:30', label: '1:30 PM' },
+  { value: '14:00', label: '2:00 PM' },
+  { value: '14:30', label: '2:30 PM' },
+  { value: '15:00', label: '3:00 PM' },
+  { value: '15:30', label: '3:30 PM' },
+  { value: '16:00', label: '4:00 PM' },
+  { value: '16:30', label: '4:30 PM' },
+  { value: '17:00', label: '5:00 PM' },
+  { value: '17:30', label: '5:30 PM' },
+  { value: '18:00', label: '6:00 PM' },
+  { value: '18:30', label: '6:30 PM' },
+  { value: '19:00', label: '7:00 PM' },
+  { value: '19:30', label: '7:30 PM' },
+  { value: '20:00', label: '8:00 PM' },
+]
+
 export function StepDuration({ form, vehicle, bookedRanges }: StepDurationProps) {
   const { formatPrice } = useCurrency()
   const startDate = form.watch('startDate')
@@ -201,18 +229,36 @@ export function StepDuration({ form, vehicle, bookedRanges }: StepDurationProps)
         )}
       </div>
 
-      {/* Optional pickup time */}
-      <div>
-        <label className="block text-xs text-brand-muted uppercase tracking-wider mb-2">
-          Pickup Time (optional)
-        </label>
-        <input
-          type="time"
-          defaultValue="10:00"
-          {...form.register('startTime')}
-          className="w-40 bg-black/30 border border-brand-border rounded-[--radius-card] px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-cyan input-focus-glow"
-        />
-        <p className="mt-1 text-xs text-brand-muted">Default pickup time is 10:00 AM</p>
+      {/* Pickup & Dropoff time */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-xs text-brand-muted uppercase tracking-wider mb-2">
+            Pickup Time
+          </label>
+          <select
+            {...form.register('startTime')}
+            defaultValue="10:00"
+            className="w-full bg-black/30 border border-brand-border rounded-[--radius-card] px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-cyan input-focus-glow appearance-none cursor-pointer"
+          >
+            {TIME_SLOTS.map((slot) => (
+              <option key={`pickup-${slot.value}`} value={slot.value}>{slot.label}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="block text-xs text-brand-muted uppercase tracking-wider mb-2">
+            Dropoff Time
+          </label>
+          <select
+            {...form.register('endTime')}
+            defaultValue="10:00"
+            className="w-full bg-black/30 border border-brand-border rounded-[--radius-card] px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-cyan input-focus-glow appearance-none cursor-pointer"
+          >
+            {TIME_SLOTS.map((slot) => (
+              <option key={`dropoff-${slot.value}`} value={slot.value}>{slot.label}</option>
+            ))}
+          </select>
+        </div>
       </div>
     </div>
   )

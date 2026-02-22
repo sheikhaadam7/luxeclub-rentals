@@ -51,6 +51,7 @@ export interface BookingDetail {
   end_date: string
   duration_type: string
   start_time: string | null
+  end_time: string | null
   pickup_method: string
   delivery_address: string | null
   delivery_lat: number | null
@@ -163,6 +164,7 @@ export async function createBooking(
       end_date: formData.endDate.toISOString().split('T')[0],
       duration_type: formData.durationType,
       start_time: formData.startTime ?? null,
+      end_time: formData.endTime ?? null,
       pickup_method: formData.pickupMethod,
       delivery_address: formData.deliveryAddress ?? null,
       delivery_lat: formData.deliveryLat ?? null,
@@ -363,6 +365,7 @@ export async function getBookingDetail(
       end_date,
       duration_type,
       start_time,
+      end_time,
       pickup_method,
       delivery_address,
       delivery_lat,

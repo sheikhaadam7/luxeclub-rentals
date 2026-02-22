@@ -473,6 +473,7 @@ export interface AdminBooking {
   return_method: string | null
   collection_address: string | null
   start_time: string | null
+  end_time: string | null
   stripe_deposit_pi_id: string | null
   modification_status: string | null
   modification_requested_start: string | null
@@ -500,7 +501,7 @@ export async function getAllBookings(): Promise<
   const { data: bookings, error: bookingsError } = await admin
     .from('bookings')
     .select(
-      'id, vehicle_id, user_id, start_date, end_date, duration_type, status, payment_status, payment_method, total_due, pickup_method, delivery_address, created_at, updated_at, guest_name, guest_email, guest_phone, rental_subtotal, delivery_fee, return_fee, no_deposit_surcharge, deposit_choice, deposit_amount, deposit_status, return_method, collection_address, start_time, stripe_deposit_pi_id, modification_status, modification_requested_start, modification_requested_end, vehicles(name, slug)'
+      'id, vehicle_id, user_id, start_date, end_date, duration_type, status, payment_status, payment_method, total_due, pickup_method, delivery_address, created_at, updated_at, guest_name, guest_email, guest_phone, rental_subtotal, delivery_fee, return_fee, no_deposit_surcharge, deposit_choice, deposit_amount, deposit_status, return_method, collection_address, start_time, end_time, stripe_deposit_pi_id, modification_status, modification_requested_start, modification_requested_end, vehicles(name, slug)'
     )
     .order('created_at', { ascending: false })
 
@@ -562,6 +563,7 @@ export async function getAllBookings(): Promise<
       return_method: b.return_method ?? null,
       collection_address: b.collection_address ?? null,
       start_time: b.start_time ?? null,
+      end_time: b.end_time ?? null,
       stripe_deposit_pi_id: b.stripe_deposit_pi_id ?? null,
       modification_status: b.modification_status ?? null,
       modification_requested_start: b.modification_requested_start ?? null,
@@ -819,7 +821,7 @@ export async function getDashboardOverview(): Promise<
     admin
       .from('bookings')
       .select(
-        'id, vehicle_id, user_id, start_date, end_date, duration_type, status, payment_status, payment_method, total_due, pickup_method, delivery_address, created_at, updated_at, guest_name, guest_email, guest_phone, rental_subtotal, delivery_fee, return_fee, no_deposit_surcharge, deposit_choice, deposit_amount, deposit_status, return_method, collection_address, start_time, stripe_deposit_pi_id, modification_status, modification_requested_start, modification_requested_end, vehicles(name, slug)'
+        'id, vehicle_id, user_id, start_date, end_date, duration_type, status, payment_status, payment_method, total_due, pickup_method, delivery_address, created_at, updated_at, guest_name, guest_email, guest_phone, rental_subtotal, delivery_fee, return_fee, no_deposit_surcharge, deposit_choice, deposit_amount, deposit_status, return_method, collection_address, start_time, end_time, stripe_deposit_pi_id, modification_status, modification_requested_start, modification_requested_end, vehicles(name, slug)'
       )
       .order('created_at', { ascending: false })
       .limit(10),
@@ -899,6 +901,7 @@ export async function getDashboardOverview(): Promise<
       return_method: b.return_method ?? null,
       collection_address: b.collection_address ?? null,
       start_time: b.start_time ?? null,
+      end_time: b.end_time ?? null,
       stripe_deposit_pi_id: b.stripe_deposit_pi_id ?? null,
       modification_status: b.modification_status ?? null,
       modification_requested_start: b.modification_requested_start ?? null,
