@@ -3,8 +3,9 @@
 import { useState } from 'react'
 import { LoginForm } from './LoginForm'
 import { SignupForm } from './SignupForm'
+import { ForgotPasswordForm } from './ForgotPasswordForm'
 
-type AuthView = 'login' | 'signup'
+type AuthView = 'login' | 'signup' | 'forgot'
 
 interface AuthGateProps {
   redirectTo?: string
@@ -17,5 +18,9 @@ export function AuthGate({ redirectTo }: AuthGateProps) {
     return <SignupForm onSwitch={() => setView('login')} redirectTo={redirectTo} />
   }
 
-  return <LoginForm onSwitch={() => setView('signup')} redirectTo={redirectTo} />
+  if (view === 'forgot') {
+    return <ForgotPasswordForm onBack={() => setView('login')} />
+  }
+
+  return <LoginForm onSwitch={() => setView('signup')} onForgot={() => setView('forgot')} redirectTo={redirectTo} />
 }

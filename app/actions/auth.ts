@@ -46,6 +46,34 @@ export async function login(formData: FormData) {
   redirect(redirectTo || '/')
 }
 
+export async function resetPassword(email: string) {
+  if (!email || typeof email !== 'string') {
+    return { error: 'Please provide a valid email address' }
+  }
+
+  const supabase = await createClient()
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://luxeclubrentals.com'}/auth/confirm`,
+  })
+
+  if (error) return { error: error.message }
+
+  // Always return success to prevent email enumeration
+  return { success: true }
+}
+
+export async function updatePassword(newPassword: string) {
+  if (!newPassword || newPassword.length < 6) {
+    return { error: 'Password must be at least 6 characters' }
+  }
+
+  const supabase = await createClient()
+  const { error } = await supabase.auth.updateUser({ password: newPassword })
+
+  if (error) return { error: error.message }
+  return { success: true }
+}
+
 export async function logout() {
   const supabase = await createClient()
   await supabase.auth.signOut()

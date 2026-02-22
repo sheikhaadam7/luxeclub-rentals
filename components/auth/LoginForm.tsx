@@ -13,10 +13,11 @@ type LoginFormData = z.infer<typeof loginSchema>
 
 interface LoginFormProps {
   onSwitch: () => void
+  onForgot: () => void
   redirectTo?: string
 }
 
-export function LoginForm({ onSwitch, redirectTo }: LoginFormProps) {
+export function LoginForm({ onSwitch, onForgot, redirectTo }: LoginFormProps) {
   const [isPending, startTransition] = useTransition()
   const {
     register,
@@ -61,6 +62,16 @@ export function LoginForm({ onSwitch, redirectTo }: LoginFormProps) {
       {errors.root && (
         <p className="text-sm text-red-400">{errors.root.message}</p>
       )}
+
+      <div className="flex justify-end">
+        <button
+          type="button"
+          onClick={onForgot}
+          className="text-xs text-white/30 hover:text-white/60 transition-colors"
+        >
+          Forgot password?
+        </button>
+      </div>
 
       <Button type="submit" loading={isPending}>
         Sign in
