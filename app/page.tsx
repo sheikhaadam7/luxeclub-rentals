@@ -6,6 +6,7 @@ import { NavBar } from '@/components/nav/NavBar'
 import { Footer } from '@/components/nav/Footer'
 import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat'
 import { CurrencyProvider } from '@/lib/currency/context'
+import { ScrollReveal } from '@/components/ui/ScrollReveal'
 
 // ---------------------------------------------------------------------------
 // Testimonials
@@ -98,7 +99,7 @@ export default async function HomePage() {
           <div className="relative z-10 text-center space-y-6">
             <h1 className="font-display text-6xl sm:text-7xl lg:text-8xl font-medium tracking-tight leading-[1.05]">
               <span className="animate-fade-in-left block" style={{ animationDelay: '0ms' }}>
-                <span className="text-brand-cyan/70">LuxeClub,</span>
+                <span className="text-white/50">LuxeClub,</span>
               </span>
               <span className="animate-fade-in-left block" style={{ animationDelay: '200ms' }}>
                 <span className="text-white">Car Rentals</span>
@@ -113,7 +114,7 @@ export default async function HomePage() {
           {/* Garage CTA */}
           <Link
             href="/catalogue"
-            className="animate-fade-in-left relative z-10 px-16 py-5 rounded-xl bg-brand-cyan text-[#080604] text-lg font-semibold hover:scale-105 hover:shadow-[0_0_40px_rgba(201,169,110,0.35)] transition-all duration-300 ease-out"
+            className="animate-fade-in-left relative z-10 px-16 py-5 rounded-xl bg-white text-black text-lg font-semibold hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] transition-all duration-300 ease-out"
             style={{ animationDelay: '600ms' }}
           >
             Explore Our Fleet
@@ -121,7 +122,7 @@ export default async function HomePage() {
         </div>
 
         {/* Trust stats bar */}
-        <section className="border-y border-brand-border bg-brand-subtle">
+        <section className="border-y border-white/[0.06] bg-white/[0.02]">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
               <div className="space-y-1">
@@ -176,63 +177,73 @@ export default async function HomePage() {
 
         {/* What we do */}
         <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-24">
-          <h3 className="font-display text-3xl sm:text-4xl font-medium text-white mb-10">
-            What we do
-          </h3>
+          <ScrollReveal>
+            <h3 className="font-display text-3xl sm:text-4xl font-medium text-white mb-10">
+              What we do
+            </h3>
+          </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             {/* Luxury Car Rentals */}
-            <div className="border border-white/[0.08] rounded-2xl overflow-hidden">
-              <div className="bg-white/[0.03] border-b border-white/[0.06] flex items-center justify-center py-10">
-                <div className="w-14 h-14 rounded-full bg-white/[0.06] flex items-center justify-center">
-                  <svg className="w-6 h-6 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" />
-                  </svg>
+            <ScrollReveal delay={100}>
+              <div className="border border-white/[0.08] rounded-2xl overflow-hidden h-full group">
+                <div className="relative h-52 overflow-hidden">
+                  <img
+                    src="https://images.unsplash.com/photo-1756139258136-2ec452dfa3cc?w=1200&q=85"
+                    alt="Two sports cars parked under a structure"
+                    className="w-full h-full object-cover img-zoom"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                </div>
+                <div className="p-6 text-center space-y-3">
+                  <h4 className="font-display text-xl font-medium text-white">Luxury Car Rentals</h4>
+                  <p className="text-sm text-white/40 leading-relaxed">
+                    Luxury and supercar rentals, making a riveting offer to clients around the world to gain a taste of opulent luxury.
+                  </p>
                 </div>
               </div>
-              <div className="p-6 text-center space-y-3">
-                <h4 className="font-display text-xl font-medium text-white">Luxury Car Rentals</h4>
-                <p className="text-sm text-white/40 leading-relaxed">
-                  Luxury and supercar rentals, making a riveting offer to clients around the world to gain a taste of opulent luxury.
-                </p>
-              </div>
-            </div>
+            </ScrollReveal>
 
             {/* Chauffeur Service */}
-            <div className="border border-white/[0.08] rounded-2xl overflow-hidden">
-              <div className="bg-white/[0.03] border-b border-white/[0.06] flex items-center justify-center py-10">
-                <div className="w-14 h-14 rounded-full bg-white/[0.06] flex items-center justify-center">
-                  <svg className="w-6 h-6 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-                  </svg>
+            <ScrollReveal delay={250}>
+              <div className="border border-white/[0.08] rounded-2xl overflow-hidden h-full group">
+                <div className="relative h-52 overflow-hidden">
+                  <img
+                    src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=1200&q=85"
+                    alt="Professional chauffeur driving"
+                    className="w-full h-full object-cover img-zoom"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                </div>
+                <div className="p-6 text-center space-y-3">
+                  <h4 className="font-display text-xl font-medium text-white">Chauffeur Service</h4>
+                  <p className="text-sm text-white/40 leading-relaxed">
+                    We offer a round the clock bespoke chauffeur service with one of our ride in style fleet vehicles.
+                  </p>
                 </div>
               </div>
-              <div className="p-6 text-center space-y-3">
-                <h4 className="font-display text-xl font-medium text-white">Chauffeur Service</h4>
-                <p className="text-sm text-white/40 leading-relaxed">
-                  We offer a round the clock bespoke chauffeur service with one of our ride in style fleet vehicles.
-                </p>
-              </div>
-            </div>
+            </ScrollReveal>
           </div>
 
           {/* Pick Up and Drop Off — full width */}
-          <div className="border border-white/[0.08] rounded-2xl overflow-hidden">
-            <div className="bg-white/[0.03] border-b border-white/[0.06] flex items-center justify-center py-10">
-              <div className="w-14 h-14 rounded-full bg-white/[0.06] flex items-center justify-center">
-                <svg className="w-6 h-6 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                </svg>
+          <ScrollReveal delay={400}>
+            <div className="border border-white/[0.08] rounded-2xl overflow-hidden group">
+              <div className="relative h-52 overflow-hidden">
+                <img
+                  src="https://images.unsplash.com/photo-1770901157799-75ac60e5758e?w=1200&q=85"
+                  alt="Hand holding car key in front of black Porsche"
+                  className="w-full h-full object-cover img-zoom"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              </div>
+              <div className="p-6 text-center space-y-3">
+                <h4 className="font-display text-xl font-medium text-white">Pick Up and Drop Off</h4>
+                <p className="text-sm text-white/40 leading-relaxed">
+                  We offer a pick up and drop off service anywhere within Dubai.
+                </p>
               </div>
             </div>
-            <div className="p-6 text-center space-y-3">
-              <h4 className="font-display text-xl font-medium text-white">Pick Up and Drop Off</h4>
-              <p className="text-sm text-white/40 leading-relaxed">
-                We offer a pick up and drop off service anywhere within Dubai.
-              </p>
-            </div>
-          </div>
+          </ScrollReveal>
         </section>
 
         {/* How it works */}

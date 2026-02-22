@@ -5,17 +5,17 @@ html {
 }
 
 @theme {
-  /* Brand Colors — Warm Gold / Champagne */
-  --color-brand-black: #080604;
-  --color-brand-surface: #0d0b08;
-  --color-brand-glass: rgba(22, 18, 12, 0.78);
-  --color-brand-border: rgba(201, 169, 110, 0.10);
-  --color-brand-border-hover: rgba(201, 169, 110, 0.25);
+  /* Brand Colors */
+  --color-brand-black: #000000;
+  --color-brand-surface: #0a0a0a;
+  --color-brand-glass: rgba(18, 18, 18, 0.72);
+  --color-brand-border: rgba(255, 255, 255, 0.08);
+  --color-brand-border-hover: rgba(255, 255, 255, 0.18);
   --color-brand-cyan: #C9A96E;
   --color-brand-cyan-hover: #D4B97A;
-  --color-brand-text: #FAF6F0;
-  --color-brand-muted: rgba(250, 246, 240, 0.45);
-  --color-brand-subtle: rgba(201, 169, 110, 0.06);
+  --color-brand-text: #ffffff;
+  --color-brand-muted: rgba(255, 255, 255, 0.5);
+  --color-brand-subtle: rgba(255, 255, 255, 0.08);
 
   /* Typography */
   --font-display: var(--font-display), Georgia, serif;
@@ -37,13 +37,12 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Luxury radial gradient background — warm champagne glow */
+/* Luxury radial gradient background */
 .bg-luxury {
   background: radial-gradient(
     ellipse at 50% 0%,
-    #1a1408 0%,
-    #0d0b08 60%,
-    #080604 100%
+    #111111 0%,
+    #000000 70%
   );
 }
 
@@ -108,9 +107,9 @@ main {
   animation: fadeInUp var(--duration-slow) var(--ease-out-expo) both;
 }
 
-/* Glass card effect — warm-tinted */
+/* Glass card effect */
 .glass {
-  background: rgba(22, 18, 12, 0.78);
+  background: rgba(18, 18, 18, 0.72);
   backdrop-filter: blur(20px) saturate(1.4);
   -webkit-backdrop-filter: blur(20px) saturate(1.4);
 }
@@ -123,7 +122,7 @@ main {
 }
 .card-hover:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(201, 169, 110, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
 /* Image zoom on hover */
@@ -166,6 +165,18 @@ details[open] > summary ~ * {
 /* Hide Stripe test mode badge */
 iframe[src*="js.stripe.com/v3/controller-"] {
   display: none !important;
+}
+
+/* Scroll reveal — fade in + slide up on viewport entry */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.scroll-revealed {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Smooth selection color */
