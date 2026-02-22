@@ -76,7 +76,7 @@ export async function updatePassword(newPassword: string) {
 
 export async function logout() {
   const supabase = await createClient()
-  await supabase.auth.signOut()
+  await supabase.auth.signOut({ scope: 'global' })
   redirect('/sign-in')
 }
 
