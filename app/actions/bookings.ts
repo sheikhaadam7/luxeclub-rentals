@@ -70,6 +70,16 @@ export interface BookingDetail {
   payment_status: string
   status: string
   vehicle_id: string
+  stripe_rental_pi_id: string | null
+  stripe_deposit_pi_id: string | null
+  cancelled_at: string | null
+  cancellation_fee: number | null
+  cancellation_refund_amount: number | null
+  stripe_refund_id: string | null
+  modification_requested_at: string | null
+  modification_requested_start: string | null
+  modification_requested_end: string | null
+  modification_status: string | null
   vehicles: {
     name: string
     slug: string
@@ -372,6 +382,16 @@ export async function getBookingDetail(
       payment_status,
       status,
       vehicle_id,
+      stripe_rental_pi_id,
+      stripe_deposit_pi_id,
+      cancelled_at,
+      cancellation_fee,
+      cancellation_refund_amount,
+      stripe_refund_id,
+      modification_requested_at,
+      modification_requested_start,
+      modification_requested_end,
+      modification_status,
       vehicles (
         name,
         slug,
@@ -441,6 +461,242 @@ export async function acceptDelivery(
   if (updateError) {
     console.error('acceptDelivery: update error', updateError)
     return { error: 'Failed to accept delivery' }
+  }
+
+  return { success: true }
+}
+
+// ---------------------------------------------------------------------------
+// cancelBooking
+// ---------------------------------------------------------------------------
+
+/**
+ * Server Action — customer cancels their own booking.
+ *
+ * Policy:
+ * - >24 hours before pickup: free cancellation, full refund
+ * - <=24 hours before pickup: one-day rental fee charged, partial refund
+ * - Cash bookings cannot be cancelled online
+ *
+ * Issues a Stripe refund on the rental PI, and voids the deposit PI if exists.
+ */
+export async function cancelBooking(
+  bookingId: string
+): Promise<{ success: true; refundAmount: number; cancellationFee: number } | { error: string }> {
+  const supabase = await createClient()
+  const { data: claimsData } = await supabase.auth.getClaims()
+  const claims = claimsData?.claims
+
+  if (!claims?.sub) {
+    return { error: 'You must be logged in to cancel a booking' }
+  }
+
+  const admin = createAdminClient()
+
+  // Fetch booking with ownership check
+  const { data: booking, error: fetchError } = await admin
+    .from('bookings')
+    .select('id, status, payment_method, start_date, start_time, total_due, vehicle_id, stripe_rental_pi_id, stripe_deposit_pi_id')
+    .eq('id', bookingId)
+    .eq('user_id', claims.sub)
+    .single()
+
+  if (fetchError || !booking) {
+    return { error: 'Booking not found' }
+  }
+
+  if (!['pending', 'confirmed'].includes(booking.status)) {
+    return { error: 'This booking cannot be cancelled in its current state' }
+  }
+
+  // Cannot cancel once the booking period has started
+  const bookingStart = new Date(booking.start_date + 'T00:00:00Z')
+  const now = new Date()
+  now.setUTCHours(0, 0, 0, 0)
+  if (now >= bookingStart) {
+    return { error: 'Bookings cannot be cancelled once the rental period has started' }
+  }
+
+  if (booking.payment_method === 'cash') {
+    return { error: 'Cash bookings cannot be cancelled online. Please contact us directly.' }
+  }
+
+  // Calculate hours until pickup start
+  const startDateStr = booking.start_date
+  const startTimeStr = booking.start_time || '10:00'
+  const [hours, minutes] = startTimeStr.split(':').map(Number)
+  const pickupDate = new Date(startDateStr + 'T00:00:00Z')
+  pickupDate.setUTCHours(hours, minutes, 0, 0)
+  const hoursUntilStart = (pickupDate.getTime() - Date.now()) / (1000 * 60 * 60)
+
+  // Fetch vehicle daily rate
+  const { data: vehicle } = await admin
+    .from('vehicles')
+    .select('daily_rate')
+    .eq('id', booking.vehicle_id)
+    .single()
+
+  const dailyRate = vehicle?.daily_rate ?? 0
+  const totalDue = booking.total_due ?? 0
+
+  // Determine fee and refund
+  let cancellationFee = 0
+  let refundAmount = totalDue
+
+  if (hoursUntilStart <= 24) {
+    cancellationFee = dailyRate
+    refundAmount = Math.max(0, totalDue - dailyRate)
+  }
+
+  // Issue Stripe refund on rental PI
+  let stripeRefundId: string | null = null
+  const { stripe } = await import('@/lib/stripe/server')
+
+  if (booking.stripe_rental_pi_id && stripe) {
+    try {
+      if (refundAmount > 0) {
+        const refund = await stripe.refunds.create({
+          payment_intent: booking.stripe_rental_pi_id,
+          amount: Math.round(refundAmount * 100), // AED -> fils
+        })
+        stripeRefundId = refund.id
+      }
+    } catch (err) {
+      console.error('cancelBooking: stripe refund error', err)
+      return { error: 'Failed to process refund. Please try again or contact support.' }
+    }
+  }
+
+  // Void deposit PI if exists (non-fatal)
+  if (booking.stripe_deposit_pi_id && stripe) {
+    try {
+      await stripe.paymentIntents.cancel(booking.stripe_deposit_pi_id)
+    } catch {
+      // Non-fatal — deposit may already be voided/captured
+    }
+  }
+
+  // Update booking record
+  const { error: updateError } = await admin
+    .from('bookings')
+    .update({
+      status: 'cancelled',
+      payment_status: 'refunded',
+      cancelled_at: new Date().toISOString(),
+      cancellation_fee: cancellationFee,
+      cancellation_refund_amount: refundAmount,
+      stripe_refund_id: stripeRefundId,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', bookingId)
+
+  if (updateError) {
+    console.error('cancelBooking: update error', updateError)
+    return { error: 'Failed to update booking after refund' }
+  }
+
+  return { success: true, refundAmount, cancellationFee }
+}
+
+// ---------------------------------------------------------------------------
+// requestDateModification
+// ---------------------------------------------------------------------------
+
+/**
+ * Server Action — customer requests a date change for their booking.
+ * The request goes to the admin for review (approve/reject).
+ *
+ * Constraints:
+ * - Booking must be pending or confirmed
+ * - No existing pending modification request
+ * - Must be >24 hours before current start date
+ * - New dates must be in the future
+ */
+export async function requestDateModification(
+  bookingId: string,
+  newStartDate: string,
+  newEndDate: string
+): Promise<{ success: true } | { error: string }> {
+  const supabase = await createClient()
+  const { data: claimsData } = await supabase.auth.getClaims()
+  const claims = claimsData?.claims
+
+  if (!claims?.sub) {
+    return { error: 'You must be logged in to request a date change' }
+  }
+
+  const admin = createAdminClient()
+
+  const { data: booking, error: fetchError } = await admin
+    .from('bookings')
+    .select('id, status, start_date, start_time, modification_status')
+    .eq('id', bookingId)
+    .eq('user_id', claims.sub)
+    .single()
+
+  if (fetchError || !booking) {
+    return { error: 'Booking not found' }
+  }
+
+  if (!['pending', 'confirmed'].includes(booking.status)) {
+    return { error: 'Date changes can only be requested for pending or confirmed bookings' }
+  }
+
+  // Cannot modify once the booking period has started
+  const modBookingStart = new Date(booking.start_date + 'T00:00:00Z')
+  const modNow = new Date()
+  modNow.setUTCHours(0, 0, 0, 0)
+  if (modNow >= modBookingStart) {
+    return { error: 'Date changes cannot be requested once the rental period has started' }
+  }
+
+  if (booking.modification_status === 'pending') {
+    return { error: 'A date change request is already pending for this booking' }
+  }
+
+  // Must be >24hrs before current start
+  const startTimeStr = booking.start_time || '10:00'
+  const [hours, minutes] = startTimeStr.split(':').map(Number)
+  const pickupDate = new Date(booking.start_date + 'T00:00:00Z')
+  pickupDate.setUTCHours(hours, minutes, 0, 0)
+  const hoursUntilStart = (pickupDate.getTime() - Date.now()) / (1000 * 60 * 60)
+
+  if (hoursUntilStart <= 24) {
+    return { error: 'Date changes cannot be requested within 24 hours of pickup' }
+  }
+
+  // New dates must be valid and in the future
+  const newStart = new Date(newStartDate + 'T00:00:00Z')
+  const newEnd = new Date(newEndDate + 'T00:00:00Z')
+  const today = new Date()
+  today.setUTCHours(0, 0, 0, 0)
+
+  if (isNaN(newStart.getTime()) || isNaN(newEnd.getTime())) {
+    return { error: 'Invalid dates provided' }
+  }
+
+  if (newStart < today) {
+    return { error: 'New start date must be in the future' }
+  }
+
+  if (newEnd < newStart) {
+    return { error: 'End date must be on or after start date' }
+  }
+
+  const { error: updateError } = await admin
+    .from('bookings')
+    .update({
+      modification_requested_at: new Date().toISOString(),
+      modification_requested_start: newStartDate,
+      modification_requested_end: newEndDate,
+      modification_status: 'pending',
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', bookingId)
+
+  if (updateError) {
+    console.error('requestDateModification: update error', updateError)
+    return { error: 'Failed to submit date change request' }
   }
 
   return { success: true }

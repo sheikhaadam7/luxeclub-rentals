@@ -147,6 +147,7 @@ export interface FleetVehicle {
   scraped_at: string | null
   gps_device_id: string | null
   deposit_amount: number | null
+  primary_image_url: string | null
   availability_blocks: AvailabilityBlock[]
 }
 
@@ -183,7 +184,7 @@ export async function getFleetData(): Promise<FleetData | { error: string }> {
   const { data: vehicles, error: vehiclesError } = await admin
     .from('vehicles')
     .select(
-      'id, slug, name, category, daily_rate, weekly_rate, monthly_rate, is_available, is_active, override_notes, scraped_at, gps_device_id, deposit_amount'
+      'id, slug, name, category, daily_rate, weekly_rate, monthly_rate, is_available, is_active, override_notes, scraped_at, gps_device_id, deposit_amount, primary_image_url'
     )
     .order('name')
 
@@ -455,9 +456,27 @@ export interface AdminBooking {
   pickup_method: string
   delivery_address: string | null
   created_at: string
+  updated_at: string | null
   vehicle_name: string | null
   vehicle_slug: string | null
   user_email: string | null
+  guest_name: string | null
+  guest_email: string | null
+  guest_phone: string | null
+  rental_subtotal: number | null
+  delivery_fee: number | null
+  return_fee: number | null
+  no_deposit_surcharge: number | null
+  deposit_choice: string | null
+  deposit_amount: number | null
+  deposit_status: string | null
+  return_method: string | null
+  collection_address: string | null
+  start_time: string | null
+  stripe_deposit_pi_id: string | null
+  modification_status: string | null
+  modification_requested_start: string | null
+  modification_requested_end: string | null
 }
 
 // ============================================================
@@ -481,7 +500,7 @@ export async function getAllBookings(): Promise<
   const { data: bookings, error: bookingsError } = await admin
     .from('bookings')
     .select(
-      'id, vehicle_id, user_id, start_date, end_date, duration_type, status, payment_status, payment_method, total_due, pickup_method, delivery_address, created_at, vehicles(name, slug)'
+      'id, vehicle_id, user_id, start_date, end_date, duration_type, status, payment_status, payment_method, total_due, pickup_method, delivery_address, created_at, updated_at, guest_name, guest_email, guest_phone, rental_subtotal, delivery_fee, return_fee, no_deposit_surcharge, deposit_choice, deposit_amount, deposit_status, return_method, collection_address, start_time, stripe_deposit_pi_id, modification_status, modification_requested_start, modification_requested_end, vehicles(name, slug)'
     )
     .order('created_at', { ascending: false })
 
@@ -491,7 +510,7 @@ export async function getAllBookings(): Promise<
   }
 
   // Fetch user emails separately (profiles table has RLS but admin client bypasses it)
-  const userIds = [...new Set((bookings ?? []).map((b) => b.user_id))]
+  const userIds = [...new Set((bookings ?? []).filter((b) => b.user_id).map((b) => b.user_id))]
   let emailMap: Record<string, string> = {}
 
   if (userIds.length > 0) {
@@ -526,9 +545,27 @@ export async function getAllBookings(): Promise<
       pickup_method: b.pickup_method,
       delivery_address: b.delivery_address,
       created_at: b.created_at,
+      updated_at: b.updated_at ?? null,
       vehicle_name: vehicleData?.name ?? null,
       vehicle_slug: vehicleData?.slug ?? null,
-      user_email: emailMap[b.user_id] ?? null,
+      user_email: b.user_id ? (emailMap[b.user_id] ?? null) : null,
+      guest_name: b.guest_name ?? null,
+      guest_email: b.guest_email ?? null,
+      guest_phone: b.guest_phone ?? null,
+      rental_subtotal: b.rental_subtotal ?? null,
+      delivery_fee: b.delivery_fee ?? null,
+      return_fee: b.return_fee ?? null,
+      no_deposit_surcharge: b.no_deposit_surcharge ?? null,
+      deposit_choice: b.deposit_choice ?? null,
+      deposit_amount: b.deposit_amount ?? null,
+      deposit_status: b.deposit_status ?? null,
+      return_method: b.return_method ?? null,
+      collection_address: b.collection_address ?? null,
+      start_time: b.start_time ?? null,
+      stripe_deposit_pi_id: b.stripe_deposit_pi_id ?? null,
+      modification_status: b.modification_status ?? null,
+      modification_requested_start: b.modification_requested_start ?? null,
+      modification_requested_end: b.modification_requested_end ?? null,
     }
   })
 
@@ -682,6 +719,356 @@ export async function confirmManualPayment(
   }
 
   return { error: null }
+}
+
+// ============================================================
+// Dashboard Overview Types
+// ============================================================
+
+export interface DashboardNeedItem {
+  id: string
+  vehicle_name: string | null
+  customer: string | null
+  date: string
+  status: BookingStatus
+}
+
+export interface DashboardOverview {
+  activeBookingsToday: number
+  pendingActions: number
+  revenueThisMonth: number
+  fleetUtilization: number
+  fleetTotal: number
+  fleetUtilized: number
+  needsAttention: {
+    pendingBookings: DashboardNeedItem[]
+    todayDeliveries: DashboardNeedItem[]
+    overdueReturns: DashboardNeedItem[]
+    pendingCash: DashboardNeedItem[]
+  }
+  recentBookings: AdminBooking[]
+}
+
+// ============================================================
+// Dashboard Overview Action
+// ============================================================
+
+export async function getDashboardOverview(): Promise<
+  DashboardOverview | { error: string }
+> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error }
+
+  const admin = createAdminClient()
+  const today = new Date().toISOString().split('T')[0]
+  const startOfMonth = new Date()
+  startOfMonth.setDate(1)
+  startOfMonth.setHours(0, 0, 0, 0)
+
+  const [
+    activeResult,
+    pendingResult,
+    revenueResult,
+    deliveriesResult,
+    overdueResult,
+    cashResult,
+    recentResult,
+    fleetCountResult,
+  ] = await Promise.all([
+    // Active bookings today
+    admin
+      .from('bookings')
+      .select('vehicle_id')
+      .lte('start_date', today)
+      .gte('end_date', today)
+      .in('status', ['confirmed', 'car_on_the_way', 'car_delivered']),
+    // Pending bookings
+    admin
+      .from('bookings')
+      .select('id, start_date, status, guest_name, guest_email, vehicles(name)')
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false })
+      .limit(10),
+    // Revenue this month
+    admin
+      .from('bookings')
+      .select('total_due')
+      .gte('created_at', startOfMonth.toISOString())
+      .in('status', ['confirmed', 'car_on_the_way', 'car_delivered', 'completed']),
+    // Today's deliveries
+    admin
+      .from('bookings')
+      .select('id, start_date, status, guest_name, guest_email, pickup_method, vehicles(name)')
+      .eq('start_date', today)
+      .eq('pickup_method', 'delivery')
+      .in('status', ['confirmed', 'car_on_the_way']),
+    // Overdue returns
+    admin
+      .from('bookings')
+      .select('id, end_date, status, guest_name, guest_email, vehicles(name)')
+      .lt('end_date', today)
+      .in('status', ['confirmed', 'car_on_the_way', 'car_delivered']),
+    // Pending cash
+    admin
+      .from('bookings')
+      .select('id, start_date, status, guest_name, guest_email, payment_status, vehicles(name)')
+      .eq('payment_status', 'pending_cash')
+      .order('created_at', { ascending: false })
+      .limit(10),
+    // Recent 10 bookings
+    admin
+      .from('bookings')
+      .select(
+        'id, vehicle_id, user_id, start_date, end_date, duration_type, status, payment_status, payment_method, total_due, pickup_method, delivery_address, created_at, updated_at, guest_name, guest_email, guest_phone, rental_subtotal, delivery_fee, return_fee, no_deposit_surcharge, deposit_choice, deposit_amount, deposit_status, return_method, collection_address, start_time, stripe_deposit_pi_id, modification_status, modification_requested_start, modification_requested_end, vehicles(name, slug)'
+      )
+      .order('created_at', { ascending: false })
+      .limit(10),
+    // Total active vehicles
+    admin
+      .from('vehicles')
+      .select('*', { count: 'exact', head: true })
+      .eq('is_active', true),
+  ])
+
+  const activeVehicleIds = new Set(
+    (activeResult.data ?? []).map((b) => b.vehicle_id)
+  )
+
+  const revenueThisMonth =
+    (revenueResult.data ?? []).reduce((sum, b) => sum + (b.total_due ?? 0), 0)
+
+  const fleetTotal = fleetCountResult.count ?? 0
+  const fleetUtilized = activeVehicleIds.size
+
+  function extractVehicleName(row: { vehicles: unknown }): string | null {
+    const v = row.vehicles
+    if (Array.isArray(v)) return (v[0] as { name: string } | undefined)?.name ?? null
+    return (v as { name: string } | null)?.name ?? null
+  }
+
+  function extractCustomer(row: { guest_name?: string | null; guest_email?: string | null }): string | null {
+    return row.guest_name || row.guest_email || null
+  }
+
+  function toNeedItem(
+    row: { id: string; status: string; guest_name?: string | null; guest_email?: string | null; vehicles: unknown },
+    date: string
+  ): DashboardNeedItem {
+    return {
+      id: row.id,
+      vehicle_name: extractVehicleName(row as { vehicles: unknown }),
+      customer: extractCustomer(row),
+      date,
+      status: row.status as BookingStatus,
+    }
+  }
+
+  const recentBookings: AdminBooking[] = (recentResult.data ?? []).map((b) => {
+    const rawVehicle = b.vehicles
+    const vehicleData = Array.isArray(rawVehicle)
+      ? (rawVehicle[0] as { name: string; slug: string } | undefined) ?? null
+      : (rawVehicle as { name: string; slug: string } | null)
+    return {
+      id: b.id,
+      vehicle_id: b.vehicle_id,
+      user_id: b.user_id,
+      start_date: b.start_date,
+      end_date: b.end_date,
+      duration_type: b.duration_type,
+      status: b.status as BookingStatus,
+      payment_status: b.payment_status,
+      payment_method: b.payment_method,
+      total_due: b.total_due,
+      pickup_method: b.pickup_method,
+      delivery_address: b.delivery_address,
+      created_at: b.created_at,
+      updated_at: b.updated_at ?? null,
+      vehicle_name: vehicleData?.name ?? null,
+      vehicle_slug: vehicleData?.slug ?? null,
+      user_email: null,
+      guest_name: b.guest_name ?? null,
+      guest_email: b.guest_email ?? null,
+      guest_phone: b.guest_phone ?? null,
+      rental_subtotal: b.rental_subtotal ?? null,
+      delivery_fee: b.delivery_fee ?? null,
+      return_fee: b.return_fee ?? null,
+      no_deposit_surcharge: b.no_deposit_surcharge ?? null,
+      deposit_choice: b.deposit_choice ?? null,
+      deposit_amount: b.deposit_amount ?? null,
+      deposit_status: b.deposit_status ?? null,
+      return_method: b.return_method ?? null,
+      collection_address: b.collection_address ?? null,
+      start_time: b.start_time ?? null,
+      stripe_deposit_pi_id: b.stripe_deposit_pi_id ?? null,
+      modification_status: b.modification_status ?? null,
+      modification_requested_start: b.modification_requested_start ?? null,
+      modification_requested_end: b.modification_requested_end ?? null,
+    }
+  })
+
+  return {
+    activeBookingsToday: activeResult.data?.length ?? 0,
+    pendingActions: (pendingResult.data ?? []).length,
+    revenueThisMonth,
+    fleetUtilization: fleetTotal > 0 ? Math.round((fleetUtilized / fleetTotal) * 100) : 0,
+    fleetTotal,
+    fleetUtilized,
+    needsAttention: {
+      pendingBookings: (pendingResult.data ?? []).map((b) =>
+        toNeedItem(b as never, b.start_date)
+      ),
+      todayDeliveries: (deliveriesResult.data ?? []).map((b) =>
+        toNeedItem(b as never, b.start_date)
+      ),
+      overdueReturns: (overdueResult.data ?? []).map((b) =>
+        toNeedItem(b as never, b.end_date)
+      ),
+      pendingCash: (cashResult.data ?? []).map((b) =>
+        toNeedItem(b as never, b.start_date)
+      ),
+    },
+    recentBookings,
+  }
+}
+
+// ============================================================
+// Enhanced Analytics Types
+// ============================================================
+
+export interface EnhancedAnalytics {
+  currentRevenue: number
+  previousRevenue: number
+  currentBookings: number
+  previousBookings: number
+  avgBookingValue: number
+  fleetUtilization: number
+  dailyRevenue: { date: string; revenue: number }[]
+  topVehicles: { name: string; bookings: number; revenue: number }[]
+  statusBreakdown: Record<string, number>
+  durationBreakdown: Record<string, number>
+}
+
+// ============================================================
+// Enhanced Analytics Action
+// ============================================================
+
+export async function getEnhancedAnalytics(
+  period: '7d' | '30d'
+): Promise<EnhancedAnalytics | { error: string }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error }
+
+  const admin = createAdminClient()
+  const days = period === '7d' ? 7 : 30
+  const now = new Date()
+  const currentStart = new Date(now)
+  currentStart.setDate(currentStart.getDate() - days)
+  currentStart.setHours(0, 0, 0, 0)
+
+  const previousStart = new Date(currentStart)
+  previousStart.setDate(previousStart.getDate() - days)
+
+  const today = now.toISOString().split('T')[0]
+  const activeStatuses = ['confirmed', 'car_on_the_way', 'car_delivered', 'completed']
+
+  const [currentResult, previousResult, allBookingsResult, fleetResult, activeResult] = await Promise.all([
+    admin
+      .from('bookings')
+      .select('total_due, vehicle_id, created_at, status, duration_type, vehicles(name)')
+      .gte('created_at', currentStart.toISOString())
+      .in('status', activeStatuses),
+    admin
+      .from('bookings')
+      .select('total_due')
+      .gte('created_at', previousStart.toISOString())
+      .lt('created_at', currentStart.toISOString())
+      .in('status', activeStatuses),
+    admin
+      .from('bookings')
+      .select('status')
+      .not('status', 'eq', 'cancelled'),
+    admin
+      .from('vehicles')
+      .select('*', { count: 'exact', head: true })
+      .eq('is_active', true),
+    admin
+      .from('bookings')
+      .select('vehicle_id')
+      .lte('start_date', today)
+      .gte('end_date', today)
+      .in('status', ['confirmed', 'car_on_the_way', 'car_delivered']),
+  ])
+
+  const currentBookings = currentResult.data ?? []
+  const previousBookings = previousResult.data ?? []
+
+  const currentRevenue = currentBookings.reduce((s, b) => s + (b.total_due ?? 0), 0)
+  const previousRevenue = previousBookings.reduce((s, b) => s + (b.total_due ?? 0), 0)
+  const avgBookingValue = currentBookings.length > 0 ? Math.round(currentRevenue / currentBookings.length) : 0
+
+  // Daily revenue breakdown
+  const dailyMap: Record<string, number> = {}
+  for (let i = 0; i < days; i++) {
+    const d = new Date(currentStart)
+    d.setDate(d.getDate() + i)
+    dailyMap[d.toISOString().split('T')[0]] = 0
+  }
+  for (const b of currentBookings) {
+    const day = b.created_at.split('T')[0]
+    if (day in dailyMap) {
+      dailyMap[day] += b.total_due ?? 0
+    }
+  }
+  const dailyRevenue = Object.entries(dailyMap).map(([date, revenue]) => ({ date, revenue }))
+
+  // Top 5 vehicles
+  const vehicleStats: Record<string, { name: string; bookings: number; revenue: number }> = {}
+  for (const b of currentBookings) {
+    const vid = b.vehicle_id
+    const rawV = b.vehicles
+    const vName = Array.isArray(rawV)
+      ? (rawV[0] as { name: string } | undefined)?.name ?? 'Unknown'
+      : (rawV as { name: string } | null)?.name ?? 'Unknown'
+    if (!vehicleStats[vid]) {
+      vehicleStats[vid] = { name: vName, bookings: 0, revenue: 0 }
+    }
+    vehicleStats[vid].bookings += 1
+    vehicleStats[vid].revenue += b.total_due ?? 0
+  }
+  const topVehicles = Object.values(vehicleStats)
+    .sort((a, b) => b.revenue - a.revenue)
+    .slice(0, 5)
+
+  // Status breakdown
+  const statusBreakdown: Record<string, number> = {}
+  for (const b of allBookingsResult.data ?? []) {
+    statusBreakdown[b.status] = (statusBreakdown[b.status] ?? 0) + 1
+  }
+
+  // Duration type breakdown
+  const durationBreakdown: Record<string, number> = {}
+  for (const b of currentBookings) {
+    const dt = b.duration_type ?? 'unknown'
+    durationBreakdown[dt] = (durationBreakdown[dt] ?? 0) + 1
+  }
+
+  // Fleet utilization
+  const fleetTotal = fleetResult.count ?? 0
+  const utilizedCount = new Set((activeResult.data ?? []).map((b) => b.vehicle_id)).size
+  const fleetUtilization = fleetTotal > 0 ? Math.round((utilizedCount / fleetTotal) * 100) : 0
+
+  return {
+    currentRevenue,
+    previousRevenue,
+    currentBookings: currentBookings.length,
+    previousBookings: previousBookings.length,
+    avgBookingValue,
+    fleetUtilization,
+    dailyRevenue,
+    topVehicles,
+    statusBreakdown,
+    durationBreakdown,
+  }
 }
 
 // ============================================================
@@ -932,4 +1319,86 @@ export async function getAnalyticsSummary(): Promise<
       utilizationRate: total > 0 ? Math.round((utilizedCount / total) * 100) : 0,
     },
   }
+}
+
+// ============================================================
+// Modification Request Actions
+// ============================================================
+
+/**
+ * Approve a customer's date modification request.
+ * Copies the requested dates to the booking's start_date / end_date,
+ * sets modification_status = 'approved'.
+ */
+export async function approveModificationRequest(
+  bookingId: string
+): Promise<{ error: string | null }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) {
+    return { error: auth.error }
+  }
+
+  const admin = createAdminClient()
+
+  const { data: booking, error: fetchError } = await admin
+    .from('bookings')
+    .select('modification_requested_start, modification_requested_end, modification_status')
+    .eq('id', bookingId)
+    .single()
+
+  if (fetchError || !booking) {
+    return { error: fetchError?.message ?? 'Booking not found' }
+  }
+
+  if (booking.modification_status !== 'pending') {
+    return { error: 'No pending modification request for this booking' }
+  }
+
+  const { error: updateError } = await admin
+    .from('bookings')
+    .update({
+      start_date: booking.modification_requested_start,
+      end_date: booking.modification_requested_end,
+      modification_status: 'approved',
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', bookingId)
+
+  if (updateError) {
+    console.error('approveModificationRequest error:', updateError)
+    return { error: updateError.message }
+  }
+
+  return { error: null }
+}
+
+/**
+ * Reject a customer's date modification request.
+ * Sets modification_status = 'rejected'.
+ */
+export async function rejectModificationRequest(
+  bookingId: string
+): Promise<{ error: string | null }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) {
+    return { error: auth.error }
+  }
+
+  const admin = createAdminClient()
+
+  const { error: updateError } = await admin
+    .from('bookings')
+    .update({
+      modification_status: 'rejected',
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', bookingId)
+    .eq('modification_status', 'pending')
+
+  if (updateError) {
+    console.error('rejectModificationRequest error:', updateError)
+    return { error: updateError.message }
+  }
+
+  return { error: null }
 }

@@ -6,6 +6,8 @@ import { createClient } from '@/lib/supabase/server'
 import LiveTrackingMap from '@/components/tracking/LiveTrackingMap'
 import BookingStatusTimeline from '@/components/tracking/BookingStatusTimeline'
 import AcceptDeliveryButton from './AcceptDeliveryButton'
+import CancelBookingButton from './CancelBookingButton'
+import RequestDateChangeButton from './RequestDateChangeButton'
 import { PriceDisplay } from '@/components/catalogue/PriceDisplay'
 
 // ---------------------------------------------------------------------------
@@ -151,6 +153,25 @@ export default async function BookingDetailPage({ params }: PageProps) {
     }
   }
 
+  // Cancellability logic — not allowed once the booking period has started
+  const today = new Date()
+  today.setUTCHours(0, 0, 0, 0)
+  const bookingStartDate = new Date(booking.start_date + 'T00:00:00Z')
+  const hasStarted = today >= bookingStartDate
+
+  const isCancellable =
+    ['pending', 'confirmed'].includes(booking.status) && booking.payment_method !== 'cash' && !hasStarted
+  const isModifiable = ['pending', 'confirmed'].includes(booking.status) && !hasStarted
+
+  let hoursUntilStart = 0
+  if (isCancellable || isModifiable) {
+    const startTimeStr = booking.start_time || '10:00'
+    const [h, m] = startTimeStr.split(':').map(Number)
+    const pickupDate = new Date(booking.start_date + 'T00:00:00Z')
+    pickupDate.setUTCHours(h, m, 0, 0)
+    hoursUntilStart = (pickupDate.getTime() - Date.now()) / (1000 * 60 * 60)
+  }
+
   return (
     <main className="min-h-screen bg-luxury">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10 space-y-6">
@@ -236,6 +257,44 @@ export default async function BookingDetailPage({ params }: PageProps) {
             </p>
             <AcceptDeliveryButton bookingId={booking.id} />
           </section>
+        )}
+
+        {/* Cancel Booking / Date Change — or started-rental message */}
+        {hasStarted && ['pending', 'confirmed'].includes(booking.status) ? (
+          <section className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-6 space-y-2">
+            <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Cancellation & Changes</h2>
+            <p className="text-sm text-brand-muted">
+              Cancellations and date modifications cannot be made once the rental period has started. Please contact us directly if you need assistance.
+            </p>
+          </section>
+        ) : (
+          <>
+            {isCancellable && (
+              <section className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-6 space-y-4">
+                <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Cancel Booking</h2>
+                <CancelBookingButton
+                  bookingId={booking.id}
+                  dailyRate={vehicle?.daily_rate ?? 0}
+                  totalDue={booking.total_due}
+                  hoursUntilStart={hoursUntilStart}
+                />
+              </section>
+            )}
+
+            {isModifiable && (
+              <section className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-6 space-y-4">
+                <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Change Dates</h2>
+                <RequestDateChangeButton
+                  bookingId={booking.id}
+                  currentStartDate={booking.start_date}
+                  currentEndDate={booking.end_date}
+                  modificationStatus={booking.modification_status}
+                  modificationRequestedStart={booking.modification_requested_start}
+                  modificationRequestedEnd={booking.modification_requested_end}
+                />
+              </section>
+            )}
+          </>
         )}
 
         {/* Booking details section */}
@@ -340,19 +399,13 @@ export default async function BookingDetailPage({ params }: PageProps) {
               <svg className="w-4 h-4 text-brand-cyan flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span>Free cancellation up to 48 hours before pickup</span>
+              <span>Free cancellation more than 24 hours before pickup</span>
             </li>
             <li className="flex items-start gap-2 text-sm text-brand-muted">
               <svg className="w-4 h-4 text-yellow-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
-              <span>50% charge for cancellations within 24–48 hours of pickup</span>
-            </li>
-            <li className="flex items-start gap-2 text-sm text-brand-muted">
-              <svg className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span>Full charge for cancellations within 24 hours of pickup</span>
+              <span>One-day rental fee charged for cancellations within 24 hours of pickup</span>
             </li>
           </ul>
         </section>

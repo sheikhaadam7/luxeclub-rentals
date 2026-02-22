@@ -33,7 +33,7 @@ export default function FAQPage() {
     },
     {
       q: 'What is the cancellation policy?',
-      a: 'Free cancellation up to 48 hours before pickup. 50% charge within 24-48 hours. Full charge within 24 hours of pickup.',
+      a: 'Free cancellation more than 24 hours before pickup. Cancellations within 24 hours of pickup incur a one-day rental fee.',
     },
     {
       q: 'What documents are required to rent a car in the UAE?',
