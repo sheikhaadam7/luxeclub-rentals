@@ -40,6 +40,27 @@ export function flagUrl(country: string, size: 'w20' | 'w40' | 'w80' = 'w40') {
 
 const VALID_LANGUAGES = new Set<string>(LANGUAGES.map((l) => l.code))
 
+/**
+ * Detect language from browser settings (navigator.languages / navigator.language).
+ * Checks the user's preferred languages in order and returns the first match
+ * against our supported languages. Falls back to 'en'.
+ */
+function detectBrowserLanguage(): Language {
+  try {
+    const browserLangs = navigator.languages ?? [navigator.language]
+    for (const tag of browserLangs) {
+      // Extract the primary language subtag (e.g. 'fr-FR' → 'fr', 'zh-CN' → 'zh')
+      const primary = tag.split('-')[0].toLowerCase()
+      if (VALID_LANGUAGES.has(primary)) {
+        return primary as Language
+      }
+    }
+  } catch {
+    // navigator unavailable (SSR)
+  }
+  return 'en'
+}
+
 // ---------------------------------------------------------------------------
 // Lazy locale loader — only imports the dictionary when needed
 // ---------------------------------------------------------------------------
@@ -84,15 +105,22 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>('en')
   const [dict, setDict] = useState<Record<string, string>>(en)
 
-  // Read saved preference on mount
+  // Read saved preference on mount, or auto-detect from browser
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY)
       if (saved && VALID_LANGUAGES.has(saved)) {
         setLanguageState(saved as Language)
+        return
       }
     } catch {
       // localStorage unavailable
+    }
+    // No saved preference — detect from browser language settings
+    const detected = detectBrowserLanguage()
+    if (detected !== 'en') {
+      setLanguageState(detected)
+      try { localStorage.setItem(STORAGE_KEY, detected) } catch {}
     }
   }, [])
 
