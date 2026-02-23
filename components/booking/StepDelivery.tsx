@@ -4,6 +4,7 @@ import { UseFormReturn } from 'react-hook-form'
 import { useRef, useState, useCallback, useEffect } from 'react'
 import { useLoadScript, Autocomplete, GoogleMap, MarkerF } from '@react-google-maps/api'
 import { BookingFormValues } from '@/lib/validations/booking'
+import { useTranslation } from '@/lib/i18n/context'
 
 const LIBRARIES: ('places')[] = ['places']
 
@@ -26,6 +27,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
   const returnMethod = form.watch('returnMethod')
   const deliveryAddress = form.watch('deliveryAddress')
   const collectionAddress = form.watch('collectionAddress')
+  const { t } = useTranslation()
   const [mapCenter, setMapCenter] = useState<google.maps.LatLngLiteral | null>(null)
   const [collectionMapCenter, setCollectionMapCenter] = useState<google.maps.LatLngLiteral | null>(null)
   const [sameAsDelivery, setSameAsDelivery] = useState(false)
@@ -154,13 +156,13 @@ export function StepDelivery({ form }: StepDeliveryProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="font-display text-xl font-medium text-white mb-1">Delivery & Return</h2>
-        <p className="text-sm text-brand-muted">Choose how you want the vehicle delivered and returned.</p>
+        <h2 className="font-display text-xl font-medium text-white mb-1">{t('booking.deliveryReturn')}</h2>
+        <p className="text-sm text-brand-muted">{t('booking.deliveryReturnDesc')}</p>
       </div>
 
       {/* Pickup method */}
       <div>
-        <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">Pickup Method</p>
+        <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">{t('booking.pickupMethod')}</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {/* Delivery card */}
           <button
@@ -185,9 +187,9 @@ export function StepDelivery({ form }: StepDeliveryProps) {
               </svg>
               <div>
                 <p className={['text-sm font-semibold', pickupMethod === 'delivery' ? 'text-brand-cyan' : 'text-white'].join(' ')}>
-                  Delivery
+                  {t('booking.delivery')}
                 </p>
-                <p className="text-xs text-brand-muted mt-0.5">AED 50 — delivered to you</p>
+                <p className="text-xs text-brand-muted mt-0.5">{t('booking.deliveryDesc')}</p>
               </div>
             </div>
           </button>
@@ -222,9 +224,9 @@ export function StepDelivery({ form }: StepDeliveryProps) {
               </svg>
               <div>
                 <p className={['text-sm font-semibold', pickupMethod === 'self_pickup' ? 'text-brand-cyan' : 'text-white'].join(' ')}>
-                  Self-Pickup
+                  {t('booking.selfPickup')}
                 </p>
-                <p className="text-xs text-brand-muted mt-0.5">Free — collect from Downtown Dubai</p>
+                <p className="text-xs text-brand-muted mt-0.5">{t('booking.selfPickupDesc')}</p>
               </div>
             </div>
           </button>
@@ -234,7 +236,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
       {/* Delivery address (conditional) */}
       {pickupMethod === 'delivery' && (
         <div className="space-y-3">
-          <p className="text-xs text-brand-muted uppercase tracking-wider">Delivery Address</p>
+          <p className="text-xs text-brand-muted uppercase tracking-wider">{t('booking.deliveryAddress')}</p>
 
           {googleApiKey && isLoaded ? (
             <>
@@ -249,7 +251,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
                 <input
                   ref={inputRef}
                   type="text"
-                  placeholder="Enter delivery address"
+                  placeholder={t('booking.enterDeliveryAddress')}
                   defaultValue={deliveryAddress ?? ''}
                   onChange={(e) => form.setValue('deliveryAddress', e.target.value)}
                   className={[
@@ -285,14 +287,14 @@ export function StepDelivery({ form }: StepDeliveryProps) {
               )}
 
               <p className="text-xs text-brand-muted">
-                Pin your exact location on the map for precise delivery.
+                {t('booking.pinLocationDelivery')}
               </p>
             </>
           ) : (
             <div className="space-y-2">
               <input
                 type="text"
-                placeholder="Enter delivery address"
+                placeholder={t('booking.enterDeliveryAddress')}
                 {...form.register('deliveryAddress')}
                 className={[
                   'w-full bg-black/30 border rounded-[var(--radius-card)] px-4 py-3 text-sm text-white placeholder:text-brand-muted focus:outline-none focus:border-brand-cyan input-focus-glow transition-colors',
@@ -312,7 +314,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
 
       {/* Return method */}
       <div>
-        <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">Return Method</p>
+        <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">{t('booking.returnMethod')}</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {/* Self drop-off card */}
           <button
@@ -341,9 +343,9 @@ export function StepDelivery({ form }: StepDeliveryProps) {
               </svg>
               <div>
                 <p className={['text-sm font-semibold', returnMethod === 'self_dropoff' ? 'text-brand-cyan' : 'text-white'].join(' ')}>
-                  Self Drop-Off
+                  {t('booking.selfDropOff')}
                 </p>
-                <p className="text-xs text-brand-muted mt-0.5">Free — return to Downtown Dubai</p>
+                <p className="text-xs text-brand-muted mt-0.5">{t('booking.selfDropOffDesc')}</p>
               </div>
             </div>
           </button>
@@ -371,9 +373,9 @@ export function StepDelivery({ form }: StepDeliveryProps) {
               </svg>
               <div>
                 <p className={['text-sm font-semibold', returnMethod === 'collection' ? 'text-brand-cyan' : 'text-white'].join(' ')}>
-                  Collection
+                  {t('booking.collection')}
                 </p>
-                <p className="text-xs text-brand-muted mt-0.5">AED 50 — we collect from you</p>
+                <p className="text-xs text-brand-muted mt-0.5">{t('booking.collectionDesc')}</p>
               </div>
             </div>
           </button>
@@ -383,7 +385,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
       {/* Collection address (conditional) */}
       {returnMethod === 'collection' && (
         <div className="space-y-3">
-          <p className="text-xs text-brand-muted uppercase tracking-wider">Collection Address</p>
+          <p className="text-xs text-brand-muted uppercase tracking-wider">{t('booking.collectionAddress')}</p>
 
           {/* Same as delivery checkbox */}
           {canShowSameAsDelivery && (
@@ -395,7 +397,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
                 className="w-4 h-4 rounded border-brand-border bg-black/30 text-brand-cyan focus:ring-brand-cyan focus:ring-offset-0 accent-[var(--color-brand-cyan)]"
               />
               <span className="text-sm text-brand-muted group-hover:text-white transition-colors">
-                Same as delivery address
+                {t('booking.sameAsDelivery')}
               </span>
             </label>
           )}
@@ -416,7 +418,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
                     <input
                       ref={collectionInputRef}
                       type="text"
-                      placeholder="Enter collection address"
+                      placeholder={t('booking.enterCollectionAddress')}
                       defaultValue={collectionAddress ?? ''}
                       onChange={(e) => form.setValue('collectionAddress', e.target.value)}
                       className={[
@@ -452,14 +454,14 @@ export function StepDelivery({ form }: StepDeliveryProps) {
                   )}
 
                   <p className="text-xs text-brand-muted">
-                    Pin your exact location on the map for precise collection.
+                    {t('booking.pinLocationCollection')}
                   </p>
                 </>
               ) : (
                 <div className="space-y-2">
                   <input
                     type="text"
-                    placeholder="Enter collection address"
+                    placeholder={t('booking.enterCollectionAddress')}
                     {...form.register('collectionAddress')}
                     className={[
                       'w-full bg-black/30 border rounded-[var(--radius-card)] px-4 py-3 text-sm text-white placeholder:text-brand-muted focus:outline-none focus:border-brand-cyan input-focus-glow transition-colors',
@@ -482,28 +484,28 @@ export function StepDelivery({ form }: StepDeliveryProps) {
       {/* Summary */}
       {(deliveryAddress || pickupMethod === 'self_pickup') && (
         <div className="bg-black/20 border border-brand-border rounded-[var(--radius-card)] p-4 text-sm space-y-1">
-          <p className="text-brand-muted text-xs uppercase tracking-wider mb-2">Selected Options</p>
+          <p className="text-brand-muted text-xs uppercase tracking-wider mb-2">{t('booking.selectedOptions')}</p>
           <div className="flex justify-between">
-            <span className="text-brand-muted">Pickup:</span>
+            <span className="text-brand-muted">{t('booking.pickupLabel')}</span>
             <span className="text-white">
-              {pickupMethod === 'delivery' ? 'Delivery (AED 50)' : 'Self-Pickup (Free)'}
+              {pickupMethod === 'delivery' ? t('booking.deliveryAed50') : t('booking.selfPickupFree')}
             </span>
           </div>
           {pickupMethod === 'delivery' && deliveryAddress && (
             <div className="flex justify-between gap-4">
-              <span className="text-brand-muted shrink-0">Address:</span>
+              <span className="text-brand-muted shrink-0">{t('booking.addressLabel')}</span>
               <span className="text-white text-right text-xs">{deliveryAddress}</span>
             </div>
           )}
           <div className="flex justify-between">
-            <span className="text-brand-muted">Return:</span>
+            <span className="text-brand-muted">{t('booking.returnLabel')}</span>
             <span className="text-white">
-              {returnMethod === 'collection' ? 'Collection (AED 50)' : 'Self Drop-Off (Free)'}
+              {returnMethod === 'collection' ? t('booking.collectionAed50') : t('booking.selfDropOffFree')}
             </span>
           </div>
           {returnMethod === 'collection' && collectionAddress && (
             <div className="flex justify-between gap-4">
-              <span className="text-brand-muted shrink-0">Collection Address:</span>
+              <span className="text-brand-muted shrink-0">{t('booking.collectionAddressLabel')}</span>
               <span className="text-white text-right text-xs">{collectionAddress}</span>
             </div>
           )}

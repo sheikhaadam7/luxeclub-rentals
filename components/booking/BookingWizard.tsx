@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useTransition, useMemo, useCallback } from 'react'
+import { useTranslation } from '@/lib/i18n/context'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -12,7 +13,7 @@ import { StepPaymentMethod } from '@/components/booking/StepPaymentMethod'
 import { StepAuth } from '@/components/booking/StepAuth'
 import { StepGuestContact } from '@/components/booking/StepGuestContact'
 import { PriceSummary } from '@/components/booking/PriceSummary'
-import { createBooking } from '@/app/actions/bookings'
+import { createBooking, updateBookingPaymentMethod } from '@/app/actions/bookings'
 
 const StepDelivery = dynamic(() => import('./StepDelivery').then(m => ({ default: m.StepDelivery })), { ssr: false })
 const StepPayment = dynamic(() => import('./StepPayment').then(m => ({ default: m.StepPayment })), { ssr: false })
@@ -32,14 +33,14 @@ const STEP_FIELDS: Partial<Record<Step, (keyof BookingFormValues)[]>> = {
   payment: [],
 }
 
-const STEP_LABELS: Record<Step, string> = {
-  duration: 'Duration',
-  delivery: 'Delivery',
-  deposit: 'Deposit',
-  paymentMethod: 'Pay Method',
-  account: 'Account',
-  contact: 'Contact Details',
-  payment: 'Payment',
+const STEP_LABEL_KEYS: Record<Step, string> = {
+  duration: 'booking.stepDuration',
+  delivery: 'booking.stepDelivery',
+  deposit: 'booking.stepDeposit',
+  paymentMethod: 'booking.stepPayMethod',
+  account: 'booking.stepAccount',
+  contact: 'booking.stepContact',
+  payment: 'booking.stepPayment',
 }
 
 export interface Vehicle {
@@ -61,6 +62,7 @@ interface BookingWizardProps {
 }
 
 export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialAuth = false }: BookingWizardProps) {
+  const { t } = useTranslation()
   const router = useRouter()
   const [step, setStep] = useState(0)
   const [isPending, startTransition] = useTransition()
@@ -105,7 +107,23 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
     const paymentIndex = steps.indexOf('payment')
 
     if (bookingId) {
-      // Booking already created (e.g. user went back) — go directly to payment
+      // Booking already created (e.g. user went back) — sync payment method then go to payment
+      const currentMethod = form.getValues('paymentMethod')
+      setIsCreatingBooking(true)
+      setBookingError(null)
+      try {
+        const syncResult = await updateBookingPaymentMethod(bookingId, currentMethod)
+        if ('error' in syncResult) {
+          setBookingError(syncResult.error)
+          setIsCreatingBooking(false)
+          return
+        }
+      } catch {
+        setBookingError(t('booking.somethingWentWrong'))
+        setIsCreatingBooking(false)
+        return
+      }
+      setIsCreatingBooking(false)
       setStep(paymentIndex)
       scrollToTop()
       return
@@ -134,11 +152,11 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
       setStep(paymentIndex)
       scrollToTop()
     } catch {
-      setBookingError('Something went wrong. Please try again.')
+      setBookingError(t('booking.somethingWentWrong'))
     } finally {
       setIsCreatingBooking(false)
     }
-  }, [bookingId, form, isAuthed, steps, vehicle.id])
+  }, [bookingId, form, isAuthed, steps, vehicle.id, t])
 
   const advance = () => {
     startTransition(async () => {
@@ -204,6 +222,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
 
   // Guest inline confirmation
   if (guestConfirmedId) {
+    const { t } = useTranslation()
     return (
       <div className="max-w-lg mx-auto space-y-6 text-center py-12">
         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-cyan/10 border border-brand-cyan/30 mx-auto">
@@ -212,18 +231,18 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
           </svg>
         </div>
         <h2 className="font-display text-2xl font-semibold text-white">
-          Booking Confirmed
+          {t('booking.bookingConfirmed')}
         </h2>
         <p className="text-sm text-brand-muted leading-relaxed">
-          Your booking reference is{' '}
+          {t('booking.bookingRefIs')}{' '}
           <span className="text-white font-semibold font-mono">
             {guestConfirmedId.slice(0, 8).toUpperCase()}
           </span>
-          . We&apos;ve sent a confirmation to{' '}
+          . {t('booking.confirmationSentTo')}{' '}
           <span className="text-white font-semibold">{form.getValues('guestEmail')}</span>.
         </p>
         <p className="text-xs text-brand-muted">
-          Save your booking reference for your records. Our team will be in touch shortly.
+          {t('booking.saveBookingRef')}
         </p>
       </div>
     )
@@ -278,7 +297,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
                       isCurrent ? 'text-brand-cyan' : isCompleted ? 'text-emerald-400' : 'text-brand-muted',
                     ].join(' ')}
                   >
-                    {STEP_LABELS[s]}
+                    {t(STEP_LABEL_KEYS[s])}
                   </span>
                 </li>
               )
@@ -299,7 +318,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
               {/* Notice when booking already created and user went back */}
               {bookingId && (
                 <div className="mb-4 rounded-lg border border-amber-700/40 bg-amber-950/30 p-4 text-sm text-amber-200">
-                  Your booking has already been created. Complete payment to confirm your rental.
+                  {t('booking.alreadyCreatedNotice')}
                 </div>
               )}
 
@@ -310,7 +329,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
             <>
               {bookingId && (
                 <div className="mb-4 rounded-lg border border-amber-700/40 bg-amber-950/30 p-4 text-sm text-amber-200">
-                  Your booking has already been created. Complete payment to confirm your rental.
+                  {t('booking.alreadyCreatedNotice')}
                 </div>
               )}
               <StepPaymentMethod form={form} />
@@ -353,7 +372,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
             disabled={step === 0}
             className="px-4 sm:px-6 py-2.5 rounded-[var(--radius-card)] border border-brand-border text-sm font-medium text-brand-muted hover:text-white hover:border-white/40 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
-            Back
+            {t('booking.back')}
           </button>
 
           {/* On the payment step and account step, their own components handle submission */}
@@ -364,7 +383,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
               disabled={isPending || isCreatingBooking}
               className="px-6 sm:px-8 py-2.5 rounded-[var(--radius-card)] bg-brand-cyan text-black text-sm font-semibold hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isPending || isCreatingBooking ? 'Please wait...' : 'Continue'}
+              {isPending || isCreatingBooking ? t('booking.pleaseWait') : t('booking.continue')}
             </button>
           )}
         </div>

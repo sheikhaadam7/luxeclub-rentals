@@ -8,6 +8,8 @@ import 'react-day-picker/style.css'
 import { BookingFormValues } from '@/lib/validations/booking'
 import { Vehicle } from '@/components/booking/BookingWizard'
 import { useCurrency } from '@/lib/currency/context'
+import { useTranslation, useLanguage } from '@/lib/i18n/context'
+import { getDateLocale, getBcp47Locale } from '@/lib/i18n/date-locale'
 
 interface StepDurationProps {
   form: UseFormReturn<BookingFormValues>
@@ -21,10 +23,10 @@ function getDurationType(days: number): 'daily' | 'weekly' | 'monthly' {
   return 'daily'
 }
 
-const DURATION_TIERS = [
-  { value: 'daily' as const, label: 'Daily', range: '1–6 days', discount: 0 },
-  { value: 'weekly' as const, label: 'Weekly', range: '7–29 days', discount: 10 },
-  { value: 'monthly' as const, label: 'Monthly', range: '30+ days', discount: 20 },
+const DURATION_TIER_KEYS = [
+  { value: 'daily' as const, labelKey: 'booking.daily', rangeKey: 'booking.dailyRange', discount: 0 },
+  { value: 'weekly' as const, labelKey: 'booking.weekly', rangeKey: 'booking.weeklyRange', discount: 10 },
+  { value: 'monthly' as const, labelKey: 'booking.monthly', rangeKey: 'booking.monthlyRange', discount: 20 },
 ]
 
 const TIME_SLOTS = [
@@ -57,6 +59,10 @@ const TIME_SLOTS = [
 
 export function StepDuration({ form, vehicle, bookedRanges }: StepDurationProps) {
   const { formatPrice } = useCurrency()
+  const { t } = useTranslation()
+  const { language } = useLanguage()
+  const dateLocale = getDateLocale(language)
+  const bcp47 = getBcp47Locale(language)
   const startDate = form.watch('startDate')
   const endDate = form.watch('endDate')
 
@@ -110,15 +116,15 @@ export function StepDuration({ form, vehicle, bookedRanges }: StepDurationProps)
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="font-display text-xl font-medium text-white mb-1">Rental Duration</h2>
-        <p className="text-sm text-brand-muted">Select your dates — longer rentals unlock bigger discounts.</p>
+        <h2 className="font-display text-xl font-medium text-white mb-1">{t('booking.rentalDuration')}</h2>
+        <p className="text-sm text-brand-muted">{t('booking.rentalDurationDesc')}</p>
       </div>
 
       {/* Duration tier cards (display-only) */}
       <div>
-        <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">Pricing Tiers</p>
+        <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">{t('booking.pricingTiers')}</p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {DURATION_TIERS.map(({ value, label, range, discount }) => {
+          {DURATION_TIER_KEYS.map(({ value, labelKey, rangeKey, discount }) => {
             const isActive = rentalDays > 0 && activeTier === value
             const discountedRate = dailyRate * (1 - discount / 100)
             return (
@@ -133,19 +139,19 @@ export function StepDuration({ form, vehicle, bookedRanges }: StepDurationProps)
               >
                 <div className="flex items-center gap-2">
                   <p className={['text-sm font-semibold', isActive ? 'text-brand-cyan' : 'text-white'].join(' ')}>
-                    {label}
+                    {t(labelKey)}
                   </p>
                   {discount > 0 && (
                     <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-green-500/20 text-green-400">
-                      {discount}% off
+                      {discount}% {t('booking.off')}
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-brand-muted mt-1">{range}</p>
+                <p className="text-xs text-brand-muted mt-1">{t(rangeKey)}</p>
                 <p className={['text-sm font-medium mt-2', isActive ? 'text-brand-cyan' : 'text-white'].join(' ')}>
                   {dailyRate > 0 ? (
                     <>
-                      {formatPrice(discountedRate)} / day
+                      {formatPrice(discountedRate)} {t('booking.perDay')}
                       {discount > 0 && (
                         <span className="text-xs text-brand-muted line-through ml-2">
                           {formatPrice(dailyRate)}
@@ -153,7 +159,7 @@ export function StepDuration({ form, vehicle, bookedRanges }: StepDurationProps)
                       )}
                     </>
                   ) : (
-                    'Contact for rate'
+                    t('booking.contactForRate')
                   )}
                 </p>
               </div>
@@ -164,7 +170,7 @@ export function StepDuration({ form, vehicle, bookedRanges }: StepDurationProps)
 
       {/* Date range picker */}
       <div>
-        <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">Select Dates</p>
+        <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">{t('booking.selectDates')}</p>
         <div className="bg-black/20 rounded-[var(--radius-card)] p-4 overflow-x-auto">
           <DayPicker
             mode="range"
@@ -173,6 +179,7 @@ export function StepDuration({ form, vehicle, bookedRanges }: StepDurationProps)
             disabled={disabledMatchers}
             excludeDisabled
             numberOfMonths={calMonths}
+            locale={dateLocale}
             classNames={{
               root: 'text-white select-none',
               months: 'relative flex flex-wrap gap-6 justify-center',
@@ -207,15 +214,15 @@ export function StepDuration({ form, vehicle, bookedRanges }: StepDurationProps)
         {(startDate || endDate) && (
           <div className="mt-3 flex items-center gap-2 text-sm">
             <span className="text-brand-muted">
-              {startDate ? startDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}
+              {startDate ? startDate.toLocaleDateString(bcp47, { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}
             </span>
             <span className="text-brand-muted">→</span>
             <span className="text-brand-muted">
-              {endDate ? endDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Select end date'}
+              {endDate ? endDate.toLocaleDateString(bcp47, { day: 'numeric', month: 'short', year: 'numeric' }) : t('booking.selectEndDate')}
             </span>
             {rentalDays > 0 && (
               <span className="text-brand-cyan text-xs font-medium ml-1">
-                ({rentalDays} day{rentalDays !== 1 ? 's' : ''})
+                ({rentalDays} {rentalDays !== 1 ? t('booking.days') : t('booking.day')})
               </span>
             )}
           </div>
@@ -233,7 +240,7 @@ export function StepDuration({ form, vehicle, bookedRanges }: StepDurationProps)
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-xs text-brand-muted uppercase tracking-wider mb-2">
-            Pickup Time
+            {t('booking.pickupTime')}
           </label>
           <select
             {...form.register('startTime')}
@@ -247,7 +254,7 @@ export function StepDuration({ form, vehicle, bookedRanges }: StepDurationProps)
         </div>
         <div>
           <label className="block text-xs text-brand-muted uppercase tracking-wider mb-2">
-            Dropoff Time
+            {t('booking.dropoffTime')}
           </label>
           <select
             {...form.register('endTime')}

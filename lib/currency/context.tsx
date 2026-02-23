@@ -162,8 +162,13 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
 // Hook
 // ---------------------------------------------------------------------------
 
+const SSR_FALLBACK: CurrencyContextValue = {
+  currency: 'AED',
+  setCurrency: () => {},
+  formatPrice: (aedAmount: number) => `AED ${aedAmount.toLocaleString('en-US')}`,
+}
+
 export function useCurrency() {
   const ctx = useContext(CurrencyContext)
-  if (!ctx) throw new Error('useCurrency must be used within CurrencyProvider')
-  return ctx
+  return ctx ?? SSR_FALLBACK
 }

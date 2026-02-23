@@ -4,6 +4,7 @@ import { UseFormReturn } from 'react-hook-form'
 import { BookingFormValues } from '@/lib/validations/booking'
 import { Vehicle } from '@/components/booking/BookingWizard'
 import { useCurrency } from '@/lib/currency/context'
+import { useTranslation } from '@/lib/i18n/context'
 
 interface StepDepositChoiceProps {
   form: UseFormReturn<BookingFormValues>
@@ -12,14 +13,15 @@ interface StepDepositChoiceProps {
 
 export function StepDepositChoice({ form, vehicle }: StepDepositChoiceProps) {
   const { formatPrice } = useCurrency()
+  const { t } = useTranslation()
   const depositChoice = form.watch('depositChoice')
   const depositAmount = vehicle.daily_rate ?? 0
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="font-display text-xl font-medium text-white mb-1">Deposit Option</h2>
-        <p className="text-sm text-brand-muted">Choose how you prefer to handle the security deposit.</p>
+        <h2 className="font-display text-xl font-medium text-white mb-1">{t('booking.depositOption')}</h2>
+        <p className="text-sm text-brand-muted">{t('booking.depositOptionDesc')}</p>
       </div>
 
       {/* Option cards */}
@@ -51,14 +53,14 @@ export function StepDepositChoice({ form, vehicle }: StepDepositChoiceProps) {
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between gap-2">
                 <p className={['text-sm font-semibold', depositChoice === 'deposit' ? 'text-brand-cyan' : 'text-white'].join(' ')}>
-                  Pay Deposit
+                  {t('booking.payDeposit')}
                 </p>
                 <span className="text-sm font-semibold text-white shrink-0">
                   {formatPrice(depositAmount)}
                 </span>
               </div>
               <p className="text-xs text-brand-muted mt-1.5 leading-relaxed">
-                A refundable security deposit will be held at the time of vehicle collection via credit card. The card must be in the name of the renter. The hold is released once the vehicle is returned in good condition.
+                {t('booking.payDepositDesc')}
               </p>
             </div>
           </div>
@@ -91,12 +93,12 @@ export function StepDepositChoice({ form, vehicle }: StepDepositChoiceProps) {
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between gap-2">
                 <p className={['text-sm font-semibold', depositChoice === 'no_deposit' ? 'text-brand-cyan' : 'text-white'].join(' ')}>
-                  No Deposit
+                  {t('booking.noDeposit')}
                 </p>
                 <span className="text-sm font-semibold text-white shrink-0">+{formatPrice(200)}</span>
               </div>
               <p className="text-xs text-brand-muted mt-1.5 leading-relaxed">
-                Skip the deposit entirely. A non-refundable {formatPrice(200)} surcharge is added to your rental total instead.
+                {t('booking.noDepositDesc').replace('{amount}', formatPrice(200))}
               </p>
             </div>
           </div>
@@ -109,7 +111,7 @@ export function StepDepositChoice({ form, vehicle }: StepDepositChoiceProps) {
           <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
         </svg>
         <p>
-          A valid credit or debit card in the renter&apos;s name is required for all bookings. For cash payments, your card will be kept on file to cover cancellation or no-show fees per our policy.
+          {t('booking.depositCardNote')}
         </p>
       </div>
     </div>

@@ -1,12 +1,17 @@
 'use client'
 import { DayPicker } from 'react-day-picker'
 import 'react-day-picker/style.css'
+import { useLanguage, useTranslation } from '@/lib/i18n/context'
+import { getDateLocale } from '@/lib/i18n/date-locale'
 
 interface AvailabilityCalendarProps {
   bookedRanges: Array<{ from: Date; to: Date }>
 }
 
 export function AvailabilityCalendar({ bookedRanges }: AvailabilityCalendarProps) {
+  const { language } = useLanguage()
+  const { t } = useTranslation()
+  const dateLocale = getDateLocale(language)
   const now = new Date()
   const todayNum = now.getFullYear() * 10000 + now.getMonth() * 100 + now.getDate()
 
@@ -25,6 +30,7 @@ export function AvailabilityCalendar({ bookedRanges }: AvailabilityCalendarProps
       <DayPicker
         disabled={disabledMatchers}
         numberOfMonths={2}
+        locale={dateLocale}
         classNames={{
           root: 'text-white select-none',
           months: 'relative flex flex-wrap gap-6 justify-center',
@@ -51,11 +57,11 @@ export function AvailabilityCalendar({ bookedRanges }: AvailabilityCalendarProps
       <div className="mt-3 flex items-center gap-4 text-xs text-brand-muted">
         <span className="flex items-center gap-1.5">
           <span className="inline-block w-3 h-3 rounded-sm bg-brand-cyan/20 border border-brand-cyan/40" />
-          Available
+          {t('calendar.available')}
         </span>
         <span className="flex items-center gap-1.5">
           <span className="inline-block w-3 h-3 rounded-sm bg-white/5 border border-white/10" />
-          Unavailable
+          {t('calendar.unavailable')}
         </span>
       </div>
     </div>

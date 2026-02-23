@@ -10,6 +10,7 @@ import {
   useElements,
 } from '@stripe/react-stripe-js'
 import { useCurrency } from '@/lib/currency/context'
+import { useTranslation } from '@/lib/i18n/context'
 import { createCryptoInvoice } from '@/app/actions/crypto-payment'
 
 // Dev/test mode: when Stripe key is missing, show a test payment UI
@@ -48,6 +49,7 @@ function PaymentForm({
 }: PaymentFormProps) {
   const stripe = useStripe()
   const elements = useElements()
+  const { t } = useTranslation()
   const [isProcessing, setIsProcessing] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
@@ -68,7 +70,7 @@ function PaymentForm({
     })
 
     if (rentalError) {
-      setErrorMessage(rentalError.message ?? 'Payment failed. Please try again.')
+      setErrorMessage(rentalError.message ?? t('booking.paymentFailed'))
       setIsProcessing(false)
       return
     }
@@ -96,7 +98,7 @@ function PaymentForm({
             })
 
             if (error) {
-              setErrorMessage(error.message ?? 'Payment failed.')
+              setErrorMessage(error.message ?? t('booking.paymentFailed'))
               setIsProcessing(false)
             } else {
               setIsProcessing(false)
@@ -110,7 +112,7 @@ function PaymentForm({
       <div className="flex items-center gap-3">
         <div className="h-px flex-1 bg-brand-border" />
         <span className="text-xs text-brand-muted uppercase tracking-widest">
-          or pay with card
+          {t('booking.orPayWithCard')}
         </span>
         <div className="h-px flex-1 bg-brand-border" />
       </div>
@@ -125,12 +127,10 @@ function PaymentForm({
       {/* Cancellation policy */}
       <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
         <p className="font-semibold text-white/70 mb-1.5 text-xs uppercase tracking-wider">
-          Cancellation Policy
+          {t('booking.cancellationPolicy')}
         </p>
         <p>
-          Free cancellation up to 24 hours before the rental start time.
-          Cancellations within 24 hours are subject to a one-day rental fee.
-          No-shows are charged the full rental amount.
+          {t('booking.cancellationPolicyText')}
         </p>
       </div>
 
@@ -145,7 +145,7 @@ function PaymentForm({
         disabled={!stripe || !elements || isProcessing}
         className="w-full rounded-[var(--radius-card)] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {isProcessing ? 'Processing...' : 'Pay Now'}
+        {isProcessing ? t('booking.processing') : t('booking.payNow')}
       </button>
     </form>
   )
@@ -165,6 +165,7 @@ interface CryptoPaymentProps {
 
 function CryptoPayment({ bookingId, totalDue, isGuest, guestEmail, onSuccess }: CryptoPaymentProps) {
   const { formatPrice } = useCurrency()
+  const { t } = useTranslation()
   const [isProcessing, setIsProcessing] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
@@ -181,10 +182,12 @@ function CryptoPayment({ bookingId, totalDue, isGuest, guestEmail, onSuccess }: 
         return
       }
 
-      // Redirect to NOWPayments hosted invoice page
-      window.location.href = result.invoiceUrl
+      // Open NOWPayments hosted invoice page in a new tab
+      // Using window.open avoids breaking the mobile session/back-navigation
+      window.open(result.invoiceUrl, '_blank')
+      onSuccess(bookingId)
     } catch {
-      setErrorMessage('Something went wrong. Please try again.')
+      setErrorMessage(t('booking.somethingWentWrong'))
       setIsProcessing(false)
     }
   }
@@ -199,26 +202,23 @@ function CryptoPayment({ bookingId, totalDue, isGuest, guestEmail, onSuccess }: 
             </svg>
           </div>
           <h3 className="text-sm font-semibold text-white">
-            Cryptocurrency Payment
+            {t('booking.cryptoPayment')}
           </h3>
         </div>
         <p className="text-sm text-brand-muted leading-relaxed">
-          Total due:{' '}
+          {t('booking.cryptoTotalDue')}{' '}
           <span className="text-white font-semibold">{formatPrice(totalDue)}</span>.
-          You&apos;ll be redirected to our secure payment partner to complete your
-          payment in BTC, ETH, USDT, or other supported cryptocurrencies.
+          {t('booking.cryptoDesc')}
         </p>
       </div>
 
       {/* Cancellation policy */}
       <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
         <p className="font-semibold text-white/70 mb-1.5 text-xs uppercase tracking-wider">
-          Cancellation Policy
+          {t('booking.cancellationPolicy')}
         </p>
         <p>
-          Free cancellation up to 24 hours before the rental start time.
-          Cancellations within 24 hours are subject to a one-day rental fee.
-          No-shows are charged the full rental amount.
+          {t('booking.cancellationPolicyText')}
         </p>
       </div>
 
@@ -233,7 +233,7 @@ function CryptoPayment({ bookingId, totalDue, isGuest, guestEmail, onSuccess }: 
         disabled={isProcessing}
         className="w-full rounded-[var(--radius-card)] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {isProcessing ? 'Creating invoice...' : 'Pay with Crypto'}
+        {isProcessing ? t('booking.creatingInvoice') : t('booking.payWithCrypto')}
       </button>
     </div>
   )
@@ -251,6 +251,7 @@ interface CashCardFormProps {
 function CashCardForm({ onSuccess, bookingId }: CashCardFormProps) {
   const stripe = useStripe()
   const elements = useElements()
+  const { t } = useTranslation()
   const [isProcessing, setIsProcessing] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [cardSaved, setCardSaved] = useState(false)
@@ -271,7 +272,7 @@ function CashCardForm({ onSuccess, bookingId }: CashCardFormProps) {
     })
 
     if (error) {
-      setErrorMessage(error.message ?? 'Failed to save card. Please try again.')
+      setErrorMessage(error.message ?? t('booking.paymentFailed'))
       setIsProcessing(false)
       return
     }
@@ -296,14 +297,14 @@ function CashCardForm({ onSuccess, bookingId }: CashCardFormProps) {
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
-            Card saved successfully
+            {t('booking.cardSavedSuccess')}
           </div>
           <button
             type="button"
             onClick={() => onSuccess(bookingId)}
             className="w-full rounded-[var(--radius-card)] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors"
           >
-            Confirm Booking
+            {t('booking.confirmBooking')}
           </button>
         </div>
       ) : (
@@ -312,7 +313,7 @@ function CashCardForm({ onSuccess, bookingId }: CashCardFormProps) {
           disabled={!stripe || !elements || isProcessing}
           className="w-full rounded-[var(--radius-card)] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isProcessing ? 'Saving card...' : 'Save Card & Continue'}
+          {isProcessing ? t('booking.savingCard') : t('booking.saveCardContinue')}
         </button>
       )}
     </form>
@@ -346,6 +347,7 @@ export function StepPayment({
   guestEmail,
 }: StepPaymentProps) {
   const { formatPrice } = useCurrency()
+  const { t } = useTranslation()
 
   // Crypto payment path
   if (cryptoSelected) {
@@ -382,16 +384,15 @@ export function StepPayment({
               </svg>
             </div>
             <h3 className="text-sm font-semibold text-white">
-              Cash on Delivery Selected
+              {t('booking.cashOnDeliverySelected')}
             </h3>
           </div>
           <p className="text-sm text-brand-muted leading-relaxed">
-            Please have{' '}
+            {t('booking.pleaseHave')}{' '}
             <span className="text-white font-semibold">
               {formatPrice(totalDue)}
             </span>{' '}
-            ready when the car is delivered. Your booking will be confirmed once our
-            team verifies the arrangement.
+            {t('booking.cashReadyText')}
           </p>
         </div>
 
@@ -400,23 +401,20 @@ export function StepPayment({
           <div className="space-y-4">
             <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
               <p className="font-semibold text-white/70 mb-1.5 text-xs uppercase tracking-wider">
-                Card Required for Security
+                {t('booking.cardRequiredSecurity')}
               </p>
               <p>
-                A card is required for security purposes. You will not be charged
-                — payment is collected in cash at delivery.
+                {t('booking.cardRequiredDesc')}
               </p>
             </div>
 
             {/* Cancellation policy */}
             <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
               <p className="font-semibold text-white/70 mb-1.5 text-xs uppercase tracking-wider">
-                Cancellation Policy
+                {t('booking.cancellationPolicy')}
               </p>
               <p>
-                Free cancellation up to 24 hours before the rental start time.
-                Cancellations within 24 hours are subject to a one-day rental fee.
-                No-shows are charged the full rental amount.
+                {t('booking.cancellationPolicyText')}
               </p>
             </div>
 
@@ -444,12 +442,10 @@ export function StepPayment({
             {/* Cancellation policy */}
             <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
               <p className="font-semibold text-white/70 mb-1.5 text-xs uppercase tracking-wider">
-                Cancellation Policy
+                {t('booking.cancellationPolicy')}
               </p>
               <p>
-                Free cancellation up to 24 hours before the rental start time.
-                Cancellations within 24 hours are subject to a one-day rental fee.
-                No-shows are charged the full rental amount.
+                {t('booking.cancellationPolicyText')}
               </p>
             </div>
 
@@ -458,7 +454,7 @@ export function StepPayment({
               onClick={() => onSuccess(bookingId)}
               className="w-full rounded-[var(--radius-card)] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors"
             >
-              Confirm Booking
+              {t('booking.confirmBooking')}
             </button>
           </>
         )}
@@ -477,14 +473,13 @@ export function StepPayment({
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 className="text-sm font-semibold text-amber-200">Test Mode</h3>
+            <h3 className="text-sm font-semibold text-amber-200">{t('booking.testMode')}</h3>
           </div>
           <p className="text-sm text-amber-200/80 leading-relaxed">
-            Stripe is not configured. Click below to simulate a successful payment and
-            proceed to booking confirmation.
+            {t('booking.testModeDesc')}
           </p>
           <p className="text-xs text-amber-200/50">
-            Total: <span className="font-semibold text-white">{formatPrice(totalDue)}</span>
+            {t('booking.total')} <span className="font-semibold text-white">{formatPrice(totalDue)}</span>
             {depositAmount > 0 && (
               <> — a <span className="font-semibold text-white">{formatPrice(depositAmount)}</span> deposit will be collected at rental start</>
             )}
@@ -494,12 +489,10 @@ export function StepPayment({
         {/* Cancellation policy */}
         <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
           <p className="font-semibold text-white/70 mb-1.5 text-xs uppercase tracking-wider">
-            Cancellation Policy
+            {t('booking.cancellationPolicy')}
           </p>
           <p>
-            Free cancellation up to 24 hours before the rental start time.
-            Cancellations within 24 hours are subject to a one-day rental fee.
-            No-shows are charged the full rental amount.
+            {t('booking.cancellationPolicyText')}
           </p>
         </div>
 
@@ -508,7 +501,7 @@ export function StepPayment({
           onClick={() => onSuccess(bookingId)}
           className="w-full rounded-[var(--radius-card)] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors"
         >
-          Accept Payment (Test Mode)
+          {t('booking.acceptTestPayment')}
         </button>
       </div>
     )
@@ -527,9 +520,7 @@ export function StepPayment({
     <div className="space-y-6">
       {depositAmount > 0 && (
         <div className="rounded-lg border border-brand-cyan/30 bg-brand-cyan/5 p-4 text-sm text-brand-muted">
-          A security deposit of{' '}
-          <span className="font-semibold text-white">{formatPrice(depositAmount)}</span>{' '}
-          will be collected when your rental begins. This is not charged at booking time.
+          {t('booking.securityDepositNotice').split('{amount}')[0]}<span className="font-semibold text-white">{formatPrice(depositAmount)}</span>{t('booking.securityDepositNotice').split('{amount}')[1]}
         </div>
       )}
       <Elements

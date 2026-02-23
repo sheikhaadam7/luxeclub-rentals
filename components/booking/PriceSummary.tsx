@@ -9,6 +9,7 @@ import {
   type BookingPricingInput,
 } from '@/lib/pricing/calculator'
 import { useCurrency } from '@/lib/currency/context'
+import { useTranslation } from '@/lib/i18n/context'
 
 interface PriceSummaryProps {
   vehicle: Vehicle
@@ -17,6 +18,7 @@ interface PriceSummaryProps {
 
 export function PriceSummary({ vehicle, form }: PriceSummaryProps) {
   const { formatPrice } = useCurrency()
+  const { t } = useTranslation()
   // Reactively watch all pricing-relevant fields
   const durationType = useWatch({ control: form.control, name: 'durationType' })
   const startDate = useWatch({ control: form.control, name: 'startDate' })
@@ -43,7 +45,7 @@ export function PriceSummary({ vehicle, form }: PriceSummaryProps) {
     <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-5 space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="font-display text-base font-medium text-white">Price Summary</h3>
+        <h3 className="font-display text-base font-medium text-white">{t('booking.priceSummary')}</h3>
         {vehicle.primary_image_url && (
           <div className="w-12 h-8 rounded overflow-hidden">
             <Image
@@ -66,9 +68,9 @@ export function PriceSummary({ vehicle, form }: PriceSummaryProps) {
             {/* Rental */}
             <div className="flex justify-between gap-2">
               <span className="text-brand-muted">
-                Rental{' '}
+                {t('booking.rental')}{' '}
                 <span className="text-brand-muted/60 text-xs">
-                  {breakdown.rentalDays} day{breakdown.rentalDays !== 1 ? 's' : ''} @ {formatPrice(breakdown.baseRate)}/day
+                  {breakdown.rentalDays} {breakdown.rentalDays !== 1 ? t('booking.days') : t('booking.day')} {t('booking.at')} {formatPrice(breakdown.baseRate)}/{t('booking.day')}
                 </span>
               </span>
               <span className="text-white shrink-0">{formatPrice(breakdown.rentalSubtotal)}</span>
@@ -78,7 +80,7 @@ export function PriceSummary({ vehicle, form }: PriceSummaryProps) {
             {breakdown.discountPercent > 0 && (
               <div className="flex justify-between gap-2">
                 <span className="text-green-400 text-xs font-medium">
-                  {breakdown.discountPercent}% long-term discount applied
+                  {t('booking.longTermDiscount').replace('{percent}', String(breakdown.discountPercent))}
                 </span>
               </div>
             )}
@@ -86,7 +88,7 @@ export function PriceSummary({ vehicle, form }: PriceSummaryProps) {
             {/* Delivery fee */}
             {breakdown.deliveryFee > 0 && (
               <div className="flex justify-between gap-2">
-                <span className="text-brand-muted">Delivery fee</span>
+                <span className="text-brand-muted">{t('booking.deliveryFee')}</span>
                 <span className="text-white shrink-0">{formatPrice(breakdown.deliveryFee, { exact: true })}</span>
               </div>
             )}
@@ -94,7 +96,7 @@ export function PriceSummary({ vehicle, form }: PriceSummaryProps) {
             {/* Collection fee */}
             {breakdown.returnFee > 0 && (
               <div className="flex justify-between gap-2">
-                <span className="text-brand-muted">Collection fee</span>
+                <span className="text-brand-muted">{t('booking.collectionFee')}</span>
                 <span className="text-white shrink-0">{formatPrice(breakdown.returnFee, { exact: true })}</span>
               </div>
             )}
@@ -102,7 +104,7 @@ export function PriceSummary({ vehicle, form }: PriceSummaryProps) {
             {/* No-deposit surcharge */}
             {breakdown.noDepositSurcharge > 0 && (
               <div className="flex justify-between gap-2">
-                <span className="text-brand-muted">No-deposit surcharge</span>
+                <span className="text-brand-muted">{t('booking.noDepositSurcharge')}</span>
                 <span className="text-white shrink-0">{formatPrice(breakdown.noDepositSurcharge)}</span>
               </div>
             )}
@@ -113,7 +115,7 @@ export function PriceSummary({ vehicle, form }: PriceSummaryProps) {
 
           {/* Total */}
           <div className="flex justify-between items-baseline gap-2">
-            <span className="text-sm font-medium text-white">Total Due</span>
+            <span className="text-sm font-medium text-white">{t('booking.totalDue')}</span>
             <span className="text-xl font-semibold text-brand-cyan">
               {formatPrice(breakdown.totalDue)}
             </span>
@@ -123,10 +125,10 @@ export function PriceSummary({ vehicle, form }: PriceSummaryProps) {
           {breakdown.depositAmount > 0 && (depositChoice === 'deposit') && (
             <div className="bg-black/20 rounded-[var(--radius-card)] px-3 py-2.5 text-xs space-y-0.5">
               <div className="flex justify-between gap-2">
-                <span className="text-brand-muted">Deposit hold</span>
+                <span className="text-brand-muted">{t('booking.depositHold')}</span>
                 <span className="text-white">{formatPrice(breakdown.depositAmount)}</span>
               </div>
-              <p className="text-brand-muted/60">(collected at vehicle handover — refunded on return)</p>
+              <p className="text-brand-muted/60">{t('booking.depositHoldNote')}</p>
             </div>
           )}
         </>
@@ -141,7 +143,7 @@ export function PriceSummary({ vehicle, form }: PriceSummaryProps) {
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 9v7.5" />
           </svg>
-          <p className="text-sm text-brand-muted">Select dates to see pricing</p>
+          <p className="text-sm text-brand-muted">{t('booking.selectDatesForPricing')}</p>
         </div>
       )}
     </div>

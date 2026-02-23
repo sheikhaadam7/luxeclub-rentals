@@ -332,6 +332,75 @@ export async function createBooking(
 }
 
 // ---------------------------------------------------------------------------
+// updateBookingPaymentMethod
+// ---------------------------------------------------------------------------
+
+/**
+ * Server Action — updates the payment method on an existing booking.
+ *
+ * Called when the user goes back in the wizard and changes payment method
+ * after the booking was already created. Updates payment_method and
+ * payment_status to match the new choice.
+ */
+export async function updateBookingPaymentMethod(
+  bookingId: string,
+  paymentMethod: 'card' | 'apple_pay' | 'google_pay' | 'cash' | 'crypto'
+): Promise<{ success: true } | { error: string }> {
+  const supabase = await createClient()
+  const { data: claimsData } = await supabase.auth.getClaims()
+  const claims = claimsData?.claims
+
+  const admin = createAdminClient()
+
+  // Fetch booking — verify it exists and is still pending
+  const { data: booking, error: fetchError } = await admin
+    .from('bookings')
+    .select('id, status, payment_method, user_id, guest_email')
+    .eq('id', bookingId)
+    .single()
+
+  if (fetchError || !booking) {
+    return { error: 'Booking not found' }
+  }
+
+  if (booking.status !== 'pending') {
+    return { error: 'Cannot change payment method on a non-pending booking' }
+  }
+
+  // Verify ownership
+  if (claims?.sub) {
+    if (booking.user_id && booking.user_id !== claims.sub) {
+      return { error: 'Booking not found' }
+    }
+  }
+
+  // Already set — no update needed
+  if (booking.payment_method === paymentMethod) {
+    return { success: true }
+  }
+
+  const paymentStatus =
+    paymentMethod === 'cash' ? 'pending_cash'
+    : paymentMethod === 'crypto' ? 'pending_crypto'
+    : 'unpaid'
+
+  const { error: updateError } = await admin
+    .from('bookings')
+    .update({
+      payment_method: paymentMethod,
+      payment_status: paymentStatus,
+    })
+    .eq('id', bookingId)
+
+  if (updateError) {
+    console.error('updateBookingPaymentMethod: update error', updateError)
+    return { error: 'Failed to update payment method' }
+  }
+
+  return { success: true }
+}
+
+// ---------------------------------------------------------------------------
 // getUserBookings
 // ---------------------------------------------------------------------------
 

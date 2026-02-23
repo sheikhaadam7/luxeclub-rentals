@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { getUserBookings, type UserBooking } from '@/app/actions/bookings'
 import { PriceDisplay } from '@/components/catalogue/PriceDisplay'
+import { T } from '@/components/ui/T'
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -21,10 +22,10 @@ function formatDateRange(start: string, end: string): string {
   return `${formatDate(start)} — ${formatDate(end)}`
 }
 
-function formatDurationType(type: string): string {
-  if (type === 'daily') return 'Daily'
-  if (type === 'weekly') return 'Weekly'
-  if (type === 'monthly') return 'Monthly'
+function durationTypeKey(type: string): string {
+  if (type === 'daily') return 'lookup.daily'
+  if (type === 'weekly') return 'lookup.weekly'
+  if (type === 'monthly') return 'lookup.monthly'
   return type
 }
 
@@ -33,26 +34,26 @@ function formatDurationType(type: string): string {
 // ---------------------------------------------------------------------------
 
 type StatusConfig = {
-  label: string
+  labelKey: string
   className: string
 }
 
 function getStatusConfig(status: string, paymentStatus: string): StatusConfig {
   // Payment status takes priority for pending_cash
   if (paymentStatus === 'pending_cash') {
-    return { label: 'Cash Pending', className: 'bg-amber-900/40 text-amber-400 border-amber-700/40' }
+    return { labelKey: 'lookup.cashPending', className: 'bg-amber-900/40 text-amber-400 border-amber-700/40' }
   }
   switch (status) {
     case 'confirmed':
-      return { label: 'Confirmed', className: 'bg-cyan-900/40 text-brand-cyan border-brand-cyan/30' }
+      return { labelKey: 'lookup.confirmed', className: 'bg-cyan-900/40 text-brand-cyan border-brand-cyan/30' }
     case 'pending':
-      return { label: 'Pending', className: 'bg-yellow-900/40 text-yellow-400 border-yellow-700/40' }
+      return { labelKey: 'lookup.pendingConfirmation', className: 'bg-yellow-900/40 text-yellow-400 border-yellow-700/40' }
     case 'completed':
-      return { label: 'Completed', className: 'bg-green-900/40 text-green-400 border-green-700/40' }
+      return { labelKey: 'lookup.completed', className: 'bg-green-900/40 text-green-400 border-green-700/40' }
     case 'cancelled':
-      return { label: 'Cancelled', className: 'bg-red-900/40 text-red-400 border-red-700/40' }
+      return { labelKey: 'lookup.cancelled', className: 'bg-red-900/40 text-red-400 border-red-700/40' }
     default:
-      return { label: status, className: 'bg-white/5 text-brand-muted border-white/10' }
+      return { labelKey: status, className: 'bg-white/5 text-brand-muted border-white/10' }
   }
 }
 
@@ -75,7 +76,7 @@ function isUpcoming(booking: UserBooking): boolean {
 function BookingCard({ booking }: { booking: UserBooking }) {
   const vehicle = booking.vehicles
   const statusConfig = getStatusConfig(booking.status, booking.payment_status)
-  const durationType = formatDurationType(booking.duration_type)
+  const durationKey = durationTypeKey(booking.duration_type)
 
   return (
     <Link
@@ -104,7 +105,7 @@ function BookingCard({ booking }: { booking: UserBooking }) {
       {/* Info */}
       <div className="flex-1 min-w-0">
         <p className="font-display text-sm font-medium text-white group-hover:text-brand-cyan transition-colors truncate">
-          {vehicle?.name ?? 'Unknown Vehicle'}
+          {vehicle?.name ?? <T k="bookings.unknownVehicle" />}
         </p>
         <p className="text-xs text-brand-muted mt-0.5">
           {formatDateRange(booking.start_date, booking.end_date)}
@@ -112,11 +113,11 @@ function BookingCard({ booking }: { booking: UserBooking }) {
         <div className="flex items-center gap-2 mt-1.5">
           {/* Duration badge */}
           <span className="text-[10px] text-brand-muted border border-brand-border rounded px-1.5 py-0.5 uppercase tracking-wider">
-            {durationType}
+            <T k={durationKey} />
           </span>
           {/* Status badge */}
           <span className={`text-[10px] border rounded px-1.5 py-0.5 uppercase tracking-wider ${statusConfig.className}`}>
-            {statusConfig.label}
+            <T k={statusConfig.labelKey} />
           </span>
         </div>
       </div>
@@ -164,8 +165,8 @@ export default async function BookingsPage() {
 
         {/* Header */}
         <div className="space-y-1">
-          <p className="text-xs text-brand-muted uppercase tracking-widest">Account</p>
-          <h1 className="font-display text-3xl font-semibold text-white">My Bookings</h1>
+          <p className="text-xs text-brand-muted uppercase tracking-widest"><T k="bookings.account" /></p>
+          <h1 className="font-display text-3xl font-semibold text-white"><T k="bookings.myBookings" /></h1>
         </div>
 
         {/* Empty state */}
@@ -177,16 +178,16 @@ export default async function BookingsPage() {
               </svg>
             </div>
             <div className="space-y-2">
-              <p className="text-white font-medium">No bookings yet</p>
+              <p className="text-white font-medium"><T k="bookings.noBookingsYet" /></p>
               <p className="text-sm text-brand-muted max-w-xs mx-auto">
-                Browse our collection to find your perfect ride.
+                <T k="bookings.browseCollection" />
               </p>
             </div>
             <Link
               href="/catalogue"
               className="inline-flex items-center gap-2 text-sm text-brand-cyan hover:text-brand-cyan-hover transition-colors"
             >
-              Explore vehicles
+              <T k="bookings.exploreVehicles" />
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
@@ -198,7 +199,7 @@ export default async function BookingsPage() {
         {upcoming.length > 0 && (
           <section className="space-y-3">
             <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">
-              Upcoming
+              <T k="bookings.upcoming" />
             </h2>
             <div className="space-y-2">
               {upcoming.map((booking) => (
@@ -212,7 +213,7 @@ export default async function BookingsPage() {
         {past.length > 0 && (
           <section className="space-y-3">
             <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">
-              Past
+              <T k="bookings.past" />
             </h2>
             <div className="space-y-2 opacity-70">
               {past.map((booking) => (
@@ -231,7 +232,7 @@ export default async function BookingsPage() {
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
-            Back to Dashboard
+            <T k="bookings.backToDashboard" />
           </Link>
         </div>
 

@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { BookingWizard } from '@/components/booking/BookingWizard'
+import { T } from '@/components/ui/T'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -58,12 +59,12 @@ export default async function BookingPage({ params }: PageProps) {
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
-          Back to {vehicle.name}
+          <><T k="booking.backTo" /> {vehicle.name}</>
         </Link>
 
         {/* Page heading */}
         <div className="space-y-1">
-          <p className="text-xs text-brand-muted uppercase tracking-widest">Booking</p>
+          <p className="text-xs text-brand-muted uppercase tracking-widest"><T k="booking.bookingLabel" /></p>
           <h1 className="font-display text-3xl font-semibold text-white">{vehicle.name}</h1>
         </div>
 

@@ -8,6 +8,7 @@ import AcceptDeliveryButton from './AcceptDeliveryButton'
 import CancelBookingButton from './CancelBookingButton'
 import RequestDateChangeButton from './RequestDateChangeButton'
 import { PriceDisplay } from '@/components/catalogue/PriceDisplay'
+import { T } from '@/components/ui/T'
 
 import LiveTrackingMap from '@/components/tracking/LazyLiveTrackingMap'
 
@@ -35,54 +36,54 @@ function formatDateRange(start: string, end: string): string {
   return `${formatDate(start)} — ${formatDate(end)}`
 }
 
-function formatDurationType(type: string): string {
-  if (type === 'daily') return 'Daily'
-  if (type === 'weekly') return 'Weekly'
-  if (type === 'monthly') return 'Monthly'
+function durationTypeKey(type: string): string {
+  if (type === 'daily') return 'lookup.daily'
+  if (type === 'weekly') return 'lookup.weekly'
+  if (type === 'monthly') return 'lookup.monthly'
   return type
 }
 
-function formatPickupMethod(method: string): string {
-  if (method === 'delivery') return 'Delivery to your location'
-  return 'Office Pickup — Downtown Dubai'
+function pickupMethodKey(method: string): string {
+  if (method === 'delivery') return 'lookup.deliveryToLocation'
+  return 'lookup.officePickup'
 }
 
-function formatReturnMethod(method: string): string {
-  if (method === 'collection') return 'Collection from your location'
-  return 'Office Return — Downtown Dubai'
+function returnMethodKey(method: string): string {
+  if (method === 'collection') return 'lookup.collectionFromLocation'
+  return 'lookup.officeReturn'
 }
 
-function formatPaymentMethod(method: string): string {
-  if (method === 'cash') return 'Cash on Delivery'
-  if (method === 'crypto') return 'Cryptocurrency'
-  if (method === 'apple_pay') return 'Apple Pay'
-  if (method === 'google_pay') return 'Google Pay'
-  return 'Credit / Debit Card'
+function paymentMethodKey(method: string): string {
+  if (method === 'cash') return 'lookup.cashOnDelivery'
+  if (method === 'crypto') return 'lookup.cryptocurrency'
+  if (method === 'apple_pay') return 'lookup.applePay'
+  if (method === 'google_pay') return 'lookup.googlePay'
+  return 'lookup.creditDebitCard'
 }
 
-function formatPaymentStatus(paymentStatus: string): { label: string; className: string } {
-  if (paymentStatus === 'paid') return { label: 'Paid', className: 'text-green-400' }
-  if (paymentStatus === 'pending_cash') return { label: 'Cash Payment Pending', className: 'text-amber-400' }
-  if (paymentStatus === 'pending_crypto') return { label: 'Crypto Payment Pending', className: 'text-amber-400' }
-  return { label: 'Unpaid', className: 'text-yellow-400' }
+function paymentStatusConfig(paymentStatus: string): { labelKey: string; className: string } {
+  if (paymentStatus === 'paid') return { labelKey: 'lookup.paid', className: 'text-green-400' }
+  if (paymentStatus === 'pending_cash') return { labelKey: 'lookup.cashPending', className: 'text-amber-400' }
+  if (paymentStatus === 'pending_crypto') return { labelKey: 'lookup.cryptoPending', className: 'text-amber-400' }
+  return { labelKey: 'lookup.unpaid', className: 'text-yellow-400' }
 }
 
-function formatStatus(status: string): { label: string; className: string } {
+function statusConfig(status: string): { labelKey: string; className: string } {
   switch (status) {
     case 'confirmed':
-      return { label: 'Confirmed', className: 'text-brand-cyan' }
+      return { labelKey: 'lookup.confirmed', className: 'text-brand-cyan' }
     case 'pending':
-      return { label: 'Pending Confirmation', className: 'text-yellow-400' }
+      return { labelKey: 'lookup.pendingConfirmation', className: 'text-yellow-400' }
     case 'completed':
-      return { label: 'Completed', className: 'text-green-400' }
+      return { labelKey: 'lookup.completed', className: 'text-green-400' }
     case 'cancelled':
-      return { label: 'Cancelled', className: 'text-red-400' }
+      return { labelKey: 'lookup.cancelled', className: 'text-red-400' }
     case 'car_on_the_way':
-      return { label: 'Car On The Way', className: 'text-amber-400' }
+      return { labelKey: 'lookup.carOnTheWay', className: 'text-amber-400' }
     case 'car_delivered':
-      return { label: 'Car Delivered', className: 'text-green-400' }
+      return { labelKey: 'lookup.carDelivered', className: 'text-green-400' }
     default:
-      return { label: status, className: 'text-brand-muted' }
+      return { labelKey: status, className: 'text-brand-muted' }
   }
 }
 
@@ -90,7 +91,7 @@ function formatStatus(status: string): { label: string; className: string } {
 // Detail row component
 // ---------------------------------------------------------------------------
 
-function DetailRow({ label, value, valueClassName }: { label: string; value: string; valueClassName?: string }) {
+function DetailRow({ label, value, valueClassName }: { label: React.ReactNode; value: React.ReactNode; valueClassName?: string }) {
   return (
     <div className="flex items-start justify-between gap-4 py-3 border-b border-brand-border last:border-0">
       <span className="text-sm text-brand-muted flex-shrink-0">{label}</span>
@@ -103,7 +104,7 @@ function DetailRow({ label, value, valueClassName }: { label: string; value: str
 // Pricing row component
 // ---------------------------------------------------------------------------
 
-function PricingRow({ label, value, bold }: { label: string; value: React.ReactNode; bold?: boolean }) {
+function PricingRow({ label, value, bold }: { label: React.ReactNode; value: React.ReactNode; bold?: boolean }) {
   return (
     <div className="flex items-center justify-between py-2">
       <span className={`text-sm ${bold ? 'text-white font-semibold' : 'text-brand-muted'}`}>{label}</span>
@@ -126,8 +127,8 @@ export default async function BookingDetailPage({ params }: PageProps) {
 
   const booking = result
   const vehicle = booking.vehicles
-  const statusConfig = formatStatus(booking.status)
-  const paymentStatusConfig = formatPaymentStatus(booking.payment_status)
+  const status = statusConfig(booking.status)
+  const paymentStatus = paymentStatusConfig(booking.payment_status)
   const bookingRef = booking.id.replace(/-/g, '').substring(0, 8).toUpperCase()
 
   const isTrackable = TRACKABLE_STATUSES.has(booking.status)
@@ -187,7 +188,7 @@ export default async function BookingDetailPage({ params }: PageProps) {
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
-          My Bookings
+          <T k="bookings.myBookings" />
         </Link>
 
         {/* Hero: vehicle image */}
@@ -206,20 +207,20 @@ export default async function BookingDetailPage({ params }: PageProps) {
         {/* Heading */}
         <div className="space-y-2">
           <p className="text-xs text-brand-muted uppercase tracking-widest">
-            Booking Reference: {bookingRef}
+            <T k="lookup.bookingRef" />: {bookingRef}
           </p>
           <h1 className="font-display text-3xl font-semibold text-white">
-            {vehicle?.name ?? 'Vehicle Booking'}
+            {vehicle?.name ?? <T k="lookup.vehicleBooking" />}
           </h1>
-          <p className={`text-sm font-medium ${statusConfig.className}`}>
-            {statusConfig.label}
+          <p className={`text-sm font-medium ${status.className}`}>
+            <T k={status.labelKey} />
           </p>
           {vehicle?.slug && (
             <Link
               href={`/catalogue/${vehicle.slug}`}
               className="inline-flex items-center gap-1 text-xs text-brand-muted hover:text-brand-cyan transition-colors"
             >
-              View vehicle details
+              <T k="lookup.viewVehicleDetails" />
               <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
@@ -230,7 +231,7 @@ export default async function BookingDetailPage({ params }: PageProps) {
         {/* Tracking section — shown for confirmed / car_on_the_way / car_delivered */}
         {isTrackable && (
           <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-6 space-y-6">
-            <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Delivery Status</h2>
+            <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium"><T k="bookings.deliveryStatus" /></h2>
 
             {/* Status timeline — live updates via Realtime subscription */}
             <BookingStatusTimeline
@@ -254,9 +255,9 @@ export default async function BookingDetailPage({ params }: PageProps) {
         {/* Accept Delivery section — shown when car has been delivered */}
         {booking.status === 'car_delivered' && (
           <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-6 space-y-4">
-            <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Accept Delivery</h2>
+            <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium"><T k="bookings.acceptDelivery" /></h2>
             <p className="text-sm text-brand-muted">
-              Your vehicle has been delivered. Please confirm you have received it and are satisfied with its condition.
+              <T k="bookings.acceptDeliveryDesc" />
             </p>
             <AcceptDeliveryButton bookingId={booking.id} />
           </section>
@@ -265,16 +266,16 @@ export default async function BookingDetailPage({ params }: PageProps) {
         {/* Cancel Booking / Date Change — or started-rental message */}
         {hasStarted && ['pending', 'confirmed'].includes(booking.status) ? (
           <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-6 space-y-2">
-            <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Cancellation & Changes</h2>
+            <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium"><T k="lookup.cancellationChanges" /></h2>
             <p className="text-sm text-brand-muted">
-              Cancellations and date modifications cannot be made once the rental period has started. Please contact us directly if you need assistance.
+              <T k="lookup.cancellationStarted" />
             </p>
           </section>
         ) : (
           <>
             {isCancellable && (
               <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-6 space-y-4">
-                <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Cancel Booking</h2>
+                <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium"><T k="lookup.cancelBooking" /></h2>
                 <CancelBookingButton
                   bookingId={booking.id}
                   dailyRate={vehicle?.daily_rate ?? 0}
@@ -286,7 +287,7 @@ export default async function BookingDetailPage({ params }: PageProps) {
 
             {isModifiable && (
               <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-6 space-y-4">
-                <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Change Dates</h2>
+                <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium"><T k="lookup.changeDates" /></h2>
                 <RequestDateChangeButton
                   bookingId={booking.id}
                   currentStartDate={booking.start_date}
@@ -303,46 +304,46 @@ export default async function BookingDetailPage({ params }: PageProps) {
         {/* Booking details section */}
         <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] divide-y divide-brand-border">
           <div className="px-6 py-4">
-            <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Booking Details</h2>
+            <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium"><T k="lookup.bookingDetails" /></h2>
           </div>
           <div className="px-6">
             <DetailRow
-              label="Dates"
+              label={<T k="lookup.dates" />}
               value={formatDateRange(booking.start_date, booking.end_date)}
             />
             <DetailRow
-              label="Rate Type"
-              value={formatDurationType(booking.duration_type)}
+              label={<T k="lookup.rateType" />}
+              value={<T k={durationTypeKey(booking.duration_type)} />}
             />
             {booking.start_time && (
               <DetailRow
-                label="Pickup Time"
+                label={<T k="lookup.pickupTime" />}
                 value={booking.start_time}
               />
             )}
             {booking.end_time && (
               <DetailRow
-                label="Dropoff Time"
+                label={<T k="lookup.dropoffTime" />}
                 value={booking.end_time}
               />
             )}
             <DetailRow
-              label="Pickup"
-              value={formatPickupMethod(booking.pickup_method)}
+              label={<T k="lookup.pickup" />}
+              value={<T k={pickupMethodKey(booking.pickup_method)} />}
             />
             {booking.pickup_method === 'delivery' && booking.delivery_address && (
               <DetailRow
-                label="Delivery Address"
+                label={<T k="lookup.deliveryAddress" />}
                 value={booking.delivery_address}
               />
             )}
             <DetailRow
-              label="Return"
-              value={formatReturnMethod(booking.return_method)}
+              label={<T k="lookup.return" />}
+              value={<T k={returnMethodKey(booking.return_method)} />}
             />
             {booking.return_method === 'collection' && booking.collection_address && (
               <DetailRow
-                label="Collection Address"
+                label={<T k="lookup.collectionAddress" />}
                 value={booking.collection_address}
               />
             )}
@@ -352,28 +353,28 @@ export default async function BookingDetailPage({ params }: PageProps) {
         {/* Pricing breakdown section */}
         <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)]">
           <div className="px-6 py-4 border-b border-brand-border">
-            <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Pricing Breakdown</h2>
+            <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium"><T k="lookup.pricingBreakdown" /></h2>
           </div>
           <div className="px-6 py-2">
-            <PricingRow label="Rental Subtotal" value={<PriceDisplay amount={booking.rental_subtotal} />} />
+            <PricingRow label={<T k="lookup.rentalSubtotal" />} value={<PriceDisplay amount={booking.rental_subtotal} />} />
             {booking.delivery_fee > 0 && (
-              <PricingRow label="Delivery Fee" value={<PriceDisplay amount={booking.delivery_fee} />} />
+              <PricingRow label={<T k="lookup.deliveryFee" />} value={<PriceDisplay amount={booking.delivery_fee} />} />
             )}
             {booking.return_fee > 0 && (
-              <PricingRow label="Return Collection Fee" value={<PriceDisplay amount={booking.return_fee} />} />
+              <PricingRow label={<T k="lookup.returnCollectionFee" />} value={<PriceDisplay amount={booking.return_fee} />} />
             )}
             {booking.no_deposit_surcharge > 0 && (
-              <PricingRow label="No-Deposit Surcharge" value={<PriceDisplay amount={booking.no_deposit_surcharge} />} />
+              <PricingRow label={<T k="lookup.noDepositSurcharge" />} value={<PriceDisplay amount={booking.no_deposit_surcharge} />} />
             )}
             <div className="border-t border-brand-border mt-2 pt-2">
-              <PricingRow label="Total Due" value={<PriceDisplay amount={booking.total_due} />} bold />
+              <PricingRow label={<T k="lookup.totalDue" />} value={<PriceDisplay amount={booking.total_due} />} bold />
             </div>
             {booking.deposit_choice === 'deposit' && booking.deposit_amount > 0 && (
               <div className="border-t border-brand-border mt-2 pt-2 pb-2">
                 <div className="flex items-start justify-between">
                   <div>
-                    <span className="text-sm text-brand-muted">Security Deposit Hold</span>
-                    <p className="text-xs text-brand-muted/60 mt-0.5">Pre-authorized, not charged</p>
+                    <span className="text-sm text-brand-muted"><T k="lookup.securityDeposit" /></span>
+                    <p className="text-xs text-brand-muted/60 mt-0.5"><T k="lookup.securityDepositNote" /></p>
                   </div>
                   <PriceDisplay amount={booking.deposit_amount} className="text-sm text-brand-muted" />
                 </div>
@@ -385,17 +386,17 @@ export default async function BookingDetailPage({ params }: PageProps) {
         {/* Payment section */}
         <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)]">
           <div className="px-6 py-4 border-b border-brand-border">
-            <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Payment</h2>
+            <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium"><T k="lookup.payment" /></h2>
           </div>
           <div className="px-6">
             <DetailRow
-              label="Method"
-              value={formatPaymentMethod(booking.payment_method)}
+              label={<T k="lookup.method" />}
+              value={<T k={paymentMethodKey(booking.payment_method)} />}
             />
             <DetailRow
-              label="Status"
-              value={paymentStatusConfig.label}
-              valueClassName={paymentStatusConfig.className}
+              label={<T k="lookup.status" />}
+              value={<T k={paymentStatus.labelKey} />}
+              valueClassName={paymentStatus.className}
             />
           </div>
           {booking.payment_status === 'pending_crypto' && booking.nowpayments_invoice_id && (
@@ -409,7 +410,7 @@ export default async function BookingDetailPage({ params }: PageProps) {
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                Complete Crypto Payment
+                <T k="lookup.completeCrypto" />
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
@@ -420,19 +421,19 @@ export default async function BookingDetailPage({ params }: PageProps) {
 
         {/* Cancellation policy section */}
         <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-6 space-y-3">
-          <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Cancellation Policy</h2>
+          <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium"><T k="lookup.cancellationPolicy" /></h2>
           <ul className="space-y-2">
             <li className="flex items-start gap-2 text-sm text-brand-muted">
               <svg className="w-4 h-4 text-brand-cyan flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span>Free cancellation more than 24 hours before pickup</span>
+              <span><T k="lookup.freeCancellation" /></span>
             </li>
             <li className="flex items-start gap-2 text-sm text-brand-muted">
               <svg className="w-4 h-4 text-yellow-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
-              <span>One-day rental fee charged for cancellations within 24 hours of pickup</span>
+              <span><T k="lookup.lateCancellation" /></span>
             </li>
           </ul>
         </section>

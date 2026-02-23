@@ -8,6 +8,7 @@ import { loginSchema, signUpSchema } from '@/lib/validations/auth'
 import { createClient } from '@/lib/supabase/client'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
+import { useTranslation } from '@/lib/i18n/context'
 
 type LoginFormData = z.infer<typeof loginSchema>
 type SignUpFormData = z.infer<typeof signUpSchema>
@@ -17,18 +18,19 @@ interface StepAuthProps {
 }
 
 export function StepAuth({ onAuthenticated }: StepAuthProps) {
+  const { t } = useTranslation()
   const [mode, setMode] = useState<'login' | 'signup'>('login')
 
   return (
     <div className="space-y-6">
       <div className="space-y-2">
         <h2 className="font-display text-xl font-semibold text-white">
-          {mode === 'login' ? 'Sign in to continue' : 'Create an account'}
+          {mode === 'login' ? t('booking.signInContinue') : t('booking.createAccount')}
         </h2>
         <p className="text-sm text-brand-muted">
           {mode === 'login'
-            ? 'Sign in to your account to complete your booking.'
-            : 'Create a free account to complete your booking.'}
+            ? t('booking.signInDesc')
+            : t('booking.createAccountDesc')}
         </p>
       </div>
 
@@ -48,6 +50,7 @@ function InlineLoginForm({
   onSwitch: () => void
   onAuthenticated: () => void
 }) {
+  const { t } = useTranslation()
   const [isPending, setIsPending] = useState(false)
   const {
     register,
@@ -80,7 +83,7 @@ function InlineLoginForm({
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
       <Input
         {...register('email')}
-        label="Email"
+        label={t('booking.email')}
         type="email"
         placeholder="your@email.com"
         autoComplete="email"
@@ -88,7 +91,7 @@ function InlineLoginForm({
       />
       <Input
         {...register('password')}
-        label="Password"
+        label={t('booking.password')}
         type="password"
         placeholder="••••••••"
         autoComplete="current-password"
@@ -100,7 +103,7 @@ function InlineLoginForm({
       )}
 
       <Button type="submit" loading={isPending}>
-        Sign in
+        {t('booking.signIn')}
       </Button>
 
       <button
@@ -108,7 +111,7 @@ function InlineLoginForm({
         onClick={onSwitch}
         className="text-xs text-white/40 hover:text-white/70 transition-colors text-center"
       >
-        Don&apos;t have an account? Create one
+        {t('booking.noAccount')}
       </button>
     </form>
   )
@@ -121,6 +124,7 @@ function InlineSignupForm({
   onSwitch: () => void
   onAuthenticated: () => void
 }) {
+  const { t } = useTranslation()
   const [isPending, setIsPending] = useState(false)
   const {
     register,
@@ -153,7 +157,7 @@ function InlineSignupForm({
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
       <Input
         {...register('email')}
-        label="Email"
+        label={t('booking.email')}
         type="email"
         placeholder="your@email.com"
         autoComplete="email"
@@ -161,9 +165,9 @@ function InlineSignupForm({
       />
       <Input
         {...register('password')}
-        label="Password"
+        label={t('booking.password')}
         type="password"
-        placeholder="Min. 8 characters"
+        placeholder={t('booking.minChars')}
         autoComplete="new-password"
         error={errors.password?.message}
       />
@@ -173,7 +177,7 @@ function InlineSignupForm({
       )}
 
       <Button type="submit" loading={isPending}>
-        Create account
+        {t('booking.createAccountBtn')}
       </Button>
 
       <button
@@ -181,7 +185,7 @@ function InlineSignupForm({
         onClick={onSwitch}
         className="text-xs text-white/40 hover:text-white/70 transition-colors text-center"
       >
-        Already have an account? Sign in
+        {t('booking.hasAccount')}
       </button>
     </form>
   )
