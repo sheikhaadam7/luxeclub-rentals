@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Image from 'next/image'
 
 interface ImageGalleryProps {
@@ -10,14 +10,6 @@ interface ImageGalleryProps {
 
 export function ImageGallery({ images, alt }: ImageGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0)
-
-  // Preload all images
-  useEffect(() => {
-    images.forEach((src) => {
-      const img = new window.Image()
-      img.src = src
-    })
-  }, [images])
 
   const prev = () => setActiveIndex(activeIndex === 0 ? images.length - 1 : activeIndex - 1)
   const next = () => setActiveIndex(activeIndex === images.length - 1 ? 0 : activeIndex + 1)
@@ -78,7 +70,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
 
       {/* Thumbnail strip */}
       {images.length > 1 && (
-        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+        <div className="flex gap-2 overflow-x-auto py-1 scrollbar-hide">
           {images.map((src, i) => (
             <button
               key={src}
@@ -86,7 +78,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
               onClick={() => setActiveIndex(i)}
               className={`relative flex-shrink-0 w-20 h-14 rounded-lg overflow-hidden transition-all duration-300 ${
                 i === activeIndex
-                  ? 'ring-2 ring-white ring-offset-1 ring-offset-black opacity-100'
+                  ? 'ring-2 ring-[#C9A96E] ring-offset-1 ring-offset-black opacity-100'
                   : 'opacity-40 hover:opacity-70'
               }`}
             >
