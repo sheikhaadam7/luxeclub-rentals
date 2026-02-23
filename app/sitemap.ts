@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { createClient } from '@/lib/supabase/server'
+import { guides } from '@/lib/guides'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = 'https://www.luxeclubrentals.ae'
@@ -25,5 +26,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }))
 
-  return [...staticPages, ...vehiclePages]
+  const guidePages: MetadataRoute.Sitemap = [
+    { url: `${base}/guides`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.7 },
+    ...guides.map((g) => ({
+      url: `${base}/guides/${g.slug}`,
+      lastModified: new Date(g.publishedDate),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    })),
+  ]
+
+  return [...staticPages, ...vehiclePages, ...guidePages]
 }
