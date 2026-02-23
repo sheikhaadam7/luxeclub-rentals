@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 
 interface ImageGalleryProps {
@@ -10,9 +10,18 @@ interface ImageGalleryProps {
 
 export function ImageGallery({ images, alt }: ImageGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0)
+  const stripRef = useRef<HTMLDivElement>(null)
 
   const prev = () => setActiveIndex(activeIndex === 0 ? images.length - 1 : activeIndex - 1)
   const next = () => setActiveIndex(activeIndex === images.length - 1 ? 0 : activeIndex + 1)
+
+  // Scroll the active thumbnail into view
+  useEffect(() => {
+    const strip = stripRef.current
+    if (!strip) return
+    const thumb = strip.children[activeIndex] as HTMLElement | undefined
+    thumb?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
+  }, [activeIndex])
 
   if (images.length === 0) return null
 
@@ -78,7 +87,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
 
       {/* Thumbnail strip */}
       {images.length > 1 && (
-        <div className="flex gap-2 overflow-x-auto px-1 py-1 scrollbar-hide">
+        <div ref={stripRef} className="flex gap-2 overflow-x-auto px-1 py-1 scrollbar-hide">
           {images.map((src, i) => (
             <button
               key={src}
