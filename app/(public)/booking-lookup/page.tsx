@@ -303,7 +303,7 @@ export default function BookingLookupPage() {
 
         {/* Cancel Booking / Date Change — or started-rental message */}
         {hasStarted && ['pending', 'confirmed'].includes(booking.status) ? (
-          <section className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-6 space-y-2">
+          <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-6 space-y-2">
             <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Cancellation & Changes</h2>
             <p className="text-sm text-brand-muted">
               Cancellations and date modifications cannot be made once the rental period has started. Please contact us directly if you need assistance.
@@ -312,7 +312,7 @@ export default function BookingLookupPage() {
         ) : (
           <>
             {isCancellable && (
-              <section className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-6 space-y-4">
+              <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-6 space-y-4">
                 <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Cancel Booking</h2>
                 <GuestCancelButton
                   bookingId={booking.id}
@@ -326,7 +326,7 @@ export default function BookingLookupPage() {
             )}
 
             {isModifiable && (
-              <section className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-6 space-y-4">
+              <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-6 space-y-4">
                 <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Change Dates</h2>
                 <GuestDateChangeButton
                   bookingId={booking.id}
@@ -344,7 +344,7 @@ export default function BookingLookupPage() {
         )}
 
         {/* Booking details section */}
-        <section className="bg-brand-surface border border-brand-border rounded-[--radius-card] divide-y divide-brand-border">
+        <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] divide-y divide-brand-border">
           <div className="px-6 py-4">
             <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Booking Details</h2>
           </div>
@@ -393,7 +393,7 @@ export default function BookingLookupPage() {
         </section>
 
         {/* Pricing breakdown section */}
-        <section className="bg-brand-surface border border-brand-border rounded-[--radius-card]">
+        <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)]">
           <div className="px-6 py-4 border-b border-brand-border">
             <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Pricing Breakdown</h2>
           </div>
@@ -426,7 +426,7 @@ export default function BookingLookupPage() {
         </section>
 
         {/* Payment section */}
-        <section className="bg-brand-surface border border-brand-border rounded-[--radius-card]">
+        <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)]">
           <div className="px-6 py-4 border-b border-brand-border">
             <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Payment</h2>
           </div>
@@ -462,7 +462,7 @@ export default function BookingLookupPage() {
         </section>
 
         {/* Cancellation policy section */}
-        <section className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-6 space-y-3">
+        <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-6 space-y-3">
           <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Cancellation Policy</h2>
           <ul className="space-y-2">
             <li className="flex items-start gap-2 text-sm text-brand-muted">

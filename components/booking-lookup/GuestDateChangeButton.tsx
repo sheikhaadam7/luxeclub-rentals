@@ -143,7 +143,7 @@ export default function GuestDateChangeButton({
           <span className="text-white">{formatDate(currentEndDate)}</span>
         </p>
 
-        <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-4 inline-block">
+        <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-4 inline-block">
           <DayPicker
             mode="range"
             selected={range}

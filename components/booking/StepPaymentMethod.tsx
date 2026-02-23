@@ -57,7 +57,7 @@ export function StepPaymentMethod({ form }: StepPaymentMethodProps) {
             type="button"
             onClick={() => form.setValue('paymentMethod', option.value, { shouldValidate: true })}
             className={[
-              'w-full p-5 rounded-[--radius-card] border text-left transition-all',
+              'w-full p-5 rounded-[var(--radius-card)] border text-left transition-all',
               paymentMethod === option.value
                 ? 'border-brand-cyan bg-brand-cyan/10'
                 : 'border-brand-border hover:border-white/30',

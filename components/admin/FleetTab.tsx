@@ -130,7 +130,7 @@ function AddVehicleForm({ onSuccess }: { onSuccess: () => void }) {
   }
 
   return (
-    <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-5">
+    <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-5">
       <div className="flex items-center justify-between">
         <h3 className="font-display text-base font-medium text-white">Add Vehicle</h3>
         <button
@@ -440,7 +440,7 @@ function VehicleCard({
   }
 
   return (
-    <div className={`bg-brand-surface border rounded-[--radius-card] p-4 space-y-3 transition-opacity ${!vehicle.is_active ? 'opacity-60 border-red-500/30' : 'border-brand-border'}`}>
+    <div className={`bg-brand-surface border rounded-[var(--radius-card)] p-4 space-y-3 transition-opacity ${!vehicle.is_active ? 'opacity-60 border-red-500/30' : 'border-brand-border'}`}>
       {/* Header row */}
       <div className="flex flex-col sm:flex-row sm:items-start gap-3">
         <div className="flex-1 min-w-0">
@@ -626,7 +626,7 @@ export function FleetTab() {
     return (
       <div className="space-y-3">
         {[...Array(3)].map((_, i) => (
-          <div key={i} className="bg-brand-surface border border-brand-border rounded-[--radius-card] h-24 animate-pulse" />
+          <div key={i} className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] h-24 animate-pulse" />
         ))}
       </div>
     )
@@ -634,7 +634,7 @@ export function FleetTab() {
 
   if (loadError) {
     return (
-      <div className="bg-red-500/10 border border-red-500/30 rounded-[--radius-card] p-4">
+      <div className="bg-red-500/10 border border-red-500/30 rounded-[var(--radius-card)] p-4">
         <p className="text-red-400 text-sm">Failed to load fleet data: {loadError}</p>
         <button
           type="button"
@@ -653,7 +653,7 @@ export function FleetTab() {
     <div className="space-y-6">
       {/* Staleness alert */}
       {isStale && (
-        <div className="flex items-start gap-3 bg-amber-400/10 border border-amber-400/30 rounded-[--radius-card] px-4 py-3">
+        <div className="flex items-start gap-3 bg-amber-400/10 border border-amber-400/30 rounded-[var(--radius-card)] px-4 py-3">
           <svg
             className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5"
             fill="none"
@@ -682,7 +682,7 @@ export function FleetTab() {
 
       {/* Scraper error alert */}
       {lastRun?.status === 'error' && (
-        <div className="flex items-start gap-3 bg-red-500/10 border border-red-500/30 rounded-[--radius-card] px-4 py-3">
+        <div className="flex items-start gap-3 bg-red-500/10 border border-red-500/30 rounded-[var(--radius-card)] px-4 py-3">
           <svg
             className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5"
             fill="none"
@@ -708,7 +708,7 @@ export function FleetTab() {
       )}
 
       {/* Scraper status card */}
-      <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-5">
+      <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-5">
         <h2 className="font-display text-lg font-medium text-white mb-3">Scraper Status</h2>
         {lastRun ? (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
@@ -758,7 +758,7 @@ export function FleetTab() {
           Vehicles ({vehicles.length})
         </h2>
         {vehicles.length === 0 ? (
-          <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-6 text-center">
+          <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-6 text-center">
             <p className="text-brand-muted text-sm">
               No vehicles in database. Run the scraper first or add one above.
             </p>

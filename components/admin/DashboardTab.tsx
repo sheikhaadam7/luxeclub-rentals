@@ -43,7 +43,7 @@ function QuickStats({ data }: { data: DashboardOverview }) {
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       {/* Active Bookings Today */}
-      <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-5">
+      <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-5">
         <p className="text-brand-muted text-xs uppercase tracking-widest mb-2">
           Active Bookings Today
         </p>
@@ -54,7 +54,7 @@ function QuickStats({ data }: { data: DashboardOverview }) {
       </div>
 
       {/* Pending Actions */}
-      <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-5">
+      <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-5">
         <p className="text-brand-muted text-xs uppercase tracking-widest mb-2">
           Pending Actions
         </p>
@@ -69,7 +69,7 @@ function QuickStats({ data }: { data: DashboardOverview }) {
       </div>
 
       {/* Revenue This Month */}
-      <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-5">
+      <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-5">
         <p className="text-brand-muted text-xs uppercase tracking-widest mb-2">
           Revenue This Month
         </p>
@@ -80,7 +80,7 @@ function QuickStats({ data }: { data: DashboardOverview }) {
       </div>
 
       {/* Fleet Utilization */}
-      <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-5">
+      <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-5">
         <p className="text-brand-muted text-xs uppercase tracking-widest mb-2">
           Fleet Utilization
         </p>
@@ -224,7 +224,7 @@ function NeedsAttentionCard({
     data.needsAttention.pendingCash.length
 
   return (
-    <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-5">
+    <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-5">
       <div className="flex items-center gap-2 mb-5">
         <h3 className="text-white font-display font-semibold text-lg">
           Needs Attention
@@ -269,7 +269,7 @@ function NeedsAttentionCard({
 
 function RecentActivity({ bookings }: { bookings: AdminBooking[] }) {
   return (
-    <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-5">
+    <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-5">
       <h3 className="text-white font-display font-semibold text-lg mb-4">
         Recent Activity
       </h3>
@@ -339,16 +339,16 @@ function DashboardSkeleton() {
         {[1, 2, 3, 4].map((i) => (
           <div
             key={i}
-            className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-5 h-28 animate-pulse"
+            className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-5 h-28 animate-pulse"
           />
         ))}
       </div>
 
       {/* Needs attention skeleton */}
-      <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-5 h-64 animate-pulse" />
+      <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-5 h-64 animate-pulse" />
 
       {/* Recent activity skeleton */}
-      <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-5 h-80 animate-pulse" />
+      <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-5 h-80 animate-pulse" />
     </div>
   )
 }
@@ -403,7 +403,7 @@ export function DashboardTab() {
 
   if (error) {
     return (
-      <div className="bg-red-500/10 border border-red-500/30 rounded-[--radius-card] p-4">
+      <div className="bg-red-500/10 border border-red-500/30 rounded-[var(--radius-card)] p-4">
         <p className="text-red-400 text-sm">
           Failed to load dashboard: {error}
         </p>

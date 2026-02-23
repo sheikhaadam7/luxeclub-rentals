@@ -167,7 +167,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
             type="button"
             onClick={() => form.setValue('pickupMethod', 'delivery', { shouldValidate: true })}
             className={[
-              'p-4 rounded-[--radius-card] border text-left transition-all',
+              'p-4 rounded-[var(--radius-card)] border text-left transition-all',
               pickupMethod === 'delivery'
                 ? 'border-brand-cyan bg-brand-cyan/10'
                 : 'border-brand-border hover:border-white/30',
@@ -203,7 +203,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
               setMapCenter(null)
             }}
             className={[
-              'p-4 rounded-[--radius-card] border text-left transition-all',
+              'p-4 rounded-[var(--radius-card)] border text-left transition-all',
               pickupMethod === 'self_pickup'
                 ? 'border-brand-cyan bg-brand-cyan/10'
                 : 'border-brand-border hover:border-white/30',
@@ -253,7 +253,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
                   defaultValue={deliveryAddress ?? ''}
                   onChange={(e) => form.setValue('deliveryAddress', e.target.value)}
                   className={[
-                    'w-full bg-black/30 border rounded-[--radius-card] px-4 py-3 text-sm text-white placeholder:text-brand-muted focus:outline-none focus:border-brand-cyan input-focus-glow transition-colors',
+                    'w-full bg-black/30 border rounded-[var(--radius-card)] px-4 py-3 text-sm text-white placeholder:text-brand-muted focus:outline-none focus:border-brand-cyan input-focus-glow transition-colors',
                     addressError ? 'border-red-500' : 'border-brand-border',
                   ].join(' ')}
                 />
@@ -264,7 +264,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
               )}
 
               {mapCenter && (
-                <div className="mt-3 rounded-[--radius-card] overflow-hidden border border-brand-border" style={{ height: 200 }}>
+                <div className="mt-3 rounded-[var(--radius-card)] overflow-hidden border border-brand-border" style={{ height: 200 }}>
                   <GoogleMap
                     mapContainerStyle={{ width: '100%', height: '100%' }}
                     center={mapCenter}
@@ -295,7 +295,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
                 placeholder="Enter delivery address"
                 {...form.register('deliveryAddress')}
                 className={[
-                  'w-full bg-black/30 border rounded-[--radius-card] px-4 py-3 text-sm text-white placeholder:text-brand-muted focus:outline-none focus:border-brand-cyan input-focus-glow transition-colors',
+                  'w-full bg-black/30 border rounded-[var(--radius-card)] px-4 py-3 text-sm text-white placeholder:text-brand-muted focus:outline-none focus:border-brand-cyan input-focus-glow transition-colors',
                   addressError ? 'border-red-500' : 'border-brand-border',
                 ].join(' ')}
               />
@@ -323,7 +323,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
               setSameAsDelivery(false)
             }}
             className={[
-              'p-4 rounded-[--radius-card] border text-left transition-all',
+              'p-4 rounded-[var(--radius-card)] border text-left transition-all',
               returnMethod === 'self_dropoff'
                 ? 'border-brand-cyan bg-brand-cyan/10'
                 : 'border-brand-border hover:border-white/30',
@@ -353,7 +353,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
             type="button"
             onClick={() => form.setValue('returnMethod', 'collection', { shouldValidate: true })}
             className={[
-              'p-4 rounded-[--radius-card] border text-left transition-all',
+              'p-4 rounded-[var(--radius-card)] border text-left transition-all',
               returnMethod === 'collection'
                 ? 'border-brand-cyan bg-brand-cyan/10'
                 : 'border-brand-border hover:border-white/30',
@@ -420,7 +420,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
                       defaultValue={collectionAddress ?? ''}
                       onChange={(e) => form.setValue('collectionAddress', e.target.value)}
                       className={[
-                        'w-full bg-black/30 border rounded-[--radius-card] px-4 py-3 text-sm text-white placeholder:text-brand-muted focus:outline-none focus:border-brand-cyan input-focus-glow transition-colors',
+                        'w-full bg-black/30 border rounded-[var(--radius-card)] px-4 py-3 text-sm text-white placeholder:text-brand-muted focus:outline-none focus:border-brand-cyan input-focus-glow transition-colors',
                         collectionAddressError ? 'border-red-500' : 'border-brand-border',
                       ].join(' ')}
                     />
@@ -431,7 +431,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
                   )}
 
                   {collectionMapCenter && (
-                    <div className="mt-3 rounded-[--radius-card] overflow-hidden border border-brand-border" style={{ height: 200 }}>
+                    <div className="mt-3 rounded-[var(--radius-card)] overflow-hidden border border-brand-border" style={{ height: 200 }}>
                       <GoogleMap
                         mapContainerStyle={{ width: '100%', height: '100%' }}
                         center={collectionMapCenter}
@@ -462,7 +462,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
                     placeholder="Enter collection address"
                     {...form.register('collectionAddress')}
                     className={[
-                      'w-full bg-black/30 border rounded-[--radius-card] px-4 py-3 text-sm text-white placeholder:text-brand-muted focus:outline-none focus:border-brand-cyan input-focus-glow transition-colors',
+                      'w-full bg-black/30 border rounded-[var(--radius-card)] px-4 py-3 text-sm text-white placeholder:text-brand-muted focus:outline-none focus:border-brand-cyan input-focus-glow transition-colors',
                       collectionAddressError ? 'border-red-500' : 'border-brand-border',
                     ].join(' ')}
                   />
@@ -481,7 +481,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
 
       {/* Summary */}
       {(deliveryAddress || pickupMethod === 'self_pickup') && (
-        <div className="bg-black/20 border border-brand-border rounded-[--radius-card] p-4 text-sm space-y-1">
+        <div className="bg-black/20 border border-brand-border rounded-[var(--radius-card)] p-4 text-sm space-y-1">
           <p className="text-brand-muted text-xs uppercase tracking-wider mb-2">Selected Options</p>
           <div className="flex justify-between">
             <span className="text-brand-muted">Pickup:</span>

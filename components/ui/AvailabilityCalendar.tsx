@@ -21,7 +21,7 @@ export function AvailabilityCalendar({ bookedRanges }: AvailabilityCalendarProps
   ]
 
   return (
-    <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-4 inline-block">
+    <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-4 inline-block">
       <DayPicker
         disabled={disabledMatchers}
         numberOfMonths={2}

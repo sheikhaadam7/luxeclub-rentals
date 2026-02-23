@@ -125,7 +125,7 @@ export function StepDuration({ form, vehicle, bookedRanges }: StepDurationProps)
               <div
                 key={value}
                 className={[
-                  'p-4 rounded-[--radius-card] border text-left transition-all',
+                  'p-4 rounded-[var(--radius-card)] border text-left transition-all',
                   isActive
                     ? 'border-brand-cyan bg-brand-cyan/10'
                     : 'border-brand-border',
@@ -165,7 +165,7 @@ export function StepDuration({ form, vehicle, bookedRanges }: StepDurationProps)
       {/* Date range picker */}
       <div>
         <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">Select Dates</p>
-        <div className="bg-black/20 rounded-[--radius-card] p-4 overflow-x-auto">
+        <div className="bg-black/20 rounded-[var(--radius-card)] p-4 overflow-x-auto">
           <DayPicker
             mode="range"
             selected={selectedRange}
@@ -238,7 +238,7 @@ export function StepDuration({ form, vehicle, bookedRanges }: StepDurationProps)
           <select
             {...form.register('startTime')}
             defaultValue="10:00"
-            className="w-full bg-black/30 border border-brand-border rounded-[--radius-card] px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-cyan input-focus-glow appearance-none cursor-pointer"
+            className="w-full bg-black/30 border border-brand-border rounded-[var(--radius-card)] px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-cyan input-focus-glow appearance-none cursor-pointer"
           >
             {TIME_SLOTS.map((slot) => (
               <option key={`pickup-${slot.value}`} value={slot.value}>{slot.label}</option>
@@ -252,7 +252,7 @@ export function StepDuration({ form, vehicle, bookedRanges }: StepDurationProps)
           <select
             {...form.register('endTime')}
             defaultValue="10:00"
-            className="w-full bg-black/30 border border-brand-border rounded-[--radius-card] px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-cyan input-focus-glow appearance-none cursor-pointer"
+            className="w-full bg-black/30 border border-brand-border rounded-[var(--radius-card)] px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-cyan input-focus-glow appearance-none cursor-pointer"
           >
             {TIME_SLOTS.map((slot) => (
               <option key={`dropoff-${slot.value}`} value={slot.value}>{slot.label}</option>

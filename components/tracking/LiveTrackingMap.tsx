@@ -81,7 +81,7 @@ export default function LiveTrackingMap({
   if (!token) {
     return (
       <div
-        className="w-full flex items-center justify-center bg-brand-surface border border-brand-border rounded-[--radius-card] text-brand-muted text-sm"
+        className="w-full flex items-center justify-center bg-brand-surface border border-brand-border rounded-[var(--radius-card)] text-brand-muted text-sm"
         style={{ height: '400px' }}
       >
         Map unavailable — Mapbox token not configured
@@ -157,7 +157,7 @@ export default function LiveTrackingMap({
   return (
     <div
       ref={mapContainer}
-      className="w-full rounded-[--radius-card] overflow-hidden"
+      className="w-full rounded-[var(--radius-card)] overflow-hidden"
       style={{ height: '400px' }}
     />
   )

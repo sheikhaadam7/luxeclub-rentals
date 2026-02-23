@@ -22,7 +22,7 @@ html {
   --font-body: var(--font-body), system-ui, sans-serif;
 
   /* Radii */
-  --radius-card: 1rem;
+  --radius-card: 0.75rem;
 
   /* Animations */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);

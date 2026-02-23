@@ -73,7 +73,7 @@ export default function FAQPage() {
           {faqs.map(({ q, a }, i) => (
             <details
               key={i}
-              className="group bg-brand-surface border border-brand-border rounded-[--radius-card] overflow-hidden transition-colors duration-300 hover:border-brand-border-hover"
+              className="group bg-brand-surface border border-brand-border rounded-[var(--radius-card)] overflow-hidden transition-colors duration-300 hover:border-brand-border-hover"
             >
               <summary className="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none select-none">
                 <span className="text-[15px] font-medium text-white">{q}</span>

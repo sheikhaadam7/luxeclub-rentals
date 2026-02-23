@@ -74,22 +74,22 @@ function LoadingSkeleton() {
         {[1, 2, 3, 4].map((i) => (
           <div
             key={i}
-            className="h-28 bg-brand-surface border border-brand-border rounded-[--radius-card] animate-pulse"
+            className="h-28 bg-brand-surface border border-brand-border rounded-[var(--radius-card)] animate-pulse"
           />
         ))}
       </div>
 
       {/* Revenue chart skeleton */}
-      <div className="h-72 bg-brand-surface border border-brand-border rounded-[--radius-card] animate-pulse" />
+      <div className="h-72 bg-brand-surface border border-brand-border rounded-[var(--radius-card)] animate-pulse" />
 
       {/* Bottom row skeleton */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="h-64 bg-brand-surface border border-brand-border rounded-[--radius-card] animate-pulse" />
-        <div className="h-64 bg-brand-surface border border-brand-border rounded-[--radius-card] animate-pulse" />
+        <div className="h-64 bg-brand-surface border border-brand-border rounded-[var(--radius-card)] animate-pulse" />
+        <div className="h-64 bg-brand-surface border border-brand-border rounded-[var(--radius-card)] animate-pulse" />
       </div>
 
       {/* Duration skeleton */}
-      <div className="h-48 bg-brand-surface border border-brand-border rounded-[--radius-card] animate-pulse" />
+      <div className="h-48 bg-brand-surface border border-brand-border rounded-[var(--radius-card)] animate-pulse" />
     </div>
   )
 }
@@ -121,7 +121,7 @@ export function AnalyticsTab() {
 
   if (error) {
     return (
-      <div className="bg-red-500/10 border border-red-500/30 rounded-[--radius-card] p-5">
+      <div className="bg-red-500/10 border border-red-500/30 rounded-[var(--radius-card)] p-5">
         <p className="text-red-400 text-sm">Failed to load analytics: {error}</p>
         <button
           onClick={() => {
@@ -186,7 +186,7 @@ export function AnalyticsTab() {
       {/* 2. Stats Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Revenue */}
-        <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-5">
+        <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-5">
           <p className="text-brand-muted text-xs uppercase tracking-widest mb-2">Revenue</p>
           <p className="text-white text-2xl font-display font-semibold">
             AED {formatAED(data.currentRevenue)}
@@ -197,7 +197,7 @@ export function AnalyticsTab() {
         </div>
 
         {/* Bookings */}
-        <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-5">
+        <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-5">
           <p className="text-brand-muted text-xs uppercase tracking-widest mb-2">Bookings</p>
           <p className="text-white text-2xl font-display font-semibold">
             {data.currentBookings}
@@ -208,7 +208,7 @@ export function AnalyticsTab() {
         </div>
 
         {/* Avg Booking Value */}
-        <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-5">
+        <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-5">
           <p className="text-brand-muted text-xs uppercase tracking-widest mb-2">Avg Booking Value</p>
           <p className="text-white text-2xl font-display font-semibold">
             AED {formatAED(data.avgBookingValue)}
@@ -216,7 +216,7 @@ export function AnalyticsTab() {
         </div>
 
         {/* Fleet Utilization */}
-        <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-5">
+        <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-5">
           <p className="text-brand-muted text-xs uppercase tracking-widest mb-2">Fleet Utilization</p>
           <p className="text-white text-2xl font-display font-semibold">
             {data.fleetUtilization}%
@@ -225,7 +225,7 @@ export function AnalyticsTab() {
       </div>
 
       {/* 3. Revenue Bar Chart */}
-      <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-5">
+      <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-5">
         <h3 className="text-white text-sm font-semibold mb-4">Daily Revenue</h3>
         <div className="flex items-end h-48 gap-0">
           {data.dailyRevenue.map((day, idx) => {
@@ -257,7 +257,7 @@ export function AnalyticsTab() {
       {/* 4. Top Vehicles + 5. Status Breakdown side by side */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* 4. Top 5 Vehicles */}
-        <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-5">
+        <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-5">
           <h3 className="text-white text-sm font-semibold mb-4">Top Vehicles by Revenue</h3>
           {topVehicles.length === 0 ? (
             <p className="text-brand-muted text-sm">No bookings in this period</p>
@@ -291,7 +291,7 @@ export function AnalyticsTab() {
         </div>
 
         {/* 5. Status Breakdown */}
-        <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-5">
+        <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-5">
           <h3 className="text-white text-sm font-semibold mb-4">Booking Status Breakdown</h3>
           {statusEntries.length === 0 ? (
             <p className="text-brand-muted text-sm">No data</p>
@@ -320,7 +320,7 @@ export function AnalyticsTab() {
       </div>
 
       {/* 6. Duration Type Breakdown */}
-      <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-5">
+      <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-5">
         <h3 className="text-white text-sm font-semibold mb-4">Rental Duration Split</h3>
         {durationEntries.length === 0 ? (
           <p className="text-brand-muted text-sm">No data</p>

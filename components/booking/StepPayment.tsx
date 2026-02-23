@@ -160,7 +160,7 @@ function PaymentForm({
       )}
 
       {/* Cancellation policy */}
-      <div className="rounded-[--radius-card] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
+      <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
         <p className="font-semibold text-white/70 mb-1.5 text-xs uppercase tracking-wider">
           Cancellation Policy
         </p>
@@ -180,7 +180,7 @@ function PaymentForm({
       <button
         type="submit"
         disabled={!stripe || !elements || isProcessing}
-        className="w-full rounded-[--radius-card] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full rounded-[var(--radius-card)] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isProcessing ? 'Processing...' : 'Pay Now'}
       </button>
@@ -228,7 +228,7 @@ function CryptoPayment({ bookingId, totalDue, isGuest, guestEmail, onSuccess }: 
 
   return (
     <div className="space-y-6">
-      <div className="rounded-[--radius-card] border border-brand-cyan/30 bg-brand-cyan/5 p-6 space-y-3">
+      <div className="rounded-[var(--radius-card)] border border-brand-cyan/30 bg-brand-cyan/5 p-6 space-y-3">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-cyan/10 border border-brand-cyan/30">
             <svg className="h-5 w-5 text-brand-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -248,7 +248,7 @@ function CryptoPayment({ bookingId, totalDue, isGuest, guestEmail, onSuccess }: 
       </div>
 
       {/* Cancellation policy */}
-      <div className="rounded-[--radius-card] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
+      <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
         <p className="font-semibold text-white/70 mb-1.5 text-xs uppercase tracking-wider">
           Cancellation Policy
         </p>
@@ -268,7 +268,7 @@ function CryptoPayment({ bookingId, totalDue, isGuest, guestEmail, onSuccess }: 
         type="button"
         onClick={handlePayWithCrypto}
         disabled={isProcessing}
-        className="w-full rounded-[--radius-card] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full rounded-[var(--radius-card)] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isProcessing ? 'Creating invoice...' : 'Pay with Crypto'}
       </button>
@@ -321,7 +321,7 @@ export function StepPayment({
   if (cashSelected) {
     return (
       <div className="space-y-6">
-        <div className="rounded-[--radius-card] border border-brand-cyan/30 bg-brand-cyan/5 p-6 space-y-3">
+        <div className="rounded-[var(--radius-card)] border border-brand-cyan/30 bg-brand-cyan/5 p-6 space-y-3">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-cyan/10 border border-brand-cyan/30">
               <svg
@@ -353,7 +353,7 @@ export function StepPayment({
         </div>
 
         {/* Cancellation policy */}
-        <div className="rounded-[--radius-card] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
+        <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
           <p className="font-semibold text-white/70 mb-1.5 text-xs uppercase tracking-wider">
             Cancellation Policy
           </p>
@@ -367,7 +367,7 @@ export function StepPayment({
         <button
           type="button"
           onClick={() => onSuccess(bookingId)}
-          className="w-full rounded-[--radius-card] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors"
+          className="w-full rounded-[var(--radius-card)] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors"
         >
           Confirm Booking
         </button>
@@ -379,7 +379,7 @@ export function StepPayment({
   if (!stripePromise) {
     return (
       <div className="space-y-6">
-        <div className="rounded-[--radius-card] border border-amber-700/40 bg-amber-950/30 p-6 space-y-3">
+        <div className="rounded-[var(--radius-card)] border border-amber-700/40 bg-amber-950/30 p-6 space-y-3">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-500/10 border border-amber-500/30">
               <svg className="h-5 w-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -401,7 +401,7 @@ export function StepPayment({
         </div>
 
         {/* Cancellation policy */}
-        <div className="rounded-[--radius-card] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
+        <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
           <p className="font-semibold text-white/70 mb-1.5 text-xs uppercase tracking-wider">
             Cancellation Policy
           </p>
@@ -415,7 +415,7 @@ export function StepPayment({
         <button
           type="button"
           onClick={() => onSuccess(bookingId)}
-          className="w-full rounded-[--radius-card] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors"
+          className="w-full rounded-[var(--radius-card)] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors"
         >
           Accept Payment (Test Mode)
         </button>

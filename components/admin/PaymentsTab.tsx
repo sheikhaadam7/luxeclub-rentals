@@ -102,7 +102,7 @@ export function PaymentsTab() {
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className="h-20 bg-brand-surface border border-brand-border rounded-[--radius-card] animate-pulse"
+            className="h-20 bg-brand-surface border border-brand-border rounded-[var(--radius-card)] animate-pulse"
           />
         ))}
       </div>
@@ -154,7 +154,7 @@ export function PaymentsTab() {
           return (
             <div
               key={booking.id}
-              className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-4"
+              className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-4"
             >
               <div className="flex items-start justify-between gap-4">
                 {/* Booking info */}

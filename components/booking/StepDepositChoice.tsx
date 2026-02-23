@@ -29,7 +29,7 @@ export function StepDepositChoice({ form, vehicle }: StepDepositChoiceProps) {
           type="button"
           onClick={() => form.setValue('depositChoice', 'deposit', { shouldValidate: true })}
           className={[
-            'w-full p-5 rounded-[--radius-card] border text-left transition-all',
+            'w-full p-5 rounded-[var(--radius-card)] border text-left transition-all',
             depositChoice === 'deposit'
               ? 'border-brand-cyan bg-brand-cyan/10'
               : 'border-brand-border hover:border-white/30',
@@ -69,7 +69,7 @@ export function StepDepositChoice({ form, vehicle }: StepDepositChoiceProps) {
           type="button"
           onClick={() => form.setValue('depositChoice', 'no_deposit', { shouldValidate: true })}
           className={[
-            'w-full p-5 rounded-[--radius-card] border text-left transition-all',
+            'w-full p-5 rounded-[var(--radius-card)] border text-left transition-all',
             depositChoice === 'no_deposit'
               ? 'border-brand-cyan bg-brand-cyan/10'
               : 'border-brand-border hover:border-white/30',

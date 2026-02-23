@@ -68,7 +68,7 @@ function VehicleLocationRow({
   const hasLocation = vehicle.lat !== null && vehicle.lng !== null
 
   return (
-    <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-4 space-y-3">
+    <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-4 space-y-3">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-2">
         <div className="flex-1 min-w-0">
@@ -197,7 +197,7 @@ export function LocationsTab() {
         {[...Array(3)].map((_, i) => (
           <div
             key={i}
-            className="bg-brand-surface border border-brand-border rounded-[--radius-card] h-24 animate-pulse"
+            className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] h-24 animate-pulse"
           />
         ))}
       </div>
@@ -206,7 +206,7 @@ export function LocationsTab() {
 
   if (loadError) {
     return (
-      <div className="bg-red-500/10 border border-red-500/30 rounded-[--radius-card] p-4">
+      <div className="bg-red-500/10 border border-red-500/30 rounded-[var(--radius-card)] p-4">
         <p className="text-red-400 text-sm">Failed to load locations: {loadError}</p>
         <button
           type="button"
@@ -225,7 +225,7 @@ export function LocationsTab() {
   return (
     <div className="space-y-6">
       {/* Summary */}
-      <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-5">
+      <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-5">
         <h2 className="font-display text-lg font-medium text-white mb-2">
           Vehicle Locations
         </h2>
@@ -246,7 +246,7 @@ export function LocationsTab() {
       {/* Vehicle list */}
       <div className="space-y-3">
         {vehicles.length === 0 ? (
-          <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-6 text-center">
+          <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-6 text-center">
             <p className="text-brand-muted text-sm">
               No active vehicles found. Add vehicles in the Fleet tab first.
             </p>

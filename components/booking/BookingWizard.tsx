@@ -286,7 +286,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
         </nav>
 
         {/* Step content */}
-        <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-4 sm:p-6">
+        <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-4 sm:p-6">
           {currentStep === 'duration' && (
             <StepDuration form={form} vehicle={vehicle} bookedRanges={bookedRanges} />
           )}
@@ -350,7 +350,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
             type="button"
             onClick={back}
             disabled={step === 0}
-            className="px-4 sm:px-6 py-2.5 rounded-[--radius-card] border border-brand-border text-sm font-medium text-brand-muted hover:text-white hover:border-white/40 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            className="px-4 sm:px-6 py-2.5 rounded-[var(--radius-card)] border border-brand-border text-sm font-medium text-brand-muted hover:text-white hover:border-white/40 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
             Back
           </button>
@@ -361,7 +361,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
               type="button"
               onClick={advance}
               disabled={isPending || isCreatingBooking}
-              className="px-6 sm:px-8 py-2.5 rounded-[--radius-card] bg-brand-cyan text-black text-sm font-semibold hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 sm:px-8 py-2.5 rounded-[var(--radius-card)] bg-brand-cyan text-black text-sm font-semibold hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isPending || isCreatingBooking ? 'Please wait...' : 'Continue'}
             </button>

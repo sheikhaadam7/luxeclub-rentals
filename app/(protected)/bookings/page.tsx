@@ -80,7 +80,7 @@ function BookingCard({ booking }: { booking: UserBooking }) {
   return (
     <Link
       href={`/bookings/${booking.id}`}
-      className="flex items-center gap-4 bg-brand-surface border border-brand-border rounded-[--radius-card] p-4 card-hover hover:border-brand-border-hover group"
+      className="flex items-center gap-4 bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-4 card-hover hover:border-brand-border-hover group"
     >
       {/* Thumbnail */}
       <div className="flex-shrink-0 w-[80px] h-[60px] rounded-xl overflow-hidden bg-white/5 relative">

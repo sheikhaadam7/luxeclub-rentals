@@ -39,7 +39,7 @@ export function PriceSummary({ vehicle, form }: PriceSummaryProps) {
     : null
 
   return (
-    <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-5 space-y-4">
+    <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-5 space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h3 className="font-display text-base font-medium text-white">Price Summary</h3>
@@ -119,7 +119,7 @@ export function PriceSummary({ vehicle, form }: PriceSummaryProps) {
 
           {/* Deposit hold note */}
           {breakdown.depositAmount > 0 && (depositChoice === 'deposit') && (
-            <div className="bg-black/20 rounded-[--radius-card] px-3 py-2.5 text-xs space-y-0.5">
+            <div className="bg-black/20 rounded-[var(--radius-card)] px-3 py-2.5 text-xs space-y-0.5">
               <div className="flex justify-between gap-2">
                 <span className="text-brand-muted">Deposit hold</span>
                 <span className="text-white">{formatPrice(breakdown.depositAmount)}</span>

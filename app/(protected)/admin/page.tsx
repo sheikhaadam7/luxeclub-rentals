@@ -21,7 +21,7 @@ function TabSkeleton() {
       {[1, 2, 3].map((i) => (
         <div
           key={i}
-          className="h-20 bg-brand-surface border border-brand-border rounded-[--radius-card] animate-pulse"
+          className="h-20 bg-brand-surface border border-brand-border rounded-[var(--radius-card)] animate-pulse"
         />
       ))}
     </div>

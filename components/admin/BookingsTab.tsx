@@ -234,7 +234,7 @@ function BookingCard({
 
   return (
     <div
-      className={`bg-brand-surface border rounded-[--radius-card] transition-colors ${
+      className={`bg-brand-surface border rounded-[var(--radius-card)] transition-colors ${
         isExpanded ? 'border-brand-cyan/30' : 'border-brand-border hover:border-brand-cyan/30'
       }`}
     >
@@ -682,7 +682,7 @@ export function BookingsTab() {
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         placeholder="Search by ref, vehicle, name, or email..."
-        className="w-full text-sm bg-brand-surface border border-brand-border rounded-[--radius-card] px-3 py-2 text-white placeholder-brand-muted/50 focus:outline-none focus:border-brand-cyan/50"
+        className="w-full text-sm bg-brand-surface border border-brand-border rounded-[var(--radius-card)] px-3 py-2 text-white placeholder-brand-muted/50 focus:outline-none focus:border-brand-cyan/50"
       />
 
       {/* ── Results Count ── */}
@@ -700,12 +700,12 @@ export function BookingsTab() {
           {[...Array(4)].map((_, i) => (
             <div
               key={i}
-              className="bg-brand-surface border border-brand-border rounded-[--radius-card] h-20 animate-pulse"
+              className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] h-20 animate-pulse"
             />
           ))}
         </div>
       ) : loadError ? (
-        <div className="bg-red-500/10 border border-red-500/30 rounded-[--radius-card] p-4">
+        <div className="bg-red-500/10 border border-red-500/30 rounded-[var(--radius-card)] p-4">
           <p className="text-red-400 text-sm">Failed to load bookings: {loadError}</p>
           <button
             type="button"
@@ -716,7 +716,7 @@ export function BookingsTab() {
           </button>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-6 text-center">
+        <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-6 text-center">
           <p className="text-brand-muted text-sm">
             {bookings.length === 0
               ? 'No bookings yet.'

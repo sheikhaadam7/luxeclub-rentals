@@ -50,7 +50,7 @@ export function VehicleOverrideForm({
   }
 
   return (
-    <div className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-4">
+    <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-4">
       <div className="flex flex-col sm:flex-row sm:items-start gap-4">
         {/* Vehicle info */}
         <div className="flex-1 min-w-0">

@@ -228,7 +228,7 @@ export default async function BookingDetailPage({ params }: PageProps) {
 
         {/* Tracking section — shown for confirmed / car_on_the_way / car_delivered */}
         {isTrackable && (
-          <section className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-6 space-y-6">
+          <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-6 space-y-6">
             <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Delivery Status</h2>
 
             {/* Status timeline — live updates via Realtime subscription */}
@@ -252,7 +252,7 @@ export default async function BookingDetailPage({ params }: PageProps) {
 
         {/* Accept Delivery section — shown when car has been delivered */}
         {booking.status === 'car_delivered' && (
-          <section className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-6 space-y-4">
+          <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-6 space-y-4">
             <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Accept Delivery</h2>
             <p className="text-sm text-brand-muted">
               Your vehicle has been delivered. Please confirm you have received it and are satisfied with its condition.
@@ -263,7 +263,7 @@ export default async function BookingDetailPage({ params }: PageProps) {
 
         {/* Cancel Booking / Date Change — or started-rental message */}
         {hasStarted && ['pending', 'confirmed'].includes(booking.status) ? (
-          <section className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-6 space-y-2">
+          <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-6 space-y-2">
             <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Cancellation & Changes</h2>
             <p className="text-sm text-brand-muted">
               Cancellations and date modifications cannot be made once the rental period has started. Please contact us directly if you need assistance.
@@ -272,7 +272,7 @@ export default async function BookingDetailPage({ params }: PageProps) {
         ) : (
           <>
             {isCancellable && (
-              <section className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-6 space-y-4">
+              <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-6 space-y-4">
                 <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Cancel Booking</h2>
                 <CancelBookingButton
                   bookingId={booking.id}
@@ -284,7 +284,7 @@ export default async function BookingDetailPage({ params }: PageProps) {
             )}
 
             {isModifiable && (
-              <section className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-6 space-y-4">
+              <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-6 space-y-4">
                 <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Change Dates</h2>
                 <RequestDateChangeButton
                   bookingId={booking.id}
@@ -300,7 +300,7 @@ export default async function BookingDetailPage({ params }: PageProps) {
         )}
 
         {/* Booking details section */}
-        <section className="bg-brand-surface border border-brand-border rounded-[--radius-card] divide-y divide-brand-border">
+        <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] divide-y divide-brand-border">
           <div className="px-6 py-4">
             <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Booking Details</h2>
           </div>
@@ -349,7 +349,7 @@ export default async function BookingDetailPage({ params }: PageProps) {
         </section>
 
         {/* Pricing breakdown section */}
-        <section className="bg-brand-surface border border-brand-border rounded-[--radius-card]">
+        <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)]">
           <div className="px-6 py-4 border-b border-brand-border">
             <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Pricing Breakdown</h2>
           </div>
@@ -382,7 +382,7 @@ export default async function BookingDetailPage({ params }: PageProps) {
         </section>
 
         {/* Payment section */}
-        <section className="bg-brand-surface border border-brand-border rounded-[--radius-card]">
+        <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)]">
           <div className="px-6 py-4 border-b border-brand-border">
             <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Payment</h2>
           </div>
@@ -418,7 +418,7 @@ export default async function BookingDetailPage({ params }: PageProps) {
         </section>
 
         {/* Cancellation policy section */}
-        <section className="bg-brand-surface border border-brand-border rounded-[--radius-card] p-6 space-y-3">
+        <section className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-6 space-y-3">
           <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium">Cancellation Policy</h2>
           <ul className="space-y-2">
             <li className="flex items-start gap-2 text-sm text-brand-muted">
