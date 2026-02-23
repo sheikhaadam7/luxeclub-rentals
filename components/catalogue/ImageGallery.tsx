@@ -67,17 +67,18 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
           </>
         )}
 
-        {/* Image counter */}
+        {/* Counter */}
         {images.length > 1 && (
-          <span className="absolute bottom-3 right-3 z-20 bg-black/60 backdrop-blur-sm text-white/80 text-xs font-medium px-2.5 py-1 rounded-full">
-            {activeIndex + 1} / {images.length}
+          <span className="absolute bottom-3 right-4 z-30 text-[11px] text-white/40 tracking-[0.2em] font-light
+                           opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            {String(activeIndex + 1).padStart(2, '0')} — {String(images.length).padStart(2, '0')}
           </span>
         )}
       </div>
 
       {/* Thumbnail strip */}
       {images.length > 1 && (
-        <div className="flex gap-2 overflow-x-auto py-1 scrollbar-hide">
+        <div className="flex gap-2 overflow-x-auto px-1 py-1 scrollbar-hide">
           {images.map((src, i) => (
             <button
               key={src}

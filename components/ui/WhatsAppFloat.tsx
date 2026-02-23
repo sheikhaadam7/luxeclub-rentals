@@ -1,5 +1,3 @@
-'use client'
-
 const WHATSAPP_URL = 'https://wa.me/971588086137?text=' + encodeURIComponent("Hi, I'd like to enquire about renting a luxury car.")
 
 export function WhatsAppFloat() {

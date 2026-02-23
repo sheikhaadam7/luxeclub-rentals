@@ -9,8 +9,8 @@ import { Footer } from '@/components/nav/Footer'
 import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat'
 import { CurrencyProvider } from '@/lib/currency/context'
 import { LanguageProvider } from '@/lib/i18n/context'
-import { ScrollReveal } from '@/components/ui/ScrollReveal'
 import { T } from '@/components/ui/T'
+import { ScrollReveal } from '@/components/ui/ScrollReveal'
 
 // ---------------------------------------------------------------------------
 // Testimonials
@@ -101,7 +101,7 @@ export default async function HomePage() {
             playsInline
             preload="metadata"
             poster="/hero-poster.jpg"
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover will-change-transform"
           >
             <source src="/hero-bg.webm" type="video/webm" />
             <source src="/hero-bg.mp4" type="video/mp4" />
@@ -135,6 +135,7 @@ export default async function HomePage() {
             <T k="home.exploreFleet" />
           </Link>
         </div>
+
 
         {/* Trust stats bar */}
         <section className="border-y border-white/[0.06] bg-white/[0.02]">
