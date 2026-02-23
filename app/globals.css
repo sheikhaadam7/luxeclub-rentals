@@ -46,6 +46,7 @@ html {
   );
 }
 
+
 /* Subtle border glow on focus for inputs */
 .input-focus-glow:focus {
   box-shadow: 0 0 0 1px rgba(201, 169, 110, 0.3), 0 0 20px rgba(201, 169, 110, 0.08);

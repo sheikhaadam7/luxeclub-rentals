@@ -85,7 +85,7 @@ export const contactStepSchema = z.object({
  * Step 5: Payment — method for paying the rental total
  */
 export const paymentStepSchema = z.object({
-  paymentMethod: z.enum(['card', 'apple_pay', 'google_pay', 'cash']),
+  paymentMethod: z.enum(['card', 'apple_pay', 'google_pay', 'cash', 'crypto']),
 })
 
 /**
@@ -122,7 +122,7 @@ export const bookingSchema = z
     guestEmail: z.string().optional(),
     guestPhone: z.string().optional(),
     // Payment step
-    paymentMethod: z.enum(['card', 'apple_pay', 'google_pay', 'cash']),
+    paymentMethod: z.enum(['card', 'apple_pay', 'google_pay', 'cash', 'crypto']),
   })
   .refine((data) => data.endDate >= data.startDate, {
     message: 'End date must be on or after start date',

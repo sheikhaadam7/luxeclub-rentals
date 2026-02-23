@@ -32,7 +32,7 @@ export interface BookingConfirmationEmailProps {
     noDepositSurcharge: number
     depositAmount: number
     totalDue: number
-    paymentMethod: 'card' | 'apple_pay' | 'google_pay' | 'cash'
+    paymentMethod: 'card' | 'apple_pay' | 'google_pay' | 'cash' | 'crypto'
     status: string
   }
 }

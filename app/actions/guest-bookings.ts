@@ -39,6 +39,7 @@ const BOOKING_DETAIL_SELECT = `
   cancellation_fee,
   cancellation_refund_amount,
   stripe_refund_id,
+  nowpayments_invoice_id,
   modification_requested_at,
   modification_requested_start,
   modification_requested_end,

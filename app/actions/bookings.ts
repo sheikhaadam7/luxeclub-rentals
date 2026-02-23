@@ -77,6 +77,7 @@ export interface BookingDetail {
   cancellation_fee: number | null
   cancellation_refund_amount: number | null
   stripe_refund_id: string | null
+  nowpayments_invoice_id: string | null
   modification_requested_at: string | null
   modification_requested_start: string | null
   modification_requested_end: string | null
@@ -206,7 +207,9 @@ export async function createBooking(
       payment_method: formData.paymentMethod,
       status: 'pending',
       payment_status:
-        formData.paymentMethod === 'cash' ? 'pending_cash' : 'unpaid',
+        formData.paymentMethod === 'cash' ? 'pending_cash'
+        : formData.paymentMethod === 'crypto' ? 'pending_crypto'
+        : 'unpaid',
     })
     .select('id')
     .single()
@@ -264,8 +267,8 @@ export async function createBooking(
     console.error('createBooking: email send failed (non-fatal)', emailError)
   }
 
-  // 6. Cash path — no Stripe involvement
-  if (formData.paymentMethod === 'cash') {
+  // 6. Cash / crypto path — no Stripe involvement
+  if (formData.paymentMethod === 'cash' || formData.paymentMethod === 'crypto') {
     return {
       bookingId,
       rentalClientSecret: null,
@@ -414,6 +417,7 @@ export async function getBookingDetail(
       cancellation_fee,
       cancellation_refund_amount,
       stripe_refund_id,
+      nowpayments_invoice_id,
       modification_requested_at,
       modification_requested_start,
       modification_requested_end,

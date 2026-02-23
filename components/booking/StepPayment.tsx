@@ -10,6 +10,7 @@ import {
   useElements,
 } from '@stripe/react-stripe-js'
 import { useCurrency } from '@/lib/currency/context'
+import { createCryptoInvoice } from '@/app/actions/crypto-payment'
 
 // Dev/test mode: when Stripe key is missing, show a test payment UI
 const STRIPE_KEY = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
@@ -23,11 +24,13 @@ interface StepPaymentProps {
   clientSecret: string | null
   depositClientSecret: string | null
   cashSelected: boolean
+  cryptoSelected: boolean
   onSuccess: (bookingId: string) => void
   bookingId: string
   totalDue: number
   depositAmount: number
   isGuest?: boolean
+  guestEmail?: string
 }
 
 // ---------------------------------------------------------------------------
@@ -186,6 +189,94 @@ function PaymentForm({
 }
 
 // ---------------------------------------------------------------------------
+// Crypto payment component
+// ---------------------------------------------------------------------------
+
+interface CryptoPaymentProps {
+  bookingId: string
+  totalDue: number
+  isGuest: boolean
+  guestEmail?: string
+  onSuccess: (bookingId: string) => void
+}
+
+function CryptoPayment({ bookingId, totalDue, isGuest, guestEmail, onSuccess }: CryptoPaymentProps) {
+  const { formatPrice } = useCurrency()
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
+  async function handlePayWithCrypto() {
+    setIsProcessing(true)
+    setErrorMessage(null)
+
+    try {
+      const result = await createCryptoInvoice(bookingId, guestEmail)
+
+      if ('error' in result) {
+        setErrorMessage(result.error)
+        setIsProcessing(false)
+        return
+      }
+
+      // Redirect to NOWPayments hosted invoice page
+      window.location.href = result.invoiceUrl
+    } catch {
+      setErrorMessage('Something went wrong. Please try again.')
+      setIsProcessing(false)
+    }
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="rounded-[--radius-card] border border-brand-cyan/30 bg-brand-cyan/5 p-6 space-y-3">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-cyan/10 border border-brand-cyan/30">
+            <svg className="h-5 w-5 text-brand-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 className="text-sm font-semibold text-white">
+            Cryptocurrency Payment
+          </h3>
+        </div>
+        <p className="text-sm text-brand-muted leading-relaxed">
+          Total due:{' '}
+          <span className="text-white font-semibold">{formatPrice(totalDue)}</span>.
+          You&apos;ll be redirected to our secure payment partner to complete your
+          payment in BTC, ETH, USDT, or other supported cryptocurrencies.
+        </p>
+      </div>
+
+      {/* Cancellation policy */}
+      <div className="rounded-[--radius-card] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
+        <p className="font-semibold text-white/70 mb-1.5 text-xs uppercase tracking-wider">
+          Cancellation Policy
+        </p>
+        <p>
+          Free cancellation up to 24 hours before the rental start time.
+          Cancellations within 24 hours are subject to a one-day rental fee.
+          No-shows are charged the full rental amount.
+        </p>
+      </div>
+
+      {/* Error message */}
+      {errorMessage && (
+        <p className="text-sm text-red-400 text-center">{errorMessage}</p>
+      )}
+
+      <button
+        type="button"
+        onClick={handlePayWithCrypto}
+        disabled={isProcessing}
+        className="w-full rounded-[--radius-card] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {isProcessing ? 'Creating invoice...' : 'Pay with Crypto'}
+      </button>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // StepPayment (outer component — handles context setup and COD path)
 // ---------------------------------------------------------------------------
 
@@ -203,13 +294,28 @@ export function StepPayment({
   clientSecret,
   depositClientSecret,
   cashSelected,
+  cryptoSelected,
   onSuccess,
   bookingId,
   totalDue,
   depositAmount,
   isGuest = false,
+  guestEmail,
 }: StepPaymentProps) {
   const { formatPrice } = useCurrency()
+
+  // Crypto payment path
+  if (cryptoSelected) {
+    return (
+      <CryptoPayment
+        bookingId={bookingId}
+        totalDue={totalDue}
+        isGuest={isGuest}
+        guestEmail={guestEmail}
+        onSuccess={onSuccess}
+      />
+    )
+  }
 
   // Cash on delivery path
   if (cashSelected) {

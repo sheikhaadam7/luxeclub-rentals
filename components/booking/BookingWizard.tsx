@@ -8,16 +8,17 @@ import { bookingSchema, type BookingFormValues } from '@/lib/validations/booking
 import { StepDuration } from '@/components/booking/StepDuration'
 import { StepDelivery } from '@/components/booking/StepDelivery'
 import { StepDepositChoice } from '@/components/booking/StepDepositChoice'
+import { StepPaymentMethod } from '@/components/booking/StepPaymentMethod'
 import { StepPayment } from '@/components/booking/StepPayment'
 import { StepAuth } from '@/components/booking/StepAuth'
 import { StepGuestContact } from '@/components/booking/StepGuestContact'
 import { PriceSummary } from '@/components/booking/PriceSummary'
 import { createBooking } from '@/app/actions/bookings'
 
-const AUTHED_STEPS = ['duration', 'delivery', 'deposit', 'payment'] as const
-const UNAUTHED_STEPS = ['duration', 'delivery', 'deposit', 'contact', 'payment'] as const
+const AUTHED_STEPS = ['duration', 'delivery', 'deposit', 'paymentMethod', 'payment'] as const
+const UNAUTHED_STEPS = ['duration', 'delivery', 'deposit', 'paymentMethod', 'contact', 'payment'] as const
 
-type Step = 'duration' | 'delivery' | 'deposit' | 'account' | 'contact' | 'payment'
+type Step = 'duration' | 'delivery' | 'deposit' | 'paymentMethod' | 'account' | 'contact' | 'payment'
 
 // Fields to validate per step name before advancing
 const STEP_FIELDS: Partial<Record<Step, (keyof BookingFormValues)[]>> = {
@@ -25,13 +26,15 @@ const STEP_FIELDS: Partial<Record<Step, (keyof BookingFormValues)[]>> = {
   delivery: ['pickupMethod', 'deliveryAddress', 'returnMethod', 'collectionAddress'],
   deposit: ['depositChoice'],
   contact: ['guestName', 'guestEmail', 'guestPhone'],
-  payment: ['paymentMethod'],
+  paymentMethod: ['paymentMethod'],
+  payment: [],
 }
 
 const STEP_LABELS: Record<Step, string> = {
   duration: 'Duration',
   delivery: 'Delivery',
   deposit: 'Deposit',
+  paymentMethod: 'Pay Method',
   account: 'Account',
   contact: 'Contact Details',
   payment: 'Payment',
@@ -142,7 +145,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
       if (!valid) return
 
       // The step before payment triggers booking creation
-      if (currentStep === 'deposit' && isAuthed) {
+      if (currentStep === 'paymentMethod' && isAuthed) {
         await advanceToPayment()
         return
       }
@@ -302,6 +305,16 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
               <StepDepositChoice form={form} vehicle={vehicle} />
             </>
           )}
+          {currentStep === 'paymentMethod' && (
+            <>
+              {bookingId && (
+                <div className="mb-4 rounded-lg border border-amber-700/40 bg-amber-950/30 p-4 text-sm text-amber-200">
+                  Your booking has already been created. Complete payment to confirm your rental.
+                </div>
+              )}
+              <StepPaymentMethod form={form} />
+            </>
+          )}
           {currentStep === 'account' && (
             <StepAuth onAuthenticated={handleAuthenticated} />
           )}
@@ -313,11 +326,13 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
               clientSecret={rentalClientSecret}
               depositClientSecret={depositClientSecret}
               cashSelected={form.getValues('paymentMethod') === 'cash'}
+              cryptoSelected={form.getValues('paymentMethod') === 'crypto'}
               onSuccess={handlePaymentSuccess}
               bookingId={bookingId ?? ''}
               totalDue={bookingTotalDue}
               depositAmount={bookingDepositAmount}
               isGuest={!isAuthed}
+              guestEmail={!isAuthed ? form.getValues('guestEmail') : undefined}
             />
           )}
         </div>
