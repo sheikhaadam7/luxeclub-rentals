@@ -22,7 +22,7 @@ const getVehicles = unstable_cache(
     const supabase = createAdminClient()
     const { data, error } = await supabase
       .from('vehicles')
-      .select('slug, name, category, primary_image_url, daily_rate, weekly_rate, monthly_rate')
+      .select('slug, name, category, primary_image_url, image_urls, daily_rate, weekly_rate, monthly_rate')
       .eq('is_available', true)
       .order('name')
     if (error) console.error('Failed to fetch vehicles:', error)
@@ -47,10 +47,10 @@ export default async function CataloguePage() {
             <T k="catalogue.subtitle" />
           </p>
         </div>
-
-        {/* Vehicle grid */}
-        <VehicleGrid vehicles={vehicles ?? []} />
       </div>
+
+      {/* Vehicle grid — full width edge to edge */}
+      <VehicleGrid vehicles={vehicles ?? []} />
     </main>
   )
 }

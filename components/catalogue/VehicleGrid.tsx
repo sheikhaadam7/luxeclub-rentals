@@ -9,6 +9,7 @@ interface Vehicle {
   name: string
   category: string | null
   primary_image_url: string | null
+  image_urls: string[] | null
   daily_rate: number | null
   weekly_rate: number | null
   monthly_rate: number | null
@@ -220,58 +221,54 @@ export function VehicleGrid({ vehicles }: VehicleGridProps) {
   const hasActiveFilter = selectedBrand || selectedType
 
   return (
-    <div className="space-y-8">
+    <div>
       {/* Filter pills */}
-      <div className="space-y-4">
-        {/* Brand pills */}
-        <div>
-          <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">{t('catalogue.brand')}</p>
-          <PillFilter
-            options={BRANDS}
-            selected={selectedBrand}
-            onSelect={setSelectedBrand}
-            availableOptions={availableBrands}
-          />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 mb-8">
+        <div className="space-y-4">
+          {/* Brand pills */}
+          <div>
+            <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">{t('catalogue.brand')}</p>
+            <PillFilter
+              options={BRANDS}
+              selected={selectedBrand}
+              onSelect={setSelectedBrand}
+              availableOptions={availableBrands}
+            />
+          </div>
+
+          {/* Type pills */}
+          <div>
+            <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">{t('catalogue.type')}</p>
+            <PillFilter
+              options={CAR_TYPES}
+              selected={selectedType}
+              onSelect={setSelectedType}
+              availableOptions={availableTypes}
+            />
+          </div>
         </div>
 
-        {/* Type pills */}
-        <div>
-          <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">{t('catalogue.type')}</p>
-          <PillFilter
-            options={CAR_TYPES}
-            selected={selectedType}
-            onSelect={setSelectedType}
-            availableOptions={availableTypes}
-          />
-        </div>
+        {/* Results count */}
+        <p className="text-[13px] text-brand-muted">
+          {filtered.length} {filtered.length === 1 ? t('catalogue.vehicle') : t('catalogue.vehicles')}
+          {selectedBrand && (
+            <> {t('catalogue.by')} <span className="text-white font-medium">{selectedBrand}</span></>
+          )}
+          {selectedType && (
+            <> {t('catalogue.in')} <span className="text-white font-medium">{selectedType}</span></>
+          )}
+        </p>
       </div>
 
-      {/* Results count */}
-      <p className="text-[13px] text-brand-muted">
-        {filtered.length} {filtered.length === 1 ? t('catalogue.vehicle') : t('catalogue.vehicles')}
-        {selectedBrand && (
-          <> {t('catalogue.by')} <span className="text-white font-medium">{selectedBrand}</span></>
-        )}
-        {selectedType && (
-          <> {t('catalogue.in')} <span className="text-white font-medium">{selectedType}</span></>
-        )}
-      </p>
-
-      {/* Grid */}
+      {/* Grid — full width */}
       {filtered.length === 0 ? (
         <div className="flex items-center justify-center py-20">
           <p className="text-brand-muted text-sm">{t('catalogue.noMatch')}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((vehicle, i) => (
-            <div
-              key={vehicle.slug}
-              className="animate-fade-in-up"
-              style={{ animationDelay: `${i * 60}ms` }}
-            >
-              <VehicleCard {...vehicle} />
-            </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-px bg-brand-border">
+          {filtered.map((vehicle) => (
+            <VehicleCard key={vehicle.slug} {...vehicle} />
           ))}
         </div>
       )}

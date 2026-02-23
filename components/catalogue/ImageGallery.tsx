@@ -28,14 +28,14 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
   return (
     <div className="space-y-3">
       {/* Main image */}
-      <div className="group relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-black/40">
+      <div className="group relative aspect-[16/10] w-full overflow-hidden">
         {images.map((src, i) => (
           <Image
             key={src}
             src={src}
             alt={`${alt} — ${i + 1} of ${images.length}`}
             fill
-            className={`object-contain transition-opacity duration-500 ease-out ${
+            className={`object-cover transition-opacity duration-500 ease-out ${
               i === activeIndex ? 'opacity-100' : 'opacity-0'
             }`}
             priority={i === 0}
@@ -49,13 +49,13 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
             {/* Left arrow */}
             <button
               onClick={prev}
-              className="absolute left-0 top-0 bottom-0 w-16 z-20 flex items-center justify-center
-                         bg-black/30 hover:bg-black/50
-                         text-white/60 hover:text-white
-                         opacity-0 group-hover:opacity-100 transition-all duration-300"
+              className="absolute left-4 top-1/2 -translate-y-1/2 z-20
+                         flex items-center justify-center
+                         text-white/70 hover:text-white
+                         opacity-0 group-hover:opacity-100 transition-all duration-200"
               aria-label="Previous image"
             >
-              <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <svg className="w-8 h-8 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
               </svg>
             </button>
@@ -63,13 +63,13 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
             {/* Right arrow */}
             <button
               onClick={next}
-              className="absolute right-0 top-0 bottom-0 w-16 z-20 flex items-center justify-center
-                         bg-black/30 hover:bg-black/50
-                         text-white/60 hover:text-white
-                         opacity-0 group-hover:opacity-100 transition-all duration-300"
+              className="absolute right-4 top-1/2 -translate-y-1/2 z-20
+                         flex items-center justify-center
+                         text-white/70 hover:text-white
+                         opacity-0 group-hover:opacity-100 transition-all duration-200"
               aria-label="Next image"
             >
-              <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <svg className="w-8 h-8 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
             </button>
@@ -87,15 +87,15 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
 
       {/* Thumbnail strip */}
       {images.length > 1 && (
-        <div ref={stripRef} className="flex gap-2 overflow-x-auto px-1 py-1 scrollbar-hide">
+        <div ref={stripRef} className="flex overflow-x-auto scrollbar-hide">
           {images.map((src, i) => (
             <button
               key={src}
               type="button"
               onClick={() => setActiveIndex(i)}
-              className={`relative flex-shrink-0 w-20 h-14 rounded-lg overflow-hidden transition-all duration-300 ${
+              className={`relative flex-shrink-0 w-28 h-28 overflow-hidden transition-opacity duration-300 ${
                 i === activeIndex
-                  ? 'ring-2 ring-[#C9A96E] ring-offset-1 ring-offset-black opacity-100'
+                  ? 'opacity-100'
                   : 'opacity-40 hover:opacity-70'
               }`}
             >
@@ -104,7 +104,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
                 alt={`${alt} thumbnail ${i + 1}`}
                 fill
                 className="object-cover"
-                sizes="80px"
+                sizes="64px"
               />
             </button>
           ))}
