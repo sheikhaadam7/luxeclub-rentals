@@ -124,7 +124,7 @@ export function PriceSummary({ vehicle, form }: PriceSummaryProps) {
                 <span className="text-brand-muted">Deposit hold</span>
                 <span className="text-white">{formatPrice(breakdown.depositAmount)}</span>
               </div>
-              <p className="text-brand-muted/60">(authorized, not charged — released on return)</p>
+              <p className="text-brand-muted/60">(collected at vehicle handover — refunded on return)</p>
             </div>
           )}
         </>

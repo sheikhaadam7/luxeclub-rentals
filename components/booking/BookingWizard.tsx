@@ -67,7 +67,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
   // Booking state — set when advancing from deposit to payment
   const [bookingId, setBookingId] = useState<string | null>(null)
   const [rentalClientSecret, setRentalClientSecret] = useState<string | null>(null)
-  const [depositClientSecret, setDepositClientSecret] = useState<string | null>(null)
+  const [setupClientSecret, setSetupClientSecret] = useState<string | null>(null)
   const [bookingTotalDue, setBookingTotalDue] = useState<number>(0)
   const [bookingDepositAmount, setBookingDepositAmount] = useState<number>(0)
   const [bookingError, setBookingError] = useState<string | null>(null)
@@ -126,7 +126,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
 
       setBookingId(result.bookingId)
       setRentalClientSecret(result.rentalClientSecret)
-      setDepositClientSecret(result.depositClientSecret)
+      setSetupClientSecret(result.setupClientSecret)
       setBookingTotalDue(result.totalDue)
       setBookingDepositAmount(result.depositAmount)
       setStep(paymentIndex)
@@ -233,52 +233,51 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
       <div className="flex-1 min-w-0 overflow-hidden space-y-6">
         {/* Step indicator */}
         <nav aria-label="Booking steps">
-          <ol className="flex items-center">
+          <ol className="flex">
             {steps.map((s, i) => {
               const isCompleted = i < step
               const isCurrent = i === step
               const isLast = i === steps.length - 1
               return (
-                <li key={s} className="flex items-center flex-1 last:flex-none">
-                  <div className="flex flex-col items-center gap-1">
-                    {/* Circle */}
+                <li key={s} className="flex-1 last:flex-none">
+                  {/* Circle + connector row */}
+                  <div className="flex items-center">
                     <div
                       className={[
-                        'w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold transition-all',
+                        'w-7 h-7 sm:w-8 sm:h-8 shrink-0 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold transition-all',
                         isCompleted
-                          ? 'bg-brand-cyan text-black'
+                          ? 'bg-emerald-500 text-white'
                           : isCurrent
                           ? 'bg-brand-cyan/20 border-2 border-brand-cyan text-brand-cyan'
                           : 'bg-brand-surface border border-brand-border text-brand-muted',
                       ].join(' ')}
                     >
                       {isCompleted ? (
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                         </svg>
                       ) : (
                         i + 1
                       )}
                     </div>
-                    {/* Label */}
-                    <span
-                      className={[
-                        'text-xs hidden sm:block',
-                        isCurrent ? 'text-brand-cyan' : isCompleted ? 'text-white' : 'text-brand-muted',
-                      ].join(' ')}
-                    >
-                      {STEP_LABELS[s]}
-                    </span>
+                    {!isLast && (
+                      <div
+                        className={[
+                          'h-px flex-1 mx-1 sm:mx-2 transition-colors',
+                          isCompleted ? 'bg-white/80' : 'bg-brand-border',
+                        ].join(' ')}
+                      />
+                    )}
                   </div>
-                  {/* Connector line */}
-                  {!isLast && (
-                    <div
-                      className={[
-                        'h-px flex-1 mx-1 sm:mx-2 mt-[-0.875rem] sm:mt-[-1.5rem] transition-colors',
-                        isCompleted ? 'bg-brand-cyan' : 'bg-brand-border',
-                      ].join(' ')}
-                    />
-                  )}
+                  {/* Label below circle */}
+                  <span
+                    className={[
+                      'text-xs hidden sm:block mt-1',
+                      isCurrent ? 'text-brand-cyan' : isCompleted ? 'text-emerald-400' : 'text-brand-muted',
+                    ].join(' ')}
+                  >
+                    {STEP_LABELS[s]}
+                  </span>
                 </li>
               )
             })}
@@ -324,7 +323,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
           {currentStep === 'payment' && (
             <StepPayment
               clientSecret={rentalClientSecret}
-              depositClientSecret={depositClientSecret}
+              setupClientSecret={setupClientSecret}
               cashSelected={form.getValues('paymentMethod') === 'cash'}
               cryptoSelected={form.getValues('paymentMethod') === 'crypto'}
               onSuccess={handlePaymentSuccess}

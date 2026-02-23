@@ -58,7 +58,7 @@ export function StepDepositChoice({ form, vehicle }: StepDepositChoiceProps) {
                 </span>
               </div>
               <p className="text-xs text-brand-muted mt-1.5 leading-relaxed">
-                This amount will be authorized (held) on your card and automatically released after the vehicle is returned in good condition. You are not charged — it is a temporary hold only.
+                A refundable security deposit will be held at the time of vehicle collection via credit card. The card must be in the name of the renter. The hold is released once the vehicle is returned in good condition.
               </p>
             </div>
           </div>
@@ -96,7 +96,7 @@ export function StepDepositChoice({ form, vehicle }: StepDepositChoiceProps) {
                 <span className="text-sm font-semibold text-white shrink-0">+{formatPrice(200)}</span>
               </div>
               <p className="text-xs text-brand-muted mt-1.5 leading-relaxed">
-                Skip the deposit hold entirely. A flat {formatPrice(200)} surcharge is added to your rental total.
+                Skip the deposit entirely. A non-refundable {formatPrice(200)} surcharge is added to your rental total instead.
               </p>
             </div>
           </div>
@@ -109,7 +109,7 @@ export function StepDepositChoice({ form, vehicle }: StepDepositChoiceProps) {
           <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
         </svg>
         <p>
-          The deposit option is per vehicle and set by LuxeClub. Both options provide equal rental experience — deposit protects you from upfront surcharges.
+          A valid credit or debit card in the renter&apos;s name is required for all bookings. For cash payments, your card will be kept on file to cover cancellation or no-show fees per our policy.
         </p>
       </div>
     </div>

@@ -33,6 +33,63 @@ async function verifyAdmin(): Promise<{ error: string } | { userId: string }> {
 }
 
 // ---------------------------------------------------------------------------
+// createSetupIntent (card-on-file for cash bookings)
+// ---------------------------------------------------------------------------
+
+/**
+ * Create a Stripe SetupIntent to save a card on file without charging it.
+ * Used for cash bookings so we can charge cancellation/no-show fees later.
+ * Updates the booking row with the SetupIntent ID.
+ */
+export async function createSetupIntent(
+  bookingId: string,
+  guestUserId?: string | null
+): Promise<{ clientSecret: string } | { error: string }> {
+  let userId = guestUserId ?? null
+
+  if (!userId) {
+    const auth = await getAuthenticatedUser()
+    if ('error' in auth) return { error: auth.error }
+    userId = auth.userId
+  }
+
+  try {
+    const setupIntent = await stripe.setupIntents.create({
+      usage: 'off_session',
+      metadata: {
+        booking_id: bookingId,
+        user_id: userId ?? 'guest',
+        type: 'card_on_file',
+      },
+    })
+
+    // Persist the SetupIntent ID on the booking
+    const admin = createAdminClient()
+    const updateQuery = admin
+      .from('bookings')
+      .update({ stripe_setup_intent_id: setupIntent.id })
+      .eq('id', bookingId)
+
+    // For authenticated users, add ownership check
+    if (userId && userId !== 'guest') {
+      updateQuery.eq('user_id', userId)
+    }
+
+    const { error: updateError } = await updateQuery
+
+    if (updateError) {
+      console.error('createSetupIntent: booking update error', updateError)
+      return { error: updateError.message }
+    }
+
+    return { clientSecret: setupIntent.client_secret! }
+  } catch (err) {
+    console.error('createSetupIntent: stripe error', err)
+    return { error: (err as Error).message }
+  }
+}
+
+// ---------------------------------------------------------------------------
 // createRentalPaymentIntent
 // ---------------------------------------------------------------------------
 

@@ -19,6 +19,7 @@ import type Stripe from 'stripe'
  *  - payment_intent.requires_capture → booking deposit_status = 'held' (deposit)
  *  - payment_intent.canceled         → booking deposit_status = 'voided'
  *  - payment_intent.payment_failed   → booking payment_status = 'failed'
+ *  - setup_intent.succeeded          → saves payment_method on booking (card-on-file)
  */
 export async function POST(req: Request): Promise<Response> {
   if (!stripe || !process.env.STRIPE_WEBHOOK_SECRET) {
@@ -125,6 +126,20 @@ export async function POST(req: Request): Promise<Response> {
         await admin
           .from('bookings')
           .update({ payment_status: 'failed' })
+          .eq('id', bookingId)
+      }
+    } else if (eventType === 'setup_intent.succeeded') {
+      // Card-on-file saved — persist payment_method on the booking
+      const si = (event as Stripe.Event & { data: { object: Stripe.SetupIntent } }).data.object
+      const bookingId = si.metadata?.booking_id
+      const paymentMethod = typeof si.payment_method === 'string'
+        ? si.payment_method
+        : si.payment_method?.id ?? null
+
+      if (bookingId && paymentMethod) {
+        await admin
+          .from('bookings')
+          .update({ stripe_payment_method_id: paymentMethod })
           .eq('id', bookingId)
       }
     }

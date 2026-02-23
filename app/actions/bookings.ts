@@ -9,7 +9,7 @@ import {
 import type { BookingFormValues } from '@/lib/validations/booking'
 import {
   createRentalPaymentIntent,
-  createDepositPaymentIntent,
+  createSetupIntent,
 } from '@/app/actions/payments'
 import { sendEmail } from '@/lib/email/send'
 import { BookingConfirmationEmail } from '@/components/email/BookingConfirmationEmail'
@@ -22,8 +22,8 @@ export interface CreateBookingResult {
   bookingId: string
   /** Client secret for the rental PaymentIntent (null for cash payments) */
   rentalClientSecret: string | null
-  /** Client secret for the deposit PaymentIntent (null for cash or no-deposit) */
-  depositClientSecret: string | null
+  /** Client secret for the SetupIntent (card-on-file for cash bookings) */
+  setupClientSecret: string | null
   /** Server-validated price breakdown */
   totalDue: number
   depositAmount: number
@@ -267,12 +267,39 @@ export async function createBooking(
     console.error('createBooking: email send failed (non-fatal)', emailError)
   }
 
-  // 6. Cash / crypto path — no Stripe involvement
-  if (formData.paymentMethod === 'cash' || formData.paymentMethod === 'crypto') {
+  // 6. Crypto path — no Stripe involvement
+  if (formData.paymentMethod === 'crypto') {
     return {
       bookingId,
       rentalClientSecret: null,
-      depositClientSecret: null,
+      setupClientSecret: null,
+      totalDue: pricing.totalDue,
+      depositAmount: pricing.depositAmount,
+    }
+  }
+
+  // 6b. Cash path — create SetupIntent for card-on-file guarantee
+  if (formData.paymentMethod === 'cash') {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      // Test mode — no Stripe key, skip card-on-file
+      return {
+        bookingId,
+        rentalClientSecret: null,
+        setupClientSecret: null,
+        totalDue: pricing.totalDue,
+        depositAmount: pricing.depositAmount,
+      }
+    }
+
+    const setupResult = await createSetupIntent(bookingId, userId ?? 'guest')
+    if ('error' in setupResult) {
+      return { error: `Card-on-file setup failed: ${setupResult.error}` }
+    }
+
+    return {
+      bookingId,
+      rentalClientSecret: null,
+      setupClientSecret: setupResult.clientSecret,
       totalDue: pricing.totalDue,
       depositAmount: pricing.depositAmount,
     }
@@ -284,7 +311,7 @@ export async function createBooking(
     return {
       bookingId,
       rentalClientSecret: null,
-      depositClientSecret: null,
+      setupClientSecret: null,
       totalDue: pricing.totalDue,
       depositAmount: pricing.depositAmount,
     }
@@ -295,23 +322,10 @@ export async function createBooking(
     return { error: rentalResult.error }
   }
 
-  let depositClientSecret: string | null = null
-  if (formData.depositChoice === 'deposit' && pricing.depositAmount > 0) {
-    const depositResult = await createDepositPaymentIntent(
-      bookingId,
-      pricing.depositAmount,
-      userId ?? 'guest'
-    )
-    if ('error' in depositResult) {
-      return { error: depositResult.error }
-    }
-    depositClientSecret = depositResult.clientSecret
-  }
-
   return {
     bookingId,
     rentalClientSecret: rentalResult.clientSecret,
-    depositClientSecret,
+    setupClientSecret: null,
     totalDue: pricing.totalDue,
     depositAmount: pricing.depositAmount,
   }
@@ -526,7 +540,7 @@ export async function cancelBooking(
   // Fetch booking with ownership check
   const { data: booking, error: fetchError } = await admin
     .from('bookings')
-    .select('id, status, payment_method, start_date, start_time, total_due, vehicle_id, stripe_rental_pi_id, stripe_deposit_pi_id')
+    .select('id, status, payment_method, start_date, start_time, total_due, vehicle_id, stripe_rental_pi_id, stripe_deposit_pi_id, stripe_payment_method_id')
     .eq('id', bookingId)
     .eq('user_id', claims.sub)
     .single()
@@ -545,10 +559,6 @@ export async function cancelBooking(
   now.setUTCHours(0, 0, 0, 0)
   if (now >= bookingStart) {
     return { error: 'Bookings cannot be cancelled once the rental period has started' }
-  }
-
-  if (booking.payment_method === 'cash') {
-    return { error: 'Cash bookings cannot be cancelled online. Please contact us directly.' }
   }
 
   // Calculate hours until pickup start
@@ -578,31 +588,59 @@ export async function cancelBooking(
     refundAmount = Math.max(0, totalDue - dailyRate)
   }
 
-  // Issue Stripe refund on rental PI
-  let stripeRefundId: string | null = null
   const { stripe } = await import('@/lib/stripe/server')
+  let stripeRefundId: string | null = null
+  let paymentStatus = 'refunded'
 
-  if (booking.stripe_rental_pi_id && stripe) {
-    try {
-      if (refundAmount > 0) {
-        const refund = await stripe.refunds.create({
-          payment_intent: booking.stripe_rental_pi_id,
-          amount: Math.round(refundAmount * 100), // AED -> fils
+  if (booking.payment_method === 'cash') {
+    // Cash booking — charge saved card-on-file for cancellation fee
+    if (cancellationFee > 0 && booking.stripe_payment_method_id && stripe) {
+      try {
+        await stripe.paymentIntents.create({
+          amount: Math.round(cancellationFee * 100), // AED → fils
+          currency: 'aed',
+          payment_method: booking.stripe_payment_method_id,
+          off_session: true,
+          confirm: true,
+          metadata: {
+            booking_id: bookingId,
+            type: 'cancellation_fee',
+          },
         })
-        stripeRefundId = refund.id
+      } catch (err) {
+        console.error('cancelBooking: cash cancellation charge error', err)
+        return { error: 'Failed to charge cancellation fee. Please contact us directly.' }
       }
-    } catch (err) {
-      console.error('cancelBooking: stripe refund error', err)
-      return { error: 'Failed to process refund. Please try again or contact support.' }
+    } else if (cancellationFee > 0 && !booking.stripe_payment_method_id) {
+      return { error: 'Cash bookings without a card on file cannot be cancelled online. Please contact us directly.' }
     }
-  }
+    // Cash bookings have no rental PI to refund
+    refundAmount = 0
+    paymentStatus = cancellationFee > 0 ? 'cancellation_charged' : 'cancelled'
+  } else {
+    // Card/wallet booking — issue Stripe refund on rental PI
+    if (booking.stripe_rental_pi_id && stripe) {
+      try {
+        if (refundAmount > 0) {
+          const refund = await stripe.refunds.create({
+            payment_intent: booking.stripe_rental_pi_id,
+            amount: Math.round(refundAmount * 100), // AED -> fils
+          })
+          stripeRefundId = refund.id
+        }
+      } catch (err) {
+        console.error('cancelBooking: stripe refund error', err)
+        return { error: 'Failed to process refund. Please try again or contact support.' }
+      }
+    }
 
-  // Void deposit PI if exists (non-fatal)
-  if (booking.stripe_deposit_pi_id && stripe) {
-    try {
-      await stripe.paymentIntents.cancel(booking.stripe_deposit_pi_id)
-    } catch {
-      // Non-fatal — deposit may already be voided/captured
+    // Void deposit PI if exists (non-fatal)
+    if (booking.stripe_deposit_pi_id && stripe) {
+      try {
+        await stripe.paymentIntents.cancel(booking.stripe_deposit_pi_id)
+      } catch {
+        // Non-fatal — deposit may already be voided/captured
+      }
     }
   }
 
@@ -611,7 +649,7 @@ export async function cancelBooking(
     .from('bookings')
     .update({
       status: 'cancelled',
-      payment_status: 'refunded',
+      payment_status: paymentStatus,
       cancelled_at: new Date().toISOString(),
       cancellation_fee: cancellationFee,
       cancellation_refund_amount: refundAmount,
@@ -622,7 +660,7 @@ export async function cancelBooking(
 
   if (updateError) {
     console.error('cancelBooking: update error', updateError)
-    return { error: 'Failed to update booking after refund' }
+    return { error: 'Failed to update booking after cancellation' }
   }
 
   return { success: true, refundAmount, cancellationFee }

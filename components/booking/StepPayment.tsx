@@ -22,7 +22,7 @@ const stripePromise = STRIPE_KEY ? loadStripe(STRIPE_KEY) : null
 
 interface StepPaymentProps {
   clientSecret: string | null
-  depositClientSecret: string | null
+  setupClientSecret?: string | null
   cashSelected: boolean
   cryptoSelected: boolean
   onSuccess: (bookingId: string) => void
@@ -38,19 +38,14 @@ interface StepPaymentProps {
 // ---------------------------------------------------------------------------
 
 interface PaymentFormProps {
-  depositClientSecret: string | null
   onSuccess: (bookingId: string) => void
   bookingId: string
-  depositAmount: number
 }
 
 function PaymentForm({
-  depositClientSecret,
   onSuccess,
   bookingId,
-  depositAmount,
 }: PaymentFormProps) {
-  const { formatPrice } = useCurrency()
   const stripe = useStripe()
   const elements = useElements()
   const [isProcessing, setIsProcessing] = useState(false)
@@ -76,28 +71,6 @@ function PaymentForm({
       setErrorMessage(rentalError.message ?? 'Payment failed. Please try again.')
       setIsProcessing(false)
       return
-    }
-
-    // If rental succeeded without redirect and deposit PI exists, confirm deposit
-    if (paymentIntent && depositClientSecret) {
-      const depositElements = stripe.elements({
-        clientSecret: depositClientSecret,
-      })
-
-      const { error: depositError } = await stripe.confirmCardPayment(
-        depositClientSecret
-      )
-
-      if (depositError) {
-        // Rental paid but deposit failed — surface the error
-        setErrorMessage(
-          `Rental payment succeeded but deposit authorization failed: ${depositError.message ?? 'Unknown error'}`
-        )
-        setIsProcessing(false)
-        return
-      }
-
-      void depositElements // suppress unused variable warning
     }
 
     setIsProcessing(false)
@@ -148,16 +121,6 @@ function PaymentForm({
           layout: 'tabs',
         }}
       />
-
-      {/* Deposit notice */}
-      {depositClientSecret && depositAmount > 0 && (
-        <div className="rounded-lg border border-amber-700/40 bg-amber-950/30 p-4 text-sm text-amber-200">
-          A deposit hold of{' '}
-          <span className="font-semibold">{formatPrice(depositAmount)}</span>{' '}
-          will also be placed on your card. This is not a charge — funds are only
-          captured if there is damage to the vehicle.
-        </div>
-      )}
 
       {/* Cancellation policy */}
       <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
@@ -277,6 +240,86 @@ function CryptoPayment({ bookingId, totalDue, isGuest, guestEmail, onSuccess }: 
 }
 
 // ---------------------------------------------------------------------------
+// Cash card-on-file form (requires Elements context)
+// ---------------------------------------------------------------------------
+
+interface CashCardFormProps {
+  onSuccess: (bookingId: string) => void
+  bookingId: string
+}
+
+function CashCardForm({ onSuccess, bookingId }: CashCardFormProps) {
+  const stripe = useStripe()
+  const elements = useElements()
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [cardSaved, setCardSaved] = useState(false)
+
+  async function handleSaveCard(e: React.FormEvent) {
+    e.preventDefault()
+    if (!stripe || !elements) return
+
+    setIsProcessing(true)
+    setErrorMessage(null)
+
+    const { error } = await stripe.confirmSetup({
+      elements,
+      confirmParams: {
+        return_url: window.location.origin + '/bookings/confirmation',
+      },
+      redirect: 'if_required',
+    })
+
+    if (error) {
+      setErrorMessage(error.message ?? 'Failed to save card. Please try again.')
+      setIsProcessing(false)
+      return
+    }
+
+    setCardSaved(true)
+    setIsProcessing(false)
+  }
+
+  return (
+    <form onSubmit={handleSaveCard} className="space-y-6">
+      {!cardSaved && (
+        <PaymentElement options={{ layout: 'tabs' }} />
+      )}
+
+      {errorMessage && (
+        <p className="text-sm text-red-400 text-center">{errorMessage}</p>
+      )}
+
+      {cardSaved ? (
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 text-sm text-emerald-400">
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            Card saved successfully
+          </div>
+          <button
+            type="button"
+            onClick={() => onSuccess(bookingId)}
+            className="w-full rounded-[var(--radius-card)] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors"
+          >
+            Confirm Booking
+          </button>
+        </div>
+      ) : (
+        <button
+          type="submit"
+          disabled={!stripe || !elements || isProcessing}
+          className="w-full rounded-[var(--radius-card)] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isProcessing ? 'Saving card...' : 'Save Card & Continue'}
+        </button>
+      )}
+    </form>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // StepPayment (outer component — handles context setup and COD path)
 // ---------------------------------------------------------------------------
 
@@ -292,7 +335,7 @@ function CryptoPayment({ bookingId, totalDue, isGuest, guestEmail, onSuccess }: 
  */
 export function StepPayment({
   clientSecret,
-  depositClientSecret,
+  setupClientSecret,
   cashSelected,
   cryptoSelected,
   onSuccess,
@@ -352,25 +395,73 @@ export function StepPayment({
           </p>
         </div>
 
-        {/* Cancellation policy */}
-        <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
-          <p className="font-semibold text-white/70 mb-1.5 text-xs uppercase tracking-wider">
-            Cancellation Policy
-          </p>
-          <p>
-            Free cancellation up to 24 hours before the rental start time.
-            Cancellations within 24 hours are subject to a one-day rental fee.
-            No-shows are charged the full rental amount.
-          </p>
-        </div>
+        {/* Card-on-file collection */}
+        {setupClientSecret && stripePromise ? (
+          <div className="space-y-4">
+            <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
+              <p className="font-semibold text-white/70 mb-1.5 text-xs uppercase tracking-wider">
+                Card Required for Security
+              </p>
+              <p>
+                A card is required for security purposes. You will not be charged
+                — payment is collected in cash at delivery.
+              </p>
+            </div>
 
-        <button
-          type="button"
-          onClick={() => onSuccess(bookingId)}
-          className="w-full rounded-[var(--radius-card)] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors"
-        >
-          Confirm Booking
-        </button>
+            {/* Cancellation policy */}
+            <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
+              <p className="font-semibold text-white/70 mb-1.5 text-xs uppercase tracking-wider">
+                Cancellation Policy
+              </p>
+              <p>
+                Free cancellation up to 24 hours before the rental start time.
+                Cancellations within 24 hours are subject to a one-day rental fee.
+                No-shows are charged the full rental amount.
+              </p>
+            </div>
+
+            <Elements
+              stripe={stripePromise}
+              options={{
+                clientSecret: setupClientSecret,
+                appearance: {
+                  theme: 'night',
+                  variables: {
+                    colorPrimary: '#C9A96E',
+                    colorBackground: '#0a0a0a',
+                    colorText: '#ffffff',
+                    borderRadius: '0.75rem',
+                  },
+                },
+              }}
+            >
+              <CashCardForm onSuccess={onSuccess} bookingId={bookingId} />
+            </Elements>
+          </div>
+        ) : (
+          /* Test mode fallback — no Stripe publishable key configured */
+          <>
+            {/* Cancellation policy */}
+            <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
+              <p className="font-semibold text-white/70 mb-1.5 text-xs uppercase tracking-wider">
+                Cancellation Policy
+              </p>
+              <p>
+                Free cancellation up to 24 hours before the rental start time.
+                Cancellations within 24 hours are subject to a one-day rental fee.
+                No-shows are charged the full rental amount.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => onSuccess(bookingId)}
+              className="w-full rounded-[var(--radius-card)] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors"
+            >
+              Confirm Booking
+            </button>
+          </>
+        )}
       </div>
     )
   }
@@ -395,7 +486,7 @@ export function StepPayment({
           <p className="text-xs text-amber-200/50">
             Total: <span className="font-semibold text-white">{formatPrice(totalDue)}</span>
             {depositAmount > 0 && (
-              <> + <span className="font-semibold text-white">{formatPrice(depositAmount)}</span> deposit hold</>
+              <> — a <span className="font-semibold text-white">{formatPrice(depositAmount)}</span> deposit will be collected at rental start</>
             )}
           </p>
         </div>
@@ -433,27 +524,34 @@ export function StepPayment({
   }
 
   return (
-    <Elements
-      stripe={stripePromise}
-      options={{
-        clientSecret,
-        appearance: {
-          theme: 'night',
-          variables: {
-            colorPrimary: '#C9A96E',
-            colorBackground: '#0a0a0a',
-            colorText: '#ffffff',
-            borderRadius: '0.75rem',
+    <div className="space-y-6">
+      {depositAmount > 0 && (
+        <div className="rounded-lg border border-brand-cyan/30 bg-brand-cyan/5 p-4 text-sm text-brand-muted">
+          A security deposit of{' '}
+          <span className="font-semibold text-white">{formatPrice(depositAmount)}</span>{' '}
+          will be collected when your rental begins. This is not charged at booking time.
+        </div>
+      )}
+      <Elements
+        stripe={stripePromise}
+        options={{
+          clientSecret,
+          appearance: {
+            theme: 'night',
+            variables: {
+              colorPrimary: '#C9A96E',
+              colorBackground: '#0a0a0a',
+              colorText: '#ffffff',
+              borderRadius: '0.75rem',
+            },
           },
-        },
-      }}
-    >
-      <PaymentForm
-        depositClientSecret={depositClientSecret}
-        onSuccess={onSuccess}
-        bookingId={bookingId}
-        depositAmount={depositAmount}
-      />
-    </Elements>
+        }}
+      >
+        <PaymentForm
+          onSuccess={onSuccess}
+          bookingId={bookingId}
+        />
+      </Elements>
+    </div>
   )
 }
