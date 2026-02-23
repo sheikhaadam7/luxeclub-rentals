@@ -66,6 +66,13 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
             </button>
           </>
         )}
+
+        {/* Image counter */}
+        {images.length > 1 && (
+          <span className="absolute bottom-3 right-3 z-20 bg-black/60 backdrop-blur-sm text-white/80 text-xs font-medium px-2.5 py-1 rounded-full">
+            {activeIndex + 1} / {images.length}
+          </span>
+        )}
       </div>
 
       {/* Thumbnail strip */}
