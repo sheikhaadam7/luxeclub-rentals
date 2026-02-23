@@ -1,8 +1,27 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
 import { signUpSchema, loginSchema, phoneSchema, otpSchema, normalizeUAEPhone } from '@/lib/validations/auth'
+
+/**
+ * Links any guest bookings (guest_email set, user_id null) to the
+ * authenticated user's account so they appear on their "My Bookings" page.
+ * Called on login/sign-up. Non-fatal — failures are silently logged.
+ */
+async function linkGuestBookings(userId: string, email: string) {
+  try {
+    const admin = createAdminClient()
+    await admin
+      .from('bookings')
+      .update({ user_id: userId })
+      .ilike('guest_email', email)
+      .is('user_id', null)
+  } catch (err) {
+    console.error('linkGuestBookings: failed (non-fatal)', err)
+  }
+}
 
 export async function signUp(formData: FormData) {
   const parsed = signUpSchema.safeParse({
@@ -14,12 +33,17 @@ export async function signUp(formData: FormData) {
   }
 
   const supabase = await createClient()
-  const { error } = await supabase.auth.signUp({
+  const { data: signUpData, error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
   })
 
   if (error) return { error: error.message }
+
+  // Link any prior guest bookings made with this email to the new account
+  if (signUpData.user) {
+    linkGuestBookings(signUpData.user.id, parsed.data.email)
+  }
 
   const redirectTo = formData.get('redirectTo') as string | null
   redirect(redirectTo || '/')
@@ -35,12 +59,17 @@ export async function login(formData: FormData) {
   }
 
   const supabase = await createClient()
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data: signInData, error } = await supabase.auth.signInWithPassword({
     email: parsed.data.email,
     password: parsed.data.password,
   })
 
   if (error) return { error: error.message }
+
+  // Link any prior guest bookings made with this email to the user's account
+  if (signInData.user) {
+    linkGuestBookings(signInData.user.id, parsed.data.email)
+  }
 
   const redirectTo = formData.get('redirectTo') as string | null
   redirect(redirectTo || '/')

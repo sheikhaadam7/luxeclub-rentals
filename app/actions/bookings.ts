@@ -116,13 +116,36 @@ export async function createBooking(
   const { data: claimsData } = await supabase.auth.getClaims()
   const claims = claimsData?.claims
 
-  const userId = claims?.sub ?? null
+  let userId = claims?.sub ?? null
 
   if (!userId && !guestInfo) {
     return { error: 'You must be logged in or provide contact details to book a vehicle' }
   }
 
   const admin = createAdminClient()
+
+  // If guest booking, check if the email belongs to a registered user.
+  // If so, link the booking to their account so it appears on their bookings page.
+  if (!userId && guestInfo?.email) {
+    try {
+      const normalizedEmail = guestInfo.email.trim().toLowerCase()
+      let page = 1
+      let found = false
+      while (!found) {
+        const { data: { users } } = await admin.auth.admin.listUsers({ perPage: 50, page })
+        if (!users || users.length === 0) break
+        const match = users.find(u => u.email?.toLowerCase() === normalizedEmail)
+        if (match) {
+          userId = match.id
+          found = true
+        }
+        if (users.length < 50) break
+        page++
+      }
+    } catch {
+      // Non-fatal — if lookup fails, booking proceeds as guest
+    }
+  }
 
   // 2. Fetch vehicle from DB (authoritative rates — never trust client)
   const { data: vehicle, error: vehicleError } = await admin
