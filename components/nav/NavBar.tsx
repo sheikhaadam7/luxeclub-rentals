@@ -15,6 +15,7 @@ const NAV_ITEMS_AUTH = [
 
 const NAV_ITEMS_PUBLIC = [
   { href: '/catalogue', label: 'Cars' },
+  { href: '/booking-lookup', label: 'Manage Bookings' },
   { href: '/contact', label: 'Contact' },
 ] as const
 
@@ -25,7 +26,7 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
   const navItems = isAuthenticated ? NAV_ITEMS_AUTH : NAV_ITEMS_PUBLIC
 
   function isActive(href: string) {
-    if (href === '/catalogue') return pathname.startsWith('/catalogue') || pathname.startsWith('/book')
+    if (href === '/catalogue') return pathname.startsWith('/catalogue') || pathname.startsWith('/book/')
     return pathname.startsWith(href)
   }
 
@@ -59,7 +60,7 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
           {/* Logo */}
           <Link
             href="/"
-            className="font-display text-2xl font-semibold text-brand-cyan tracking-tight transition-opacity duration-200 hover:opacity-70"
+            className="font-display text-2xl font-semibold text-white tracking-tight transition-opacity duration-200 hover:opacity-70 animate-fade-in-left"
           >
             LuxeClub
           </Link>
