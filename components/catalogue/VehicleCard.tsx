@@ -10,7 +10,7 @@ interface VehicleCardProps {
   name: string
   category: string | null
   primary_image_url: string | null
-  image_urls: string[] | null
+  image_urls?: string[] | null
   daily_rate: number | null
   weekly_rate: number | null
   monthly_rate: number | null
