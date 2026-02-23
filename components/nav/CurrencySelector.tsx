@@ -79,15 +79,15 @@ export function CurrencySelectorInline() {
   const { currency, setCurrency } = useCurrency()
 
   return (
-    <div className="flex items-center gap-1.5 px-4 py-3 mx-1 rounded-xl border border-white/[0.1] bg-white/[0.04]">
-      <span className="text-xs text-white uppercase tracking-wider mr-1.5 font-medium">Currency</span>
+    <div className="flex items-center gap-1.5 px-4 py-3 mx-1 rounded-xl border border-white/[0.1] bg-white/[0.04] overflow-x-auto">
+      <span className="text-xs text-white uppercase tracking-wider mr-1.5 font-medium shrink-0">Currency</span>
       {OPTIONS.map(({ code }) => (
         <button
           key={code}
           type="button"
           onClick={() => setCurrency(code)}
           className={[
-            'px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors',
+            'px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shrink-0',
             code === currency
               ? 'text-black bg-white'
               : 'text-white/50 border border-white/15 hover:text-white hover:border-white/30',
