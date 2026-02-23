@@ -126,7 +126,7 @@ function PillFilter({ options, selected, onSelect, availableOptions }: PillFilte
         type="button"
         onClick={() => onSelect(null)}
         className={[
-          'px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border whitespace-nowrap',
+          'px-4 py-2 rounded-none text-sm font-medium transition-all duration-200 border whitespace-nowrap',
           !selected
             ? 'bg-white text-black border-white'
             : 'bg-transparent text-white/60 border-white/[0.12] hover:border-white/30 hover:text-white',
@@ -143,7 +143,7 @@ function PillFilter({ options, selected, onSelect, availableOptions }: PillFilte
             type="button"
             onClick={() => isAvailable && onSelect(isSelected ? null : option)}
             className={[
-              'px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border whitespace-nowrap',
+              'px-4 py-2 rounded-none text-sm font-medium transition-all duration-200 border whitespace-nowrap',
               isSelected
                 ? 'bg-white text-black border-white'
                 : isAvailable
@@ -266,7 +266,7 @@ export function VehicleGrid({ vehicles }: VehicleGridProps) {
           <p className="text-brand-muted text-sm">{t('catalogue.noMatch')}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-px bg-brand-border">
+        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-px bg-brand-border">
           {filtered.map((vehicle) => (
             <VehicleCard key={vehicle.slug} {...vehicle} />
           ))}
