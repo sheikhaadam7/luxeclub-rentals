@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
+import { unstable_cache } from 'next/cache'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { VehicleGrid } from '@/components/catalogue/VehicleGrid'
+import { T } from '@/components/ui/T'
 
 export const metadata: Metadata = {
   title: 'Luxury Car Fleet',
@@ -15,18 +17,23 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://www.luxeclubrentals.ae/catalogue' },
 }
 
+const getVehicles = unstable_cache(
+  async () => {
+    const supabase = createAdminClient()
+    const { data, error } = await supabase
+      .from('vehicles')
+      .select('slug, name, category, primary_image_url, daily_rate, weekly_rate, monthly_rate')
+      .eq('is_available', true)
+      .order('name')
+    if (error) console.error('Failed to fetch vehicles:', error)
+    return data
+  },
+  ['catalogue-vehicles'],
+  { revalidate: 300 },
+)
+
 export default async function CataloguePage() {
-  const supabase = createAdminClient()
-
-  const { data: vehicles, error } = await supabase
-    .from('vehicles')
-    .select('slug, name, category, primary_image_url, daily_rate, weekly_rate, monthly_rate')
-    .eq('is_available', true)
-    .order('name')
-
-  if (error) {
-    console.error('Failed to fetch vehicles:', error)
-  }
+  const vehicles = await getVehicles()
 
   return (
     <main className="min-h-screen bg-luxury">
@@ -34,10 +41,10 @@ export default async function CataloguePage() {
         {/* Page header */}
         <div className="mb-10 space-y-2">
           <h1 className="font-display text-3xl font-semibold text-white tracking-tight">
-            Our Fleet
+            <T k="catalogue.ourFleet" />
           </h1>
           <p className="text-brand-muted text-base">
-            Explore our collection of luxury vehicles
+            <T k="catalogue.subtitle" />
           </p>
         </div>
 

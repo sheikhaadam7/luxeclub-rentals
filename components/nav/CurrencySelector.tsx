@@ -4,10 +4,13 @@ import { useState, useRef, useEffect } from 'react'
 import { useCurrency, type Currency } from '@/lib/currency/context'
 
 const OPTIONS: { code: Currency; label: string }[] = [
-  { code: 'AED', label: 'AED' },
-  { code: 'USD', label: 'USD' },
-  { code: 'GBP', label: 'GBP' },
-  { code: 'EUR', label: 'EUR' },
+  { code: 'AED', label: 'AED د.إ' },
+  { code: 'USD', label: 'USD $' },
+  { code: 'GBP', label: 'GBP £' },
+  { code: 'EUR', label: 'EUR €' },
+  { code: 'SAR', label: 'SAR ﷼' },
+  { code: 'RUB', label: 'RUB ₽' },
+  { code: 'CNY', label: 'CNY ¥' },
 ]
 
 export function CurrencySelector() {

@@ -5,25 +5,26 @@ import { usePathname } from 'next/navigation'
 import { useState, useEffect, useCallback } from 'react'
 import { logout } from '@/app/actions/auth'
 import { CurrencySelector, CurrencySelectorInline } from '@/components/nav/CurrencySelector'
-
-const NAV_ITEMS_AUTH = [
-  { href: '/catalogue', label: 'Cars' },
-  { href: '/bookings', label: 'My Bookings' },
-  { href: '/account', label: 'Account' },
-  { href: '/contact', label: 'Contact' },
-] as const
-
-const NAV_ITEMS_PUBLIC = [
-  { href: '/catalogue', label: 'Cars' },
-  { href: '/booking-lookup', label: 'Manage Bookings' },
-  { href: '/contact', label: 'Contact' },
-] as const
+import { LanguageSelector, LanguageSelectorInline } from '@/components/nav/LanguageSelector'
+import { useTranslation } from '@/lib/i18n/context'
 
 export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }) {
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const { t } = useTranslation()
 
-  const navItems = isAuthenticated ? NAV_ITEMS_AUTH : NAV_ITEMS_PUBLIC
+  const navItems = isAuthenticated
+    ? [
+        { href: '/catalogue', label: t('nav.cars') },
+        { href: '/bookings', label: t('nav.bookings') },
+        { href: '/account', label: t('nav.account') },
+        { href: '/contact', label: t('nav.contact') },
+      ]
+    : [
+        { href: '/catalogue', label: t('nav.cars') },
+        { href: '/booking-lookup', label: t('nav.manageBookings') },
+        { href: '/contact', label: t('nav.contact') },
+      ]
 
   function isActive(href: string) {
     if (href === '/catalogue') return pathname.startsWith('/catalogue') || pathname.startsWith('/book/')
@@ -47,7 +48,7 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
 
   const closeMobile = useCallback(() => setMobileOpen(false), [])
 
-  // Build menu items (links + auth — currency is separate at bottom)
+  // Build menu items (links + auth — currency/language are separate at bottom)
   const menuItems: Array<{ type: 'link'; href: string; label: string } | { type: 'auth' }> = [
     ...navItems.map((item) => ({ type: 'link' as const, ...item })),
     { type: 'auth' },
@@ -83,6 +84,8 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
             ))}
 
             <CurrencySelector />
+            <div className="w-1.5" />
+            <LanguageSelector />
 
             <div className="w-px h-4 bg-brand-border mx-2" />
 
@@ -92,7 +95,7 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
                   type="submit"
                   className="px-3.5 py-1.5 rounded-lg text-[13px] font-medium tracking-wide text-brand-muted hover:text-white hover:bg-white/[0.04] transition-all duration-200"
                 >
-                  Logout
+                  {t('nav.logout')}
                 </button>
               </form>
             ) : (
@@ -100,7 +103,7 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
                 href="/sign-in"
                 className="px-3.5 py-1.5 rounded-lg text-[13px] font-medium tracking-wide text-brand-muted hover:text-white hover:bg-white/[0.04] transition-all duration-200"
               >
-                Sign In
+                {t('nav.signIn')}
               </Link>
             )}
           </div>
@@ -155,7 +158,7 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
           ].join(' ')}
         />
 
-        {/* Panel — full height below navbar, flex column so currency sticks to bottom */}
+        {/* Panel — full height below navbar, flex column so currency/language stick to bottom */}
         <div
           className={[
             'absolute top-14 left-0 right-0 bottom-0 bg-[#0a0a0a]/95 backdrop-blur-2xl transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] flex flex-col',
@@ -208,7 +211,7 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
                         type="submit"
                         className="w-full text-left flex items-center px-4 py-3.5 rounded-2xl text-[16px] font-medium tracking-[-0.01em] text-white/60 hover:text-white hover:bg-white/[0.05] active:bg-white/[0.08] transition-colors duration-200 active:scale-[0.98]"
                       >
-                        Logout
+                        {t('nav.logout')}
                       </button>
                     </form>
                   ) : (
@@ -217,7 +220,7 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
                       onClick={closeMobile}
                       className="flex items-center px-4 py-3.5 rounded-2xl text-[16px] font-medium tracking-[-0.01em] text-white/60 hover:text-white hover:bg-white/[0.05] active:bg-white/[0.08] transition-colors duration-200 active:scale-[0.98]"
                     >
-                      Sign In
+                      {t('nav.signIn')}
                     </Link>
                   )}
                 </div>
@@ -225,9 +228,9 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
             })}
           </div>
 
-          {/* Currency selector — pinned to bottom */}
+          {/* Currency + Language selectors — pinned to bottom */}
           <div
-            className="px-6 pb-8 pt-2 border-t border-white/[0.06]"
+            className="px-6 pb-8 pt-2 border-t border-white/[0.06] space-y-2"
             style={{
               opacity: mobileOpen ? 1 : 0,
               transform: mobileOpen ? 'translateY(0)' : 'translateY(8px)',
@@ -235,6 +238,7 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
             }}
           >
             <CurrencySelectorInline />
+            <LanguageSelectorInline />
           </div>
         </div>
       </div>

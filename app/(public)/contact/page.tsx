@@ -1,10 +1,12 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslation } from '@/lib/i18n/context'
 
 const WHATSAPP_NUMBER = '971588086137'
 
 export default function ContactPage() {
+  const { t } = useTranslation()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [question, setQuestion] = useState('')
@@ -28,9 +30,9 @@ export default function ContactPage() {
         {/* Hero */}
         <div className="text-center space-y-2">
           <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tight leading-[1.05]">
-            <span className="text-white/50">Any questions?</span>
+            <span className="text-white/50">{t('contact.heroLine1')}</span>
             <br />
-            <span className="text-white">I&apos;m all ears.</span>
+            <span className="text-white">{t('contact.heroLine2')}</span>
           </h1>
         </div>
 
@@ -38,7 +40,7 @@ export default function ContactPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Contact details */}
           <div className="bg-white/[0.04] border border-white/[0.08] rounded-2xl p-8 space-y-4">
-            <p className="text-sm text-white/50 font-medium">Contact details</p>
+            <p className="text-sm text-white/50 font-medium">{t('contact.contactDetails')}</p>
             <div className="space-y-2">
               <a
                 href="mailto:hello@luxeclubrentals.ae"
@@ -57,9 +59,9 @@ export default function ContactPage() {
 
           {/* Address */}
           <div className="bg-white/[0.04] border border-white/[0.08] rounded-2xl p-8 space-y-4">
-            <p className="text-sm text-white/50 font-medium">Address</p>
+            <p className="text-sm text-white/50 font-medium">{t('contact.address')}</p>
             <p className="text-lg text-white leading-relaxed">
-              Binary Tower, 32 Marasi Drive Street – Business Bay – Dubai – United Arab Emirates
+              {t('contact.addressText')}
             </p>
           </div>
         </div>
@@ -73,21 +75,21 @@ export default function ContactPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <p className="text-lg font-medium text-white">Message sent</p>
-              <p className="text-sm text-white/40">We&apos;ll get back to you as soon as possible.</p>
+              <p className="text-lg font-medium text-white">{t('contact.messageSent')}</p>
+              <p className="text-sm text-white/40">{t('contact.messageSentDesc')}</p>
               <button
                 type="button"
                 onClick={() => { setSubmitted(false); setName(''); setEmail(''); setQuestion('') }}
                 className="mt-4 text-sm text-brand-cyan hover:text-brand-cyan-hover transition-colors"
               >
-                Send another message
+                {t('contact.sendAnother')}
               </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Name */}
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-white">Name</label>
+                <label className="block text-sm font-medium text-white">{t('contact.name')}</label>
                 <input
                   type="text"
                   value={name}
@@ -100,7 +102,7 @@ export default function ContactPage() {
 
               {/* Email */}
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-white">Email</label>
+                <label className="block text-sm font-medium text-white">{t('contact.email')}</label>
                 <input
                   type="email"
                   value={email}
@@ -113,11 +115,11 @@ export default function ContactPage() {
 
               {/* Question */}
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-white">Question</label>
+                <label className="block text-sm font-medium text-white">{t('contact.question')}</label>
                 <textarea
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
-                  placeholder="What's on your mind?"
+                  placeholder={t('contact.questionPlaceholder')}
                   required
                   rows={5}
                   className="w-full bg-white/[0.05] border border-white/[0.08] rounded-xl px-4 py-3.5 text-sm text-white placeholder:text-white/25 outline-none focus:border-white/20 transition-all duration-300 resize-y"
@@ -129,7 +131,7 @@ export default function ContactPage() {
                 type="submit"
                 className="w-full py-4 rounded-xl bg-brand-cyan text-white text-base font-medium hover:bg-brand-cyan-hover shadow-[0_0_20px_rgba(201,169,110,0.15)] hover:shadow-[0_0_30px_rgba(201,169,110,0.25)] transition-all duration-300"
               >
-                Submit form
+                {t('contact.submitForm')}
               </button>
             </form>
           )}

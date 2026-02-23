@@ -3,6 +3,7 @@ import { NavBar } from '@/components/nav/NavBar'
 import { Footer } from '@/components/nav/Footer'
 import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat'
 import { CurrencyProvider } from '@/lib/currency/context'
+import { LanguageProvider } from '@/lib/i18n/context'
 
 export default async function PublicLayout({
   children,
@@ -14,11 +15,13 @@ export default async function PublicLayout({
   const isAuthenticated = !!claimsData?.claims
 
   return (
-    <CurrencyProvider>
-      <NavBar isAuthenticated={isAuthenticated} />
-      {children}
-      <Footer />
-      <WhatsAppFloat />
-    </CurrencyProvider>
+    <LanguageProvider>
+      <CurrencyProvider>
+        <NavBar isAuthenticated={isAuthenticated} />
+        {children}
+        <Footer />
+        <WhatsAppFloat />
+      </CurrencyProvider>
+    </LanguageProvider>
   )
 }

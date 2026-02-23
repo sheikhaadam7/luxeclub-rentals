@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useCurrency } from '@/lib/currency/context'
+import { useTranslation } from '@/lib/i18n/context'
 
 interface VehicleCardProps {
   slug: string
@@ -26,6 +27,7 @@ export function VehicleCard({
   monthly_rate,
 }: VehicleCardProps) {
   const { formatPrice } = useCurrency()
+  const { t } = useTranslation()
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Hi, I'm interested in renting the ${name}.`)}`
 
   return (
@@ -45,7 +47,7 @@ export function VehicleCard({
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-brand-muted text-sm">No image</span>
+              <span className="text-brand-muted text-sm">{t('catalogue.noImage')}</span>
             </div>
           )}
           <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-brand-surface/80 to-transparent pointer-events-none" />
@@ -62,19 +64,19 @@ export function VehicleCard({
               {daily_rate && (
                 <span className="text-sm text-white/90 font-medium">
                   {formatPrice(daily_rate)}
-                  <span className="text-brand-muted text-xs font-normal ml-0.5">/day</span>
+                  <span className="text-brand-muted text-xs font-normal ml-0.5">{t('catalogue.perDay')}</span>
                 </span>
               )}
               {weekly_rate && (
                 <span className="text-sm text-white/90 font-medium">
                   {formatPrice(weekly_rate)}
-                  <span className="text-brand-muted text-xs font-normal ml-0.5">/week</span>
+                  <span className="text-brand-muted text-xs font-normal ml-0.5">{t('catalogue.perWeek')}</span>
                 </span>
               )}
               {monthly_rate && (
                 <span className="text-sm text-white/90 font-medium">
                   {formatPrice(monthly_rate)}
-                  <span className="text-brand-muted text-xs font-normal ml-0.5">/month</span>
+                  <span className="text-brand-muted text-xs font-normal ml-0.5">{t('catalogue.perMonth')}</span>
                 </span>
               )}
             </div>
@@ -88,7 +90,7 @@ export function VehicleCard({
           href={`/book/${slug}`}
           className="flex-1 text-center py-2.5 rounded-xl bg-brand-cyan text-white text-sm font-semibold hover:bg-brand-cyan-hover shadow-[0_0_20px_rgba(201,169,110,0.15)] hover:shadow-[0_0_30px_rgba(201,169,110,0.25)] transition-all duration-300"
         >
-          Book Now
+          {t('catalogue.bookNow')}
         </Link>
         <a
           href={whatsappUrl}

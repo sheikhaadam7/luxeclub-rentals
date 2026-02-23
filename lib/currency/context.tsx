@@ -6,7 +6,7 @@ import { createContext, useContext, useEffect, useState, useCallback, type React
 // Types
 // ---------------------------------------------------------------------------
 
-export type Currency = 'AED' | 'USD' | 'GBP' | 'EUR'
+export type Currency = 'AED' | 'USD' | 'GBP' | 'EUR' | 'SAR' | 'RUB' | 'CNY'
 
 interface CurrencyContextValue {
   currency: Currency
@@ -19,12 +19,17 @@ interface CurrencyContextValue {
 // ---------------------------------------------------------------------------
 
 const STORAGE_KEY = 'luxeclub-currency'
+const RATES_CACHE_KEY = 'luxeclub-rates'
+const RATES_MAX_AGE = 3_600_000 // 1 hour
 
 const FALLBACK_RATES: Record<Currency, number> = {
   AED: 1,
   USD: 0.27,
   GBP: 0.22,
   EUR: 0.25,
+  SAR: 1.02,
+  RUB: 24.93,
+  CNY: 1.98,
 }
 
 const SYMBOLS: Record<Currency, string> = {
@@ -32,6 +37,33 @@ const SYMBOLS: Record<Currency, string> = {
   USD: '$',
   GBP: '\u00A3',
   EUR: '\u20AC',
+  SAR: 'SAR',
+  RUB: '\u20BD',
+  CNY: '\u00A5',
+}
+
+// ---------------------------------------------------------------------------
+// Rates cache helpers
+// ---------------------------------------------------------------------------
+
+function getCachedRates(): Record<Currency, number> | null {
+  try {
+    const raw = sessionStorage.getItem(RATES_CACHE_KEY)
+    if (!raw) return null
+    const { rates, ts } = JSON.parse(raw)
+    if (Date.now() - ts > RATES_MAX_AGE) return null
+    return rates
+  } catch {
+    return null
+  }
+}
+
+function setCachedRates(rates: Record<Currency, number>) {
+  try {
+    sessionStorage.setItem(RATES_CACHE_KEY, JSON.stringify({ rates, ts: Date.now() }))
+  } catch {
+    // sessionStorage unavailable
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -46,7 +78,7 @@ const CurrencyContext = createContext<CurrencyContextValue | null>(null)
 
 export function CurrencyProvider({ children }: { children: ReactNode }) {
   const [currency, setCurrencyState] = useState<Currency>('AED')
-  const [rates, setRates] = useState<Record<Currency, number>>(FALLBACK_RATES)
+  const [rates, setRates] = useState<Record<Currency, number>>(() => getCachedRates() ?? FALLBACK_RATES)
 
   // Read saved preference on mount
   useEffect(() => {
@@ -60,8 +92,10 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  // Fetch live rates once on mount
+  // Fetch live rates once on mount — skip if we have fresh cached rates
   useEffect(() => {
+    if (getCachedRates()) return // already have fresh rates
+
     let cancelled = false
 
     async function fetchRates() {
@@ -71,12 +105,18 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
         const data = await res.json()
         if (cancelled || !data?.rates) return
 
-        setRates({
+        const fresh: Record<Currency, number> = {
           AED: 1,
           USD: data.rates.USD ?? FALLBACK_RATES.USD,
           GBP: data.rates.GBP ?? FALLBACK_RATES.GBP,
           EUR: data.rates.EUR ?? FALLBACK_RATES.EUR,
-        })
+          SAR: data.rates.SAR ?? FALLBACK_RATES.SAR,
+          RUB: data.rates.RUB ?? FALLBACK_RATES.RUB,
+          CNY: data.rates.CNY ?? FALLBACK_RATES.CNY,
+        }
+
+        setRates(fresh)
+        setCachedRates(fresh)
       } catch {
         // Keep fallback rates
       }

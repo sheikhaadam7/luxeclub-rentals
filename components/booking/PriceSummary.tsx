@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { UseFormReturn, useWatch } from 'react-hook-form'
 import { BookingFormValues } from '@/lib/validations/booking'
 import { Vehicle } from '@/components/booking/BookingWizard'
@@ -45,10 +46,11 @@ export function PriceSummary({ vehicle, form }: PriceSummaryProps) {
         <h3 className="font-display text-base font-medium text-white">Price Summary</h3>
         {vehicle.primary_image_url && (
           <div className="w-12 h-8 rounded overflow-hidden">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={vehicle.primary_image_url}
               alt={vehicle.name}
+              width={48}
+              height={32}
               className="w-full h-full object-cover"
             />
           </div>

@@ -4,16 +4,18 @@ import { useState, useTransition, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import dynamic from 'next/dynamic'
 import { bookingSchema, type BookingFormValues } from '@/lib/validations/booking'
 import { StepDuration } from '@/components/booking/StepDuration'
-import { StepDelivery } from '@/components/booking/StepDelivery'
 import { StepDepositChoice } from '@/components/booking/StepDepositChoice'
 import { StepPaymentMethod } from '@/components/booking/StepPaymentMethod'
-import { StepPayment } from '@/components/booking/StepPayment'
 import { StepAuth } from '@/components/booking/StepAuth'
 import { StepGuestContact } from '@/components/booking/StepGuestContact'
 import { PriceSummary } from '@/components/booking/PriceSummary'
 import { createBooking } from '@/app/actions/bookings'
+
+const StepDelivery = dynamic(() => import('./StepDelivery').then(m => ({ default: m.StepDelivery })), { ssr: false })
+const StepPayment = dynamic(() => import('./StepPayment').then(m => ({ default: m.StepPayment })), { ssr: false })
 
 const AUTHED_STEPS = ['duration', 'delivery', 'deposit', 'paymentMethod', 'payment'] as const
 const UNAUTHED_STEPS = ['duration', 'delivery', 'deposit', 'paymentMethod', 'contact', 'payment'] as const

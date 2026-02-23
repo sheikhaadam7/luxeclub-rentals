@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { AuthGate } from '@/components/auth/AuthGate'
+import { T } from '@/components/ui/T'
 
 interface PageProps {
   searchParams: Promise<{ redirectTo?: string }>
@@ -25,7 +26,7 @@ export default async function SignInPage({ searchParams }: PageProps) {
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
         </svg>
-        Home
+        <T k="signIn.home" />
       </Link>
 
       <div className="relative w-full max-w-sm flex flex-col gap-10">
@@ -35,7 +36,7 @@ export default async function SignInPage({ searchParams }: PageProps) {
             LuxeClub
           </h1>
           <p className="text-xs text-brand-muted uppercase tracking-[0.25em]">
-            Dubai Luxury Rentals
+            <T k="signIn.tagline" />
           </p>
         </header>
 
@@ -47,7 +48,7 @@ export default async function SignInPage({ searchParams }: PageProps) {
         {/* Footer tagline */}
         <footer className="text-center space-y-3">
           <p className="text-[11px] text-white/20 tracking-wide">
-            Exclusive membership &mdash; Dubai
+            <T k="signIn.exclusiveMembership" />
           </p>
         </footer>
       </div>

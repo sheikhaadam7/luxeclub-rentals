@@ -3,12 +3,13 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { getBookingDetail } from '@/app/actions/bookings'
 import { createClient } from '@/lib/supabase/server'
-import LiveTrackingMap from '@/components/tracking/LiveTrackingMap'
 import BookingStatusTimeline from '@/components/tracking/BookingStatusTimeline'
 import AcceptDeliveryButton from './AcceptDeliveryButton'
 import CancelBookingButton from './CancelBookingButton'
 import RequestDateChangeButton from './RequestDateChangeButton'
 import { PriceDisplay } from '@/components/catalogue/PriceDisplay'
+
+import LiveTrackingMap from '@/components/tracking/LazyLiveTrackingMap'
 
 // ---------------------------------------------------------------------------
 // Helpers

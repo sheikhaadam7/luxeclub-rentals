@@ -108,11 +108,12 @@ main {
   animation: fadeInUp var(--duration-slow) var(--ease-out-expo) both;
 }
 
-/* Glass card effect */
+/* Glass card effect — promoted to own compositing layer for scroll perf */
 .glass {
-  background: rgba(18, 18, 18, 0.72);
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  background: rgba(18, 18, 18, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  will-change: transform;
 }
 
 /* Smooth card hover lift */
@@ -161,6 +162,7 @@ details[open] > summary ~ * {
 
 .animate-whatsapp-pulse {
   animation: whatsappPulse 2.5s ease-in-out infinite;
+  will-change: box-shadow;
 }
 
 /* Hide Stripe test mode badge */

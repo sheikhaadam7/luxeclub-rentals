@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { VehicleCard } from './VehicleCard'
+import { useTranslation } from '@/lib/i18n/context'
 
 interface Vehicle {
   slug: string
@@ -116,6 +117,7 @@ interface PillFilterProps {
 }
 
 function PillFilter({ options, selected, onSelect, availableOptions }: PillFilterProps) {
+  const { t } = useTranslation()
   return (
     <div className="flex flex-wrap gap-2">
       {/* All pill */}
@@ -129,7 +131,7 @@ function PillFilter({ options, selected, onSelect, availableOptions }: PillFilte
             : 'bg-transparent text-white/60 border-white/[0.12] hover:border-white/30 hover:text-white',
         ].join(' ')}
       >
-        All
+        {t('catalogue.all')}
       </button>
       {options.map((option) => {
         const isSelected = selected === option
@@ -161,6 +163,7 @@ function PillFilter({ options, selected, onSelect, availableOptions }: PillFilte
 // ---------------------------------------------------------------------------
 
 export function VehicleGrid({ vehicles }: VehicleGridProps) {
+  const { t } = useTranslation()
   const [selectedBrand, setSelectedBrand] = useState<string | null>(null)
   const [selectedType, setSelectedType] = useState<string | null>(null)
 
@@ -209,7 +212,7 @@ export function VehicleGrid({ vehicles }: VehicleGridProps) {
   if (vehicles.length === 0) {
     return (
       <div className="flex items-center justify-center py-24">
-        <p className="text-brand-muted text-base">No vehicles available</p>
+        <p className="text-brand-muted text-base">{t('catalogue.noVehicles')}</p>
       </div>
     )
   }
@@ -222,7 +225,7 @@ export function VehicleGrid({ vehicles }: VehicleGridProps) {
       <div className="space-y-4">
         {/* Brand pills */}
         <div>
-          <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">Brand</p>
+          <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">{t('catalogue.brand')}</p>
           <PillFilter
             options={BRANDS}
             selected={selectedBrand}
@@ -233,7 +236,7 @@ export function VehicleGrid({ vehicles }: VehicleGridProps) {
 
         {/* Type pills */}
         <div>
-          <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">Type</p>
+          <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">{t('catalogue.type')}</p>
           <PillFilter
             options={CAR_TYPES}
             selected={selectedType}
@@ -245,19 +248,19 @@ export function VehicleGrid({ vehicles }: VehicleGridProps) {
 
       {/* Results count */}
       <p className="text-[13px] text-brand-muted">
-        {filtered.length} {filtered.length === 1 ? 'vehicle' : 'vehicles'}
+        {filtered.length} {filtered.length === 1 ? t('catalogue.vehicle') : t('catalogue.vehicles')}
         {selectedBrand && (
-          <> by <span className="text-white font-medium">{selectedBrand}</span></>
+          <> {t('catalogue.by')} <span className="text-white font-medium">{selectedBrand}</span></>
         )}
         {selectedType && (
-          <> in <span className="text-white font-medium">{selectedType}</span></>
+          <> {t('catalogue.in')} <span className="text-white font-medium">{selectedType}</span></>
         )}
       </p>
 
       {/* Grid */}
       {filtered.length === 0 ? (
         <div className="flex items-center justify-center py-20">
-          <p className="text-brand-muted text-sm">No vehicles match your filters</p>
+          <p className="text-brand-muted text-sm">{t('catalogue.noMatch')}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

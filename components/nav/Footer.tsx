@@ -1,6 +1,11 @@
+'use client'
+
 import Link from 'next/link'
+import { useTranslation } from '@/lib/i18n/context'
 
 export function Footer() {
+  const { t } = useTranslation()
+
   return (
     <footer className="border-t border-white/[0.06] bg-black/40">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
@@ -10,52 +15,52 @@ export function Footer() {
           <div className="space-y-3">
             <h4 className="font-display text-xl font-medium text-brand-cyan">LuxeClub</h4>
             <p className="text-sm text-white/40 leading-relaxed italic">
-              Dubai&apos;s most trusted luxury car rental — built on relationships, not transactions.
+              {t('footer.tagline')}
             </p>
             <div className="flex flex-col gap-1.5 pt-1">
               <p className="text-xs text-white/30 flex items-center gap-1.5">
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                 </svg>
-                Licensed by Dubai RTA
+                {t('footer.licensedRTA')}
               </p>
               <p className="text-xs text-white/30 flex items-center gap-1.5">
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                Concierge available 24/7
+                {t('footer.concierge247')}
               </p>
             </div>
           </div>
 
           {/* Links */}
           <div className="space-y-3">
-            <h4 className="text-xs text-white/40 uppercase tracking-[0.15em] font-medium">Quick Links</h4>
+            <h4 className="text-xs text-white/40 uppercase tracking-[0.15em] font-medium">{t('footer.quickLinks')}</h4>
             <nav className="flex flex-col gap-2">
               <Link href="/catalogue" className="text-sm text-white/60 hover:text-white transition-colors duration-300">
-                Fleet
+                {t('footer.fleet')}
               </Link>
               <Link href="/faq" className="text-sm text-white/60 hover:text-white transition-colors duration-300">
-                FAQ
+                {t('footer.faq')}
               </Link>
               <Link href="/contact" className="text-sm text-white/60 hover:text-white transition-colors duration-300">
-                Contact Us
+                {t('footer.contactUs')}
               </Link>
               <Link href="/about" className="text-sm text-white/60 hover:text-white transition-colors duration-300">
-                About Us
+                {t('footer.aboutUs')}
               </Link>
               <Link href="/guides" className="text-sm text-white/60 hover:text-white transition-colors duration-300">
-                Guides
+                {t('footer.guides')}
               </Link>
               <Link href="/account" className="text-sm text-white/60 hover:text-white transition-colors duration-300">
-                Account
+                {t('footer.account')}
               </Link>
             </nav>
           </div>
 
           {/* Contact Info */}
           <div className="space-y-3">
-            <h4 className="text-xs text-white/40 uppercase tracking-[0.15em] font-medium">Contact</h4>
+            <h4 className="text-xs text-white/40 uppercase tracking-[0.15em] font-medium">{t('footer.contact')}</h4>
             <div className="flex flex-col gap-2.5">
               <a href="https://maps.google.com/?q=Binary+Tower+Marasi+Drive+Business+Bay+Dubai" target="_blank" rel="noopener noreferrer" className="text-sm text-white/60 hover:text-white transition-colors duration-300 flex items-start gap-2">
                 <svg className="w-4 h-4 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -81,7 +86,7 @@ export function Footer() {
 
           {/* Socials */}
           <div className="space-y-3">
-            <h4 className="text-xs text-white/40 uppercase tracking-[0.15em] font-medium">Follow Us</h4>
+            <h4 className="text-xs text-white/40 uppercase tracking-[0.15em] font-medium">{t('footer.followUs')}</h4>
             <div className="flex items-center gap-4">
               {/* Instagram */}
               <a
@@ -122,10 +127,10 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="mt-10 pt-6 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-white/25">
-            &copy; {new Date().getFullYear()} LuxeClub Rentals. All rights reserved.
+            &copy; {new Date().getFullYear()} LuxeClub Rentals. {t('footer.rights')}
           </p>
           <p className="text-xs text-white/25">
-            Business Bay, Dubai, UAE
+            {t('footer.location')}
           </p>
         </div>
       </div>

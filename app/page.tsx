@@ -1,3 +1,5 @@
+import { unstable_cache } from 'next/cache'
+import Image from 'next/image'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
@@ -6,7 +8,9 @@ import { NavBar } from '@/components/nav/NavBar'
 import { Footer } from '@/components/nav/Footer'
 import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat'
 import { CurrencyProvider } from '@/lib/currency/context'
+import { LanguageProvider } from '@/lib/i18n/context'
 import { ScrollReveal } from '@/components/ui/ScrollReveal'
+import { T } from '@/components/ui/T'
 
 // ---------------------------------------------------------------------------
 // Testimonials
@@ -60,14 +64,21 @@ export default async function HomePage() {
   const { data: claimsData } = await supabase.auth.getClaims()
   const isAuthenticated = !!claimsData?.claims
 
-  // Fetch 3 vehicles for the preview — rotate daily using a date-based offset
-  // Use admin client to bypass RLS so vehicles show for unauthenticated visitors
-  const adminSupabase = createAdminClient()
-  const { data: featuredVehicles } = await adminSupabase
-    .from('vehicles')
-    .select('slug, name, category, primary_image_url, daily_rate, weekly_rate, monthly_rate')
-    .eq('is_available', true)
-    .order('name')
+  // Fetch vehicles with a 5-minute cache so the DB isn't hit on every page load
+  const getFeaturedVehicles = unstable_cache(
+    async () => {
+      const adminSupabase = createAdminClient()
+      const { data } = await adminSupabase
+        .from('vehicles')
+        .select('slug, name, category, primary_image_url, daily_rate, weekly_rate, monthly_rate')
+        .eq('is_available', true)
+        .order('name')
+      return data
+    },
+    ['featured-vehicles'],
+    { revalidate: 300 },
+  )
+  const featuredVehicles = await getFeaturedVehicles()
 
   const all = featuredVehicles ?? []
   const dayOffset = Math.floor(Date.now() / 86_400_000) % Math.max(all.length, 1)
@@ -76,6 +87,7 @@ export default async function HomePage() {
     : Array.from({ length: 3 }, (_, i) => all[(dayOffset + i * 7) % all.length])
 
   return (
+    <LanguageProvider>
     <CurrencyProvider>
       <NavBar isAuthenticated={isAuthenticated} />
       <main className="min-h-screen bg-luxury">
@@ -87,8 +99,11 @@ export default async function HomePage() {
             muted
             loop
             playsInline
+            preload="metadata"
+            poster="/hero-poster.jpg"
             className="absolute inset-0 w-full h-full object-cover"
           >
+            <source src="/hero-bg.webm" type="video/webm" />
             <source src="/hero-bg.mp4" type="video/mp4" />
           </video>
 
@@ -107,7 +122,7 @@ export default async function HomePage() {
               </span>
             </h1>
             <p className="animate-fade-in-left text-lg sm:text-xl text-white/40 font-light" style={{ animationDelay: '400ms' }}>
-              Dubai&apos;s most trusted luxury car rental.
+              <T k="home.heroSubtitle" />
             </p>
           </div>
 
@@ -117,7 +132,7 @@ export default async function HomePage() {
             className="animate-fade-in-left relative z-10 px-16 py-5 rounded-xl bg-white text-black text-lg font-semibold hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] transition-all duration-300 ease-out"
             style={{ animationDelay: '600ms' }}
           >
-            Explore Our Fleet
+            <T k="home.exploreFleet" />
           </Link>
         </div>
 
@@ -132,7 +147,7 @@ export default async function HomePage() {
                   </svg>
                   <p className="text-lg font-bold text-white">500+</p>
                 </div>
-                <p className="text-xs text-white/40">Clients Served</p>
+                <p className="text-xs text-white/40"><T k="home.clientsServed" /></p>
               </div>
               <div className="space-y-1">
                 <div className="flex items-center justify-center gap-2">
@@ -141,16 +156,16 @@ export default async function HomePage() {
                   </svg>
                   <p className="text-lg font-bold text-white">4.9</p>
                 </div>
-                <p className="text-xs text-white/40">Google Rating</p>
+                <p className="text-xs text-white/40"><T k="home.googleRating" /></p>
               </div>
               <div className="space-y-1">
                 <div className="flex items-center justify-center gap-2">
                   <svg className="w-5 h-5 text-green-400/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                   </svg>
-                  <p className="text-lg font-bold text-white">Licensed</p>
+                  <p className="text-lg font-bold text-white"><T k="home.licensed" /></p>
                 </div>
-                <p className="text-xs text-white/40">Licensed &amp; Insured</p>
+                <p className="text-xs text-white/40"><T k="home.licensedInsured" /></p>
               </div>
               <div className="space-y-1">
                 <div className="flex items-center justify-center gap-2">
@@ -159,7 +174,7 @@ export default async function HomePage() {
                   </svg>
                   <p className="text-lg font-bold text-white">24/7</p>
                 </div>
-                <p className="text-xs text-white/40">Support Available</p>
+                <p className="text-xs text-white/40"><T k="home.supportAvailable" /></p>
               </div>
             </div>
           </div>
@@ -167,7 +182,7 @@ export default async function HomePage() {
 
         {/* Trusted by strip */}
         <section className="max-w-5xl mx-auto px-4 sm:px-6 py-12 text-center">
-          <p className="text-xs text-white/25 uppercase tracking-[0.2em] font-medium mb-6">As Featured In</p>
+          <p className="text-xs text-white/25 uppercase tracking-[0.2em] font-medium mb-6"><T k="home.featuredIn" /></p>
           <div className="flex flex-wrap items-center justify-center gap-12 sm:gap-16">
             {[
               { src: '/logos/gulf-news.svg', alt: 'Gulf News', width: 200 },
@@ -175,7 +190,7 @@ export default async function HomePage() {
               { src: '/logos/luxury-lifestyle.svg', alt: 'Luxury Lifestyle', width: 210 },
               { src: '/logos/arabian-business.svg', alt: 'Arabian Business', width: 210 },
             ].map((logo) => (
-              <img
+              <Image
                 key={logo.alt}
                 src={logo.src}
                 alt={logo.alt}
@@ -191,7 +206,7 @@ export default async function HomePage() {
         <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-24">
           <ScrollReveal>
             <h3 className="font-display text-3xl sm:text-4xl font-medium text-white mb-10">
-              What we do
+              <T k="home.whatWeDo" />
             </h3>
           </ScrollReveal>
 
@@ -200,17 +215,19 @@ export default async function HomePage() {
             <ScrollReveal delay={100}>
               <div className="border border-white/[0.08] rounded-2xl overflow-hidden h-full group">
                 <div className="relative h-52 overflow-hidden">
-                  <img
+                  <Image
                     src="https://images.unsplash.com/photo-1756139258136-2ec452dfa3cc?w=1200&q=85"
                     alt="Two sports cars parked under a structure"
-                    className="w-full h-full object-cover img-zoom"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover img-zoom"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 </div>
                 <div className="p-6 text-center space-y-3">
-                  <h4 className="font-display text-xl font-medium text-white">Luxury Car Rentals</h4>
+                  <h4 className="font-display text-xl font-medium text-white"><T k="home.luxuryCarRentals" /></h4>
                   <p className="text-sm text-white/40 leading-relaxed">
-                    Luxury and supercar rentals, making a riveting offer to clients around the world to gain a taste of opulent luxury.
+                    <T k="home.luxuryCarRentalsDesc" />
                   </p>
                 </div>
               </div>
@@ -220,17 +237,19 @@ export default async function HomePage() {
             <ScrollReveal delay={250}>
               <div className="border border-white/[0.08] rounded-2xl overflow-hidden h-full group">
                 <div className="relative h-52 overflow-hidden">
-                  <img
+                  <Image
                     src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=1200&q=85"
                     alt="Professional chauffeur driving"
-                    className="w-full h-full object-cover img-zoom"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover img-zoom"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 </div>
                 <div className="p-6 text-center space-y-3">
-                  <h4 className="font-display text-xl font-medium text-white">Chauffeur Service</h4>
+                  <h4 className="font-display text-xl font-medium text-white"><T k="home.chauffeurService" /></h4>
                   <p className="text-sm text-white/40 leading-relaxed">
-                    We offer a round the clock bespoke chauffeur service with one of our ride in style fleet vehicles.
+                    <T k="home.chauffeurServiceDesc" />
                   </p>
                 </div>
               </div>
@@ -241,17 +260,19 @@ export default async function HomePage() {
           <ScrollReveal delay={400}>
             <div className="border border-white/[0.08] rounded-2xl overflow-hidden group">
               <div className="relative h-52 overflow-hidden">
-                <img
+                <Image
                   src="https://images.unsplash.com/photo-1770901157799-75ac60e5758e?w=1200&q=85"
                   alt="Hand holding car key in front of black Porsche"
-                  className="w-full h-full object-cover img-zoom"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 100vw"
+                  className="object-cover img-zoom"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
               </div>
               <div className="p-6 text-center space-y-3">
-                <h4 className="font-display text-xl font-medium text-white">Pick Up and Drop Off</h4>
+                <h4 className="font-display text-xl font-medium text-white"><T k="home.pickUpDropOff" /></h4>
                 <p className="text-sm text-white/40 leading-relaxed">
-                  We offer a pick up and drop off service anywhere within Dubai.
+                  <T k="home.pickUpDropOffDesc" />
                 </p>
               </div>
             </div>
@@ -262,38 +283,34 @@ export default async function HomePage() {
         <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-24">
           <div className="text-center space-y-2 mb-12">
             <h3 className="font-display text-3xl sm:text-4xl font-medium text-white">
-              How It Works
+              <T k="home.howItWorks" />
             </h3>
             <p className="text-sm text-brand-muted">
-              From browsing to driving — in three simple steps.
+              <T k="home.howItWorksSubtitle" />
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                step: '01',
-                title: 'Choose Your Car',
-                description: 'Browse our curated fleet and find the perfect vehicle for your occasion. Filter by category, price or style.',
-              },
-              {
-                step: '02',
-                title: 'Book Instantly',
-                description: 'Select your dates and pay securely online. No hidden fees — the price you see is the price you pay.',
-              },
-              {
-                step: '03',
-                title: 'We Deliver',
-                description: 'We bring the car to you anywhere in Dubai, or pick up from our Downtown location. It\'s that simple.',
-              },
-            ].map((item) => (
-              <div key={item.step} className="text-center space-y-4">
-                <div className="w-14 h-14 mx-auto rounded-full border border-white/[0.12] flex items-center justify-center">
-                  <span className="text-sm font-bold text-brand-cyan">{item.step}</span>
-                </div>
-                <h4 className="font-display text-lg font-medium text-white">{item.title}</h4>
-                <p className="text-sm text-white/40 leading-relaxed">{item.description}</p>
+            <div className="text-center space-y-4">
+              <div className="w-14 h-14 mx-auto rounded-full border border-white/[0.12] flex items-center justify-center">
+                <span className="text-sm font-bold text-brand-cyan">01</span>
               </div>
-            ))}
+              <h4 className="font-display text-lg font-medium text-white"><T k="home.step1Title" /></h4>
+              <p className="text-sm text-white/40 leading-relaxed"><T k="home.step1Desc" /></p>
+            </div>
+            <div className="text-center space-y-4">
+              <div className="w-14 h-14 mx-auto rounded-full border border-white/[0.12] flex items-center justify-center">
+                <span className="text-sm font-bold text-brand-cyan">02</span>
+              </div>
+              <h4 className="font-display text-lg font-medium text-white"><T k="home.step2Title" /></h4>
+              <p className="text-sm text-white/40 leading-relaxed"><T k="home.step2Desc" /></p>
+            </div>
+            <div className="text-center space-y-4">
+              <div className="w-14 h-14 mx-auto rounded-full border border-white/[0.12] flex items-center justify-center">
+                <span className="text-sm font-bold text-brand-cyan">03</span>
+              </div>
+              <h4 className="font-display text-lg font-medium text-white"><T k="home.step3Title" /></h4>
+              <p className="text-sm text-white/40 leading-relaxed"><T k="home.step3Desc" /></p>
+            </div>
           </div>
         </section>
 
@@ -302,10 +319,10 @@ export default async function HomePage() {
           <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
             <div className="text-center space-y-2 mb-10">
               <h3 className="font-display text-2xl sm:text-3xl font-semibold text-white tracking-tight">
-                Featured Vehicles
+                <T k="home.featuredVehicles" />
               </h3>
               <p className="text-sm text-brand-muted">
-                A selection from our premium fleet
+                <T k="home.featuredVehiclesSubtitle" />
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -324,7 +341,7 @@ export default async function HomePage() {
                 href="/catalogue"
                 className="inline-flex items-center gap-2 text-sm text-brand-cyan hover:text-brand-cyan-hover transition-colors duration-300"
               >
-                View all vehicles
+                <T k="home.viewAllVehicles" />
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
@@ -337,29 +354,29 @@ export default async function HomePage() {
         <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-24">
           <div className="text-center space-y-2 mb-10">
             <h3 className="font-display text-2xl sm:text-3xl font-semibold text-white tracking-tight">
-              What Our Clients Say
+              <T k="home.testimonials" />
             </h3>
             <p className="text-sm text-brand-muted">
-              Trusted by discerning drivers across Dubai
+              <T k="home.testimonialsSubtitle" />
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {TESTIMONIALS.map((t) => (
+            {TESTIMONIALS.map((item) => (
               <div
-                key={t.name}
+                key={item.name}
                 className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6 space-y-4 hover:border-white/[0.15] transition-all duration-300"
               >
-                <StarRating count={t.rating} />
+                <StarRating count={item.rating} />
                 <p className="text-sm text-white/80 leading-relaxed">
-                  &ldquo;{t.text}&rdquo;
+                  &ldquo;{item.text}&rdquo;
                 </p>
                 <div className="flex items-center gap-3 pt-1">
                   <div className="w-9 h-9 rounded-full bg-white/[0.08] flex items-center justify-center text-sm font-semibold text-white/60">
-                    {t.name.charAt(0)}
+                    {item.name.charAt(0)}
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-white">{t.name}</p>
-                    <p className="text-xs text-white/40">{t.location}</p>
+                    <p className="text-sm font-medium text-white">{item.name}</p>
+                    <p className="text-xs text-white/40">{item.location}</p>
                   </div>
                 </div>
               </div>
@@ -371,23 +388,23 @@ export default async function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-brand-cyan/[0.02] to-transparent pointer-events-none" />
           <div className="max-w-3xl mx-auto px-4 sm:px-6 py-24 text-center relative z-10 space-y-6">
             <h3 className="font-display text-3xl sm:text-4xl font-medium text-white">
-              Ready to Drive Something Extraordinary?
+              <T k="home.ctaTitle" />
             </h3>
             <p className="text-base text-white/40 leading-relaxed">
-              Browse our fleet, pick your dates, and we&apos;ll handle the rest. Free delivery, insurance included, and 24/7 support.
+              <T k="home.ctaSubtitle" />
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
               <Link
                 href="/catalogue"
                 className="px-10 py-4 rounded-xl bg-brand-cyan text-white text-base font-semibold hover:bg-brand-cyan-hover shadow-[0_0_20px_rgba(201,169,110,0.15)] hover:shadow-[0_0_30px_rgba(201,169,110,0.25)] transition-all duration-300"
               >
-                Browse Fleet
+                <T k="home.browseFleet" />
               </Link>
               <Link
                 href="/contact"
                 className="px-10 py-4 rounded-xl border border-white/[0.12] text-white text-base font-semibold hover:bg-white/[0.04] hover:border-white/[0.2] transition-all duration-300"
               >
-                Get in Touch
+                <T k="home.getInTouch" />
               </Link>
             </div>
           </div>
@@ -396,5 +413,6 @@ export default async function HomePage() {
       <Footer />
       <WhatsAppFloat />
     </CurrencyProvider>
+    </LanguageProvider>
   )
 }
