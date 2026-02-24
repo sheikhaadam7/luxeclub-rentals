@@ -1,4 +1,5 @@
 import { unstable_cache } from 'next/cache'
+import { headers } from 'next/headers'
 import Image from 'next/image'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
@@ -60,6 +61,8 @@ function StarRating({ count }: { count: number }) {
 // ---------------------------------------------------------------------------
 
 export default async function HomePage() {
+  const headersList = await headers()
+  const detectedCountry = headersList.get('x-vercel-ip-country') ?? undefined
   const supabase = await createClient()
   const { data: claimsData } = await supabase.auth.getClaims()
   const isAuthenticated = !!claimsData?.claims
@@ -87,7 +90,7 @@ export default async function HomePage() {
     : Array.from({ length: 3 }, (_, i) => all[(dayOffset + i * 7) % all.length])
 
   return (
-    <LanguageProvider>
+    <LanguageProvider detectedCountry={detectedCountry}>
     <CurrencyProvider>
       <NavBar isAuthenticated={isAuthenticated} />
       <main className="min-h-screen bg-luxury">

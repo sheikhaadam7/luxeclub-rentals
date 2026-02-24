@@ -1,3 +1,4 @@
+import { headers } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { NavBar } from '@/components/nav/NavBar'
@@ -11,6 +12,8 @@ export default async function ProtectedLayout({
 }: {
   children: React.ReactNode
 }) {
+  const headersList = await headers()
+  const detectedCountry = headersList.get('x-vercel-ip-country') ?? undefined
   const supabase = await createClient()
   // SECURITY: getClaims() validates JWT signature — not spoofable like getSession().
   // This is a defense-in-depth check against CVE-2025-29927 middleware bypass.
@@ -21,7 +24,7 @@ export default async function ProtectedLayout({
   }
 
   return (
-    <LanguageProvider>
+    <LanguageProvider detectedCountry={detectedCountry}>
       <CurrencyProvider>
         <NavBar />
         {children}
