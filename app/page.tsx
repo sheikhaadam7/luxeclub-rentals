@@ -1,5 +1,4 @@
 import { unstable_cache } from 'next/cache'
-import { headers } from 'next/headers'
 import Image from 'next/image'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
@@ -12,6 +11,7 @@ import { CurrencyProvider } from '@/lib/currency/context'
 import { LanguageProvider } from '@/lib/i18n/context'
 import { T } from '@/components/ui/T'
 import { ScrollReveal } from '@/components/ui/ScrollReveal'
+import { LazyVideo } from '@/components/ui/LazyVideo'
 
 // ---------------------------------------------------------------------------
 // Testimonials
@@ -61,8 +61,6 @@ function StarRating({ count }: { count: number }) {
 // ---------------------------------------------------------------------------
 
 export default async function HomePage() {
-  const headersList = await headers()
-  const detectedCountry = headersList.get('x-vercel-ip-country') ?? undefined
   const supabase = await createClient()
   const { data: claimsData } = await supabase.auth.getClaims()
   const isAuthenticated = !!claimsData?.claims
@@ -90,41 +88,45 @@ export default async function HomePage() {
     : Array.from({ length: 3 }, (_, i) => all[(dayOffset + i * 7) % all.length])
 
   return (
-    <LanguageProvider detectedCountry={detectedCountry}>
+    <LanguageProvider>
     <CurrencyProvider>
       <NavBar isAuthenticated={isAuthenticated} />
       <main className="min-h-screen bg-luxury">
         {/* Hero section with video background */}
         <div className="relative flex flex-col items-center justify-center gap-10 px-4 py-24 sm:py-36 overflow-hidden">
-          {/* Background video */}
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            poster="/hero-poster.jpg"
-            className="absolute inset-0 w-full h-full object-cover will-change-transform"
-          >
-            <source src="/hero-bg.webm" type="video/webm" />
-            <source src="/hero-bg.mp4" type="video/mp4" />
-          </video>
+          {/* Hero poster — LCP element */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/hero-poster.jpg"
+            alt=""
+            fetchPriority="high"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          {/* Deferred background video — loads after page is interactive */}
+          <LazyVideo
+            webmSrc="/hero-bg.webm"
+            mp4Src="/hero-bg.mp4"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
 
           {/* Subtle gradient for text readability */}
           <div className="absolute inset-0 bg-black/10" />
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/50" />
 
           <div className="relative z-10 text-center space-y-6">
-            <h1 className="font-display text-6xl sm:text-7xl lg:text-8xl font-medium tracking-tight leading-[1.05]">
-              <span className="animate-fade-in-left block" style={{ animationDelay: '0ms' }}>
-                <span className="text-white/50">LuxeClub,</span>
+            <span className="animate-fade-in-left block text-xs sm:text-sm tracking-[0.25em] uppercase text-white/40 font-light" style={{ animationDelay: '0ms' }}>
+              LuxeClub
+            </span>
+            <h1 className="font-display text-5xl sm:text-7xl lg:text-8xl font-medium tracking-tight leading-[1.05]">
+              <span className="animate-fade-in-left block" style={{ animationDelay: '80ms' }}>
+                <span className="text-white"><T k="home.heroTitle1" /></span>
               </span>
-              <span className="animate-fade-in-left block" style={{ animationDelay: '200ms' }}>
-                <span className="text-white">Car Rentals</span>
+              <span className="animate-fade-in-left block" style={{ animationDelay: '160ms' }}>
+                <span className="text-brand-cyan"><T k="home.heroTitle2" /></span>
                 <span className="text-white/50"> .</span>
               </span>
             </h1>
-            <p className="animate-fade-in-left text-lg sm:text-xl text-white/40 font-light" style={{ animationDelay: '400ms' }}>
+            <p className="animate-fade-in-left text-lg sm:text-xl text-white/40 font-light" style={{ animationDelay: '240ms' }}>
               <T k="home.heroSubtitle" />
             </p>
           </div>
@@ -132,11 +134,12 @@ export default async function HomePage() {
           {/* Garage CTA */}
           <Link
             href="/catalogue"
-            className="animate-fade-in-left relative z-10 px-16 py-5 rounded-xl bg-white text-black text-lg font-semibold hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] transition-all duration-300 ease-out"
-            style={{ animationDelay: '600ms' }}
+            className="animate-fade-in-left relative z-10 px-16 py-5 bg-white text-black text-lg font-semibold hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] transition-all duration-300 ease-out"
+            style={{ animationDelay: '320ms' }}
           >
             <T k="home.exploreFleet" />
           </Link>
+
         </div>
 
 
@@ -147,11 +150,11 @@ export default async function HomePage() {
               <div className="space-y-1">
                 <div className="flex items-center justify-center gap-2">
                   <svg className="w-5 h-5 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
                   </svg>
-                  <p className="text-lg font-bold text-white">500+</p>
+                  <p className="text-lg font-bold text-white"><T k="home.fleetSize" /></p>
                 </div>
-                <p className="text-xs text-white/40"><T k="home.clientsServed" /></p>
+                <p className="text-xs text-white/40"><T k="home.fleetLabel" /></p>
               </div>
               <div className="space-y-1">
                 <div className="flex items-center justify-center gap-2">
@@ -164,21 +167,22 @@ export default async function HomePage() {
               </div>
               <div className="space-y-1">
                 <div className="flex items-center justify-center gap-2">
-                  <svg className="w-5 h-5 text-green-400/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                  <svg className="w-5 h-5 text-brand-cyan/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
                   </svg>
-                  <p className="text-lg font-bold text-white"><T k="home.licensed" /></p>
+                  <p className="text-lg font-bold text-white"><T k="home.dubaiDelivery" /></p>
                 </div>
-                <p className="text-xs text-white/40"><T k="home.licensedInsured" /></p>
+                <p className="text-xs text-white/40"><T k="home.dubaiDeliveryLabel" /></p>
               </div>
               <div className="space-y-1">
                 <div className="flex items-center justify-center gap-2">
-                  <svg className="w-5 h-5 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg className="w-5 h-5 text-green-400/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                   </svg>
-                  <p className="text-lg font-bold text-white">24/7</p>
+                  <p className="text-lg font-bold text-white"><T k="home.insuranceIncluded" /></p>
                 </div>
-                <p className="text-xs text-white/40"><T k="home.supportAvailable" /></p>
+                <p className="text-xs text-white/40"><T k="home.insuranceLabel" /></p>
               </div>
             </div>
           </div>
@@ -220,7 +224,7 @@ export default async function HomePage() {
               <div className="border border-white/[0.08] rounded-2xl overflow-hidden h-full group">
                 <div className="relative h-52 overflow-hidden">
                   <Image
-                    src="https://images.unsplash.com/photo-1756139258136-2ec452dfa3cc?w=1200&q=85"
+                    src="https://images.unsplash.com/photo-1756139258136-2ec452dfa3cc?w=800&q=75"
                     alt="Two sports cars parked under a structure"
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
@@ -242,7 +246,7 @@ export default async function HomePage() {
               <div className="border border-white/[0.08] rounded-2xl overflow-hidden h-full group">
                 <div className="relative h-52 overflow-hidden">
                   <Image
-                    src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=1200&q=85"
+                    src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800&q=75"
                     alt="Professional chauffeur driving"
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
@@ -265,7 +269,7 @@ export default async function HomePage() {
             <div className="border border-white/[0.08] rounded-2xl overflow-hidden group">
               <div className="relative h-52 overflow-hidden">
                 <Image
-                  src="https://images.unsplash.com/photo-1770901157799-75ac60e5758e?w=1200&q=85"
+                  src="https://images.unsplash.com/photo-1770901157799-75ac60e5758e?w=800&q=75"
                   alt="Hand holding car key in front of black Porsche"
                   fill
                   sizes="(max-width: 768px) 100vw, 100vw"

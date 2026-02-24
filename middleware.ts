@@ -71,6 +71,6 @@ export const config = {
      * The URL /dashboard is NOT /(protected)/dashboard.
      * This matcher protects ALL routes including /dashboard, /catalogue, etc.
      */
-    '/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|mp4|woff2?)$).*)',
+    '/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|webm|mp4|woff2?)$).*)',
   ],
 }

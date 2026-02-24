@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { Playfair_Display, Inter } from 'next/font/google'
 import './globals.css'
-import { SmoothScroll } from '@/components/ui/SmoothScroll'
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -115,7 +114,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <SmoothScroll />
         {children}
       </body>
     </html>

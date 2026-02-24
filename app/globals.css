@@ -89,7 +89,7 @@ main {
 
 .animate-fade-in-left {
   opacity: 0;
-  animation: fadeInLeft 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Staggered fade-in for lists and grids */
