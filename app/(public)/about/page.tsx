@@ -9,9 +9,9 @@ export const metadata: Metadata = {
     title: 'About LuxeClub Rentals — Dubai Luxury Car Hire',
     description:
       'More than a rental company — a passion for extraordinary driving experiences in Dubai. Curated fleet, personal service, complete transparency.',
-    url: 'https://www.luxeclubrentals.ae/about',
+    url: 'https://luxeclubrentals.com/about',
   },
-  alternates: { canonical: 'https://www.luxeclubrentals.ae/about' },
+  alternates: { canonical: 'https://luxeclubrentals.com/about' },
 }
 
 export default function AboutPage() {

@@ -134,7 +134,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const title = `Rent ${vehicle.name} in Dubai`
   const description = `Rent a ${vehicle.name} in Dubai from AED ${vehicle.daily_rate?.toLocaleString('en-US') ?? ''}/day. Insurance included, free delivery available. Book online with LuxeClub Rentals.`
-  const url = `https://www.luxeclubrentals.ae/catalogue/${slug}`
+  const url = `https://luxeclubrentals.com/catalogue/${slug}`
 
   return {
     title,

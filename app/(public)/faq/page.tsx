@@ -10,9 +10,9 @@ export const metadata: Metadata = {
     title: 'FAQ — LuxeClub Rentals Dubai',
     description:
       'Everything you need to know about renting a luxury car with LuxeClub in Dubai.',
-    url: 'https://www.luxeclubrentals.ae/faq',
+    url: 'https://luxeclubrentals.com/faq',
   },
-  alternates: { canonical: 'https://www.luxeclubrentals.ae/faq' },
+  alternates: { canonical: 'https://luxeclubrentals.com/faq' },
 }
 
 /* Hardcoded English FAQ data for JSON-LD schema (SEO) */

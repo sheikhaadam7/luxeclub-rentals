@@ -16,7 +16,7 @@ const inter = Inter({
   display: 'swap',
 })
 
-const SITE_URL = 'https://www.luxeclubrentals.ae'
+const SITE_URL = 'https://luxeclubrentals.com'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -79,7 +79,7 @@ const jsonLd = {
     'Premium luxury and sports car rental service in Dubai, UAE. Featuring Lamborghini, Ferrari, Rolls-Royce, Bentley and more.',
   url: SITE_URL,
   telephone: '+971588086137',
-  email: 'hello@luxeclubrentals.ae',
+  email: 'hello@luxeclubrentals.com',
   address: {
     '@type': 'PostalAddress',
     streetAddress: 'Binary Tower, 32 Marasi Drive Street',

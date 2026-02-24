@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { guides } from '@/lib/guides'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = 'https://www.luxeclubrentals.ae'
+  const base = 'https://luxeclubrentals.com'
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: base, lastModified: new Date(), changeFrequency: 'weekly', priority: 1 },

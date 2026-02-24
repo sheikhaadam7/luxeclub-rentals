@@ -12,9 +12,9 @@ export const metadata: Metadata = {
     title: 'Luxury Car Fleet — LuxeClub Rentals Dubai',
     description:
       'Browse our collection of luxury cars for rent in Dubai. Lamborghini, Ferrari, Rolls-Royce, Bentley and more.',
-    url: 'https://www.luxeclubrentals.ae/catalogue',
+    url: 'https://luxeclubrentals.com/catalogue',
   },
-  alternates: { canonical: 'https://www.luxeclubrentals.ae/catalogue' },
+  alternates: { canonical: 'https://luxeclubrentals.com/catalogue' },
 }
 
 const getVehicles = unstable_cache(

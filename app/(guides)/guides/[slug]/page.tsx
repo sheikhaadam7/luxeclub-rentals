@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { guides } from '@/lib/guides'
 
-const SITE_URL = 'https://www.luxeclubrentals.ae'
+const SITE_URL = 'https://luxeclubrentals.com'
 
 export function generateStaticParams() {
   return guides.map((g) => ({ slug: g.slug }))

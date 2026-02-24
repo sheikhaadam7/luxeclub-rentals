@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { guides } from '@/lib/guides'
 
-const SITE_URL = 'https://www.luxeclubrentals.ae'
+const SITE_URL = 'https://luxeclubrentals.com'
 
 export const metadata: Metadata = {
   title: 'Guides — Luxury Car Rental Tips & Dubai Driving',

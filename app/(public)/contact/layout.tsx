@@ -8,9 +8,9 @@ export const metadata: Metadata = {
     title: 'Contact LuxeClub Rentals — Dubai Luxury Car Hire',
     description:
       'Reach us via WhatsApp, phone, or email. Binary Tower, 32 Marasi Drive, Business Bay, Dubai.',
-    url: 'https://www.luxeclubrentals.ae/contact',
+    url: 'https://luxeclubrentals.com/contact',
   },
-  alternates: { canonical: 'https://www.luxeclubrentals.ae/contact' },
+  alternates: { canonical: 'https://luxeclubrentals.com/contact' },
 }
 
 export default function ContactLayout({ children }: { children: React.ReactNode }) {
