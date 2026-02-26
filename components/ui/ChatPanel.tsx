@@ -161,7 +161,7 @@ export default function ChatPanel({ open, onClose }: ChatPanelProps) {
 
   return (
     <div
-      className={`fixed z-30 transition-all duration-300 ${
+      className={`fixed z-[80] transition-all duration-300 ${
         open
           ? 'opacity-100 pointer-events-auto'
           : 'opacity-0 pointer-events-none'

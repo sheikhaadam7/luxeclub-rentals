@@ -22,7 +22,7 @@ export function ChatWidget() {
       <button
         onClick={handleToggle}
         aria-label={open ? t('chat.ariaClose') : t('chat.ariaOpen')}
-        className="fixed bottom-6 left-6 z-50 flex items-center justify-center w-14 h-14 rounded-full bg-brand-cyan text-brand-black shadow-lg shadow-brand-cyan/25 hover:scale-110 hover:shadow-brand-cyan/40 transition-all duration-300 cursor-pointer"
+        className={`fixed bottom-6 left-6 z-50 flex items-center justify-center w-14 h-14 rounded-full bg-brand-cyan text-brand-black shadow-lg shadow-brand-cyan/25 hover:scale-110 hover:shadow-brand-cyan/40 transition-all duration-300 cursor-pointer ${open ? 'hidden md:flex' : ''}`}
       >
         {open ? (
           // Close icon
