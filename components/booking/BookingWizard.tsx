@@ -222,7 +222,6 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
 
   // Guest inline confirmation
   if (guestConfirmedId) {
-    const { t } = useTranslation()
     return (
       <div className="max-w-lg mx-auto space-y-6 text-center py-12">
         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-cyan/10 border border-brand-cyan/30 mx-auto">
