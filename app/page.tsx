@@ -7,54 +7,13 @@ import { VehicleCard } from '@/components/catalogue/VehicleCard'
 import { NavBar } from '@/components/nav/NavBar'
 import { Footer } from '@/components/nav/Footer'
 import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat'
+import { ChatWidget } from '@/components/ui/ChatWidget'
 import { CurrencyProvider } from '@/lib/currency/context'
 import { LanguageProvider } from '@/lib/i18n/context'
 import { T } from '@/components/ui/T'
 import { ScrollReveal } from '@/components/ui/ScrollReveal'
 import { LazyVideo } from '@/components/ui/LazyVideo'
-
-// ---------------------------------------------------------------------------
-// Testimonials
-// ---------------------------------------------------------------------------
-
-const TESTIMONIALS = [
-  {
-    name: 'Ahmed K.',
-    location: 'Dubai Marina',
-    text: 'Exceptional service from start to finish. The Rolls Royce Cullinan was immaculate and delivered right to my hotel at 6 AM. The driver was professional and the handover took less than 5 minutes. I\'ve rented from three other companies in Dubai — LuxeClub is on another level entirely.',
-    rating: 5,
-  },
-  {
-    name: 'Sarah M.',
-    location: 'Palm Jumeirah',
-    text: 'Rented the Porsche 911 GT3 for a weekend getaway to Hatta. The booking process was seamless and the car was in perfect condition. My only minor note would be that I wished they had a wider colour selection, but the white looked stunning anyway. Truly a premium experience.',
-    rating: 4,
-  },
-  {
-    name: 'James L.',
-    location: 'Downtown Dubai',
-    text: 'Best luxury car rental in Dubai, hands down. I\'m a returning customer — this was my fourth rental with LuxeClub. The Bentley Continental GT exceeded all expectations. What sets them apart is the personal touch: they remembered my preferences from last time and had everything ready. Professional team and competitive pricing.',
-    rating: 5,
-  },
-  {
-    name: 'Fatima R.',
-    location: 'Business Bay',
-    text: 'Used LuxeClub for a corporate event — rented three vehicles and everything was handled flawlessly. Their team coordinated delivery to three different locations simultaneously. The attention to detail is unmatched. Already booked again for our annual gala.',
-    rating: 5,
-  },
-]
-
-function StarRating({ count }: { count: number }) {
-  return (
-    <div className="flex gap-0.5">
-      {Array.from({ length: count }).map((_, i) => (
-        <svg key={i} className="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-        </svg>
-      ))}
-    </div>
-  )
-}
+import { TestimonialCarousel } from '@/components/ui/TestimonialCarousel'
 
 // ---------------------------------------------------------------------------
 // Page
@@ -95,12 +54,13 @@ export default async function HomePage() {
         {/* Hero section with video background */}
         <div className="relative flex flex-col items-center justify-center gap-10 px-4 py-24 sm:py-36 overflow-hidden">
           {/* Hero poster — LCP element */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src="/hero-poster.jpg"
-            alt=""
-            fetchPriority="high"
-            className="absolute inset-0 w-full h-full object-cover"
+            alt="Luxury car hero background"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
           />
           {/* Deferred background video — loads after page is interactive */}
           <LazyVideo
@@ -114,7 +74,7 @@ export default async function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/50" />
 
           <div className="relative z-10 text-center space-y-6">
-            <span className="animate-fade-in-left block text-xs sm:text-sm tracking-[0.25em] uppercase text-white/40 font-light" style={{ animationDelay: '0ms' }}>
+            <span className="animate-fade-in-left block text-xs sm:text-sm tracking-[0.25em] uppercase text-brand-purple font-light" style={{ animationDelay: '0ms' }}>
               LuxeClub
             </span>
             <h1 className="font-display text-5xl sm:text-7xl lg:text-8xl font-medium tracking-tight leading-[1.05]">
@@ -299,22 +259,22 @@ export default async function HomePage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center space-y-4">
-              <div className="w-14 h-14 mx-auto rounded-full border border-white/[0.12] flex items-center justify-center">
-                <span className="text-sm font-bold text-brand-cyan">01</span>
+              <div className="w-14 h-14 mx-auto rounded-full border border-brand-purple/30 flex items-center justify-center">
+                <span className="text-sm font-bold text-brand-purple">01</span>
               </div>
               <h4 className="font-display text-lg font-medium text-white"><T k="home.step1Title" /></h4>
               <p className="text-sm text-white/40 leading-relaxed"><T k="home.step1Desc" /></p>
             </div>
             <div className="text-center space-y-4">
-              <div className="w-14 h-14 mx-auto rounded-full border border-white/[0.12] flex items-center justify-center">
-                <span className="text-sm font-bold text-brand-cyan">02</span>
+              <div className="w-14 h-14 mx-auto rounded-full border border-brand-purple/30 flex items-center justify-center">
+                <span className="text-sm font-bold text-brand-purple">02</span>
               </div>
               <h4 className="font-display text-lg font-medium text-white"><T k="home.step2Title" /></h4>
               <p className="text-sm text-white/40 leading-relaxed"><T k="home.step2Desc" /></p>
             </div>
             <div className="text-center space-y-4">
-              <div className="w-14 h-14 mx-auto rounded-full border border-white/[0.12] flex items-center justify-center">
-                <span className="text-sm font-bold text-brand-cyan">03</span>
+              <div className="w-14 h-14 mx-auto rounded-full border border-brand-purple/30 flex items-center justify-center">
+                <span className="text-sm font-bold text-brand-purple">03</span>
               </div>
               <h4 className="font-display text-lg font-medium text-white"><T k="home.step3Title" /></h4>
               <p className="text-sm text-white/40 leading-relaxed"><T k="home.step3Desc" /></p>
@@ -368,28 +328,7 @@ export default async function HomePage() {
               <T k="home.testimonialsSubtitle" />
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {TESTIMONIALS.map((item) => (
-              <div
-                key={item.name}
-                className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6 space-y-4 hover:border-white/[0.15] transition-all duration-300"
-              >
-                <StarRating count={item.rating} />
-                <p className="text-sm text-white/80 leading-relaxed">
-                  &ldquo;{item.text}&rdquo;
-                </p>
-                <div className="flex items-center gap-3 pt-1">
-                  <div className="w-9 h-9 rounded-full bg-white/[0.08] flex items-center justify-center text-sm font-semibold text-white/60">
-                    {item.name.charAt(0)}
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-white">{item.name}</p>
-                    <p className="text-xs text-white/40">{item.location}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <TestimonialCarousel />
         </section>
         {/* Final CTA */}
         <section className="relative border-t border-white/[0.06] overflow-hidden">
@@ -410,7 +349,7 @@ export default async function HomePage() {
               </Link>
               <Link
                 href="/contact"
-                className="px-10 py-4 rounded-xl border border-white/[0.12] text-white text-base font-semibold hover:bg-white/[0.04] hover:border-white/[0.2] transition-all duration-300"
+                className="px-10 py-4 rounded-xl border border-white/[0.12] text-white text-base font-semibold hover:bg-brand-purple/[0.06] hover:border-brand-purple/40 hover:text-brand-purple transition-all duration-300"
               >
                 <T k="home.getInTouch" />
               </Link>
@@ -420,6 +359,7 @@ export default async function HomePage() {
       </main>
       <Footer />
       <WhatsAppFloat />
+      <ChatWidget />
     </CurrencyProvider>
     </LanguageProvider>
   )

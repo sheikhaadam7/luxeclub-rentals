@@ -7,6 +7,7 @@ const de: Record<string, string> = {
   'nav.contact': 'Kontakt',
   'nav.signIn': 'Anmelden',
   'nav.logout': 'Abmelden',
+  'nav.tagline': 'Luxusautovermietung · Dubai',
 
   // Footer
   'footer.tagline': 'Dubais vertrauenswürdigste Luxusautovermietung — auf Beziehungen gebaut, nicht auf Transaktionen.',
@@ -25,13 +26,17 @@ const de: Record<string, string> = {
   'footer.location': 'Business Bay, Dubai, VAE',
 
   // Home page
-  'home.heroSubtitle': 'Dubais vertrauenswürdigste Luxusautovermietung.',
+  'home.heroTitle1': 'Luxusautovermietung',
+  'home.heroTitle2': 'in Dubai',
+  'home.heroSubtitle': 'Lamborghini, Ferrari, Rolls-Royce, Bentley & mehr — direkt vor Ihre Tür geliefert.',
   'home.exploreFleet': 'Unsere Flotte entdecken',
-  'home.clientsServed': 'Betreute Kunden',
+  'home.fleetSize': '50+',
+  'home.fleetLabel': 'Supercars & Luxusautos',
   'home.googleRating': 'Google-Bewertung',
-  'home.licensed': 'Lizenziert',
-  'home.licensedInsured': 'Lizenziert & Versichert',
-  'home.supportAvailable': 'Support verfügbar',
+  'home.dubaiDelivery': 'Kostenlos',
+  'home.dubaiDeliveryLabel': 'Lieferung in ganz Dubai',
+  'home.insuranceIncluded': 'Voll',
+  'home.insuranceLabel': 'Versicherung Inklusive',
   'home.featuredIn': 'Bekannt aus',
   'home.whatWeDo': 'Was wir tun',
   'home.luxuryCarRentals': 'Luxusautovermietung',
@@ -462,6 +467,16 @@ const de: Record<string, string> = {
   'common.cancellationPolicy': 'Kostenlose Stornierung bis 24 Stunden vor Abholung.',
   'common.currency': 'Währung',
   'common.language': 'Sprache',
+
+  // Chat assistant
+  'chat.title': 'LuxeClub Assistent',
+  'chat.welcomeMessage': 'Hallo! Ich bin der LuxeClub-Assistent. Fragen Sie mich alles über unsere Luxusautovermietung — Preise, Kautionen, Dokumente, Lieferung oder anderes. Ich bin hier, um zu helfen!',
+  'chat.inputPlaceholder': 'Fragen zu Autos, Preisen, Richtlinien...',
+  'chat.send': 'Senden',
+  'chat.thinking': 'Denke nach...',
+  'chat.errorMessage': 'Entschuldigung, etwas ist schiefgelaufen. Bitte versuchen Sie es erneut oder kontaktieren Sie uns über WhatsApp: +971 58 808 6137.',
+  'chat.ariaOpen': 'Chat-Assistent öffnen',
+  'chat.ariaClose': 'Chat-Assistent schließen',
 }
 
 export default de

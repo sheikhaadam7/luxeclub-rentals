@@ -7,6 +7,7 @@ const es: Record<string, string> = {
   'nav.contact': 'Contacto',
   'nav.signIn': 'Iniciar Sesión',
   'nav.logout': 'Cerrar Sesión',
+  'nav.tagline': 'Alquiler de Coches de Lujo · Dubái',
 
   // Footer
   'footer.tagline': 'El alquiler de coches de lujo más confiable de Dubái — construido sobre relaciones, no transacciones.',
@@ -25,13 +26,17 @@ const es: Record<string, string> = {
   'footer.location': 'Business Bay, Dubái, EAU',
 
   // Home page
-  'home.heroSubtitle': 'El alquiler de coches de lujo más confiable de Dubái.',
+  'home.heroTitle1': 'Alquiler de Coches de Lujo',
+  'home.heroTitle2': 'en Dubái',
+  'home.heroSubtitle': 'Lamborghini, Ferrari, Rolls-Royce, Bentley y más — entrega a domicilio.',
   'home.exploreFleet': 'Explorar Nuestra Flota',
-  'home.clientsServed': 'Clientes Atendidos',
+  'home.fleetSize': '50+',
+  'home.fleetLabel': 'Superdeportivos y Coches de Lujo',
+  'home.dubaiDelivery': 'Gratis',
+  'home.dubaiDeliveryLabel': 'Entrega en todo Dubái',
+  'home.insuranceIncluded': 'Completo',
+  'home.insuranceLabel': 'Seguro Incluido',
   'home.googleRating': 'Calificación en Google',
-  'home.licensed': 'Licenciado',
-  'home.licensedInsured': 'Licenciado y Asegurado',
-  'home.supportAvailable': 'Soporte Disponible',
   'home.featuredIn': 'Destacados En',
   'home.whatWeDo': 'Lo que hacemos',
   'home.luxuryCarRentals': 'Alquiler de Coches de Lujo',
@@ -462,6 +467,16 @@ const es: Record<string, string> = {
   'common.cancellationPolicy': 'Cancelación gratuita hasta 24 horas antes de la recogida.',
   'common.currency': 'Moneda',
   'common.language': 'Idioma',
+
+  // Chat assistant
+  'chat.title': 'Asistente LuxeClub',
+  'chat.welcomeMessage': '¡Hola! Soy el asistente de LuxeClub. Pregúntame lo que quieras sobre el alquiler de coches de lujo — precios, depósitos, documentos, entrega o lo que sea. ¡Estoy aquí para ayudar!',
+  'chat.inputPlaceholder': 'Pregunta sobre nuestros coches, precios...',
+  'chat.send': 'Enviar',
+  'chat.thinking': 'Pensando...',
+  'chat.errorMessage': 'Lo siento, algo salió mal. Inténtalo de nuevo o contáctanos por WhatsApp: +971 58 808 6137.',
+  'chat.ariaOpen': 'Abrir asistente de chat',
+  'chat.ariaClose': 'Cerrar asistente de chat',
 }
 
 export default es

@@ -7,6 +7,7 @@ const fr: Record<string, string> = {
   'nav.contact': 'Contact',
   'nav.signIn': 'Connexion',
   'nav.logout': 'Deconnexion',
+  'nav.tagline': 'Location de Voitures de Luxe · Dubai',
 
   // Footer
   'footer.tagline': 'La location de voitures de luxe la plus fiable de Dubai — batie sur les relations, pas les transactions.',
@@ -25,13 +26,17 @@ const fr: Record<string, string> = {
   'footer.location': 'Business Bay, Dubai, EAU',
 
   // Home page
-  'home.heroSubtitle': 'La location de voitures de luxe la plus fiable de Dubai.',
+  'home.heroTitle1': 'Location de Voitures de Luxe',
+  'home.heroTitle2': 'à Dubaï',
+  'home.heroSubtitle': 'Lamborghini, Ferrari, Rolls-Royce, Bentley et plus — livrée à votre porte.',
   'home.exploreFleet': 'Explorer Notre Flotte',
-  'home.clientsServed': 'Clients Servis',
+  'home.fleetSize': '50+',
+  'home.fleetLabel': 'Supercars et Voitures de Luxe',
+  'home.dubaiDelivery': 'Gratuit',
+  'home.dubaiDeliveryLabel': 'Livraison dans tout Dubaï',
+  'home.insuranceIncluded': 'Complète',
+  'home.insuranceLabel': 'Assurance Incluse',
   'home.googleRating': 'Note Google',
-  'home.licensed': 'Agreee',
-  'home.licensedInsured': 'Agreee & Assuree',
-  'home.supportAvailable': 'Support Disponible',
   'home.featuredIn': 'Vu Dans',
   'home.whatWeDo': 'Ce que nous faisons',
   'home.luxuryCarRentals': 'Location de Voitures de Luxe',
@@ -473,6 +478,16 @@ const fr: Record<string, string> = {
   'common.cancellationPolicy': 'Annulation gratuite jusqu\'a 24 heures avant la prise en charge.',
   'common.currency': 'Devise',
   'common.language': 'Langue',
+
+  // Chat assistant
+  'chat.title': 'Assistant LuxeClub',
+  'chat.welcomeMessage': 'Bonjour ! Je suis l\'assistant LuxeClub. Posez-moi vos questions sur la location de voitures de luxe — tarifs, cautions, documents, livraison ou autre. Je suis là pour vous aider !',
+  'chat.inputPlaceholder': 'Posez vos questions sur nos voitures, tarifs...',
+  'chat.send': 'Envoyer',
+  'chat.thinking': 'Réflexion...',
+  'chat.errorMessage': 'Désolé, une erreur est survenue. Veuillez réessayer ou nous contacter sur WhatsApp au +971 58 808 6137.',
+  'chat.ariaOpen': 'Ouvrir l\'assistant de chat',
+  'chat.ariaClose': 'Fermer l\'assistant de chat',
 }
 
 export default fr

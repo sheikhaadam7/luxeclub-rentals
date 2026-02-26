@@ -7,6 +7,7 @@ const zh: Record<string, string> = {
   'nav.contact': '联系我们',
   'nav.signIn': '登录',
   'nav.logout': '退出',
+  'nav.tagline': '豪华车租赁 · 迪拜',
 
   // Footer
   'footer.tagline': '迪拜最值得信赖的豪车租赁——以关系为本，而非交易。',
@@ -25,13 +26,17 @@ const zh: Record<string, string> = {
   'footer.location': '商业湾，迪拜，阿联酋',
 
   // Home page
-  'home.heroSubtitle': '迪拜最值得信赖的豪车租赁。',
+  'home.heroTitle1': '豪华车租赁',
+  'home.heroTitle2': '在迪拜',
+  'home.heroSubtitle': '兰博基尼、法拉利、劳斯莱斯、宾利等——送车上门。',
   'home.exploreFleet': '探索我们的车队',
-  'home.clientsServed': '服务客户数',
+  'home.fleetSize': '50+',
+  'home.fleetLabel': '超跑及豪华车',
   'home.googleRating': 'Google 评分',
-  'home.licensed': '持牌经营',
-  'home.licensedInsured': '持牌且有保险',
-  'home.supportAvailable': '全天候客服',
+  'home.dubaiDelivery': '免费',
+  'home.dubaiDeliveryLabel': '迪拜全城配送',
+  'home.insuranceIncluded': '全额',
+  'home.insuranceLabel': '保险已含',
   'home.featuredIn': '媒体报道',
   'home.whatWeDo': '我们的服务',
   'home.luxuryCarRentals': '豪华车租赁',
@@ -462,6 +467,16 @@ const zh: Record<string, string> = {
   'common.cancellationPolicy': '取车前24小时可免费取消。',
   'common.currency': '货币',
   'common.language': '语言',
+
+  // Chat assistant
+  'chat.title': 'LuxeClub 助手',
+  'chat.welcomeMessage': '您好！我是 LuxeClub 助手。欢迎咨询豪华租车相关问题——价格、押金、所需文件、配送服务等，我随时为您效劳！',
+  'chat.inputPlaceholder': '询问我们的车辆、价格、政策...',
+  'chat.send': '发送',
+  'chat.thinking': '思考中...',
+  'chat.errorMessage': '抱歉，出了点问题。请重试或通过 WhatsApp 联系我们：+971 58 808 6137。',
+  'chat.ariaOpen': '打开聊天助手',
+  'chat.ariaClose': '关闭聊天助手',
 }
 
 export default zh

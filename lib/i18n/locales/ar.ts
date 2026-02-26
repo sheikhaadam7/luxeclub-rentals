@@ -7,6 +7,7 @@ const ar: Record<string, string> = {
   'nav.contact': 'اتصل بنا',
   'nav.signIn': 'تسجيل الدخول',
   'nav.logout': 'تسجيل الخروج',
+  'nav.tagline': 'تأجير سيارات فاخرة · دبي',
 
   // Footer
   'footer.tagline': 'أفضل شركة تأجير سيارات فاخرة في دبي — مبنية على العلاقات وليس المعاملات.',
@@ -25,13 +26,17 @@ const ar: Record<string, string> = {
   'footer.location': 'الخليج التجاري، دبي، الإمارات',
 
   // Home page
-  'home.heroSubtitle': 'أفضل شركة تأجير سيارات فاخرة في دبي.',
+  'home.heroTitle1': 'تأجير سيارات فاخرة',
+  'home.heroTitle2': 'في دبي',
+  'home.heroSubtitle': 'لامبورغيني، فيراري، رولز رويس، بنتلي والمزيد — توصيل حتى باب منزلك.',
   'home.exploreFleet': 'استكشف أسطولنا',
-  'home.clientsServed': 'عميل تمت خدمتهم',
+  'home.fleetSize': '50+',
+  'home.fleetLabel': 'سيارات خارقة وفاخرة',
+  'home.dubaiDelivery': 'مجاناً',
+  'home.dubaiDeliveryLabel': 'توصيل في جميع أنحاء دبي',
+  'home.insuranceIncluded': 'شامل',
+  'home.insuranceLabel': 'التأمين مشمول',
   'home.googleRating': 'تقييم جوجل',
-  'home.licensed': 'مرخصة',
-  'home.licensedInsured': 'مرخصة ومؤمنة',
-  'home.supportAvailable': 'الدعم متاح',
   'home.featuredIn': 'كما ظهرنا في',
   'home.whatWeDo': 'ماذا نقدم',
   'home.luxuryCarRentals': 'تأجير سيارات فاخرة',
@@ -462,6 +467,16 @@ const ar: Record<string, string> = {
   'common.cancellationPolicy': 'إلغاء مجاني حتى 24 ساعة قبل الاستلام.',
   'common.currency': 'العملة',
   'common.language': 'اللغة',
+
+  // Chat assistant
+  'chat.title': 'مساعد لوكس كلوب',
+  'chat.welcomeMessage': 'مرحبًا! أنا مساعد لوكس كلوب. اسألني عن أي شيء يتعلق بتأجير السيارات الفاخرة — الأسعار، التأمينات، المستندات، التوصيل، أو أي شيء آخر. أنا هنا للمساعدة!',
+  'chat.inputPlaceholder': 'اسأل عن سياراتنا، الأسعار، السياسات...',
+  'chat.send': 'إرسال',
+  'chat.thinking': 'جاري التفكير...',
+  'chat.errorMessage': 'عذرًا، حدث خطأ ما. يرجى المحاولة مرة أخرى أو التواصل معنا عبر واتساب على +971 58 808 6137.',
+  'chat.ariaOpen': 'فتح مساعد الدردشة',
+  'chat.ariaClose': 'إغلاق مساعد الدردشة',
 }
 
 export default ar

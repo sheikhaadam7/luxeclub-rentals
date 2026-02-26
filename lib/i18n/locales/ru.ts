@@ -7,6 +7,7 @@ const ru: Record<string, string> = {
   'nav.contact': 'Контакты',
   'nav.signIn': 'Войти',
   'nav.logout': 'Выйти',
+  'nav.tagline': 'Аренда Люксовых Авто · Дубай',
 
   // Footer
   'footer.tagline': 'Самая надёжная аренда люксовых автомобилей в Дубае — построена на отношениях, а не на сделках.',
@@ -25,13 +26,17 @@ const ru: Record<string, string> = {
   'footer.location': 'Бизнес Бей, Дубай, ОАЭ',
 
   // Home page
-  'home.heroSubtitle': 'Самая надёжная аренда люксовых автомобилей в Дубае.',
+  'home.heroTitle1': 'Аренда Люксовых Авто',
+  'home.heroTitle2': 'в Дубае',
+  'home.heroSubtitle': 'Lamborghini, Ferrari, Rolls-Royce, Bentley и другие — доставка до двери.',
   'home.exploreFleet': 'Изучить Наш Автопарк',
-  'home.clientsServed': 'Обслуженных Клиентов',
+  'home.fleetSize': '50+',
+  'home.fleetLabel': 'Суперкаров и Люксовых Авто',
+  'home.dubaiDelivery': 'Бесплатно',
+  'home.dubaiDeliveryLabel': 'Доставка по Всему Дубаю',
+  'home.insuranceIncluded': 'Полная',
+  'home.insuranceLabel': 'Страховка Включена',
   'home.googleRating': 'Рейтинг Google',
-  'home.licensed': 'Лицензировано',
-  'home.licensedInsured': 'Лицензировано и Застраховано',
-  'home.supportAvailable': 'Поддержка Доступна',
   'home.featuredIn': 'Нас Рекомендуют',
   'home.whatWeDo': 'Что мы предлагаем',
   'home.luxuryCarRentals': 'Аренда Люксовых Автомобилей',
@@ -462,6 +467,16 @@ const ru: Record<string, string> = {
   'common.cancellationPolicy': 'Бесплатная отмена за 24 часа до получения.',
   'common.currency': 'Валюта',
   'common.language': 'Язык',
+
+  // Chat assistant
+  'chat.title': 'Помощник LuxeClub',
+  'chat.welcomeMessage': 'Привет! Я помощник LuxeClub. Спрашивайте о прокате люксовых автомобилей — цены, залоги, документы, доставка и всё остальное. Я здесь, чтобы помочь!',
+  'chat.inputPlaceholder': 'Спросите о наших авто, ценах, условиях...',
+  'chat.send': 'Отправить',
+  'chat.thinking': 'Думаю...',
+  'chat.errorMessage': 'Извините, произошла ошибка. Попробуйте ещё раз или свяжитесь с нами в WhatsApp: +971 58 808 6137.',
+  'chat.ariaOpen': 'Открыть чат-помощника',
+  'chat.ariaClose': 'Закрыть чат-помощника',
 }
 
 export default ru

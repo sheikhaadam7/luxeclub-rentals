@@ -13,6 +13,8 @@ html {
   --color-brand-border-hover: rgba(255, 255, 255, 0.18);
   --color-brand-cyan: #C9A96E;
   --color-brand-cyan-hover: #D4B97A;
+  --color-brand-purple: #8B7EC8;
+  --color-brand-purple-hover: #9D92D4;
   --color-brand-text: #ffffff;
   --color-brand-muted: rgba(255, 255, 255, 0.5);
   --color-brand-subtle: rgba(255, 255, 255, 0.08);
@@ -178,8 +180,36 @@ iframe[src*="js.stripe.com/v3/controller-"] {
   transform: translateY(0);
 }
 
+/* Testimonial carousel fade-in */
+@keyframes testimonialIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-testimonial-in {
+  animation: testimonialIn var(--duration-slow) var(--ease-out-expo) both;
+}
+
+/* Chat panel slide-up entrance */
+@keyframes chatSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Smooth selection color */
 ::selection {
-  background: rgba(201, 169, 110, 0.3);
+  background: rgba(139, 126, 200, 0.3);
   color: white;
 }

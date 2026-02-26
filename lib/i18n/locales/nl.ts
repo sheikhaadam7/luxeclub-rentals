@@ -7,6 +7,7 @@ const nl: Record<string, string> = {
   'nav.contact': 'Contact',
   'nav.signIn': 'Inloggen',
   'nav.logout': 'Uitloggen',
+  'nav.tagline': 'Luxe Autoverhuur · Dubai',
 
   // Footer
   'footer.tagline': "Dubai's meest betrouwbare luxe autoverhuur — gebouwd op relaties, niet op transacties.",
@@ -25,13 +26,17 @@ const nl: Record<string, string> = {
   'footer.location': 'Business Bay, Dubai, VAE',
 
   // Home page
-  'home.heroSubtitle': "Dubai's meest betrouwbare luxe autoverhuur.",
+  'home.heroTitle1': 'Luxe Autoverhuur',
+  'home.heroTitle2': 'in Dubai',
+  'home.heroSubtitle': 'Lamborghini, Ferrari, Rolls-Royce, Bentley & meer — bij u aan de deur bezorgd.',
   'home.exploreFleet': 'Ontdek Onze Vloot',
-  'home.clientsServed': 'Klanten bediend',
+  'home.fleetSize': '50+',
+  'home.fleetLabel': 'Supercars & Luxe Auto\'s',
+  'home.dubaiDelivery': 'Gratis',
+  'home.dubaiDeliveryLabel': 'Bezorging in heel Dubai',
+  'home.insuranceIncluded': 'Volledig',
+  'home.insuranceLabel': 'Verzekering Inbegrepen',
   'home.googleRating': 'Google Beoordeling',
-  'home.licensed': 'Gelicentieerd',
-  'home.licensedInsured': 'Gelicentieerd & Verzekerd',
-  'home.supportAvailable': 'Ondersteuning beschikbaar',
   'home.featuredIn': 'Bekend van',
   'home.whatWeDo': 'Wat wij doen',
   'home.luxuryCarRentals': 'Luxe Autoverhuur',
@@ -462,6 +467,16 @@ const nl: Record<string, string> = {
   'common.cancellationPolicy': 'Gratis annulering tot 24 uur voor ophalen.',
   'common.currency': 'Valuta',
   'common.language': 'Taal',
+
+  // Chat assistant
+  'chat.title': 'LuxeClub Assistent',
+  'chat.welcomeMessage': 'Hallo! Ik ben de LuxeClub-assistent. Stel gerust vragen over onze luxe autoverhuur — prijzen, borgen, documenten, bezorging of wat dan ook. Ik ben er om te helpen!',
+  'chat.inputPlaceholder': 'Vraag over onze auto\'s, prijzen, beleid...',
+  'chat.send': 'Versturen',
+  'chat.thinking': 'Aan het nadenken...',
+  'chat.errorMessage': 'Sorry, er is iets misgegaan. Probeer het opnieuw of neem contact op via WhatsApp: +971 58 808 6137.',
+  'chat.ariaOpen': 'Chat-assistent openen',
+  'chat.ariaClose': 'Chat-assistent sluiten',
 }
 
 export default nl

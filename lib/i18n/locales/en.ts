@@ -7,6 +7,7 @@ const en: Record<string, string> = {
   'nav.contact': 'Contact',
   'nav.signIn': 'Sign In',
   'nav.logout': 'Logout',
+  'nav.tagline': 'Luxury Car Rental · Dubai',
 
   // Footer
   'footer.tagline': "Dubai's most trusted luxury car rental — built on relationships, not transactions.",
@@ -25,13 +26,17 @@ const en: Record<string, string> = {
   'footer.location': 'Business Bay, Dubai, UAE',
 
   // Home page
-  'home.heroSubtitle': "Dubai's most trusted luxury car rental.",
+  'home.heroTitle1': 'Luxury Car Rental',
+  'home.heroTitle2': 'in Dubai',
+  'home.heroSubtitle': 'Lamborghini, Ferrari, Rolls-Royce, Bentley & more — delivered to your door.',
   'home.exploreFleet': 'Explore Our Fleet',
-  'home.clientsServed': 'Clients Served',
+  'home.fleetSize': '50+',
+  'home.fleetLabel': 'Supercars & Luxury Cars',
   'home.googleRating': 'Google Rating',
-  'home.licensed': 'Licensed',
-  'home.licensedInsured': 'Licensed & Insured',
-  'home.supportAvailable': 'Support Available',
+  'home.dubaiDelivery': 'Free',
+  'home.dubaiDeliveryLabel': 'Dubai-Wide Delivery',
+  'home.insuranceIncluded': 'Full',
+  'home.insuranceLabel': 'Insurance Included',
   'home.featuredIn': 'As Featured In',
   'home.whatWeDo': 'What we do',
   'home.luxuryCarRentals': 'Luxury Car Rentals',
@@ -473,6 +478,16 @@ const en: Record<string, string> = {
   'common.cancellationPolicy': 'Free cancellation up to 24 hours before pickup.',
   'common.currency': 'Currency',
   'common.language': 'Language',
+
+  // Chat assistant
+  'chat.title': 'LuxeClub Assistant',
+  'chat.welcomeMessage': "Hi there! I'm the LuxeClub assistant. Ask me anything about our luxury car rentals — pricing, deposits, documents, delivery, or anything else. I'm here to help!",
+  'chat.inputPlaceholder': 'Ask about our cars, pricing, policies...',
+  'chat.send': 'Send',
+  'chat.thinking': 'Thinking...',
+  'chat.errorMessage': 'Sorry, something went wrong. Please try again or reach us on WhatsApp at +971 58 808 6137.',
+  'chat.ariaOpen': 'Open chat assistant',
+  'chat.ariaClose': 'Close chat assistant',
 }
 
 export default en

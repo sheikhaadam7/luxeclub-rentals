@@ -1,9 +1,9 @@
-import { headers } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { NavBar } from '@/components/nav/NavBar'
 import { Footer } from '@/components/nav/Footer'
 import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat'
+import { ChatWidget } from '@/components/ui/ChatWidget'
 import { CurrencyProvider } from '@/lib/currency/context'
 import { LanguageProvider } from '@/lib/i18n/context'
 
@@ -12,8 +12,6 @@ export default async function ProtectedLayout({
 }: {
   children: React.ReactNode
 }) {
-  const headersList = await headers()
-  const detectedCountry = headersList.get('x-vercel-ip-country') ?? undefined
   const supabase = await createClient()
   // SECURITY: getClaims() validates JWT signature — not spoofable like getSession().
   // This is a defense-in-depth check against CVE-2025-29927 middleware bypass.
@@ -24,12 +22,13 @@ export default async function ProtectedLayout({
   }
 
   return (
-    <LanguageProvider detectedCountry={detectedCountry}>
+    <LanguageProvider>
       <CurrencyProvider>
         <NavBar />
         {children}
         <Footer />
         <WhatsAppFloat />
+        <ChatWidget />
       </CurrencyProvider>
     </LanguageProvider>
   )
