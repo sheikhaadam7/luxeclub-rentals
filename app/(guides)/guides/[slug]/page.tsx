@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { guides } from '@/lib/guides'
@@ -108,6 +109,20 @@ export default async function GuidePage({
           </p>
         </header>
 
+        {/* Hero image */}
+        {guide.image && (
+          <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden">
+            <Image
+              src={guide.image}
+              alt={guide.imageAlt || guide.title}
+              fill
+              className="object-cover"
+              priority
+              sizes="(max-width: 768px) 100vw, 768px"
+            />
+          </div>
+        )}
+
         {/* Table of Contents */}
         <nav className="bg-brand-surface border border-brand-border rounded-2xl p-6 space-y-3">
           <h2 className="text-sm text-white/40 uppercase tracking-[0.15em] font-medium">
@@ -134,6 +149,17 @@ export default async function GuidePage({
               <h2 className="font-display text-xl sm:text-2xl font-medium text-white">
                 {section.heading}
               </h2>
+              {section.image && (
+                <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden">
+                  <Image
+                    src={section.image}
+                    alt={section.imageAlt || section.heading}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 768px"
+                  />
+                </div>
+              )}
               {section.content.split('\n\n').map((paragraph, j) => (
                 <p key={j} className="text-[15px] text-brand-muted leading-relaxed">
                   {paragraph}
