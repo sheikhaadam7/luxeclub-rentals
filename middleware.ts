@@ -38,7 +38,7 @@ export async function middleware(request: NextRequest) {
 
   // Public routes — accessible without auth
   const publicPaths = ['/', '/sign-in', '/about', '/contact', '/faq', '/catalogue', '/guides', '/reset-password', '/booking-lookup']
-  const isPublicRoute = publicPaths.includes(pathname) || pathname.startsWith('/catalogue/') || pathname.startsWith('/book/') || pathname.startsWith('/auth/') || pathname.startsWith('/guides/') || pathname.startsWith('/api/') || pathname === '/sitemap.xml' || pathname === '/robots.txt'
+  const isPublicRoute = publicPaths.includes(pathname) || pathname.startsWith('/catalogue/') || pathname.startsWith('/book/') || pathname.startsWith('/auth/') || pathname.startsWith('/guides/') || pathname.startsWith('/rent-') || pathname.startsWith('/api/') || pathname === '/sitemap.xml' || pathname === '/robots.txt'
 
   // Unauthenticated user trying to access a protected route — redirect to sign-in
   // Preserve the intended destination so we can redirect back after login
@@ -71,6 +71,6 @@ export const config = {
      * The URL /dashboard is NOT /(protected)/dashboard.
      * This matcher protects ALL routes including /dashboard, /catalogue, etc.
      */
-    '/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|webm|mp4|woff2?)$).*)',
+    '/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|webm|mp4|mp3|woff2?)$).*)',
   ],
 }

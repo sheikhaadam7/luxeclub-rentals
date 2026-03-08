@@ -32,11 +32,34 @@ const getVehicles = unstable_cache(
   { revalidate: 300 },
 )
 
-export default async function CataloguePage() {
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Luxury Car Fleet — LuxeClub Rentals Dubai',
+  description:
+    'Browse our collection of luxury cars for rent in Dubai. Lamborghini, Ferrari, Rolls-Royce, Bentley, Range Rover and more.',
+  url: 'https://luxeclubrentals.com/catalogue',
+  provider: {
+    '@type': 'LocalBusiness',
+    name: 'LuxeClub Rentals',
+    url: 'https://luxeclubrentals.com',
+  },
+}
+
+interface PageProps {
+  searchParams: Promise<{ brand?: string }>
+}
+
+export default async function CataloguePage({ searchParams }: PageProps) {
+  const { brand } = await searchParams
   const vehicles = await getVehicles()
 
   return (
     <main className="min-h-screen bg-luxury">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Page header */}
         <div className="mb-10 space-y-2">
@@ -50,7 +73,7 @@ export default async function CataloguePage() {
       </div>
 
       {/* Vehicle grid — full width edge to edge */}
-      <VehicleGrid vehicles={vehicles ?? []} />
+      <VehicleGrid vehicles={vehicles ?? []} initialBrand={brand} />
     </main>
   )
 }

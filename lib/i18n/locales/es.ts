@@ -32,7 +32,7 @@ const es: Record<string, string> = {
   'home.exploreFleet': 'Explorar Nuestra Flota',
   'home.fleetSize': '50+',
   'home.fleetLabel': 'Superdeportivos y Coches de Lujo',
-  'home.dubaiDelivery': 'Gratis',
+  'home.dubaiDelivery': 'Dubái',
   'home.dubaiDeliveryLabel': 'Entrega en todo Dubái',
   'home.insuranceIncluded': 'Completo',
   'home.insuranceLabel': 'Seguro Incluido',
@@ -59,7 +59,7 @@ const es: Record<string, string> = {
   'home.testimonials': 'Lo Que Dicen Nuestros Clientes',
   'home.testimonialsSubtitle': 'La confianza de los conductores más exigentes de Dubái',
   'home.ctaTitle': '¿Listo para conducir algo extraordinario?',
-  'home.ctaSubtitle': 'Explore nuestra flota, elija sus fechas, y nosotros nos encargamos del resto. Entrega gratuita, seguro incluido y soporte 24/7.',
+  'home.ctaSubtitle': 'Explore nuestra flota, elija sus fechas, y nosotros nos encargamos del resto. Entrega en todo Dubái, seguro incluido y soporte 24/7.',
   'home.browseFleet': 'Explorar Flota',
   'home.getInTouch': 'Contáctenos',
 

@@ -61,9 +61,12 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
           {/* Logo */}
           <Link
             href="/"
-            className="font-display text-2xl font-semibold text-white tracking-tight transition-opacity duration-200 hover:opacity-70 animate-fade-in-left"
+            className="font-display text-3xl font-semibold text-white tracking-tight transition-opacity duration-200 hover:opacity-70 animate-fade-in-left"
           >
-            LuxeClub
+            <span className="block">LuxeClub</span>
+            <span className="block text-[10px] font-body text-white/30 font-normal tracking-wide">
+              {t('nav.tagline')}
+            </span>
           </Link>
 
           {/* Desktop nav links */}

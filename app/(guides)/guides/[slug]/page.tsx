@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { guides } from '@/lib/guides'
+import { ScreenshotGallery } from '@/components/guides/ScreenshotGallery'
 
 const SITE_URL = 'https://luxeclubrentals.com'
 
@@ -111,16 +112,27 @@ export default async function GuidePage({
 
         {/* Hero image */}
         {guide.image && (
-          <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden">
-            <Image
-              src={guide.image}
-              alt={guide.imageAlt || guide.title}
-              fill
-              className="object-cover"
-              priority
-              sizes="(max-width: 768px) 100vw, 768px"
-            />
-          </div>
+          guide.image.endsWith('.gif') ? (
+            <div className="relative w-full rounded-2xl overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={guide.image}
+                alt={guide.imageAlt || guide.title}
+                className="w-full h-auto"
+              />
+            </div>
+          ) : (
+            <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden">
+              <Image
+                src={guide.image}
+                alt={guide.imageAlt || guide.title}
+                fill
+                className="object-cover"
+                priority
+                sizes="(max-width: 768px) 100vw, 768px"
+              />
+            </div>
+          )
         )}
 
         {/* Table of Contents */}
@@ -160,9 +172,21 @@ export default async function GuidePage({
                   />
                 </div>
               )}
+              {section.images && section.images.length > 0 && (
+                <ScreenshotGallery
+                  images={section.images}
+                  alt={section.imagesAlt || section.heading}
+                />
+              )}
               {section.content.split('\n\n').map((paragraph, j) => (
                 <p key={j} className="text-[15px] text-brand-muted leading-relaxed">
-                  {paragraph}
+                  {paragraph.split(/(\*\*[^*]+\*\*)/).map((part, k) =>
+                    part.startsWith('**') && part.endsWith('**') ? (
+                      <strong key={k} className="text-white font-medium">{part.slice(2, -2)}</strong>
+                    ) : (
+                      part
+                    )
+                  )}
                 </p>
               ))}
             </section>

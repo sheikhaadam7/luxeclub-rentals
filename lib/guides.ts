@@ -3,6 +3,8 @@ export interface GuideSection {
   content: string
   image?: string
   imageAlt?: string
+  images?: string[]
+  imagesAlt?: string
 }
 
 export interface Guide {
@@ -28,32 +30,32 @@ export const guides: Guide[] = [
       {
         heading: 'Driving Licence Requirements',
         content:
-          'Tourists from GCC countries, the US, UK, Canada, Australia, and most EU nations can drive in Dubai using their home country licence. If your country is not on the recognised list, you will need a valid International Driving Permit (IDP) alongside your home licence. IDPs must be obtained before you travel — you cannot get one in the UAE.\n\nUAE residents need a valid UAE driving licence. Your rental company will ask for a copy at pickup, so keep a photo on your phone as a backup. The minimum driving age in Dubai is 18, but most rental companies require drivers to be at least 21, and some set the bar at 25 for high-performance vehicles.',
+          'If you hold a licence from a GCC country, the US, UK, Canada, Australia, or most EU nations, you can drive in Dubai on your home licence. Everyone else needs a valid International Driving Permit (IDP) alongside their home licence. Get the IDP before you fly out because you cannot arrange one inside the UAE.\n\nUAE residents need a UAE driving licence. Your rental company will ask for a copy at pickup, so keep a photo on your phone just in case. The legal driving age here is 18, though most rental companies want you to be at least 21, and some bump that to 25 for high-performance cars.',
       },
       {
         heading: 'Speed Limits & Radar Tolerance',
         content:
-          'Speed limits in Dubai are clearly posted and strictly enforced by fixed and mobile radar cameras. In residential and urban areas the limit is typically 40–60 km/h. Main city roads like Sheikh Zayed Road have limits of 100–120 km/h, while some highway stretches outside the city allow up to 140 km/h.\n\nDubai Police radars activate at 121 km/h in a 120 zone — the old 20 km/h buffer was reduced to just 1 km/h in recent years. Fines start at AED 300 for minor speeding and can reach AED 3,000 for exceeding the limit by more than 80 km/h, which also carries 23 black points, vehicle impoundment, and a possible licence suspension.',
+          'Speed limits are posted clearly and enforced through a mix of fixed and mobile radar cameras. Residential and urban areas sit at 40 to 60 km/h. Major city roads like Sheikh Zayed Road go up to 100 or 120 km/h, and certain highway stretches outside the city allow 140 km/h.\n\nThe buffer is basically gone. Dubai Police radars now trigger at just 1 km/h over the limit, so 121 in a 120 zone will get you flashed. Fines start at AED 300 for minor speeding. Go more than 80 km/h over and you are looking at AED 3,000, 23 black points, and your car gets impounded.',
       },
       {
         heading: 'Salik Toll Gates',
         content:
-          'Salik is Dubai\u2019s electronic toll system. There are currently eight toll gates across the city, including on Sheikh Zayed Road, Al Maktoum Bridge, Al Garhoud Bridge, and Business Bay Crossing. Each pass costs AED 4 and is automatically deducted when you drive through.\n\nWhen renting a car, your rental company will either provide a Salik tag pre-loaded on the vehicle or charge tolls to your account after the trip. Ask your rental provider about their Salik policy before you drive off — some add a small admin fee per toll.',
+          'Salik is the electronic toll system. Eight toll gates are spread across the city, covering Sheikh Zayed Road, Al Maktoum Bridge, Al Garhoud Bridge, and Business Bay Crossing among others. Each pass costs between AED 4 and AED 6 depending on peak or off-peak times, and gets deducted automatically as you drive through.\n\nRental companies handle Salik differently. Some pre-load a tag on the vehicle, others bill tolls to your account after you return the car. Ask about their policy at pickup because a few tack on a small admin fee per toll.',
       },
       {
         heading: 'Parking Rules & Fines',
         content:
-          'Dubai uses the RTA mParking system. Paid parking zones are colour-coded: orange and blue zones are metered (AED 2–4 per hour) and operate from 8 AM to 10 PM, while grey zones are premium areas near malls and business districts.\n\nYou can pay via the RTA app, SMS, or parking meters. Double parking, parking on pavements, or blocking driveways will earn you an AED 1,000 fine. Always check signage — some streets switch to no-parking during rush hours. Most shopping malls offer free parking for the first few hours.',
+          'Dubai runs the RTA mParking system. Paid zones are colour-coded: orange and blue are metered at AED 2 to 4 per hour between 8 AM and 10 PM. Grey zones are premium spots near malls and business districts.\n\nYou can pay through the RTA app, by SMS, or at the meters. Double parking, blocking driveways, or parking on pavements costs AED 1,000. Check the signs carefully because some streets flip to no-parking during rush hour. Most malls give you a few hours of free parking.',
       },
       {
         heading: 'Fuel & Petrol Stations',
         content:
-          'The UAE has some of the cheapest fuel in the world. Prices are set monthly by the government and displayed per litre. As of early 2026, Super 98 costs around AED 2.80/litre and Special 95 around AED 2.70/litre.\n\nPetrol stations are plentiful across Dubai. Many are full-service — an attendant fills your tank while you stay in the car. Most accept card payments at the pump. Your rental car should be returned with the same fuel level it was collected at, or you may be charged a refuelling fee.',
+          'Fuel in the UAE is cheap by global standards. The government sets prices monthly and displays them per litre. As of early 2026, Super 98 runs about AED 2.80/litre and Special 95 about AED 2.70/litre.\n\nYou will find petrol stations everywhere. A lot of them are full-service, so an attendant fills your tank while you sit in the car. Card payments are accepted at most pumps. Return your rental with the same fuel level you collected it at, otherwise the company will charge you a refuelling fee.',
       },
       {
         heading: 'Essential Tips to Avoid Fines',
         content:
-          'Always wear your seatbelt — front and rear passengers alike. The fine for not wearing a seatbelt is AED 400. Using a mobile phone while driving carries an AED 800 fine and 4 black points.\n\nDo not make rude gestures or use aggressive language towards other drivers. Under UAE law, this can result in criminal charges, not just traffic fines. Keep a respectful distance from the car ahead — tailgating is heavily penalised on highways.\n\nGive way to emergency vehicles immediately. Blocking an ambulance or police car carries a fine of AED 1,000. During the holy month of Ramadan, eating, drinking, or smoking in public during daylight hours is prohibited, including inside your car if windows are down.',
+          'Seatbelts are mandatory for everyone in the car, front and rear. The fine for not wearing one is AED 400. Using your phone while driving costs AED 800 and 4 black points.\n\nRude gestures or aggressive language directed at other drivers can result in criminal charges under UAE law, not just a traffic fine. Keep your distance on the highway because tailgating fines are enforced heavily.\n\nAlways give way to emergency vehicles immediately. Blocking one carries an AED 1,000 fine. And during Ramadan, eating, drinking, or smoking in public during daylight hours is prohibited. That includes inside your car if the windows are down.',
       },
     ],
   },
@@ -62,43 +64,43 @@ export const guides: Guide[] = [
     title: 'The 7 Best Driving Roads in Dubai & the UAE',
     metaTitle: 'The 7 Best Driving Roads in Dubai & the UAE — Scenic Routes for 2026',
     metaDescription:
-      'Discover the most spectacular driving roads in the UAE. From mountain switchbacks on Jebel Jais to the iconic Sheikh Zayed Road — the ultimate guide for car enthusiasts.',
+      'The best driving roads in the UAE, from Jebel Jais mountain switchbacks to the Al Qudra desert highway. Seven routes worth taking in a proper car.',
     publishedDate: '2026-02-01',
     sections: [
       {
         heading: 'Jebel Jais Mountain Road, Ras Al Khaimah',
         content:
-          'The crown jewel of UAE driving roads. Jebel Jais is the highest peak in the UAE at 1,934 metres, and the road to the summit is a masterpiece of modern engineering — 30 kilometres of smooth, perfectly banked switchbacks carved into the Hajar Mountains.\n\nThe route climbs from sea level through dramatic limestone gorges with hairpin turns that beg for a responsive steering wheel. Pull over at the designated viewpoints to take in vistas stretching to the Arabian Gulf. The road is well-maintained with clear signage and guardrails throughout. Best driven early morning when the air is cool and the light catches the rock faces. About 90 minutes from Dubai.',
+          'Jebel Jais is the highest peak in the UAE at 1,934 metres, and the road to the top is 30 kilometres of smooth, banked switchbacks cut into the Hajar Mountains. It is the best driving road in the country by a wide margin.\n\nThe climb starts at sea level and winds through limestone gorges with tight hairpins that reward a car with decent steering feel. There are viewpoints along the way where you can stop and look out over the Arabian Gulf. The surface is excellent, signage is clear, and there are guardrails the whole way up. Go early in the morning when the air is cool and the light hits the rock faces properly. About 90 minutes from Dubai.',
       },
       {
         heading: 'Sheikh Zayed Road (E11)',
         content:
-          'The backbone of Dubai and arguably the most famous road in the Middle East. This 12-lane highway cuts through the heart of the city, flanked by the world\u2019s most dramatic skyline — Burj Khalifa, Emirates Towers, and the Museum of the Future all tower above you as you cruise.\n\nAt night, the road transforms into a river of light with the illuminated skyscrapers creating an unforgettable backdrop. The speed limit is 120 km/h and the road surface is immaculate. For the full experience, drive the stretch between Dubai Marina and Downtown Dubai after 10 PM when traffic thins out. Just watch for the Salik toll gates.',
+          'The main highway through Dubai and probably the most recognisable road in the Middle East. Twelve lanes wide, lined on both sides by the Burj Khalifa, Emirates Towers, and the Museum of the Future.\n\nDriving it after dark is something else entirely. The skyscrapers are lit up and the whole road feels like a film set. Speed limit is 120 km/h and the tarmac is in great shape. For the best run, drive the Dubai Marina to Downtown stretch after 10 PM once the traffic has cleared. Keep an eye out for the Salik toll gates.',
       },
       {
         heading: 'Al Qudra Road (D63)',
         content:
-          'A 75-kilometre stretch of arrow-straight desert highway that runs from Dubai\u2019s southern suburbs deep into the golden dunes. Al Qudra is the road where Dubai\u2019s supercar owners come to stretch their legs — the surface is glass-smooth, traffic is minimal, and the desert landscape is hypnotic.\n\nThe road passes Al Qudra Lakes, an unexpected oasis in the desert where you can spot flamingos and other wildlife. Further along, you will reach the Love Lakes — two interconnected heart-shaped lakes visible from the air. The speed limit is 100–120 km/h. Best enjoyed during golden hour when the dunes glow amber on either side.',
+          'A 75-kilometre dead-straight desert road running south from Dubai into open dunes. This is where people with fast cars go when they want to actually use them. Smooth surface, very little traffic, and nothing but sand on either side.\n\nYou will pass Al Qudra Lakes on the way, where flamingos hang around an artificial oasis in the middle of the desert. Further on are the Love Lakes, a pair of heart-shaped lakes that are more interesting from the air than from ground level. Speed limit is 100 to 120 km/h. Late afternoon is the best time, when the dunes turn orange in the low sun.',
       },
       {
         heading: 'Hatta Mountain Road (E44)',
         content:
-          'The drive to Hatta takes you from the flat coastal plains of Dubai into the rugged Hajar Mountains over about 130 kilometres. The road winds through rocky wadis, past honey-coloured villages, and alongside the stunning turquoise waters of the Hatta Dam.\n\nThe final approach into Hatta features a beautiful series of curves through mountain valleys with almost zero traffic. Hatta itself is a charming heritage village with kayaking on the dam, mountain biking trails, and the Hatta Wadi Hub for adventure activities. Allow a full day and combine the drive with a stop at the Hatta Heritage Village. The road is well-paved throughout.',
+          'About 130 kilometres from central Dubai, the road to Hatta takes you out of the flat coastal plain and up into the Hajar Mountains. You pass through rocky wadis, small sand-coloured villages, and alongside the bright turquoise water of the Hatta Dam.\n\nThe last section into Hatta has a nice series of bends through quiet mountain valleys. Hatta itself has kayaking on the dam, mountain bike trails, and the Wadi Hub adventure park. Give it a full day and stop at the Heritage Village while you are there. The road surface is good throughout.',
       },
       {
         heading: 'Jebel Hafeet, Al Ain',
         content:
-          'Often called one of the greatest driving roads in the world. The 12-kilometre ascent of Jebel Hafeet rises 1,240 metres above the desert floor through 60 corners of beautifully engineered tarmac. The road was built to European mountain pass standards with wide lanes, perfect camber, and smooth transitions.\n\nFrom the summit, the 360-degree panorama over the empty desert and the oasis city of Al Ain below is breathtaking. The road is a favourite of the UAE\u2019s supercar community and you will often see Ferraris, Lamborghinis, and Porsches making the climb. About 90 minutes from Dubai. The best time is late afternoon — drive up for sunset, then descend as the city lights flicker on below.',
+          'Twelve kilometres of tarmac climbing 1,240 metres through 60 corners. The road was built to European mountain pass standards: wide lanes, proper camber, and smooth transitions between bends. It regularly shows up on lists of the world\'s best driving roads, and it earns the spot.\n\nAt the top you get a full panoramic view over the desert and Al Ain below. You will usually see a few Ferraris and Porsches making the same drive. About 90 minutes from Dubai. Go late in the afternoon so you can drive up for sunset and come back down as the lights come on in the city.',
       },
       {
         heading: 'Kalba Coastal Road (E99)',
         content:
-          'The drive from Fujairah to Kalba along the E99 hugs the Gulf of Oman coastline for roughly 40 kilometres of pure coastal bliss. Rocky cliffs drop into turquoise water on one side while the Hajar Mountains rise on the other.\n\nThis is the UAE\u2019s answer to a Mediterranean corniche — sweeping ocean-view curves, fishing villages, and empty beaches where you can pull over and have the sand to yourself. The road is two lanes in places, so overtaking opportunities are limited, but the pace suits the scenery. Combine it with a visit to Kalba\u2019s mangrove reserve or the Shark Island snorkelling spot. About two hours from Dubai.',
+          'Roughly 40 kilometres along the Gulf of Oman coastline between Fujairah and Kalba. Rocky cliffs on one side dropping into turquoise water, the Hajar Mountains on the other. It is the closest thing the UAE has to a European coastal road.\n\nThe bends are wide and sweeping with good visibility. There are fishing villages along the way and a few empty beaches where you can pull over. Parts of it narrow to two lanes so overtaking is limited, but the pace matches the scenery. Worth combining with a visit to the Kalba mangrove reserve or snorkelling at Shark Island. About two hours from Dubai.',
       },
       {
         heading: 'Dubai to Liwa Oasis via the E45',
         content:
-          'The ultimate desert road trip. The E45 runs south from Abu Dhabi into the Rub al Khali — the Empty Quarter — ending at the Liwa Oasis, a crescent of date palm villages on the edge of the largest sand desert on Earth.\n\nThe drive covers about 300 kilometres from Dubai and the landscape shifts dramatically as you go — from urban sprawl to flat gravel plains to towering orange sand dunes that can reach 300 metres high. The road itself is beautifully maintained, a thin ribbon of tarmac cutting through an ocean of sand. Stop at Moreeb Dune, one of the tallest sand dunes in the world, for photos. Allow a full day or stay overnight at the Qasr Al Sarab resort for the full Lawrence of Arabia experience.',
+          'The longest drive on this list. The E45 heads south from Abu Dhabi into the Rub al Khali, the Empty Quarter, ending at Liwa Oasis on the edge of the biggest sand desert on the planet.\n\nThe 300-kilometre drive from Dubai changes character as you go. City gives way to flat gravel plains, then to massive orange dunes that reach over 300 metres high. The road is well-maintained, a single strip of tarmac through an absurd amount of sand. Stop at Moreeb Dune for photos. If you can, stay overnight at the Qasr Al Sarab resort rather than trying to do it as a day trip.',
       },
     ],
   },
@@ -107,30 +109,30 @@ export const guides: Guide[] = [
     title: 'Porsche 911 Turbo S: Why It\'s the Ultimate Luxury Rental',
     metaTitle: 'Porsche 911 Turbo S — Why It\'s the Ultimate Luxury Rental in Dubai',
     metaDescription:
-      'Discover why the Porsche 911 Turbo S is one of the greatest sports cars ever made and why renting one in Dubai with LuxeClub is the experience of a lifetime.',
+      'The Porsche 911 Turbo S is one of the best sports cars you can rent in Dubai. Here is why it is worth every dirham, and how to get one through LuxeClub.',
     publishedDate: '2026-02-08',
     image: '/guides/porsche-911-turbo-s.jpg',
     imageAlt: 'Porsche 911 Turbo S in Dubai',
     sections: [
       {
-        heading: 'An Icon That Needs No Introduction',
+        heading: 'The Car Itself',
         content:
-          'The Porsche 911 has been the benchmark for sports car excellence since 1963. Over six decades of relentless engineering refinement have produced a car that sits at the very top of the automotive food chain — and the Turbo S is the crown jewel of the entire 911 lineup.\n\nWith a twin-turbocharged 3.7-litre flat-six engine producing 640 horsepower, the 911 Turbo S launches from 0 to 100 km/h in just 2.7 seconds. That is hypercar territory from a car you can comfortably drive every single day. It is not just fast in a straight line either — the all-wheel-drive system, rear-axle steering, and active aerodynamics make it devastatingly quick through corners while remaining composed and confidence-inspiring at all times.',
+          'Porsche has been building the 911 since 1963. Sixty-odd years of development have made it one of the most refined sports cars on the planet, and the Turbo S sits right at the top of the range.\n\nThe numbers: a twin-turbocharged 3.7-litre flat-six making 640 horsepower, 0 to 100 km/h in 2.7 seconds, all-wheel drive, rear-axle steering, and active aerodynamics. Those are hypercar figures, but unlike most hypercars, the 911 Turbo S is a car you could genuinely use every day without any hassle.',
       },
       {
-        heading: 'Why the 911 Turbo S Is a Cut Above',
+        heading: 'What Makes It Special',
         content:
-          'What separates the Turbo S from every other sports car on the road is its breadth of ability. Most supercars ask you to compromise — they are loud, stiff, impractical, and exhausting on long drives. The 911 Turbo S does none of that. It has a refined interior with premium leather, a crystal-clear Bose or Burmester sound system, excellent air conditioning, and a boot large enough for a weekend bag.\n\nIt is the car that can blast down Sheikh Zayed Road with supercar pace, then cruise quietly through JBR without drawing unwanted attention. The PDK dual-clutch gearbox shifts in milliseconds and is silky smooth in traffic. The adaptive dampers soak up Dubai\'s speed bumps without complaint. In short, it is the thinking person\'s supercar — all of the performance, none of the drama.',
+          'Most supercars are compromised in some way. They are too loud to hold a conversation, too stiff to deal with speed bumps, or too impractical to carry anything more than a wallet. The Turbo S has none of those problems. The interior has proper leather, a good sound system from either Bose or Burmester, strong air conditioning, and a front boot that fits a weekend bag.\n\nYou can drive it flat out on Sheikh Zayed Road and then roll through JBR at walking pace without feeling like you are fighting the car. The PDK gearbox is almost telepathic in how it picks ratios, and the adaptive suspension actually works over rough surfaces. It does the supercar thing and the daily driver thing equally well, which is rare.',
       },
       {
-        heading: 'The Perfect Car to Rent in Dubai',
+        heading: 'Why Rent One in Dubai',
         content:
-          'Dubai\'s roads were made for the 911 Turbo S. The immaculate highway surfaces, long sweeping curves, and well-maintained mountain roads in the nearby Hajar range are the ideal playground for a car with this much ability.\n\nRenting a 911 Turbo S lets you experience one of the world\'s finest sports cars without the commitment of ownership. There are no concerns about depreciation, insurance, or maintenance — just pure driving pleasure for the duration of your trip. Whether you are heading to a business meeting in DIFC, exploring the desert roads of Al Qudra, or making the legendary drive up Jebel Hafeet, the Turbo S handles every scenario with effortless composure.\n\nIt is also one of the most photogenic cars on the road. The sculpted rear haunches, iconic round headlights, and muscular stance look spectacular against Dubai\'s skyline — your Instagram will thank you.',
+          'Dubai has the roads for it. The highways are smooth, the mountain roads in the Hajar range have proper corners, and the desert straights on Al Qudra let you feel what the car can do. Renting means you get to experience all of that without thinking about depreciation, insurance renewals, or service schedules.\n\nIt works for pretty much any occasion here. Business meeting in DIFC, day trip to Jebel Hafeet, evening along the Marina, whatever. The car does not look out of place anywhere in Dubai, and it photographs well against the skyline if that matters to you.',
       },
       {
-        heading: 'Drive One With LuxeClub',
+        heading: 'Rent One Through LuxeClub',
         content:
-          'At LuxeClub, we keep the Porsche 911 Turbo S in our curated fleet because we believe it represents the pinnacle of what a sports car should be. Every vehicle in our collection is meticulously maintained, detailed before each rental, and delivered to your hotel, residence, or the airport.\n\nOur team will walk you through the car\'s features at handover so you can make the most of every drive. Whether you want it for a day, a weekend, or your entire stay in Dubai, we offer flexible rental periods to suit your plans.\n\nBrowse our catalogue to check availability and reserve your 911 Turbo S today. Once you have driven one, every other sports car feels like a compromise.',
+          'We have the 911 Turbo S available in our fleet. Every car gets a full detail before each rental and we deliver to your hotel, apartment, or the airport. At handover, someone from the team will go through the controls with you so you are comfortable before you set off.\n\nWe do daily, weekend, and weekly rentals depending on how long you need it. Check the catalogue for current availability and book online. If you have driven one of these before, you already know. If you have not, you should.',
       },
     ],
   },
@@ -139,7 +141,7 @@ export const guides: Guide[] = [
     title: 'First Time Renting a Luxury Car in Dubai? Here\'s What to Expect',
     metaTitle: 'First Time Renting a Luxury Car in Dubai? Here\'s What to Expect',
     metaDescription:
-      'Everything first-time renters need to know about hiring a luxury car in Dubai. From documents and deposits to insurance, delivery, and driving tips.',
+      'Everything first-time renters need to know about hiring a luxury car in Dubai. Documents, deposits, insurance, delivery, and what to watch out for on the road.',
     publishedDate: '2026-02-15',
     image: '/guides/first-time-luxury-rental.jpg',
     imageAlt: 'Luxury car being delivered to a Dubai hotel',
@@ -147,27 +149,27 @@ export const guides: Guide[] = [
       {
         heading: 'What Documents Do You Need?',
         content:
-          'Renting a luxury car in Dubai is straightforward, but you will need a few documents ready. At a minimum, bring your valid driving licence, passport, and a credit card in your name. Tourists from the US, UK, Canada, Australia, and most European countries can drive on their home licence. If your country is not on the UAE\'s recognised list, you will need an International Driving Permit obtained before you travel.\n\nMost luxury rental companies require drivers to be at least 21 years old, and for high-performance vehicles like supercars, the minimum age is often 25. Your rental provider will take copies of your documents at handover — having photos ready on your phone speeds things up.',
+          'You will need your driving licence, passport, and a credit card in your name. If you are from the US, UK, Canada, Australia, or most of Europe, your home licence is accepted. Everyone else needs an International Driving Permit, and you have to get it before you arrive because you cannot sort one out in the UAE.\n\nMost luxury rental companies set the minimum age at 21. For supercars and high-performance vehicles, that often goes up to 25. Your provider will take copies of everything at handover, so having photos ready on your phone saves a bit of time.',
       },
       {
         heading: 'Deposits and Payment',
         content:
-          'Expect to place a security deposit when you collect the car. For luxury vehicles, this typically ranges from AED 3,000 to AED 10,000 depending on the car\'s value. The deposit is held on your credit card and released after the car is returned in good condition — usually within 5 to 14 business days.\n\nMost reputable companies accept Visa and Mastercard. Some also accept bank transfers for longer rental periods. The daily rental rate usually includes basic insurance, but it is worth asking exactly what is covered and what the excess amount is in case of damage.',
+          'You will put down a security deposit when you pick up the car. For luxury vehicles this is usually somewhere between AED 3,000 and AED 10,000, depending on what you are renting. The hold goes on your credit card and gets released once the car comes back in good shape, typically within 5 to 14 business days.\n\nVisa and Mastercard are widely accepted. Some companies will take bank transfers for longer bookings. The daily rate normally includes basic insurance, but ask what the excess is and what exactly is covered before you sign anything.',
       },
       {
         heading: 'Insurance and Liability',
         content:
-          'All rental cars in Dubai come with basic third-party insurance as required by UAE law. However, for luxury and sports cars, you will want to understand the details. Ask your rental company about the collision damage waiver (CDW) and what your liability is if the car is damaged.\n\nSome companies offer zero-excess insurance for an additional daily fee, which means you pay nothing if the car is damaged — this can be worth the peace of mind, especially if you are driving a car worth several hundred thousand dirhams. Check whether tyre and windscreen damage is covered, as these are common exclusions.\n\nAlways photograph the car thoroughly at pickup and have any existing marks noted on the rental agreement before you drive away.',
+          'Every rental car in Dubai has basic third-party insurance by law. But with luxury cars, the details matter more because the repair bills are bigger. Ask about the collision damage waiver and find out what your maximum liability would be if something goes wrong.\n\nSome companies sell zero-excess cover as an add-on, meaning you would pay nothing for damage. Given that you might be driving a car worth half a million dirhams, that can be a sensible extra expense. Check whether tyres and windscreens are included because those are usually excluded from standard cover.\n\nBefore you drive off, walk around the car and photograph everything. Get any existing scratches or dents written into the rental agreement.',
       },
       {
         heading: 'Delivery and Collection',
         content:
-          'One of the best things about renting luxury in Dubai is the white-glove delivery service. Most premium rental companies, including LuxeClub, will deliver the car directly to your hotel, apartment, or the airport. At handover, an advisor will walk you through the car\'s features, controls, and any quirks you should know about.\n\nAt the end of your rental, collection works the same way — the team comes to you. This door-to-door service means you never have to worry about finding a rental office or dealing with airport queues.',
+          'Most premium rental companies in Dubai, LuxeClub included, deliver the car to wherever you are staying. Hotel lobby, apartment building, airport arrivals. At handover, someone goes through the car\'s controls and features with you, which is useful if you have never driven that model before.\n\nReturning it works the same way. The team picks it up from you, so there is no need to find a rental office or deal with airport logistics.',
       },
       {
         heading: 'Tips for Your First Drive',
         content:
-          'Dubai\'s roads are excellent, but there are a few things to keep in mind on your first outing. Take a few minutes to get comfortable with the car in a quiet area before joining the highway. Familiarise yourself with the driving modes — most luxury cars have Comfort, Sport, and Sport Plus settings that change the throttle response, steering weight, and exhaust note.\n\nKeep your speed in check. Dubai has radar cameras everywhere, and fines are steep. The posted limits are strictly enforced with almost no buffer. Use Google Maps or Waze for live speed camera alerts.\n\nWatch out for speed bumps in residential areas — some are quite aggressive and can damage a low-slung sports car if taken too quickly. Most importantly, relax and enjoy the experience. Driving a luxury car through Dubai is one of the best things you can do in the city.',
+          'Spend a few minutes getting used to the car somewhere quiet before you jump onto Sheikh Zayed Road. Get familiar with the drive modes. Most luxury cars have Comfort, Sport, and Sport Plus settings that change how the throttle, steering, and exhaust behave. Start in Comfort.\n\nRadar cameras are everywhere and the fines add up fast. There is almost no speed buffer above the posted limit. Download Waze or use Google Maps for live camera alerts.\n\nBe careful with speed bumps in residential areas. Some of them are steep enough to scrape a low car if you take them at any real pace. Other than that, enjoy it. Driving a nice car around Dubai is a genuinely good experience.',
       },
     ],
   },
@@ -176,35 +178,129 @@ export const guides: Guide[] = [
     title: 'Why Dubai Is the Supercar Capital of the World',
     metaTitle: 'Why Dubai Is the Supercar Capital of the World — LuxeClub Guides',
     metaDescription:
-      'From Ferraris in mall car parks to Bugattis on the highway, discover why Dubai has the highest concentration of supercars on Earth and what makes it the ultimate city for car lovers.',
+      'Dubai has more supercars per capita than anywhere on Earth. Here is why, from the tax setup to the roads to the culture around cars.',
     publishedDate: '2026-02-22',
     image: '/guides/dubai-supercar-capital.jpg',
     imageAlt: 'Supercars lined up on a Dubai street at night',
     sections: [
       {
-        heading: 'Supercars Are Part of Daily Life',
+        heading: 'Supercars Are Normal Here',
         content:
-          'In most cities, spotting a Lamborghini or Ferrari is a rare event worth pulling out your phone for. In Dubai, it is Tuesday. The city has the highest concentration of supercars and hypercars per capita anywhere on the planet, and they are not hidden away in garages — they are daily drivers.\n\nWalk through the car park of any Dubai Mall, City Walk, or DIFC and you will see rows of Rolls-Royces, McLarens, Porsches, and Bentleys parked like ordinary saloons. The valet stand at any five-star hotel on an average evening looks like a concours d\'elegance. This is not showing off — in Dubai, high-performance cars are simply a way of life.',
+          'In most places, seeing a Lamborghini parked on the street would be unusual. In Dubai, you barely look twice. The city has more supercars and hypercars per person than anywhere else, and people actually drive them daily.\n\nGo to any Dubai Mall car park, or City Walk, or DIFC on a weekday evening. Rows of Rolls-Royces, McLarens, Porsches, and Bentleys sitting next to each other like it is nothing. The valet line at a decent hotel on a Friday night looks like an exotic car show. People here buy these cars to use them, not to keep them locked away.',
       },
       {
-        heading: 'The Perfect Conditions for Driving',
+        heading: 'The Roads Are Built for It',
         content:
-          'Dubai\'s infrastructure is purpose-built for powerful cars. The highways are wide, smooth, and immaculately maintained. Sheikh Zayed Road, the city\'s main artery, is a twelve-lane masterpiece flanked by the world\'s most dramatic skyline. The roads outside the city — Al Qudra, the Hatta highway, and the routes to Jebel Hafeet — offer everything from arrow-straight desert blasts to mountain switchbacks.\n\nThe climate also plays a role. With almost no rain for eight months of the year, road conditions are predictably dry and grippy. No salt, no potholes from frost damage, no puddles to aquaplane through. It is a supercar owner\'s dream environment.',
+          'Dubai\'s highways are wide, flat, and resurfaced regularly. Sheikh Zayed Road has twelve lanes and the tarmac is in better condition than most European motorways. Outside the city, you have Al Qudra for long straight desert runs, the Hatta road for mountain driving, and Jebel Hafeet for proper corners.\n\nWeather helps too. It barely rains for most of the year, so the roads are dry and clean almost all the time. No salt corrosion, no frost damage, no standing water. If you own a car with 600 horsepower, this is about as good as it gets for conditions.',
       },
       {
-        heading: 'A Culture That Celebrates Cars',
+        heading: 'Car Culture Runs Deep',
         content:
-          'The UAE has a deep-rooted car culture that goes far beyond wealth. The country hosts world-class motorsport events including the Abu Dhabi Formula 1 Grand Prix at the Yas Marina Circuit, the Dubai 24 Hours endurance race, and regular drag racing events at the Dubai Autodrome.\n\nSocial media has amplified Dubai\'s supercar scene to a global audience. Car influencers and YouTubers flock to the city to film content, and events like the Gulf Car Festival and Cars and Coffee Dubai draw thousands of enthusiasts every month. Dealerships for Pagani, Koenigsegg, Bugatti, and every other exotic marque have showrooms in the city — some with cars you will not find anywhere else on Earth.',
+          'The interest in cars here goes beyond having money to spend. The UAE hosts the Abu Dhabi Formula 1 Grand Prix at Yas Marina, the Dubai 24 Hours endurance race, and regular drag events at the Dubai Autodrome.\n\nThe social media side has pushed it further. Car YouTubers and influencers base themselves in Dubai specifically because the content writes itself. Events like the Gulf Car Festival and Cars and Coffee Dubai pull big crowds every month. And the city has dealerships for Pagani, Koenigsegg, and Bugatti, with cars in stock that you would struggle to find anywhere else.',
       },
       {
-        heading: 'Zero Import Duty and Favourable Taxes',
+        heading: 'The Tax Advantage',
         content:
-          'One of the biggest reasons supercars are so prevalent in Dubai is economics. The UAE charges just 5% import duty on vehicles — compared to over 30% in many European countries and eye-watering rates in parts of Asia. There is no annual road tax, no emissions charges, no congestion fees, and fuel is among the cheapest in the world.\n\nThis means a car that costs $300,000 in the US might cost nearly the same in Dubai, while in the UK or Singapore it could be double or triple the price after taxes. The result is that cars which are unattainably expensive elsewhere become genuinely accessible here, and the variety on the roads reflects that.',
+          'A big part of why supercars are so common here comes down to money. The UAE charges 5% import duty on vehicles. Compare that to 30% or more in much of Europe, or the even higher rates across parts of Asia. There is no annual road tax, no emissions levy, no congestion charge, and fuel costs a fraction of what it does in the UK or Europe.\n\nA car that lists at $300,000 in the US will cost roughly the same in Dubai. That same car in the UK or Singapore could run to double or triple after all the taxes. So cars that feel impossibly expensive in other countries become realistic purchases here, and you can see the effect on every main road in the city.',
       },
       {
-        heading: 'Experience It for Yourself',
+        heading: 'Try It Yourself',
         content:
-          'You do not need to be a resident or a millionaire to experience Dubai\'s supercar culture first-hand. Renting a luxury or sports car puts you right in the middle of the action — cruising Sheikh Zayed Road in a Porsche 911, pulling up to a beach club in a Mercedes-AMG, or taking a Lamborghini up Jebel Hafeet.\n\nAt LuxeClub, our fleet is curated with exactly this experience in mind. We maintain a rotating collection of the world\'s most desirable cars, each one detailed and prepared to showroom standard before every rental. Whether you are visiting for a weekend or a month, getting behind the wheel of something extraordinary is the most authentic way to experience what makes Dubai the supercar capital of the world.',
+          'You do not need to live here or have a seven-figure bank account to get involved. Renting a sports car for a few days puts you straight into it. Take a 911 down Sheikh Zayed Road at night, drive an AMG to a beach club, or bring a Lamborghini up Jebel Hafeet on a Friday morning.\n\nAt LuxeClub, we keep a rotating selection of cars that are cleaned, checked, and prepped before every rental. We deliver to wherever you are staying in Dubai. If you want to understand why people are so obsessed with cars in this city, driving one yourself is the fastest way to find out.',
+      },
+    ],
+  },
+  {
+    slug: 'car-rental-deposits-dubai-how-to-protect-yourself',
+    title: 'How I Was Almost Scammed Out of My Deposit — And How to Protect Yourself',
+    metaTitle: 'How I Was Almost Scammed Out of My Car Rental Deposit in Dubai',
+    metaDescription:
+      'I chased a Dubai car rental company for 3 months to get my deposit back. Here is what happened, the WhatsApp receipts to prove it, and how to protect yourself.',
+    publishedDate: '2026-03-07',
+    image: '/guides/car-rental-deposits-dubai.gif',
+    imageAlt: 'Tom signing a contract — car rental deposit scams in Dubai',
+    sections: [
+      {
+        heading: 'I Started LuxeClub Because of This Problem',
+        content:
+          'Before I started LuxeClub Rentals, I was a customer. And like a lot of people who rent cars in Dubai, I got burned.\n\nOne experience stands out. I rented a car in early December, returned it on time, in perfect condition. Then I waited. January came and went. No deposit. I started chasing. February, same thing. I had to track down three separate points of contact within the company. Nobody gave me a straight answer. In the end I created a WhatsApp group with all three of them just to stop them passing me between each other.\n\nAfter months of pushing, I finally got a partial refund. Out of my AED 1,000 deposit, they returned AED 900. No explanation for the missing AED 100. No itemised deduction. Just a hundred dirhams less and a feeling that I had been taken for a ride.\n\nHere is the thing though — the only reason I even got that much back is because I live in Dubai. I am a resident. I could keep messaging, keep calling, keep pushing. If I had been a tourist who flew home after the rental, I would never have seen a single dirham of that deposit again. And they know that. That persistence, over three months, across three different contacts, is the only reason I had a shot at even partially getting my money back. Most people do not have that option.\n\nThat experience, and others like it, is a big part of why LuxeClub exists. I knew I could not be the only person dealing with this, and I was right.',
+      },
+      {
+        heading: 'The Proof Is in the Pudding',
+        content:
+          'Below are the actual WhatsApp conversations from that experience, laid out in chronological order across three separate contacts and a group chat. December to February. Three months of chasing AED 1,000.\n\n**Disclaimer:** This article is based on a genuine personal experience. All phone numbers, names, and bank details have been blurred to protect the privacy of all parties involved. We are not naming the company in question and this is not intended as defamation — it is a factual account of what happened. If we have missed blurring anything, that is an honest oversight and we apologise. The purpose of sharing this is to help other renters in Dubai recognise the warning signs and protect themselves.',
+      },
+      {
+        heading: 'Contact 1 — The Company',
+        content:
+          '**19th Dec** — picked up the car, got an automated "we\'re unavailable" reply. Great start. **10th Jan** — asked for my deposit back, sent bank details. "Ok." **13th Jan** — followed up. "Ok under process." **15th Jan** — "HELLO Brother, please can you send the deposit, I have asked 3/4 times." Nothing. **16th Jan** — tried again. Silence. **18th Feb** — messaged again, two months later. Another automated reply. More nothing.',
+        images: [
+          '/guides/deposit-screenshots/contact-1/01-dec19-jan10.jpeg',
+          '/guides/deposit-screenshots/contact-1/02-jan10-jan15.jpeg',
+          '/guides/deposit-screenshots/contact-1/03-jan15-feb18.jpeg',
+          '/guides/deposit-screenshots/contact-1/04-feb18-continued.jpeg',
+        ],
+        imagesAlt: 'WhatsApp conversation with the rental company — December to February',
+      },
+      {
+        heading: 'Contact 2 — The Second Number',
+        content:
+          'Contact 1 went quiet so I got a second number. **8th Jan** — "You have not returned 1000 deposit." Reply: "I will chwck wiht accaountant bro." Sure. **10th Jan** — followed up. "Call the manager bro" and sent me a third number. Lovely. **18th Feb** — tried again. "I will check the accountant." I literally quoted their own message back at them. **19th Feb** — "Send your account number." Sent my IBAN. Again. **20th Feb** — "Have you made the transfer?" "Today we will transfer." **21st Feb** — "What is the bank name." I had already told them. Twice. **23rd Feb** — forwarded a receipt for AED 900. Not 1,000. "Brother, I paid 1000 deposit. You put 900." Call failed. "You\'ve sent me less money."',
+        images: [
+          '/guides/deposit-screenshots/contact-2/01-jan8-jan10.jpeg',
+          '/guides/deposit-screenshots/contact-2/02-feb18-feb19.jpeg',
+          '/guides/deposit-screenshots/contact-2/03-feb20-feb23.jpeg',
+          '/guides/deposit-screenshots/contact-2/04-feb23-receipt.jpeg',
+        ],
+        imagesAlt: 'WhatsApp conversation with a second contact — January to February',
+      },
+      {
+        heading: 'Contact 3 — The Manager',
+        content:
+          'The number I was told to call — "the manager." Asked about car return schedule, then nothing. **18th Feb** — chased the deposit. Got another automated reply. "Thank you for contacting [company] Car Rental!" I messaged "My deposit." Same waffle, different number.',
+        images: [
+          '/guides/deposit-screenshots/contact-3/01-return-and-feb18.jpeg',
+        ],
+        imagesAlt: 'WhatsApp conversation with the manager — car return and deposit chase',
+      },
+      {
+        heading: 'The Group Chat — "DEPOSIT RETURN"',
+        content:
+          'Three contacts, three months, zero progress. So I made a WhatsApp group called **"DEPOSIT RETURN"** and added all three of them. **18th Feb** — "I have asked you guys since 10th of January to return my 1000 dhs deposit." The company left the group. "Any update please. Or you guys just stealing my deposit." This is what it took to get AED 900 back out of AED 1,000.',
+        images: [
+          '/guides/deposit-screenshots/groupchat/01-deposit-return-group.jpeg',
+        ],
+        imagesAlt: 'WhatsApp group chat "DEPOSIT RETURN" with all three contacts',
+      },
+      {
+        heading: 'This Is Not a Rare Problem',
+        content:
+          'Dubai has over 800 car rental companies. Many of them are legitimate. But a significant number have turned deposit withholding into a business model. It is the single most common complaint on Google reviews, Trustpilot, and Dubai consumer forums when it comes to car rentals.\n\nThe pattern is always the same. You pay the deposit, you return the car, and then you enter a cycle of ignored calls, vague promises, and endless delays. For tourists who have already left the country, the chances of recovering that money drop to almost zero. The companies know this, and some of them count on it.',
+      },
+      {
+        heading: 'The Tactics to Watch Out For',
+        content:
+          '**Fake damage claims.** You return the car spotless. A few days later you get photos of scratches that were not there. Without your own timestamped evidence, you have no defence. The deposit gets swallowed.\n\n**Phantom fines.** Some companies will tell you that traffic fines were registered against the car during your rental and deduct the amount from your deposit. The problem is they never show you proof. No screenshot from Dubai Police, no official fine reference number. Just a number they came up with. Always demand screenshot proof of any fine from the official Dubai Police app or the relevant emirate authority. If they cannot produce it, the fine does not exist.\n\n**Hidden kilometre charges.** This is a big one. A lot of companies are not upfront about the daily kilometre limit on the vehicle. You drive normally, return the car, and then get hit with an excessive per-kilometre charge that wipes out your deposit and then some. The km rate, the daily limit, and what happens when you exceed it should all be crystal clear before you sign anything. Take a photo of the odometer at pickup and again at return.\n\n**Salik admin fees nobody mentioned.** Toll charges in Dubai are between AED 4 and AED 6 per gate depending on peak or off-peak times. That is fair. But some companies add AED 10 to AED 15 per toll as an "admin fee" that was never discussed at handover. Suddenly a few toll crossings cost you AED 100 in fees you did not agree to. Ask about the Salik admin charge before you book.\n\n**The indefinite hold.** Some companies tell you the deposit takes 30 days to process. Then 60. Then 90. Each time you call, there is a new excuse. This is not processing time. This is them hoping you give up.',
+      },
+      {
+        heading: 'How to Protect Yourself',
+        content:
+          '**Photograph and video everything.** Before you drive off, walk around the entire car. Every panel, every wheel, the roof, the interior, the odometer, the fuel gauge. Make sure your phone timestamps the images. Do exactly the same thing when you return it. This single step eliminates the majority of disputes.\n\n**Use a credit card if possible.** With a credit card, the deposit is held as a block on your card rather than money being taken from your account. If the company tries to charge you unfairly, you can dispute it through your bank. With cash or debit, the money leaves your account and getting it back depends entirely on the company cooperating.\n\n**Read the contract.** Nobody wants to, but look specifically for the daily km limit, the excess km rate, Salik admin fees, cleaning charges, and the deposit return timeline. If any of those are missing or vague, ask before you sign.\n\n**Demand fine proof.** If a company tells you there were fines during your rental, ask for a screenshot from the official source. Dubai Police fines show on their app and website with a reference number, date, and location. Any legitimate fine can be verified. If they cannot show you proof, push back.\n\n**Check reviews properly.** Do not just look at the star rating. Read the one and two-star reviews specifically for deposit complaints. If you see a pattern of people struggling to get their money back, that tells you everything you need to know.',
+      },
+      {
+        heading: 'What to Do If Your Deposit Is Being Withheld',
+        content:
+          'If you are already in this situation, here is what works.\n\nStart with a written request by email or WhatsApp. State the deposit amount, the rental dates, and give them a clear deadline to respond. Keep it factual and keep screenshots of everything.\n\nIf they do not respond, file a complaint with the Dubai Department of Economy and Tourism (DET) through the Dubai Consumer app or their website. Government inquiries tend to get companies moving when nothing else does.\n\nIf you paid by credit card, initiate a chargeback with your card issuer. Provide your rental agreement, your pre and post-rental photos, and any messages showing the company is unresponsive. This is often the most effective route, especially if you have already left the UAE.\n\nLeave honest reviews on Google and Trustpilot. It will not get your money back directly, but it protects the next person. And companies that care about their online reputation will sometimes resolve your complaint to get a negative review taken down.',
+      },
+      {
+        heading: 'Dubai Needs a Centralised Deposit System',
+        content:
+          'Here is an honest opinion: the rental industry in Dubai needs a centralised platform for handling deposits. Something independent, where neither the rental company nor the customer can be unfairly done out of their money.\n\nImagine a system where your deposit sits with a regulated third party. The rental company cannot touch it without documented justification. The customer cannot dispute a legitimate damage claim without evidence. Both sides upload their photos, the condition is recorded, and the deposit is released or adjusted based on facts rather than whoever shouts loudest or ignores the most messages.\n\nThis does not exist yet. But it should. It would clean up the industry overnight and give customers the confidence to rent without that knot in their stomach about whether they will ever see their deposit again. Until something like that exists, the responsibility falls on you to protect yourself and on companies like us to do things properly.',
+      },
+      {
+        heading: 'How LuxeClub Handles Deposits',
+        content:
+          'Our deposit is simple: one day\'s rental rate of the vehicle you are hiring. Nothing inflated, nothing hidden.\n\nIf you pay by credit card, we place a hold on the card. No money leaves your account. The block is released once the rental is complete and the car is returned in good condition. If you pay by cash or debit card, the deposit amount is taken and returned within 14 days of the rental ending.\n\nWe do not charge cleaning fees. The car is delivered to you fully detailed, and you return it as-is. Normal use is normal use. As long as there is no damage or neglect, there is nothing to deduct.\n\nFor Salik, we charge AED 2 on top of each toll gate charge. That is it. For fines, we charge only the fine amount with no admin fee on top. And if there is a fine, we will show you the official screenshot so you can see exactly what it is for.\n\nWe advise every customer to take as many photos and videos as possible at both pickup and drop-off. We prefer to do the handover with you present so we can walk through any existing marks together. But we know not everyone has the time, so if you cannot be there, we take our own timestamped photos that are as clear as possible. You can always rely on those.\n\nTransparency is not a selling point for us. It is the bare minimum of how this should work. The fact that it feels unusual says more about the industry than it does about us.',
       },
     ],
   },

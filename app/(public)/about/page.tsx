@@ -14,9 +14,30 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://luxeclubrentals.com/about' },
 }
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: 'About LuxeClub Rentals',
+  description:
+    "Dubai's premium luxury car rental service. 3+ years of experience, 500+ happy clients, curated fleet of luxury vehicles with 24/7 concierge.",
+  url: 'https://luxeclubrentals.com/about',
+  mainEntity: {
+    '@type': 'Organization',
+    name: 'LuxeClub Rentals',
+    url: 'https://luxeclubrentals.com',
+    foundingLocation: { '@type': 'Place', name: 'Dubai, UAE' },
+    numberOfEmployees: { '@type': 'QuantitativeValue', value: 10 },
+    slogan: 'More than a rental company — a passion for extraordinary driving experiences.',
+  },
+}
+
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-luxury">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Hero */}
       <div className="flex flex-col items-center justify-center px-4 py-24 sm:py-32 text-center">
         <p className="text-sm text-white/40 uppercase tracking-[0.2em] font-medium mb-4">

@@ -14,6 +14,8 @@ import { T } from '@/components/ui/T'
 import { ScrollReveal } from '@/components/ui/ScrollReveal'
 import { LazyVideo } from '@/components/ui/LazyVideo'
 import { TestimonialCarousel } from '@/components/ui/TestimonialCarousel'
+import { HeroSearch } from '@/components/ui/HeroSearch'
+import { BrandGrid } from '@/components/ui/BrandGrid'
 
 // ---------------------------------------------------------------------------
 // Page
@@ -52,7 +54,7 @@ export default async function HomePage() {
       <NavBar isAuthenticated={isAuthenticated} />
       <main className="min-h-screen bg-luxury">
         {/* Hero section with video background */}
-        <div className="relative flex flex-col items-center justify-center gap-10 px-4 py-24 sm:py-36 overflow-hidden">
+        <div className="relative flex flex-col items-center justify-center gap-6 sm:gap-10 px-4 py-24 sm:py-36">
           {/* Hero poster — LCP element */}
           <Image
             src="/hero-poster.jpg"
@@ -74,7 +76,7 @@ export default async function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/50" />
 
           <div className="relative z-10 text-center space-y-6">
-            <span className="animate-fade-in-left block text-xs sm:text-sm tracking-[0.25em] uppercase text-brand-purple font-light" style={{ animationDelay: '0ms' }}>
+            <span className="animate-fade-in-left block font-display text-4xl sm:text-5xl font-semibold text-white tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]" style={{ animationDelay: '0ms' }}>
               LuxeClub
             </span>
             <h1 className="font-display text-5xl sm:text-7xl lg:text-8xl font-medium tracking-tight leading-[1.05]">
@@ -91,10 +93,13 @@ export default async function HomePage() {
             </p>
           </div>
 
+          {/* Search bar */}
+          <HeroSearch vehicles={all.map((v) => ({ slug: v.slug, name: v.name, primary_image_url: v.primary_image_url, daily_rate: v.daily_rate }))} />
+
           {/* Garage CTA */}
           <Link
             href="/catalogue"
-            className="animate-fade-in-left relative z-10 px-16 py-5 bg-white text-black text-lg font-semibold hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] transition-all duration-300 ease-out"
+            className="animate-fade-in-left relative z-10 px-10 sm:px-16 py-4 sm:py-5 bg-white text-black text-base sm:text-lg font-semibold hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] transition-all duration-300 ease-out"
             style={{ animationDelay: '320ms' }}
           >
             <T k="home.exploreFleet" />
@@ -169,6 +174,9 @@ export default async function HomePage() {
             ))}
           </div>
         </section>
+
+        {/* Browse by Brand */}
+        <BrandGrid />
 
         {/* What we do */}
         <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-24">

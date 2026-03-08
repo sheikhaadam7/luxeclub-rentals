@@ -40,70 +40,6 @@ export function flagUrl(country: string, size: 'w20' | 'w40' | 'w80' = 'w40') {
 
 const VALID_LANGUAGES = new Set<string>(LANGUAGES.map((l) => l.code))
 
-/**
- * Map ISO 3166-1 alpha-2 country codes to our supported languages.
- * Covers the primary language of each country — only countries where
- * we have a matching locale are included.
- */
-const COUNTRY_TO_LANG: Record<string, Language> = {
-  // Arabic-speaking
-  SA: 'ar', AE: 'ar', EG: 'ar', IQ: 'ar', JO: 'ar', KW: 'ar',
-  LB: 'ar', LY: 'ar', MA: 'ar', OM: 'ar', QA: 'ar', BH: 'ar',
-  TN: 'ar', YE: 'ar', DZ: 'ar', SD: 'ar', SY: 'ar', PS: 'ar',
-  // French-speaking
-  FR: 'fr', BE: 'fr', MC: 'fr', LU: 'fr', SN: 'fr', CI: 'fr',
-  CM: 'fr', MG: 'fr', ML: 'fr', NE: 'fr', BF: 'fr', TG: 'fr',
-  GA: 'fr', CG: 'fr', CD: 'fr', GN: 'fr', BJ: 'fr', HT: 'fr',
-  // Russian-speaking
-  RU: 'ru', BY: 'ru', KZ: 'ru', KG: 'ru', TJ: 'ru',
-  // Chinese-speaking
-  CN: 'zh', TW: 'zh', HK: 'zh', MO: 'zh', SG: 'zh',
-  // German-speaking
-  DE: 'de', AT: 'de', CH: 'de', LI: 'de',
-  // Dutch-speaking
-  NL: 'nl', SR: 'nl',
-  // Spanish-speaking
-  ES: 'es', MX: 'es', AR: 'es', CO: 'es', CL: 'es', PE: 'es',
-  VE: 'es', EC: 'es', GT: 'es', CU: 'es', BO: 'es', DO: 'es',
-  HN: 'es', PY: 'es', SV: 'es', NI: 'es', CR: 'es', PA: 'es',
-  UY: 'es', PR: 'es',
-}
-
-/**
- * Detect language from browser settings (navigator.languages / navigator.language).
- * Checks the user's preferred languages in order and returns the first match
- * against our supported languages. Falls back to 'en'.
- */
-function detectBrowserLanguage(): Language {
-  try {
-    const browserLangs = navigator.languages ?? [navigator.language]
-    for (const tag of browserLangs) {
-      // Extract the primary language subtag (e.g. 'fr-FR' → 'fr', 'zh-CN' → 'zh')
-      const primary = tag.split('-')[0].toLowerCase()
-      if (VALID_LANGUAGES.has(primary)) {
-        return primary as Language
-      }
-    }
-  } catch {
-    // navigator unavailable (SSR)
-  }
-  return 'en'
-}
-
-/**
- * Detect language from country code (Vercel x-vercel-ip-country header),
- * then fall back to browser language detection.
- */
-function detectLanguage(countryCode?: string): Language {
-  // 1. Try geo-based detection from Vercel header
-  if (countryCode) {
-    const geoLang = COUNTRY_TO_LANG[countryCode.toUpperCase()]
-    if (geoLang) return geoLang
-  }
-  // 2. Fall back to browser language settings
-  return detectBrowserLanguage()
-}
-
 // ---------------------------------------------------------------------------
 // Lazy locale loader — only imports the dictionary when needed
 // ---------------------------------------------------------------------------
@@ -144,28 +80,21 @@ const DictionaryContext = createContext<Record<string, string>>(en)
 // Provider
 // ---------------------------------------------------------------------------
 
-export function LanguageProvider({ children, detectedCountry }: { children: ReactNode; detectedCountry?: string }) {
+export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>('en')
   const [dict, setDict] = useState<Record<string, string>>(en)
 
-  // Read saved preference on mount, or auto-detect from geo / browser
+  // Read saved preference on mount
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY)
       if (saved && VALID_LANGUAGES.has(saved)) {
         setLanguageState(saved as Language)
-        return
       }
     } catch {
       // localStorage unavailable
     }
-    // No saved preference — detect from country (geo) then browser language
-    const detected = detectLanguage(detectedCountry)
-    if (detected !== 'en') {
-      setLanguageState(detected)
-      try { localStorage.setItem(STORAGE_KEY, detected) } catch {}
-    }
-  }, [detectedCountry])
+  }, [])
 
   // Load dictionary when language changes
   useEffect(() => {

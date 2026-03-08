@@ -17,6 +17,7 @@ interface Vehicle {
 
 interface VehicleGridProps {
   vehicles: Vehicle[]
+  initialBrand?: string | null
 }
 
 // ---------------------------------------------------------------------------
@@ -163,9 +164,11 @@ function PillFilter({ options, selected, onSelect, availableOptions }: PillFilte
 // Main grid component
 // ---------------------------------------------------------------------------
 
-export function VehicleGrid({ vehicles }: VehicleGridProps) {
+export function VehicleGrid({ vehicles, initialBrand }: VehicleGridProps) {
   const { t } = useTranslation()
-  const [selectedBrand, setSelectedBrand] = useState<string | null>(null)
+  const [selectedBrand, setSelectedBrand] = useState<string | null>(
+    BRANDS.find((b) => b.toLowerCase() === initialBrand?.toLowerCase()) ?? null
+  )
   const [selectedType, setSelectedType] = useState<string | null>(null)
 
   // Pre-compute brand and car type for each vehicle

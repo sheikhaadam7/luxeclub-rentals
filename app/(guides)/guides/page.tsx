@@ -5,7 +5,7 @@ import { guides } from '@/lib/guides'
 const SITE_URL = 'https://luxeclubrentals.com'
 
 export const metadata: Metadata = {
-  title: 'Guides — Luxury Car Rental Tips & Dubai Driving',
+  title: 'Guides, Blogs & Just... Venting — LuxeClub Rentals',
   description:
     'Practical guides for tourists renting luxury cars in Dubai. Driving rules, licence requirements, scenic routes, and insider tips for an unforgettable road trip.',
   openGraph: {
@@ -58,10 +58,10 @@ export default function GuidesPage() {
         {/* Header */}
         <div className="space-y-2">
           <h1 className="font-display text-3xl sm:text-4xl font-semibold text-white tracking-tight">
-            Guides
+            Guides, Blogs & Just... Venting
           </h1>
           <p className="text-base text-brand-muted">
-            Everything you need to know before getting behind the wheel in Dubai.
+            Everything you need to know before getting behind the wheel in Dubai. And some things we just needed to get off our chest.
           </p>
         </div>
 

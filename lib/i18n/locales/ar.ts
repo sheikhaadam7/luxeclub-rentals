@@ -32,7 +32,7 @@ const ar: Record<string, string> = {
   'home.exploreFleet': 'استكشف أسطولنا',
   'home.fleetSize': '50+',
   'home.fleetLabel': 'سيارات خارقة وفاخرة',
-  'home.dubaiDelivery': 'مجاناً',
+  'home.dubaiDelivery': 'دبي',
   'home.dubaiDeliveryLabel': 'توصيل في جميع أنحاء دبي',
   'home.insuranceIncluded': 'شامل',
   'home.insuranceLabel': 'التأمين مشمول',
@@ -59,7 +59,7 @@ const ar: Record<string, string> = {
   'home.testimonials': 'ماذا يقول عملاؤنا',
   'home.testimonialsSubtitle': 'موثوق بنا من قبل سائقين مميزين في جميع أنحاء دبي',
   'home.ctaTitle': 'هل أنت مستعد لقيادة شيء استثنائي؟',
-  'home.ctaSubtitle': 'تصفح أسطولنا، اختر تواريخك، ونحن نتكفل بالباقي. توصيل مجاني، تأمين شامل، ودعم على مدار الساعة.',
+  'home.ctaSubtitle': 'تصفح أسطولنا، اختر تواريخك، ونحن نتكفل بالباقي. توصيل في جميع أنحاء دبي، تأمين شامل، ودعم على مدار الساعة.',
   'home.browseFleet': 'تصفح الأسطول',
   'home.getInTouch': 'تواصل معنا',
 

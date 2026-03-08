@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
@@ -7,6 +8,28 @@ import { T } from '@/components/ui/T'
 
 interface PageProps {
   params: Promise<{ slug: string }>
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params
+  const supabase = createAdminClient()
+  const { data: vehicle } = await supabase
+    .from('vehicles')
+    .select('name, daily_rate')
+    .eq('slug', slug)
+    .single()
+
+  if (!vehicle) return {}
+
+  const title = `Book ${vehicle.name} — LuxeClub Rentals Dubai`
+  const description = `Book a ${vehicle.name} in Dubai from AED ${vehicle.daily_rate}/day. Insurance included, delivery all over Dubai. Secure online booking with LuxeClub Rentals.`
+
+  return {
+    title,
+    description,
+    robots: { index: false, follow: true },
+    openGraph: { title, description, url: `https://luxeclubrentals.com/book/${slug}` },
+  }
 }
 
 export default async function BookingPage({ params }: PageProps) {

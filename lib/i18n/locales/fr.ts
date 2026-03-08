@@ -32,7 +32,7 @@ const fr: Record<string, string> = {
   'home.exploreFleet': 'Explorer Notre Flotte',
   'home.fleetSize': '50+',
   'home.fleetLabel': 'Supercars et Voitures de Luxe',
-  'home.dubaiDelivery': 'Gratuit',
+  'home.dubaiDelivery': 'Dubaï',
   'home.dubaiDeliveryLabel': 'Livraison dans tout Dubaï',
   'home.insuranceIncluded': 'Complète',
   'home.insuranceLabel': 'Assurance Incluse',
@@ -59,7 +59,7 @@ const fr: Record<string, string> = {
   'home.testimonials': 'Ce que Disent Nos Clients',
   'home.testimonialsSubtitle': 'La confiance des conducteurs les plus exigeants de Dubai',
   'home.ctaTitle': 'Pret a Conduire Quelque Chose d\'Extraordinaire ?',
-  'home.ctaSubtitle': 'Parcourez notre flotte, choisissez vos dates, et nous nous occupons du reste. Livraison gratuite, assurance incluse et assistance 24h/24.',
+  'home.ctaSubtitle': 'Parcourez notre flotte, choisissez vos dates, et nous nous occupons du reste. Livraison dans tout Dubaï, assurance incluse et assistance 24h/24.',
   'home.browseFleet': 'Parcourir la Flotte',
   'home.getInTouch': 'Nous Contacter',
 

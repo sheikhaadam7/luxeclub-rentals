@@ -13,6 +13,40 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://luxeclubrentals.com/contact' },
 }
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: 'Contact LuxeClub Rentals',
+  url: 'https://luxeclubrentals.com/contact',
+  mainEntity: {
+    '@type': 'LocalBusiness',
+    name: 'LuxeClub Rentals',
+    telephone: '+971588086137',
+    email: 'hello@luxeclubrentals.com',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Binary Tower, 32 Marasi Drive Street',
+      addressLocality: 'Business Bay',
+      addressRegion: 'Dubai',
+      addressCountry: 'AE',
+    },
+    openingHoursSpecification: {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      opens: '00:00',
+      closes: '23:59',
+    },
+  },
+}
+
 export default function ContactLayout({ children }: { children: React.ReactNode }) {
-  return children
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      {children}
+    </>
+  )
 }

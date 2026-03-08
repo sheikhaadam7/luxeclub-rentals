@@ -9,11 +9,11 @@ export function Footer() {
   return (
     <footer className="border-t border-white/[0.06] bg-black/40">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-10">
 
           {/* Brand */}
           <div className="space-y-3">
-            <h4 className="font-display text-xl font-medium text-brand-cyan">LuxeClub</h4>
+            <h4 className="font-display text-xl font-medium bg-gradient-to-r from-brand-purple to-brand-cyan bg-clip-text text-transparent">LuxeClub</h4>
             <p className="text-sm text-white/40 leading-relaxed italic">
               {t('footer.tagline')}
             </p>
@@ -55,6 +55,39 @@ export function Footer() {
               <Link href="/account" className="text-sm text-white/60 hover:text-white transition-colors duration-300">
                 {t('footer.account')}
               </Link>
+            </nav>
+          </div>
+
+          {/* Rent by Brand */}
+          <div className="space-y-3">
+            <h4 className="text-xs text-white/40 uppercase tracking-[0.15em] font-medium">Rent by Brand</h4>
+            <nav className="flex flex-col gap-2">
+              <Link href="/rent-lamborghini-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Lamborghini</Link>
+              <Link href="/rent-ferrari-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Ferrari</Link>
+              <Link href="/rent-rolls-royce-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Rolls Royce</Link>
+              <Link href="/rent-bentley-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Bentley</Link>
+              <Link href="/rent-porsche-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Porsche</Link>
+              <Link href="/rent-mercedes-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Mercedes</Link>
+              <Link href="/rent-range-rover-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Range Rover</Link>
+              <Link href="/rent-mclaren-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">McLaren</Link>
+              <Link href="/rent-aston-martin-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Aston Martin</Link>
+              <Link href="/rent-bmw-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">BMW</Link>
+              <Link href="/rent-audi-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Audi</Link>
+              <Link href="/rent-maserati-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Maserati</Link>
+              <Link href="/rent-cadillac-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Cadillac</Link>
+            </nav>
+          </div>
+
+          {/* Rent by Type */}
+          <div className="space-y-3">
+            <h4 className="text-xs text-white/40 uppercase tracking-[0.15em] font-medium">Rent by Type</h4>
+            <nav className="flex flex-col gap-2">
+              <Link href="/rent-luxury-suv-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Luxury SUVs</Link>
+              <Link href="/rent-sports-car-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Sports Cars</Link>
+              <Link href="/rent-convertible-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Convertibles</Link>
+              <Link href="/rent-luxury-car-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Luxury Cars</Link>
+              <Link href="/rent-supercar-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Supercars</Link>
+              <Link href="/rent-cheap-car-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Affordable Rentals</Link>
             </nav>
           </div>
 

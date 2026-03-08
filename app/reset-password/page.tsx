@@ -1,5 +1,12 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ResetPasswordForm } from './ResetPasswordForm'
+
+export const metadata: Metadata = {
+  title: 'Reset Password',
+  description: 'Reset your LuxeClub Rentals account password.',
+  robots: { index: false, follow: false },
+}
 
 export default function ResetPasswordPage() {
   return (
@@ -8,7 +15,7 @@ export default function ResetPasswordPage() {
       <div className="absolute top-[-40%] left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-brand-cyan/[0.03] blur-[120px] pointer-events-none" />
 
       {/* Subtle top border accent */}
-      <div className="fixed top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-brand-cyan/40 to-transparent" />
+      <div className="fixed top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-brand-purple/40 to-transparent" />
 
       {/* Back to home */}
       <Link

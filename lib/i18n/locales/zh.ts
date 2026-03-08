@@ -33,7 +33,7 @@ const zh: Record<string, string> = {
   'home.fleetSize': '50+',
   'home.fleetLabel': '超跑及豪华车',
   'home.googleRating': 'Google 评分',
-  'home.dubaiDelivery': '免费',
+  'home.dubaiDelivery': '迪拜',
   'home.dubaiDeliveryLabel': '迪拜全城配送',
   'home.insuranceIncluded': '全额',
   'home.insuranceLabel': '保险已含',
@@ -59,7 +59,7 @@ const zh: Record<string, string> = {
   'home.testimonials': '客户评价',
   'home.testimonialsSubtitle': '深受迪拜资深车友的信赖',
   'home.ctaTitle': '准备好驾驶非凡座驾了吗？',
-  'home.ctaSubtitle': '浏览我们的车队，选择日期，其余的交给我们。免费送车、含保险、全天候客服。',
+  'home.ctaSubtitle': '浏览我们的车队，选择日期，其余的交给我们。迪拜全城送车、含保险、全天候客服。',
   'home.browseFleet': '浏览车队',
   'home.getInTouch': '联系我们',
 

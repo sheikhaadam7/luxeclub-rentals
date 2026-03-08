@@ -1,6 +1,10 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { Playfair_Display, Inter } from 'next/font/google'
+import { BackgroundMusic } from '@/components/ui/BackgroundMusic'
 import './globals.css'
+
+const GA_ID = 'G-CS2EKLJYJ5'
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -24,7 +28,7 @@ export const metadata: Metadata = {
     template: '%s | LuxeClub Rentals Dubai',
   },
   description:
-    'Rent luxury and sports cars in Dubai. Lamborghini, Ferrari, Rolls-Royce, Bentley and more. Insurance included, free delivery, 24/7 concierge. Book online today.',
+    'Rent luxury and sports cars in Dubai. Lamborghini, Ferrari, Rolls-Royce, Bentley and more. Insurance included, delivery all over Dubai, 24/7 concierge. Book online today.',
   keywords: [
     'luxury car rental Dubai',
     'rent supercar Dubai',
@@ -53,13 +57,22 @@ export const metadata: Metadata = {
     siteName: 'LuxeClub Rentals',
     title: 'LuxeClub Rentals — Luxury Car Rental in Dubai',
     description:
-      'Rent luxury and sports cars in Dubai. Lamborghini, Ferrari, Rolls-Royce, Bentley and more. Insurance included, free delivery, 24/7 concierge.',
+      'Rent luxury and sports cars in Dubai. Lamborghini, Ferrari, Rolls-Royce, Bentley and more. Insurance included, delivery all over Dubai, 24/7 concierge.',
+    images: [
+      {
+        url: `${SITE_URL}/opengraph-image`,
+        width: 1200,
+        height: 630,
+        alt: 'LuxeClub Rentals — Luxury Car Rental in Dubai',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'LuxeClub Rentals — Luxury Car Rental in Dubai',
     description:
-      'Rent luxury and sports cars in Dubai. Insurance included, free delivery, 24/7 concierge.',
+      'Rent luxury and sports cars in Dubai. Insurance included, delivery all over Dubai, 24/7 concierge.',
+    images: [`${SITE_URL}/opengraph-image`],
   },
   robots: {
     index: true,
@@ -109,12 +122,27 @@ const jsonLd = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
+      <head>
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_ID}');
+          `}
+        </Script>
+      </head>
       <body className="bg-black text-white antialiased font-body">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         {children}
+        <BackgroundMusic />
       </body>
     </html>
   )

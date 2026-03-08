@@ -1,6 +1,14 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { AuthGate } from '@/components/auth/AuthGate'
 import { T } from '@/components/ui/T'
+
+export const metadata: Metadata = {
+  title: 'Sign In',
+  description:
+    'Sign in to your LuxeClub Rentals account to manage bookings, view your rental history, and access exclusive offers.',
+  robots: { index: false, follow: false },
+}
 
 interface PageProps {
   searchParams: Promise<{ redirectTo?: string }>
@@ -16,7 +24,7 @@ export default async function SignInPage({ searchParams }: PageProps) {
       <div className="absolute bottom-[-20%] right-[-10%] w-[400px] h-[400px] rounded-full bg-brand-cyan/[0.02] blur-[100px] pointer-events-none" />
 
       {/* Subtle top border accent */}
-      <div className="fixed top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-brand-cyan/40 to-transparent" />
+      <div className="fixed top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-brand-purple/40 to-transparent" />
 
       {/* Back to home */}
       <Link
