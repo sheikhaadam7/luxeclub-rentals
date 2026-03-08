@@ -281,7 +281,7 @@ export default async function MoneyPage({ params }: PageProps) {
           Ready to drive?
         </h2>
         <p className="text-brand-muted max-w-xl mx-auto">
-          Every rental includes comprehensive insurance, free delivery anywhere in Dubai, and a full handover walkthrough. No hidden fees.
+          Every rental includes comprehensive insurance, delivery across Dubai, and a full handover walkthrough. No hidden fees.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <Link

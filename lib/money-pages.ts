@@ -21,11 +21,11 @@ export const moneyPages: MoneyPage[] = [
     title: 'Lamborghini Rental Dubai',
     metaTitle: 'Lamborghini Rental Dubai — Hire from AED 2,500/day | LuxeClub',
     metaDescription:
-      'Rent a Lamborghini in Dubai. Urus, Huracan, Aventador available. Insurance included, free delivery across Dubai. Book online today.',
+      'Rent a Lamborghini in Dubai. Urus, Huracan, Aventador available. Insurance included, delivery across Dubai across Dubai. Book online today.',
     heading: 'Lamborghini Rental Dubai',
     subheading: 'Drive one of the most iconic supercars on the planet. Delivered to your door anywhere in Dubai.',
     content:
-      'Whether you want the raw power of a Huracan on Sheikh Zayed Road or the luxury SUV experience of a Urus for a weekend trip, we have Lamborghinis ready to go. Every rental includes comprehensive insurance and free delivery to your hotel, apartment, or the airport.',
+      'Whether you want the raw power of a Huracan on Sheikh Zayed Road or the luxury SUV experience of a Urus for a weekend trip, we have Lamborghinis ready to go. Every rental includes comprehensive insurance and delivery across Dubai to your hotel, apartment, or the airport.',
     filter: { type: 'brand', value: 'Lamborghini' },
   },
   {
@@ -33,7 +33,7 @@ export const moneyPages: MoneyPage[] = [
     title: 'Ferrari Rental Dubai',
     metaTitle: 'Ferrari Rental Dubai — Hire from AED 2,500/day | LuxeClub',
     metaDescription:
-      'Rent a Ferrari in Dubai. Roma, Portofino, 488, F8 Tributo available. Insurance included, free delivery. Book your Ferrari today.',
+      'Rent a Ferrari in Dubai. Roma, Portofino, 488, F8 Tributo available. Insurance included, delivery across Dubai. Book your Ferrari today.',
     heading: 'Ferrari Rental Dubai',
     subheading: 'Nothing sounds like a Ferrari. Nothing drives like one either.',
     content:
@@ -57,11 +57,11 @@ export const moneyPages: MoneyPage[] = [
     title: 'Bentley Rental Dubai',
     metaTitle: 'Bentley Rental Dubai — Hire a Bentley | LuxeClub',
     metaDescription:
-      'Rent a Bentley in Dubai. Continental GT, Bentayga, Flying Spur available. Insurance included, free delivery across Dubai.',
+      'Rent a Bentley in Dubai. Continental GT, Bentayga, Flying Spur available. Insurance included, delivery across Dubai across Dubai.',
     heading: 'Bentley Rental Dubai',
     subheading: 'British luxury, built for the open road.',
     content:
-      'The Continental GT is one of the best grand tourers ever made, and Dubai has the roads to prove it. If you need space, the Bentayga is a luxury SUV that does not compromise. Insurance included, free delivery, and a full handover walkthrough before you set off.',
+      'The Continental GT is one of the best grand tourers ever made, and Dubai has the roads to prove it. If you need space, the Bentayga is a luxury SUV that does not compromise. Insurance included, delivery across Dubai, and a full handover walkthrough before you set off.',
     filter: { type: 'brand', value: 'Bentley' },
   },
   {
@@ -69,11 +69,11 @@ export const moneyPages: MoneyPage[] = [
     title: 'Porsche Rental Dubai',
     metaTitle: 'Porsche Rental Dubai — Hire a Porsche | LuxeClub',
     metaDescription:
-      'Rent a Porsche in Dubai. 911 Turbo S, Cayenne, Panamera available. Insurance included, free delivery. Book online.',
+      'Rent a Porsche in Dubai. 911 Turbo S, Cayenne, Panamera available. Insurance included, delivery across Dubai. Book online.',
     heading: 'Porsche Rental Dubai',
     subheading: 'The sports car that does everything. Perfectly.',
     content:
-      'Porsche makes the most complete sports cars on the planet. The 911 Turbo S does 0-100 in 2.7 seconds and you can still hold a conversation inside. The Cayenne handles the desert roads with ease. Every rental comes with insurance, free delivery, and a walkthrough at handover.',
+      'Porsche makes the most complete sports cars on the planet. The 911 Turbo S does 0-100 in 2.7 seconds and you can still hold a conversation inside. The Cayenne handles the desert roads with ease. Every rental comes with insurance, delivery across Dubai, and a walkthrough at handover.',
     filter: { type: 'brand', value: 'Porsche' },
   },
   {
@@ -81,7 +81,7 @@ export const moneyPages: MoneyPage[] = [
     title: 'Mercedes Rental Dubai',
     metaTitle: 'Mercedes Rental Dubai — Hire a Mercedes AMG | LuxeClub',
     metaDescription:
-      'Rent a Mercedes in Dubai. AMG GT, G63, GLE, S-Class available. Insurance included, free delivery across Dubai.',
+      'Rent a Mercedes in Dubai. AMG GT, G63, GLE, S-Class available. Insurance included, delivery across Dubai across Dubai.',
     heading: 'Mercedes Rental Dubai',
     subheading: 'From the G63 to the AMG GT. Power meets luxury.',
     content:
@@ -93,7 +93,7 @@ export const moneyPages: MoneyPage[] = [
     title: 'Range Rover Rental Dubai',
     metaTitle: 'Range Rover Rental Dubai — Hire a Range Rover | LuxeClub',
     metaDescription:
-      'Rent a Range Rover in Dubai. Vogue, Sport, Autobiography available. Insurance included, free delivery.',
+      'Rent a Range Rover in Dubai. Vogue, Sport, Autobiography available. Insurance included, delivery across Dubai.',
     heading: 'Range Rover Rental Dubai',
     subheading: 'The luxury SUV that goes anywhere.',
     content:
@@ -105,7 +105,7 @@ export const moneyPages: MoneyPage[] = [
     title: 'McLaren Rental Dubai',
     metaTitle: 'McLaren Rental Dubai — Hire a McLaren | LuxeClub',
     metaDescription:
-      'Rent a McLaren in Dubai. 720S, GT, Artura available. Insurance included, free delivery across Dubai. Book online.',
+      'Rent a McLaren in Dubai. 720S, GT, Artura available. Insurance included, delivery across Dubai across Dubai. Book online.',
     heading: 'McLaren Rental Dubai',
     subheading: 'Formula 1 engineering for the road.',
     content:
@@ -117,11 +117,11 @@ export const moneyPages: MoneyPage[] = [
     title: 'Aston Martin Rental Dubai',
     metaTitle: 'Aston Martin Rental Dubai — Hire an Aston Martin | LuxeClub',
     metaDescription:
-      'Rent an Aston Martin in Dubai. DB11, Vantage, DBX available. Insurance included, free delivery. Book online.',
+      'Rent an Aston Martin in Dubai. DB11, Vantage, DBX available. Insurance included, delivery across Dubai. Book online.',
     heading: 'Aston Martin Rental Dubai',
     subheading: 'Understated British muscle.',
     content:
-      'Aston Martin makes cars for people who appreciate design as much as performance. The DB11 is one of the most beautiful grand tourers on sale, and the DBX is a proper luxury SUV with real presence. Every rental comes with full insurance and free delivery across Dubai.',
+      'Aston Martin makes cars for people who appreciate design as much as performance. The DB11 is one of the most beautiful grand tourers on sale, and the DBX is a proper luxury SUV with real presence. Every rental comes with full insurance and delivery across Dubai across Dubai.',
     filter: { type: 'brand', value: 'Aston Martin' },
   },
   {
@@ -129,7 +129,7 @@ export const moneyPages: MoneyPage[] = [
     title: 'BMW Rental Dubai',
     metaTitle: 'BMW Rental Dubai — Hire a BMW | LuxeClub',
     metaDescription:
-      'Rent a BMW in Dubai. X5, X6, M4, M8 available. Insurance included, free delivery across Dubai.',
+      'Rent a BMW in Dubai. X5, X6, M4, M8 available. Insurance included, delivery across Dubai across Dubai.',
     heading: 'BMW Rental Dubai',
     subheading: 'The ultimate driving machine. In the ultimate driving city.',
     content:
@@ -141,11 +141,11 @@ export const moneyPages: MoneyPage[] = [
     title: 'Audi Rental Dubai',
     metaTitle: 'Audi Rental Dubai — Hire an Audi RS | LuxeClub',
     metaDescription:
-      'Rent an Audi in Dubai. RS7, RS6, R8, RSQ8 available. Insurance included, free delivery across Dubai. Book online.',
+      'Rent an Audi in Dubai. RS7, RS6, R8, RSQ8 available. Insurance included, delivery across Dubai across Dubai. Book online.',
     heading: 'Audi Rental Dubai',
     subheading: 'Vorsprung durch Technik. Feel it on every corner.',
     content:
-      'Audi builds some of the most capable performance cars on the road. The RS7 is a four-door supercar, the R8 is mid-engined madness, and the RSQ8 is the fastest SUV most people will ever drive. Every rental includes insurance, free delivery, and a full handover walkthrough.',
+      'Audi builds some of the most capable performance cars on the road. The RS7 is a four-door supercar, the R8 is mid-engined madness, and the RSQ8 is the fastest SUV most people will ever drive. Every rental includes insurance, delivery across Dubai, and a full handover walkthrough.',
     filter: { type: 'brand', value: 'Audi' },
   },
   {
@@ -153,7 +153,7 @@ export const moneyPages: MoneyPage[] = [
     title: 'Maserati Rental Dubai',
     metaTitle: 'Maserati Rental Dubai — Hire a Maserati | LuxeClub',
     metaDescription:
-      'Rent a Maserati in Dubai. MC20, Levante, Ghibli available. Insurance included, free delivery. Book online.',
+      'Rent a Maserati in Dubai. MC20, Levante, Ghibli available. Insurance included, delivery across Dubai. Book online.',
     heading: 'Maserati Rental Dubai',
     subheading: 'Italian passion. Unmistakable exhaust note.',
     content:
@@ -165,7 +165,7 @@ export const moneyPages: MoneyPage[] = [
     title: 'Cadillac Rental Dubai',
     metaTitle: 'Cadillac Rental Dubai — Hire a Cadillac Escalade | LuxeClub',
     metaDescription:
-      'Rent a Cadillac in Dubai. Escalade available. Insurance included, free delivery across Dubai. Book online.',
+      'Rent a Cadillac in Dubai. Escalade available. Insurance included, delivery across Dubai across Dubai. Book online.',
     heading: 'Cadillac Rental Dubai',
     subheading: 'American luxury. Bigger than everything else on the road.',
     content:
@@ -178,7 +178,7 @@ export const moneyPages: MoneyPage[] = [
     title: 'Luxury SUV Rental Dubai',
     metaTitle: 'Luxury SUV Rental Dubai — Hire an SUV | LuxeClub',
     metaDescription:
-      'Rent a luxury SUV in Dubai. Range Rover, G63, Bentayga, Cullinan, Urus and more. Insurance included, free delivery.',
+      'Rent a luxury SUV in Dubai. Range Rover, G63, Bentayga, Cullinan, Urus and more. Insurance included, delivery across Dubai.',
     heading: 'Luxury SUV Rental Dubai',
     subheading: 'Space, comfort, and presence. The SUVs that turn heads in Dubai.',
     content:
@@ -190,7 +190,7 @@ export const moneyPages: MoneyPage[] = [
     title: 'Sports Car Rental Dubai',
     metaTitle: 'Sports Car Rental Dubai — Hire a Supercar | LuxeClub',
     metaDescription:
-      'Rent a sports car in Dubai. Ferrari, Lamborghini, McLaren, Porsche and more. Insurance included, free delivery.',
+      'Rent a sports car in Dubai. Ferrari, Lamborghini, McLaren, Porsche and more. Insurance included, delivery across Dubai.',
     heading: 'Sports Car Rental Dubai',
     subheading: 'Life is too short to drive boring cars.',
     content:
@@ -202,7 +202,7 @@ export const moneyPages: MoneyPage[] = [
     title: 'Convertible Rental Dubai',
     metaTitle: 'Convertible Rental Dubai — Hire a Convertible | LuxeClub',
     metaDescription:
-      'Rent a convertible in Dubai. Ferrari Portofino, Rolls Royce Dawn, Bentley GTC and more. Insurance included, free delivery.',
+      'Rent a convertible in Dubai. Ferrari Portofino, Rolls Royce Dawn, Bentley GTC and more. Insurance included, delivery across Dubai.',
     heading: 'Convertible Rental Dubai',
     subheading: 'Drop the top. Feel the Dubai sun.',
     content:
@@ -215,11 +215,11 @@ export const moneyPages: MoneyPage[] = [
     title: 'Luxury Car Rental Dubai',
     metaTitle: 'Luxury Car Rental Dubai — Hire from AED 800/day | LuxeClub',
     metaDescription:
-      'Rent luxury cars in Dubai. Ferrari, Lamborghini, Rolls Royce, Bentley, Range Rover and more. Insurance included, free delivery. Book online.',
+      'Rent luxury cars in Dubai. Ferrari, Lamborghini, Rolls Royce, Bentley, Range Rover and more. Insurance included, delivery across Dubai. Book online.',
     heading: 'Luxury Car Rental Dubai',
     subheading: 'The finest cars in Dubai, delivered to your door.',
     content:
-      'LuxeClub Rentals offers a curated fleet of luxury and sports cars for rent in Dubai. Every car comes with comprehensive insurance, free delivery anywhere in Dubai, and a full handover walkthrough. Daily, weekend, and weekly rentals available. Browse the fleet below and book online.',
+      'LuxeClub Rentals offers a curated fleet of luxury and sports cars for rent in Dubai. Every car comes with comprehensive insurance, delivery across Dubai anywhere in Dubai, and a full handover walkthrough. Daily, weekend, and weekly rentals available. Browse the fleet below and book online.',
     filter: { type: 'keyword', value: '' },
   },
   {
@@ -243,7 +243,7 @@ export const moneyPages: MoneyPage[] = [
     heading: 'Affordable Luxury Car Rental Dubai',
     subheading: 'Luxury does not have to break the bank.',
     content:
-      'We keep our pricing transparent and competitive. Every rental includes comprehensive insurance, free delivery, and no hidden fees. No surprise Salik charges, no phantom fines, no cleaning fees. The price you see is the price you pay. Browse our fleet below sorted by daily rate.',
+      'We keep our pricing transparent and competitive. Every rental includes comprehensive insurance, delivery across Dubai, and no hidden fees. No surprise Salik charges, no phantom fines, no cleaning fees. The price you see is the price you pay. Browse our fleet below sorted by daily rate.',
     filter: { type: 'keyword', value: '' },
   },
 ]
