@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
 import { Playfair_Display, Inter } from 'next/font/google'
+import { Providers } from './providers'
 import './globals.css'
 
 const GA_ID = 'G-CS2EKLJYJ5'
@@ -140,7 +141,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   )

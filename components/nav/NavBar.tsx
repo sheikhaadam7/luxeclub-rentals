@@ -7,7 +7,7 @@ import { logout } from '@/app/actions/auth'
 import { CurrencySelector, CurrencySelectorInline } from '@/components/nav/CurrencySelector'
 import { LanguageSelector, LanguageSelectorInline } from '@/components/nav/LanguageSelector'
 import { useTranslation } from '@/lib/i18n/context'
-import { BackgroundMusic, MusicProvider } from '@/components/ui/BackgroundMusic'
+import { BackgroundMusic } from '@/components/ui/BackgroundMusic'
 
 export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }) {
   const pathname = usePathname()
@@ -56,7 +56,7 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
   ]
 
   return (
-    <MusicProvider>
+    <>
       <nav className="glass border-b border-brand-border sticky top-0 z-[70]">
         <div className="max-w-7xl mx-auto px-5 sm:px-6 flex items-center justify-between h-14">
           {/* Logo */}
@@ -251,6 +251,6 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
           </div>
         </div>
       </div>
-    </MusicProvider>
+    </>
   )
 }
