@@ -135,6 +135,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             gtag('config', '${GA_ID}');
           `}
         </Script>
+        <Script
+          defer
+          src="https://cloud.umami.is/script.js"
+          data-website-id="41add71a-f455-468d-8960-8a615bc0ca51"
+          strategy="afterInteractive"
+        />
       </head>
       <body className="bg-black text-white antialiased font-body">
         <script
