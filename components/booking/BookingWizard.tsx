@@ -346,6 +346,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
               setupClientSecret={setupClientSecret}
               cashSelected={form.getValues('paymentMethod') === 'cash'}
               cryptoSelected={form.getValues('paymentMethod') === 'crypto'}
+              applePaySelected={form.getValues('paymentMethod') === 'apple_pay'}
               onSuccess={handlePaymentSuccess}
               bookingId={bookingId ?? ''}
               totalDue={bookingTotalDue}

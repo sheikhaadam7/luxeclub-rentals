@@ -281,6 +281,8 @@ const zh: Record<string, string> = {
   'booking.paymentMethodDesc': '选择您的租车付款方式。',
   'booking.creditDebitCard': '信用卡/借记卡',
   'booking.creditDebitCardDesc': '通过Stripe安全支付，支持Visa、Mastercard等。',
+  'booking.applePay': 'Apple Pay',
+  'booking.applePayDesc': '使用 Apple Pay 即时支付。',
   'booking.cashOnDelivery': '货到付款',
   'booking.cashOnDeliveryDesc': '配送或取车时现金支付。',
   'booking.cryptocurrency': '加密货币',

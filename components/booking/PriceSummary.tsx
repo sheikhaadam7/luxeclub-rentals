@@ -26,6 +26,7 @@ export function PriceSummary({ vehicle, form }: PriceSummaryProps) {
   const pickupMethod = useWatch({ control: form.control, name: 'pickupMethod' })
   const returnMethod = useWatch({ control: form.control, name: 'returnMethod' })
   const depositChoice = useWatch({ control: form.control, name: 'depositChoice' })
+  const paymentMethod = useWatch({ control: form.control, name: 'paymentMethod' })
 
   // Only calculate when dates are set
   const hasDates = startDate instanceof Date && endDate instanceof Date
@@ -38,6 +39,7 @@ export function PriceSummary({ vehicle, form }: PriceSummaryProps) {
         pickupMethod: pickupMethod ?? 'self_pickup',
         returnMethod: returnMethod ?? 'self_dropoff',
         depositChoice: depositChoice ?? 'deposit',
+        paymentMethod: paymentMethod ?? 'card',
       } as BookingPricingInput)
     : null
 
@@ -106,6 +108,21 @@ export function PriceSummary({ vehicle, form }: PriceSummaryProps) {
               <div className="flex justify-between gap-2">
                 <span className="text-brand-muted">{t('booking.noDepositSurcharge')}</span>
                 <span className="text-white shrink-0">{formatPrice(breakdown.noDepositSurcharge)}</span>
+              </div>
+            )}
+
+            {/* Payment processing fee */}
+            {breakdown.paymentSurcharge > 0 && (
+              <div className="flex justify-between gap-2">
+                <span className="text-brand-muted">
+                  Processing fee ({breakdown.paymentSurchargePercent}%)
+                </span>
+                <span className="text-white shrink-0">{formatPrice(breakdown.paymentSurcharge)}</span>
+              </div>
+            )}
+            {breakdown.paymentSurchargePercent === 0 && paymentMethod === 'crypto' && (
+              <div className="flex justify-between gap-2">
+                <span className="text-green-400 text-xs font-medium">No processing fee</span>
               </div>
             )}
           </div>

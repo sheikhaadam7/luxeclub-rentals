@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
 import { Playfair_Display, Inter } from 'next/font/google'
-import { BackgroundMusic } from '@/components/ui/BackgroundMusic'
 import './globals.css'
 
 const GA_ID = 'G-CS2EKLJYJ5'
@@ -142,7 +141,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         {children}
-        <BackgroundMusic />
       </body>
     </html>
   )

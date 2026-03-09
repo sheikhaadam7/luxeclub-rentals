@@ -26,6 +26,7 @@ interface StepPaymentProps {
   setupClientSecret?: string | null
   cashSelected: boolean
   cryptoSelected: boolean
+  applePaySelected?: boolean
   onSuccess: (bookingId: string) => void
   bookingId: string
   totalDue: number
@@ -339,6 +340,7 @@ export function StepPayment({
   setupClientSecret,
   cashSelected,
   cryptoSelected,
+  applePaySelected = false,
   onSuccess,
   bookingId,
   totalDue,

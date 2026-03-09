@@ -288,6 +288,8 @@ const fr: Record<string, string> = {
   'booking.paymentMethodDesc': 'Choisissez comment vous souhaitez payer votre location.',
   'booking.creditDebitCard': 'Carte bancaire',
   'booking.creditDebitCardDesc': 'Payez en toute sécurité avec Visa, Mastercard ou d\'autres cartes via Stripe.',
+  'booking.applePay': 'Apple Pay',
+  'booking.applePayDesc': 'Payez instantanément avec Apple Pay.',
   'booking.cashOnDelivery': 'Paiement à la livraison',
   'booking.cashOnDeliveryDesc': 'Payez en espèces à la livraison ou au retrait du véhicule.',
   'booking.cryptocurrency': 'Cryptomonnaie',

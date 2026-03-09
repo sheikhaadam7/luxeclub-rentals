@@ -281,6 +281,8 @@ const nl: Record<string, string> = {
   'booking.paymentMethodDesc': 'Kies hoe u wilt betalen voor uw huur.',
   'booking.creditDebitCard': 'Credit-/debitcard',
   'booking.creditDebitCardDesc': 'Veilig betalen met Visa, Mastercard of andere kaarten via Stripe.',
+  'booking.applePay': 'Apple Pay',
+  'booking.applePayDesc': 'Betaal direct met Apple Pay.',
   'booking.cashOnDelivery': 'Contant bij bezorging',
   'booking.cashOnDeliveryDesc': 'Betaal contant bij bezorging of ophalen.',
   'booking.cryptocurrency': 'Cryptocurrency',

@@ -288,6 +288,8 @@ const en: Record<string, string> = {
   'booking.paymentMethodDesc': 'Choose how you would like to pay for your rental.',
   'booking.creditDebitCard': 'Credit / Debit Card',
   'booking.creditDebitCardDesc': 'Pay securely with Visa, Mastercard, or other cards via Stripe.',
+  'booking.applePay': 'Apple Pay',
+  'booking.applePayDesc': 'Pay instantly with Apple Pay.',
   'booking.cashOnDelivery': 'Cash on Delivery',
   'booking.cashOnDeliveryDesc': 'Pay in cash when the vehicle is delivered or at pickup.',
   'booking.cryptocurrency': 'Cryptocurrency',

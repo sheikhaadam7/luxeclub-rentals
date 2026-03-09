@@ -281,6 +281,8 @@ const de: Record<string, string> = {
   'booking.paymentMethodDesc': 'Wählen Sie Ihre bevorzugte Zahlungsart.',
   'booking.creditDebitCard': 'Kredit-/Debitkarte',
   'booking.creditDebitCardDesc': 'Sicher bezahlen mit Visa, Mastercard oder anderen Karten über Stripe.',
+  'booking.applePay': 'Apple Pay',
+  'booking.applePayDesc': 'Sofort bezahlen mit Apple Pay.',
   'booking.cashOnDelivery': 'Barzahlung bei Lieferung',
   'booking.cashOnDeliveryDesc': 'Barzahlung bei Lieferung oder Abholung des Fahrzeugs.',
   'booking.cryptocurrency': 'Kryptowährung',

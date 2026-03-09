@@ -171,6 +171,7 @@ export async function createBooking(
     pickupMethod: formData.pickupMethod,
     returnMethod: formData.returnMethod,
     depositChoice: formData.depositChoice,
+    paymentMethod: formData.paymentMethod,
   }
 
   const pricing = calculateBookingTotal(vehicle, pricingInput)

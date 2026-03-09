@@ -7,6 +7,7 @@ import { logout } from '@/app/actions/auth'
 import { CurrencySelector, CurrencySelectorInline } from '@/components/nav/CurrencySelector'
 import { LanguageSelector, LanguageSelectorInline } from '@/components/nav/LanguageSelector'
 import { useTranslation } from '@/lib/i18n/context'
+import { BackgroundMusic, MusicProvider } from '@/components/ui/BackgroundMusic'
 
 export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }) {
   const pathname = usePathname()
@@ -55,7 +56,7 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
   ]
 
   return (
-    <>
+    <MusicProvider>
       <nav className="glass border-b border-brand-border sticky top-0 z-[70]">
         <div className="max-w-7xl mx-auto px-5 sm:px-6 flex items-center justify-between h-14">
           {/* Logo */}
@@ -89,7 +90,8 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
             <CurrencySelector />
             <div className="w-1.5" />
             <LanguageSelector />
-
+            <div className="w-px h-4 bg-brand-border mx-2" />
+            <BackgroundMusic />
             <div className="w-px h-4 bg-brand-border mx-2" />
 
             {isAuthenticated ? (
@@ -242,9 +244,13 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
           >
             <CurrencySelectorInline />
             <LanguageSelectorInline />
+            <div className="flex items-center gap-2 px-2 py-2">
+              <BackgroundMusic />
+              <span className="text-xs text-white/40">Music</span>
+            </div>
           </div>
         </div>
       </div>
-    </>
+    </MusicProvider>
   )
 }

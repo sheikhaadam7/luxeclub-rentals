@@ -1,15 +1,24 @@
 'use client'
 
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback, createContext, useContext } from 'react'
 
-export function BackgroundMusic() {
+// Shared audio state across all MusicButton instances
+interface MusicContextValue {
+  playing: boolean
+  toggle: () => void
+}
+
+const MusicContext = createContext<MusicContextValue>({ playing: false, toggle: () => {} })
+
+/**
+ * Wrap the app (or navbar) with this provider — renders the <audio> once.
+ * All MusicButton instances share the same play/pause state.
+ */
+export function MusicProvider({ children }: { children: React.ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
-  const barRef = useRef<HTMLDivElement>(null)
   const [playing, setPlaying] = useState(false)
-  const [progress, setProgress] = useState(0)
   const startedRef = useRef(false)
 
-  // On first user gesture anywhere on the page, start playback
   useEffect(() => {
     function startOnGesture() {
       if (startedRef.current) return
@@ -28,7 +37,7 @@ export function BackgroundMusic() {
     }
   }, [])
 
-  const togglePlay = useCallback(() => {
+  const toggle = useCallback(() => {
     const audio = audioRef.current
     if (!audio) return
     if (audio.paused) {
@@ -39,67 +48,61 @@ export function BackgroundMusic() {
     }
   }, [])
 
-  const onTimeUpdate = useCallback(() => {
-    const audio = audioRef.current
-    if (!audio || !audio.duration) return
-    setProgress(audio.currentTime / audio.duration)
-  }, [])
+  return (
+    <MusicContext.Provider value={{ playing, toggle }}>
+      <audio ref={audioRef} src="/audio/bg-music.mp3" loop preload="auto" />
+      {children}
+    </MusicContext.Provider>
+  )
+}
 
-  const seek = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const bar = barRef.current
-    const audio = audioRef.current
-    if (!bar || !audio || !audio.duration) return
-    const rect = bar.getBoundingClientRect()
-    const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width))
-    audio.currentTime = ratio * audio.duration
-    setProgress(ratio)
-  }, [])
+/**
+ * Compact play/pause button — can be rendered multiple times,
+ * all instances share the same audio via MusicProvider.
+ */
+export function BackgroundMusic({ className = '' }: { className?: string }) {
+  const { playing, toggle } = useContext(MusicContext)
 
   return (
     <>
-      <audio
-        ref={audioRef}
-        src="/audio/bg-music.mp3"
-        loop
-        preload="auto"
-        onTimeUpdate={onTimeUpdate}
-      />
+      <button
+        type="button"
+        onClick={(e) => { e.stopPropagation(); toggle() }}
+        className={`group flex items-center justify-center w-8 h-8 rounded-lg text-brand-muted hover:text-white hover:bg-white/[0.06] transition-all duration-200 ${className}`}
+        aria-label={playing ? 'Pause music' : 'Play music'}
+        title={playing ? 'Pause music' : 'Play music'}
+      >
+        {playing ? (
+          <>
+            {/* EQ bars — hidden on hover */}
+            <div className="flex items-end gap-[2px] h-3.5 group-hover:hidden">
+              <span className="w-[2px] bg-current rounded-full animate-eq-1" style={{ height: '60%' }} />
+              <span className="w-[2px] bg-current rounded-full animate-eq-2" style={{ height: '100%' }} />
+              <span className="w-[2px] bg-current rounded-full animate-eq-3" style={{ height: '40%' }} />
+              <span className="w-[2px] bg-current rounded-full animate-eq-4" style={{ height: '80%' }} />
+            </div>
+            {/* Pause icon — shown on hover */}
+            <svg className="w-3.5 h-3.5 hidden group-hover:block" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+            </svg>
+          </>
+        ) : (
+          <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+        )}
+      </button>
 
-      <div className="fixed top-16 left-1/2 -translate-x-1/2 z-[55]">
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.08] backdrop-blur-2xl border border-white/[0.1] shadow-lg shadow-black/20">
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); togglePlay() }}
-            className="flex items-center justify-center w-6 h-6 text-white/80 hover:text-white transition-colors duration-150"
-            aria-label={playing ? 'Pause' : 'Play'}
-          >
-            {playing ? (
-              <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
-              </svg>
-            ) : (
-              <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            )}
-          </button>
-
-          <div
-            ref={barRef}
-            onClick={(e) => { e.stopPropagation(); seek(e) }}
-            className="w-24 sm:w-32 h-[3px] bg-white/[0.12] rounded-full cursor-pointer group relative"
-          >
-            <div
-              className="h-full bg-white/60 rounded-full transition-none"
-              style={{ width: `${progress * 100}%` }}
-            />
-            <div
-              className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white opacity-0 group-hover:opacity-100 transition-opacity duration-150"
-              style={{ left: `calc(${progress * 100}% - 4px)` }}
-            />
-          </div>
-        </div>
-      </div>
+      <style>{`
+        @keyframes eq-bounce-1 { 0%,100% { height: 40%; } 50% { height: 100%; } }
+        @keyframes eq-bounce-2 { 0%,100% { height: 100%; } 50% { height: 30%; } }
+        @keyframes eq-bounce-3 { 0%,100% { height: 60%; } 50% { height: 90%; } }
+        @keyframes eq-bounce-4 { 0%,100% { height: 80%; } 50% { height: 50%; } }
+        .animate-eq-1 { animation: eq-bounce-1 0.8s ease-in-out infinite; }
+        .animate-eq-2 { animation: eq-bounce-2 0.6s ease-in-out infinite; }
+        .animate-eq-3 { animation: eq-bounce-3 0.9s ease-in-out infinite; }
+        .animate-eq-4 { animation: eq-bounce-4 0.7s ease-in-out infinite; }
+      `}</style>
     </>
   )
 }

@@ -281,6 +281,8 @@ const ru: Record<string, string> = {
   'booking.paymentMethodDesc': 'Выберите способ оплаты аренды.',
   'booking.creditDebitCard': 'Кредитная / дебетовая карта',
   'booking.creditDebitCardDesc': 'Безопасная оплата через Visa, Mastercard или другие карты через Stripe.',
+  'booking.applePay': 'Apple Pay',
+  'booking.applePayDesc': 'Мгновенная оплата через Apple Pay.',
   'booking.cashOnDelivery': 'Оплата при получении',
   'booking.cashOnDeliveryDesc': 'Оплата наличными при доставке или получении автомобиля.',
   'booking.cryptocurrency': 'Криптовалюта',

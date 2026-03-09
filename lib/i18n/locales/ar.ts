@@ -281,6 +281,8 @@ const ar: Record<string, string> = {
   'booking.paymentMethodDesc': 'اختر كيف تود الدفع مقابل إيجارك.',
   'booking.creditDebitCard': 'بطاقة ائتمان / خصم',
   'booking.creditDebitCardDesc': 'ادفع بأمان عبر Visa أو Mastercard أو بطاقات أخرى عبر Stripe.',
+  'booking.applePay': 'Apple Pay',
+  'booking.applePayDesc': 'ادفع فوراً باستخدام Apple Pay.',
   'booking.cashOnDelivery': 'الدفع عند الاستلام',
   'booking.cashOnDeliveryDesc': 'ادفع نقداً عند توصيل السيارة أو استلامها.',
   'booking.cryptocurrency': 'عملة رقمية',

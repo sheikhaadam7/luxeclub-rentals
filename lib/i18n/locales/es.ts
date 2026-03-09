@@ -281,6 +281,8 @@ const es: Record<string, string> = {
   'booking.paymentMethodDesc': 'Elija cómo desea pagar su alquiler.',
   'booking.creditDebitCard': 'Tarjeta de crédito/débito',
   'booking.creditDebitCardDesc': 'Pague de forma segura con Visa, Mastercard u otras tarjetas a través de Stripe.',
+  'booking.applePay': 'Apple Pay',
+  'booking.applePayDesc': 'Pague al instante con Apple Pay.',
   'booking.cashOnDelivery': 'Pago contra entrega',
   'booking.cashOnDeliveryDesc': 'Pague en efectivo al recibir o recoger el vehículo.',
   'booking.cryptocurrency': 'Criptomoneda',

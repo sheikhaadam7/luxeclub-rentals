@@ -21,6 +21,7 @@ export interface BookingPricingInput {
   pickupMethod: 'delivery' | 'self_pickup'
   returnMethod: 'collection' | 'self_dropoff'
   depositChoice: 'deposit' | 'no_deposit'
+  paymentMethod?: 'card' | 'apple_pay' | 'google_pay' | 'cash' | 'crypto'
 }
 
 /**
@@ -44,7 +45,11 @@ export interface BookingPriceBreakdown {
   depositAmount: number
   /** 30% of daily_rate * rentalDays if no-deposit chosen, 0 otherwise */
   noDepositSurcharge: number
-  /** rentalSubtotal + deliveryFee + returnFee + noDepositSurcharge
+  /** Payment processing surcharge percentage (0, 3, 5, or 7) */
+  paymentSurchargePercent: number
+  /** Payment processing surcharge amount */
+  paymentSurcharge: number
+  /** rentalSubtotal + deliveryFee + returnFee + noDepositSurcharge + paymentSurcharge
    *  Note: deposit is authorized separately and NOT included in totalDue */
   totalDue: number
 }
@@ -72,6 +77,7 @@ export function calculateBookingTotal(
     pickupMethod,
     returnMethod,
     depositChoice,
+    paymentMethod,
   } = formValues
 
   // Number of rental days (minimum 1)
@@ -102,10 +108,19 @@ export function calculateBookingTotal(
 
   const noDepositSurcharge = depositChoice === 'no_deposit' ? 200 : 0
 
+  // Payment method surcharge
+  let paymentSurchargePercent = 0
+  if (paymentMethod === 'card') paymentSurchargePercent = 3
+  else if (paymentMethod === 'apple_pay' || paymentMethod === 'google_pay') paymentSurchargePercent = 5
+
+  const subtotalBeforeSurcharge = rentalSubtotal + deliveryFee + returnFee + noDepositSurcharge
+  const paymentSurcharge =
+    Math.round(subtotalBeforeSurcharge * (paymentSurchargePercent / 100) * 100) / 100
+
   // Total due (deposit is authorized separately, NOT included)
   const totalDue =
     Math.round(
-      (rentalSubtotal + deliveryFee + returnFee + noDepositSurcharge) * 100
+      (subtotalBeforeSurcharge + paymentSurcharge) * 100
     ) / 100
 
   return {
@@ -117,6 +132,8 @@ export function calculateBookingTotal(
     returnFee,
     depositAmount,
     noDepositSurcharge,
+    paymentSurchargePercent,
+    paymentSurcharge,
     totalDue,
   }
 }
