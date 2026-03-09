@@ -199,6 +199,7 @@ const en: Record<string, string> = {
   'lookup.cryptoPending': 'Crypto Payment Pending',
   'lookup.unpaid': 'Unpaid',
   'lookup.confirmed': 'Confirmed',
+  'lookup.awaitingPayment': 'Awaiting Payment',
   'lookup.pendingConfirmation': 'Pending Confirmation',
   'lookup.completed': 'Completed',
   'lookup.cancelled': 'Cancelled',

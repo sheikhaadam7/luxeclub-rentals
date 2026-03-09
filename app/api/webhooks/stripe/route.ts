@@ -1,6 +1,8 @@
 import { headers } from 'next/headers'
 import { stripe } from '@/lib/stripe/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { sendEmail } from '@/lib/email/send'
+import { BookingConfirmationEmail } from '@/components/email/BookingConfirmationEmail'
 import type Stripe from 'stripe'
 
 /**
@@ -81,11 +83,18 @@ export async function POST(req: Request): Promise<Response> {
 
       if (bookingId) {
         if (type === 'rental') {
-          // Rental charge succeeded — mark booking as paid
+          // Rental charge succeeded — mark booking as paid and promote to pending
           await admin
             .from('bookings')
-            .update({ payment_status: 'paid' })
+            .update({ payment_status: 'paid', status: 'pending' })
             .eq('id', bookingId)
+
+          // Send confirmation email (non-blocking)
+          try {
+            await sendBookingConfirmationEmail(admin, bookingId)
+          } catch (emailErr) {
+            console.error('stripe webhook: confirmation email failed (non-fatal)', emailErr)
+          }
         } else if (type === 'deposit') {
           // Deposit was explicitly charged (manual capture triggered externally)
           await admin
@@ -139,8 +148,15 @@ export async function POST(req: Request): Promise<Response> {
       if (bookingId && paymentMethod) {
         await admin
           .from('bookings')
-          .update({ stripe_payment_method_id: paymentMethod })
+          .update({ stripe_payment_method_id: paymentMethod, status: 'pending' })
           .eq('id', bookingId)
+
+        // Send confirmation email for cash bookings (non-blocking)
+        try {
+          await sendBookingConfirmationEmail(admin, bookingId)
+        } catch (emailErr) {
+          console.error('stripe webhook: cash confirmation email failed (non-fatal)', emailErr)
+        }
       }
     }
     // All other event types — acknowledge receipt without processing
@@ -150,4 +166,68 @@ export async function POST(req: Request): Promise<Response> {
   }
 
   return new Response('OK', { status: 200 })
+}
+
+/**
+ * Fetches booking + vehicle details and sends a confirmation email.
+ * Used after payment succeeds (card or cash card-on-file).
+ */
+async function sendBookingConfirmationEmail(
+  admin: ReturnType<typeof createAdminClient>,
+  bookingId: string
+) {
+  const { data: booking } = await admin
+    .from('bookings')
+    .select(`
+      id, start_date, end_date, duration_type, pickup_method, return_method,
+      delivery_address, deposit_choice, rental_subtotal, delivery_fee, return_fee,
+      no_deposit_surcharge, deposit_amount, total_due, payment_method, status,
+      user_id, guest_email,
+      vehicles ( name, primary_image_url )
+    `)
+    .eq('id', bookingId)
+    .single()
+
+  if (!booking) return
+
+  // Determine recipient email
+  let recipientEmail: string | undefined
+  if (booking.user_id) {
+    const { data: { user } } = await admin.auth.admin.getUserById(booking.user_id)
+    recipientEmail = user?.email ?? undefined
+  } else {
+    recipientEmail = booking.guest_email ?? undefined
+  }
+
+  if (!recipientEmail) return
+
+  const vehiclesRaw = booking.vehicles as unknown
+  const vehicle = Array.isArray(vehiclesRaw) ? vehiclesRaw[0] as { name: string; primary_image_url: string | null } | undefined : vehiclesRaw as { name: string; primary_image_url: string | null } | null
+
+  await sendEmail({
+    to: recipientEmail,
+    subject: `Booking Confirmed — ${vehicle?.name ?? 'Vehicle'}`,
+    react: BookingConfirmationEmail({
+      booking: {
+        id: bookingId,
+        vehicleName: vehicle?.name ?? 'Vehicle',
+        vehicleImage: vehicle?.primary_image_url ?? null,
+        startDate: booking.start_date,
+        endDate: booking.end_date,
+        durationType: booking.duration_type as 'daily' | 'weekly' | 'monthly',
+        pickupMethod: booking.pickup_method as 'delivery' | 'self_pickup',
+        returnMethod: booking.return_method as 'collection' | 'self_dropoff',
+        deliveryAddress: booking.delivery_address ?? null,
+        depositChoice: booking.deposit_choice,
+        rentalSubtotal: booking.rental_subtotal,
+        deliveryFee: booking.delivery_fee,
+        returnFee: booking.return_fee,
+        noDepositSurcharge: booking.no_deposit_surcharge,
+        depositAmount: booking.deposit_amount,
+        totalDue: booking.total_due,
+        paymentMethod: booking.payment_method as 'card' | 'apple_pay' | 'google_pay' | 'cash' | 'crypto',
+        status: booking.status,
+      },
+    }),
+  })
 }

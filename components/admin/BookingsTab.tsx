@@ -15,6 +15,7 @@ import { captureDeposit, voidDeposit } from '@/app/actions/payments'
 // ─── Status config ───────────────────────────────────────────
 
 const STATUS_CONFIG: Record<BookingStatus, { label: string; className: string }> = {
+  draft: { label: 'Draft', className: 'bg-white/5 text-white/30' },
   pending: { label: 'Pending', className: 'bg-white/10 text-white/60' },
   confirmed: { label: 'Confirmed', className: 'bg-brand-cyan/20 text-brand-cyan' },
   car_on_the_way: { label: 'Car On The Way', className: 'bg-amber-400/20 text-amber-400' },
@@ -24,6 +25,7 @@ const STATUS_CONFIG: Record<BookingStatus, { label: string; className: string }>
 }
 
 const ALL_STATUSES: BookingStatus[] = [
+  'draft',
   'pending',
   'confirmed',
   'car_on_the_way',

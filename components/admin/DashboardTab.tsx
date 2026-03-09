@@ -16,6 +16,7 @@ const STATUS_CONFIG: Record<
   BookingStatus,
   { label: string; className: string }
 > = {
+  draft: { label: 'Draft', className: 'bg-white/5 text-white/30' },
   pending: { label: 'Pending', className: 'bg-white/10 text-white/60' },
   confirmed: { label: 'Confirmed', className: 'bg-brand-cyan/20 text-brand-cyan' },
   car_on_the_way: { label: 'On The Way', className: 'bg-amber-400/20 text-amber-400' },

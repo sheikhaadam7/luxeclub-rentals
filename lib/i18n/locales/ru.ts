@@ -199,6 +199,7 @@ const ru: Record<string, string> = {
   'lookup.cryptoPending': 'Ожидается Оплата Криптовалютой',
   'lookup.unpaid': 'Не Оплачено',
   'lookup.confirmed': 'Подтверждено',
+  'lookup.awaitingPayment': 'Ожидание оплаты',
   'lookup.pendingConfirmation': 'Ожидает Подтверждения',
   'lookup.completed': 'Завершено',
   'lookup.cancelled': 'Отменено',

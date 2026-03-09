@@ -435,6 +435,7 @@ export async function removeAvailabilityBlock(
 // ============================================================
 
 export type BookingStatus =
+  | 'draft'
   | 'pending'
   | 'confirmed'
   | 'car_on_the_way'
@@ -588,6 +589,7 @@ export async function updateBookingStatus(
   }
 
   const validStatuses: BookingStatus[] = [
+    'draft',
     'pending',
     'confirmed',
     'car_on_the_way',

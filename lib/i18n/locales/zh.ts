@@ -199,6 +199,7 @@ const zh: Record<string, string> = {
   'lookup.cryptoPending': '加密货币支付待确认',
   'lookup.unpaid': '未支付',
   'lookup.confirmed': '已确认',
+  'lookup.awaitingPayment': '等待付款',
   'lookup.pendingConfirmation': '待确认',
   'lookup.completed': '已完成',
   'lookup.cancelled': '已取消',

@@ -206,7 +206,7 @@ export async function createBooking(
       no_deposit_surcharge: pricing.noDepositSurcharge,
       total_due: pricing.totalDue,
       payment_method: formData.paymentMethod,
-      status: 'pending',
+      status: 'draft',
       payment_status:
         formData.paymentMethod === 'cash' ? 'pending_cash'
         : formData.paymentMethod === 'crypto' ? 'pending_crypto'
@@ -222,51 +222,8 @@ export async function createBooking(
 
   const bookingId = booking.id
 
-  // 5. Send confirmation email (non-blocking — failure does not fail booking)
-  try {
-    let recipientEmail: string | undefined
-    if (userId) {
-      const { data: { user } } = await supabase.auth.getUser()
-      recipientEmail = user?.email ?? undefined
-    } else {
-      recipientEmail = guestInfo?.email
-    }
-
-    if (recipientEmail) {
-      const startDateStr = formData.startDate.toISOString().split('T')[0]
-      const endDateStr = formData.endDate.toISOString().split('T')[0]
-
-      await sendEmail({
-        to: recipientEmail,
-        subject: `Booking Confirmed — ${vehicle.name}`,
-        react: BookingConfirmationEmail({
-          booking: {
-            id: bookingId,
-            vehicleName: vehicle.name,
-            vehicleImage: vehicle.primary_image_url ?? null,
-            startDate: startDateStr,
-            endDate: endDateStr,
-            durationType: formData.durationType as 'daily' | 'weekly' | 'monthly',
-            pickupMethod: formData.pickupMethod as 'delivery' | 'self_pickup',
-            returnMethod: formData.returnMethod as 'collection' | 'self_dropoff',
-            deliveryAddress: formData.deliveryAddress ?? null,
-            depositChoice: formData.depositChoice,
-            rentalSubtotal: pricing.rentalSubtotal,
-            deliveryFee: pricing.deliveryFee,
-            returnFee: pricing.returnFee,
-            noDepositSurcharge: pricing.noDepositSurcharge,
-            depositAmount: pricing.depositAmount,
-            totalDue: pricing.totalDue,
-            paymentMethod: formData.paymentMethod,
-            status: formData.paymentMethod === 'cash' ? 'pending_cash' : 'pending',
-          },
-        }),
-      })
-    }
-  } catch (emailError) {
-    // Email failure must never fail the booking — log and continue
-    console.error('createBooking: email send failed (non-fatal)', emailError)
-  }
+  // 5. Confirmation email is sent after payment succeeds (via webhook),
+  //    not at draft creation — no email sent here.
 
   // 6. Crypto path — no Stripe involvement
   if (formData.paymentMethod === 'crypto') {
@@ -364,8 +321,8 @@ export async function updateBookingPaymentMethod(
     return { error: 'Booking not found' }
   }
 
-  if (booking.status !== 'pending') {
-    return { error: 'Cannot change payment method on a non-pending booking' }
+  if (booking.status !== 'draft' && booking.status !== 'pending') {
+    return { error: 'Cannot change payment method on this booking' }
   }
 
   // Verify ownership
@@ -619,7 +576,7 @@ export async function cancelBooking(
     return { error: 'Booking not found' }
   }
 
-  if (!['pending', 'confirmed'].includes(booking.status)) {
+  if (!['draft', 'pending', 'confirmed'].includes(booking.status)) {
     return { error: 'This booking cannot be cancelled in its current state' }
   }
 
@@ -776,7 +733,7 @@ export async function requestDateModification(
     return { error: 'Booking not found' }
   }
 
-  if (!['pending', 'confirmed'].includes(booking.status)) {
+  if (!['draft', 'pending', 'confirmed'].includes(booking.status)) {
     return { error: 'Date changes can only be requested for pending or confirmed bookings' }
   }
 

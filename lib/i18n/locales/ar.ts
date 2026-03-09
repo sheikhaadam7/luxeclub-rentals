@@ -199,6 +199,7 @@ const ar: Record<string, string> = {
   'lookup.cryptoPending': 'بانتظار الدفع بالعملة الرقمية',
   'lookup.unpaid': 'غير مدفوع',
   'lookup.confirmed': 'مؤكد',
+  'lookup.awaitingPayment': 'في انتظار الدفع',
   'lookup.pendingConfirmation': 'بانتظار التأكيد',
   'lookup.completed': 'مكتمل',
   'lookup.cancelled': 'ملغى',

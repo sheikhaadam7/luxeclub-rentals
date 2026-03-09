@@ -107,6 +107,8 @@ export default function BookingLookupPage() {
     switch (status) {
       case 'confirmed':
         return { label: t('lookup.confirmed'), className: 'text-brand-cyan' }
+      case 'draft':
+        return { label: t('lookup.awaitingPayment'), className: 'text-brand-muted' }
       case 'pending':
         return { label: t('lookup.pendingConfirmation'), className: 'text-yellow-400' }
       case 'completed':
@@ -247,8 +249,8 @@ export default function BookingLookupPage() {
   const hasStarted = today >= bookingStartDate
 
   const isCancellable =
-    ['pending', 'confirmed'].includes(booking.status) && booking.payment_method !== 'cash' && !hasStarted
-  const isModifiable = ['pending', 'confirmed'].includes(booking.status) && !hasStarted
+    ['draft', 'pending', 'confirmed'].includes(booking.status) && booking.payment_method !== 'cash' && !hasStarted
+  const isModifiable = ['draft', 'pending', 'confirmed'].includes(booking.status) && !hasStarted
 
   let hoursUntilStart = 0
   if (isCancellable || isModifiable) {

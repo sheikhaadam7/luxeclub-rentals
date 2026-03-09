@@ -199,6 +199,7 @@ const de: Record<string, string> = {
   'lookup.cryptoPending': 'Kryptozahlung ausstehend',
   'lookup.unpaid': 'Unbezahlt',
   'lookup.confirmed': 'Bestätigt',
+  'lookup.awaitingPayment': 'Warten auf Zahlung',
   'lookup.pendingConfirmation': 'Bestätigung ausstehend',
   'lookup.completed': 'Abgeschlossen',
   'lookup.cancelled': 'Storniert',

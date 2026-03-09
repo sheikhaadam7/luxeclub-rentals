@@ -46,6 +46,8 @@ function getStatusConfig(status: string, paymentStatus: string): StatusConfig {
   switch (status) {
     case 'confirmed':
       return { labelKey: 'lookup.confirmed', className: 'bg-cyan-900/40 text-brand-cyan border-brand-cyan/30' }
+    case 'draft':
+      return { labelKey: 'lookup.awaitingPayment', className: 'bg-white/5 text-brand-muted border-white/10' }
     case 'pending':
       return { labelKey: 'lookup.pendingConfirmation', className: 'bg-yellow-900/40 text-yellow-400 border-yellow-700/40' }
     case 'completed':

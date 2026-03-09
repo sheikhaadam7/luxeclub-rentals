@@ -46,6 +46,7 @@ const MapPinIcon = (
 // ---------------------------------------------------------------------------
 
 const STATUS_ORDER: Record<string, number> = {
+  draft: -0.5,
   pending: 0,
   confirmed: 1,
   car_on_the_way: 2,

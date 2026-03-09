@@ -199,6 +199,7 @@ const nl: Record<string, string> = {
   'lookup.cryptoPending': 'Cryptobetaling In Afwachting',
   'lookup.unpaid': 'Onbetaald',
   'lookup.confirmed': 'Bevestigd',
+  'lookup.awaitingPayment': 'Wachten op betaling',
   'lookup.pendingConfirmation': 'In Afwachting van Bevestiging',
   'lookup.completed': 'Voltooid',
   'lookup.cancelled': 'Geannuleerd',

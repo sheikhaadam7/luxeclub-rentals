@@ -72,6 +72,8 @@ function statusConfig(status: string): { labelKey: string; className: string } {
   switch (status) {
     case 'confirmed':
       return { labelKey: 'lookup.confirmed', className: 'text-brand-cyan' }
+    case 'draft':
+      return { labelKey: 'lookup.awaitingPayment', className: 'text-brand-muted' }
     case 'pending':
       return { labelKey: 'lookup.pendingConfirmation', className: 'text-yellow-400' }
     case 'completed':
@@ -164,8 +166,8 @@ export default async function BookingDetailPage({ params }: PageProps) {
   const hasStarted = today >= bookingStartDate
 
   const isCancellable =
-    ['pending', 'confirmed'].includes(booking.status) && booking.payment_method !== 'cash' && !hasStarted
-  const isModifiable = ['pending', 'confirmed'].includes(booking.status) && !hasStarted
+    ['draft', 'pending', 'confirmed'].includes(booking.status) && booking.payment_method !== 'cash' && !hasStarted
+  const isModifiable = ['draft', 'pending', 'confirmed'].includes(booking.status) && !hasStarted
 
   let hoursUntilStart = 0
   if (isCancellable || isModifiable) {
