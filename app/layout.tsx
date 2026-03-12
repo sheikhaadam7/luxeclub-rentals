@@ -141,11 +141,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           data-website-id="41add71a-f455-468d-8960-8a615bc0ca51"
           strategy="afterInteractive"
         />
-        <Script
+        <script
           src="https://analytics.ahrefs.com/analytics.js"
           data-key="9Hsq7/2s59QpUoR2SSSOkA"
           async
-          strategy="afterInteractive"
         />
       </head>
       <body className="bg-black text-white antialiased font-body">
