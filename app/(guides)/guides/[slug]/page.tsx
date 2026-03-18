@@ -74,11 +74,33 @@ export default async function GuidePage({
     ],
   }
 
+  // FAQ schema for informational guides whose sections answer distinct questions
+  const FAQ_ELIGIBLE_SLUGS = [
+    'dubai-traffic-fines-complete-guide',
+    'dubai-airport-parking-guide',
+    'first-time-renting-luxury-car-dubai',
+    'dubai-driving-rules-for-tourists',
+  ]
+  const faqJsonLd = FAQ_ELIGIBLE_SLUGS.includes(guide.slug)
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: guide.sections.map((s) => ({
+          '@type': 'Question',
+          name: s.heading,
+          acceptedAnswer: { '@type': 'Answer', text: s.content.slice(0, 500) },
+        })),
+      }
+    : null
+
+  // Related guides (exclude current, show up to 3)
+  const relatedGuides = guides.filter((g) => g.slug !== guide.slug).slice(0, 3)
+
   return (
     <main className="min-h-screen bg-luxury">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify([articleJsonLd, breadcrumbJsonLd]) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([articleJsonLd, breadcrumbJsonLd, ...(faqJsonLd ? [faqJsonLd] : [])]) }}
       />
 
       <article className="max-w-3xl mx-auto px-4 sm:px-6 py-12 space-y-10">
@@ -191,6 +213,44 @@ export default async function GuidePage({
               ))}
             </section>
           ))}
+        </div>
+
+        {/* More Guides */}
+        {relatedGuides.length > 0 && (
+          <div className="border-t border-brand-border pt-10 space-y-6">
+            <h2 className="font-display text-xl font-medium text-white">More Guides</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {relatedGuides.map((g) => (
+                <Link
+                  key={g.slug}
+                  href={`/guides/${g.slug}`}
+                  className="group bg-brand-surface border border-brand-border rounded-xl p-4 space-y-2 hover:border-brand-border-hover transition-all duration-300"
+                >
+                  <p className="text-xs text-brand-muted">
+                    {new Date(g.publishedDate).toLocaleDateString('en-GB', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                    })}
+                  </p>
+                  <h3 className="text-sm font-medium text-white group-hover:text-brand-cyan transition-colors duration-300 line-clamp-2">
+                    {g.title}
+                  </h3>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Quick links to rental pages */}
+        <div className="flex flex-wrap gap-2 pt-2">
+          <Link href="/car-rental-dubai" className="text-xs text-brand-cyan hover:text-brand-cyan-hover transition-colors">Car Rental Dubai</Link>
+          <span className="text-white/20">·</span>
+          <Link href="/rent-luxury-car-in-dubai" className="text-xs text-brand-cyan hover:text-brand-cyan-hover transition-colors">Luxury Car Rental</Link>
+          <span className="text-white/20">·</span>
+          <Link href="/rent-luxury-suv-in-dubai" className="text-xs text-brand-cyan hover:text-brand-cyan-hover transition-colors">SUV Rental</Link>
+          <span className="text-white/20">·</span>
+          <Link href="/rent-sports-car-in-dubai" className="text-xs text-brand-cyan hover:text-brand-cyan-hover transition-colors">Sports Car Rental</Link>
         </div>
 
         {/* CTA */}

@@ -40,6 +40,16 @@ export const metadata: Metadata = {
     'luxury car hire UAE',
     'rent car Dubai',
     'prestige car rental Dubai',
+    'car rental Dubai',
+    'rent a car Dubai',
+    'exotic car rental Dubai',
+    'luxury car rental Dubai no deposit',
+    'SUV car rental Dubai',
+    'Mercedes rental Dubai',
+    'BMW rental Dubai',
+    'Range Rover rental Dubai',
+    'McLaren rental Dubai',
+    'Bentley rental Dubai',
   ],
   icons: {
     icon: [

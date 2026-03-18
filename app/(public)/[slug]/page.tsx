@@ -4,6 +4,7 @@ import { unstable_cache } from 'next/cache'
 import Link from 'next/link'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { moneyPages, getMoneyPage, SITE_URL } from '@/lib/money-pages'
+import { guides } from '@/lib/guides'
 import { VehicleCard } from '@/components/catalogue/VehicleCard'
 
 // ---------------------------------------------------------------------------
@@ -274,6 +275,32 @@ export default async function MoneyPage({ params }: PageProps) {
           ))}
         </div>
       )}
+
+      {/* Helpful Guides */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-4 space-y-6">
+        <h2 className="font-display text-xl font-medium text-white">Helpful Guides</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {guides.slice(0, 3).map((g) => (
+            <Link
+              key={g.slug}
+              href={`/guides/${g.slug}`}
+              className="group bg-white/[0.03] border border-white/[0.08] p-5 space-y-2 hover:border-white/20 transition-all duration-300"
+            >
+              <p className="text-xs text-white/40">
+                {new Date(g.publishedDate).toLocaleDateString('en-GB', {
+                  day: 'numeric',
+                  month: 'short',
+                  year: 'numeric',
+                })}
+              </p>
+              <h3 className="text-sm font-medium text-white group-hover:text-brand-cyan transition-colors duration-300 line-clamp-2">
+                {g.title}
+              </h3>
+              <p className="text-xs text-white/50 line-clamp-2">{g.metaDescription}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
 
       {/* CTA section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center space-y-6">

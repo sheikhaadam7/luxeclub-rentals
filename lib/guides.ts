@@ -304,4 +304,88 @@ export const guides: Guide[] = [
       },
     ],
   },
+  {
+    slug: 'dubai-traffic-fines-complete-guide',
+    title: 'Dubai Traffic Fines: The Complete Guide for Drivers (2026)',
+    metaTitle: 'Dubai Traffic Fines 2026 — Complete List, Amounts & How to Pay',
+    metaDescription:
+      'Every traffic fine in Dubai explained. Speeding, red lights, phone use, parking, Salik tolls and more. How to check, pay, and dispute fines in the UAE.',
+    publishedDate: '2026-03-14',
+    image: '/guides/dubai-traffic-fines.jpg',
+    imageAlt: 'Aerial view of Dubai Sheikh Zayed Road traffic',
+    sections: [
+      {
+        heading: 'How Dubai Traffic Fines Work',
+        content:
+          'Traffic fines in Dubai are managed by Dubai Police and the Roads and Transport Authority (RTA). They are issued automatically through radar cameras, manually by officers, or via the RTA parking enforcement system. Every fine comes with a monetary penalty and, in many cases, black points on your licence.\n\nBlack points accumulate over 12 months. Reach 24 and your licence gets suspended. Some serious offences carry immediate impoundment of the vehicle, regardless of points. Fines can be checked and paid through the Dubai Police app, the RTA app, or at any customer service centre.',
+      },
+      {
+        heading: 'Speeding Fines',
+        content:
+          'Dubai has essentially zero tolerance for speeding. Radars trigger at just 1 km/h over the posted limit. The fines scale with severity:\n\n- 1-20 km/h over: AED 300\n- 21-30 km/h over: AED 600 + 6 black points\n- 31-40 km/h over: AED 700 + 6 black points\n- 41-50 km/h over: AED 1,000 + 6 black points\n- 51-60 km/h over: AED 1,500 + 6 black points + 15-day impound\n- 61-80 km/h over: AED 2,000 + 12 black points + 30-day impound\n- Over 80 km/h above limit: AED 3,000 + 23 black points + 60-day impound\n\nFixed and mobile radars are everywhere. Download Waze or use Google Maps for live camera alerts.',
+      },
+      {
+        heading: 'Red Light and Dangerous Driving Fines',
+        content:
+          'Running a red light is one of the most expensive traffic offences in Dubai: AED 1,000, 12 black points, and 30 days of vehicle impoundment. Cameras at most intersections catch this automatically.\n\nOther dangerous driving fines include:\n\n- Reckless driving: AED 2,000 + 23 black points + 60-day impound\n- Racing on public roads: AED 3,000 + 23 black points + 60-day impound + vehicle confiscation\n- Tailgating: AED 400 + 4 black points\n- Overtaking from the hard shoulder: AED 1,000 + 6 black points\n- Failing to give way to emergency vehicles: AED 1,000 + 6 black points',
+      },
+      {
+        heading: 'Phone, Seatbelt, and In-Car Fines',
+        content:
+          'Using your phone while driving costs AED 800 and 4 black points. This includes texting, browsing, or holding the phone to your ear. Hands-free systems are allowed.\n\n- Not wearing a seatbelt (driver): AED 400 + 4 black points\n- Not wearing a seatbelt (passenger): AED 400\n- Children under 10 in the front seat: AED 400\n- Throwing litter from a vehicle: AED 1,000 + 6 black points\n- Driving without a valid licence: AED 5,000 + 23 black points + 90-day impound\n- Driving an unregistered vehicle: AED 500 + 4 black points',
+      },
+      {
+        heading: 'Parking Fines',
+        content:
+          'Parking fines in Dubai are managed by the RTA and enforced by wardens and cameras.\n\n- Parking in a no-parking zone: AED 500\n- Parking in a disabled space without a permit: AED 1,000\n- Double parking: AED 500\n- Blocking a driveway: AED 500\n- Overstaying a paid parking meter: AED 100-200\n- Parking on a pavement: AED 400\n\nPaid parking zones are active from 8 AM to 10 PM in most areas. Pay through the RTA mParking app, by SMS, or at the meters. Friday paid parking hours vary by zone.',
+      },
+      {
+        heading: 'How to Check and Pay Your Fines',
+        content:
+          'There are several ways to check if you have any outstanding traffic fines in Dubai:\n\nThe Dubai Police app shows all police-issued fines with full details. The RTA Dubai app shows parking and RTA-related fines. You can also check on the Dubai Police website by entering your licence plate or traffic file number.\n\nPayment options include the Dubai Police app, RTA app, any GDRFA or police service centre, Dubai Pay, and most banks\' online banking portals. Some fines qualify for a 25% discount if paid within a certain period.',
+      },
+      {
+        heading: 'What If You Get a Fine in a Rental Car?',
+        content:
+          'If you get a traffic fine while driving a rental car, the fine is registered against the vehicle and then passed on to you by the rental company. Most companies will deduct the fine amount from your security deposit.\n\nSome companies add an admin fee of AED 50 to AED 100 per fine on top. At LuxeClub, we charge only the fine amount with no admin fee, and we always show you the official screenshot from Dubai Police so you can verify the fine is real.\n\nIf a rental company claims you incurred a fine, always ask for proof. A legitimate fine will have a reference number, date, time, location, and the offence details. If they cannot produce this, push back.',
+      },
+    ],
+  },
+  {
+    slug: 'dubai-airport-parking-guide',
+    title: 'Dubai Airport Parking: Rates, Terminals & Tips (2026)',
+    metaTitle: 'Dubai Airport Parking 2026 — Terminal 1, 2 & 3 Rates & Tips',
+    metaDescription:
+      'Complete guide to parking at Dubai International Airport (DXB). Terminal 1, 2 and 3 parking charges, valet options, long-stay rates, and money-saving tips.',
+    publishedDate: '2026-03-17',
+    image: '/guides/dubai-airport-parking.jpg',
+    imageAlt: 'Dubai International Airport terminal',
+    sections: [
+      {
+        heading: 'Dubai Airport Parking Overview',
+        content:
+          'Dubai International Airport (DXB) has dedicated multi-storey car parks at each terminal. Parking is managed by Dubai Airports and rates vary depending on the terminal, duration, and whether you want short-term, long-term, or valet parking.\n\nAll car parks accept cash and card payment at the exit barriers. You can also pre-book parking online through the Dubai Airports website for a small discount on long-stay rates. The car parks are open 24/7 and connected to the terminals via covered walkways.',
+      },
+      {
+        heading: 'Terminal 3 Parking Charges',
+        content:
+          'Terminal 3 serves Emirates flights and is the busiest terminal at DXB. Parking is available in the multi-storey car park directly connected to the terminal.\n\nFirst hour costs AED 20, with each additional hour at AED 10. The maximum daily rate is AED 200. Weekly long-stay rates are around AED 700.\n\nThe short-term car park is on the upper levels closest to departures. For pickups, use the arrivals level or the free 15-minute waiting zone. Valet parking is available at approximately AED 250/day and includes car washing on request.',
+      },
+      {
+        heading: 'Terminal 1 Parking Charges',
+        content:
+          'Terminal 1 handles most international airlines other than Emirates.\n\nFirst hour costs AED 20, with each additional hour at AED 10. Maximum daily rate is AED 200. Weekly long-stay rates are around AED 700.\n\nThe car park is connected to the terminal via the arrivals hall on the ground floor. Follow signs for short-stay or long-stay depending on your duration. Pre-booking is recommended during peak travel seasons like December and March.',
+      },
+      {
+        heading: 'Terminal 2 Parking Charges',
+        content:
+          'Terminal 2 mostly serves flydubai and budget carriers. It is smaller than Terminals 1 and 3 but still has a dedicated car park.\n\nFirst hour costs AED 15, with each additional hour at AED 10. Maximum daily rate is AED 150. Weekly long-stay rates are around AED 500.\n\nTerminal 2 is located separately from Terminals 1 and 3, so make sure you are heading to the right terminal before parking.',
+      },
+      {
+        heading: 'Money-Saving Tips',
+        content:
+          'If you are dropping someone off, use the free 15-minute waiting zone at arrivals instead of parking. For short waits, the first hour costs AED 15-20 which is reasonable.\n\nFor longer stays, compare the airport parking rate against leaving your car elsewhere and taking a taxi. An Uber from Dubai Marina to DXB costs roughly AED 50-70 each way, which is cheaper than a week of airport parking at AED 700.\n\nPre-booking online through the Dubai Airports website sometimes gives discounts on long-stay rates. And if you are renting a car, consider a company like LuxeClub that offers airport delivery and collection — skip parking entirely and have the car waiting for you at arrivals.',
+      },
+    ],
+  },
 ]

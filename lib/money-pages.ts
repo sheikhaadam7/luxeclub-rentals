@@ -172,6 +172,43 @@ export const moneyPages: MoneyPage[] = [
       'The Cadillac Escalade is the ultimate statement SUV. Massive presence, a cinema-quality interior, and enough space for the whole crew. Perfect for airport pickups, group trips, or just making an entrance. Insurance and delivery included.',
     filter: { type: 'brand', value: 'Cadillac' },
   },
+  // ── Keyword-gap pages (from competitor research) ────────
+  {
+    slug: 'car-rental-dubai',
+    title: 'Car Rental Dubai',
+    metaTitle: 'Car Rental Dubai — Rent a Car from AED 800/day | LuxeClub',
+    metaDescription:
+      'Rent a car in Dubai with LuxeClub Rentals. Luxury, sports, and SUV cars available. Insurance included, free delivery across Dubai. Book online today.',
+    heading: 'Car Rental Dubai',
+    subheading: 'Luxury, sports, and SUV rentals delivered to your door across Dubai.',
+    content:
+      'Looking for a car rental in Dubai that actually delivers? LuxeClub Rentals offers a curated fleet of luxury and sports cars with transparent pricing, comprehensive insurance, and free delivery anywhere in Dubai. No hidden fees, no inflated deposits, no chasing for refunds. Whether you need a G63 for the weekend, a Ferrari for a special occasion, or a Range Rover for a family trip, we have you covered. Browse the fleet below and book online in minutes.',
+    filter: { type: 'keyword', value: '' },
+  },
+  {
+    slug: 'rent-exotic-car-in-dubai',
+    title: 'Exotic Car Rental Dubai',
+    metaTitle: 'Exotic Car Rental Dubai — Lamborghini, Ferrari, McLaren | LuxeClub',
+    metaDescription:
+      'Rent exotic cars in Dubai. Lamborghini, Ferrari, McLaren, Aston Martin and more. Insurance included, delivery across Dubai. Book your exotic car today.',
+    heading: 'Exotic Car Rental Dubai',
+    subheading: 'Drive the cars most people only see in photos.',
+    content:
+      'Dubai is one of the few places on Earth where driving an exotic car feels completely natural. The roads are built for it, the weather is perfect for it, and the city itself is the backdrop these cars were designed for. Our exotic fleet includes Lamborghini, Ferrari, McLaren, Aston Martin, and more. Every rental comes with comprehensive insurance and free delivery to your hotel, apartment, or the airport.',
+    filter: { type: 'keyword', value: '' },
+  },
+  {
+    slug: 'luxury-car-rental-no-deposit-dubai',
+    title: 'Luxury Car Rental Dubai — Low Deposit',
+    metaTitle: 'Luxury Car Rental Dubai No Deposit Hassle — Low Deposit | LuxeClub',
+    metaDescription:
+      'Rent luxury cars in Dubai with the lowest deposits in the market. Deposit equals just one day\'s rental. Full refund guaranteed. No hidden deductions.',
+    heading: 'Luxury Car Rental Dubai — Low Deposit, No Hassle',
+    subheading: 'Your deposit equals one day\'s rental. And you actually get it back.',
+    content:
+      'Tired of rental companies holding your deposit hostage? At LuxeClub, your security deposit is just one day\'s rental rate. Pay by credit card and no money even leaves your account — we place a hold that gets released once you return the car in good condition. No inflated deposits, no phantom deductions, no months of chasing. We document everything with timestamped photos at pickup and return so there are never any surprises. It is how car rental should work.',
+    filter: { type: 'keyword', value: '' },
+  },
   // ── Type pages ───────────────────────────────────────────
   {
     slug: 'rent-luxury-suv-in-dubai',
