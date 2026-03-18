@@ -80,6 +80,10 @@ export default async function GuidePage({
     'dubai-airport-parking-guide',
     'first-time-renting-luxury-car-dubai',
     'dubai-driving-rules-for-tourists',
+    'uae-roundabout-rules-guide',
+    'dubai-speed-cameras-locations-guide',
+    'dubai-to-hatta-road-trip-guide',
+    'rental-car-fines-dubai-what-happens',
   ]
   const faqJsonLd = FAQ_ELIGIBLE_SLUGS.includes(guide.slug)
     ? {

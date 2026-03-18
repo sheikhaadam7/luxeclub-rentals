@@ -388,4 +388,197 @@ export const guides: Guide[] = [
       },
     ],
   },
+  {
+    slug: 'uae-roundabout-rules-guide',
+    title: 'UAE Roundabout Rules: How to Drive Them Without Getting Fined',
+    metaTitle: 'UAE Roundabout Rules 2026 — Lane Selection, Right of Way & Fines',
+    metaDescription:
+      'Complete guide to roundabout rules in the UAE. Lane selection for 2 and 3-lane roundabouts, right of way, signalling rules, common mistakes, and fines to avoid.',
+    publishedDate: '2026-03-09',
+    image: '/guides/uae-roundabout-rules.jpg',
+    imageAlt: 'Roundabout road in the UAE',
+    sections: [
+      {
+        heading: 'Why Roundabouts in the UAE Confuse Everyone',
+        content:
+          'Roundabouts are everywhere in the UAE, especially in older parts of Dubai, Sharjah, and Abu Dhabi. They range from small single-lane circles in residential areas to massive multi-lane junctions carrying heavy traffic.\n\nThe confusion usually comes down to lane selection and right of way. Drivers from countries where roundabouts are rare often hesitate at the entry, and drivers from countries where they are common sometimes assume the rules are the same. They are not always. The UAE follows its own traffic law, and getting it wrong can mean a fine or an accident.',
+      },
+      {
+        heading: 'Right of Way — Who Goes First?',
+        content:
+          'Vehicles already inside the roundabout have the right of way. Full stop. If you are approaching a roundabout and there is traffic circling, you wait until there is a safe gap before entering.\n\nDo not assume the other driver will slow down or let you in. Forcing your way into an occupied roundabout is both dangerous and fineable. If there is a yield sign or road marking at the entry, follow it. Some roundabouts have traffic lights at the entry — in that case, the lights override the normal give-way rule.',
+      },
+      {
+        heading: 'Traffic Flow Direction',
+        content:
+          'The UAE drives on the right side of the road. That means traffic flows anti-clockwise around roundabouts. You enter from the right and exit to the right. When approaching, all traffic comes from your left.\n\nThis catches out visitors from the UK, Australia, and other left-hand-drive countries where roundabouts flow the other way. If you are used to clockwise roundabouts, take a moment to reset before entering.',
+      },
+      {
+        heading: 'Lane Selection for 2-Lane Roundabouts',
+        content:
+          'Two-lane roundabouts are the most common in residential and suburban areas.\n\n**Right lane (outer):** Use this for taking the first or second exit. Stay in the outer lane the entire way around and exit when you reach your turn.\n\n**Left lane (inner):** Use this for the second exit onwards, or for going more than halfway around. You will need to signal right and move to the outer lane before your exit.\n\nThe key mistake people make is entering the inner lane and then cutting across the outer lane to exit early. This is how most roundabout accidents happen in the UAE.',
+      },
+      {
+        heading: 'Lane Selection for 3-Lane Roundabouts',
+        content:
+          'Three-lane roundabouts are found on busier roads and can feel intimidating if you have not driven one before.\n\n**Right lane (outer):** First or second exit only.\n\n**Middle lane:** Second or third exit. This is the safest lane for most situations because it gives you flexibility.\n\n**Left lane (inner):** Use this for going more than halfway around or making a U-turn. You will need to move outward one lane at a time as you approach your exit.\n\nPlan your lane before you enter. Changing lanes inside a multi-lane roundabout is legal but risky, and doing it unsafely will get you fined.',
+      },
+      {
+        heading: 'Signalling Rules',
+        content:
+          'You do not need to signal when entering a roundabout unless you are taking the first exit immediately to your right. In that case, signal right before you enter.\n\nFor all other exits, signal right just before you reach your exit to let drivers behind and beside you know you are leaving the roundabout. Do not signal left at any point inside the roundabout — this is not done in the UAE.\n\nIf you are going straight through (the second exit on a standard four-way roundabout), enter without signalling, then signal right as you pass the first exit.',
+      },
+      {
+        heading: 'Common Mistakes That Cause Accidents',
+        content:
+          '**Entering without looking.** Always check for traffic already in the roundabout coming from your left.\n\n**Wrong lane selection.** Choosing the inner lane and then exiting early across other lanes is the number one cause of roundabout collisions.\n\n**Stopping inside the roundabout.** Once you are in, keep moving. Stopping inside the circle to let someone enter creates confusion and rear-end risks.\n\n**Speeding through.** Roundabouts require you to slow down. Entering too fast reduces your ability to react to other drivers.\n\n**Not signalling on exit.** The driver behind you does not know you are about to exit unless you signal.',
+      },
+      {
+        heading: 'Roundabout Fines in the UAE',
+        content:
+          'Failing to give way at a roundabout carries a fine of AED 500 in Dubai. Improper lane changes inside a roundabout are AED 400 with 4 black points. Entering a roundabout from the wrong lane can also attract a fine.\n\nIf a roundabout has traffic lights and you run the red, that is AED 1,000, 12 black points, and 30 days vehicle impoundment — the same as any red light offence.\n\nThe fines are enforced by cameras and traffic officers. Some busy roundabouts have cameras installed specifically to catch lane violations.',
+      },
+    ],
+  },
+  {
+    slug: 'dubai-speed-cameras-locations-guide',
+    title: 'Dubai Speed Cameras: Locations, Types & How to Avoid Fines',
+    metaTitle: 'Dubai Speed Cameras 2026 — Locations, Types, Radar Map & Fine Guide',
+    metaDescription:
+      'Where are the speed cameras in Dubai? Complete guide to fixed radars, mobile cameras, AI traffic systems, and how to avoid speeding fines on every major road.',
+    publishedDate: '2026-03-11',
+    image: '/guides/dubai-speed-cameras.jpg',
+    imageAlt: 'Dubai highway road at night',
+    sections: [
+      {
+        heading: 'Dubai Has More Speed Cameras Than You Think',
+        content:
+          'Dubai operates one of the most extensive speed camera networks in the world. Fixed cameras, mobile radar units, average speed cameras, and AI-powered systems cover virtually every highway, arterial road, and residential street in the emirate.\n\nAs of 2026, there are over 200 fixed radar locations in Dubai alone, plus an unknown number of mobile units that change position regularly. The Dubai Police Traffic Department uses radar data in real time, and fines are issued automatically. There is no warning, no grace period, and almost no tolerance above the posted limit.',
+      },
+      {
+        heading: 'Types of Speed Cameras',
+        content:
+          '**Fixed radar cameras.** These are mounted on poles or gantries at permanent locations. They are usually visible and sometimes have warning signs ahead of them. They photograph your plate and record your speed as you pass.\n\n**Mobile radar units.** Unmarked police vehicles with handheld or dashboard-mounted radar guns. These can appear anywhere and move location daily. You will not know one is there until you have already been clocked.\n\n**Average speed cameras.** Two cameras separated by a known distance measure your average speed between them. Slowing down just for the camera and then speeding up again does not work with these.\n\n**AI traffic cameras.** Newer systems that detect multiple offences including tailgating, lane discipline, seatbelt violations, and phone use. These are being rolled out across major junctions and highways.',
+      },
+      {
+        heading: 'Speed Limits on Major Dubai Roads',
+        content:
+          '**Sheikh Zayed Road (E11):** 120 km/h in most sections through the city, dropping to 100 km/h near interchanges.\n\n**Emirates Road (E611):** 120 km/h.\n\n**Al Khail Road (E44):** 100-120 km/h depending on the section.\n\n**Sheikh Mohammed Bin Zayed Road (E311):** 100-120 km/h.\n\n**Al Qudra Road (D63):** 100-120 km/h.\n\n**Residential areas:** 40-60 km/h. School zones drop to 40 km/h during school hours.\n\n**Hessa Street and internal roads:** 60-80 km/h.\n\nThese limits are posted clearly but can change between sections of the same road. Pay attention to the signs, not just what the car in front of you is doing.',
+      },
+      {
+        heading: 'The Speed Buffer Is Gone',
+        content:
+          'Dubai Police used to allow a 20 km/h buffer above the posted limit before radars triggered. That is no longer the case. As of the latest enforcement rules, radars activate at just 1 km/h over the limit.\n\nSo in a 120 km/h zone, 121 km/h is enough to trigger the camera. This catches a lot of tourists and new residents off guard because the buffer was well known for years and many people still assume it exists. It does not. Drive at the posted limit or below.',
+      },
+      {
+        heading: 'Heavy Camera Zones',
+        content:
+          '**Sheikh Zayed Road** has the highest concentration of cameras in Dubai. Fixed radars are placed every few kilometres, and average speed cameras cover long stretches.\n\n**Al Khail Road** and **Sheikh Mohammed Bin Zayed Road** are similarly heavy with enforcement.\n\n**Business Bay, Downtown, and DIFC** have cameras at almost every intersection covering speed, red lights, and lane violations.\n\n**Dubai Marina and JBR** have noise radar cameras in addition to speed cameras. If your car is excessively loud, the noise camera will flag it.\n\n**Hessa Street** is notorious for having numerous closely spaced radars that catch people accelerating between them.\n\n**School zones** have dedicated cameras active during school hours with lower speed limits.',
+      },
+      {
+        heading: 'How to Avoid Speeding Fines',
+        content:
+          '**Use Waze or Google Maps.** Both apps show live speed camera alerts and current speed limits. This is the single most effective tool for avoiding fines, especially on unfamiliar roads.\n\n**Watch the signs, not the traffic.** Other drivers may be speeding. That does not mean the limit is higher. Follow the posted signs.\n\n**Set cruise control.** On highways, set cruise control to the posted limit. It is easy to creep above 120 without realising, especially in a powerful car.\n\n**Be extra careful in transitions.** Speed limits often drop suddenly at interchanges, exits, and urban entry points. A 120 zone can drop to 80 within a few hundred metres.\n\n**Check your speedometer accuracy.** Some cars read slightly fast or slow. If your car reads 120 but you are actually doing 123, the radar does not care about your speedometer.',
+      },
+      {
+        heading: 'What Happens When You Get Flashed',
+        content:
+          'When a radar catches you, the fine is registered against the vehicle plate automatically. You will not receive an immediate notification at the scene. The fine appears in the Dubai Police system within a few days.\n\nYou can check for fines through the Dubai Police app, the Dubai Police website, or the RTA app. Enter your plate number or traffic file number to see any outstanding violations.\n\nFor rental cars, the rental company receives the fine notification and passes it on to you, usually by deducting from your deposit or charging your card. At LuxeClub, we charge the fine amount only with no admin fee and always show you the official screenshot so you can verify it is real.',
+      },
+    ],
+  },
+  {
+    slug: 'dubai-to-hatta-road-trip-guide',
+    title: 'Dubai to Hatta Road Trip: Route, Stops & Driving Tips',
+    metaTitle: 'Dubai to Hatta Road Trip 2026 — Route, Attractions & Driving Guide',
+    metaDescription:
+      'Plan your Dubai to Hatta road trip. Best route, drive time, what to see, where to stop, and tips for driving through the Hajar Mountains.',
+    publishedDate: '2026-03-13',
+    image: '/guides/dubai-hatta-road-trip.jpg',
+    imageAlt: 'Mountain road through Hajar Mountains near Hatta',
+    sections: [
+      {
+        heading: 'Why Hatta Is the Best Day Trip from Dubai',
+        content:
+          'Hatta is a mountain exclave of Dubai sitting in the Hajar Mountains, about 130 kilometres east of the city. It is the complete opposite of everything Dubai is known for. Instead of skyscrapers and malls, you get wadis, mountain trails, turquoise dam water, and villages that look nothing like the rest of the emirate.\n\nThe drive itself is half the point. You go from flat desert to rugged mountain scenery within an hour and a half. It is one of the few day trips from Dubai that genuinely feels like you have left the country.',
+      },
+      {
+        heading: 'The Route — E44 Dubai-Hatta Road',
+        content:
+          'The most direct route is the E44 highway, also called the Dubai-Hatta Road. Pick it up from the intersection with the E311 (Sheikh Mohammed Bin Zayed Road) and follow it east.\n\nTotal distance is approximately 100-130 kilometres depending on where in Dubai you start. From Downtown Dubai, expect around 90 minutes in normal traffic. From Dubai Marina, add another 15-20 minutes.\n\nThe road is a well-maintained dual carriageway the entire way. Speed limit is 120 km/h on the highway sections, dropping as you enter Hatta town. There are petrol stations along the route but they thin out after you pass the main highway stretch, so fill up before you hit the mountain section.',
+      },
+      {
+        heading: 'Alternative Route via Sharjah-Kalba Road (E102)',
+        content:
+          'If you want a less busy drive, take the E102 through Sharjah towards Kalba and then cut across to Hatta. This route is slightly longer but the road is quieter and the scenery through the Sharjah desert is worth seeing.\n\nThis route also works well if you want to combine Hatta with a trip to the east coast. You could drive to Hatta via the E44, spend the day, and return via the E102 through Fujairah and Kalba for a different view on the way back.',
+      },
+      {
+        heading: 'What to See and Do in Hatta',
+        content:
+          '**Hatta Dam.** The main attraction. Bright turquoise water sitting between mountain walls. You can kayak, pedal boat, or just sit and look at it. Arrive early because it gets busy, especially on weekends.\n\n**Hatta Wadi Hub.** An adventure park near the dam with mountain biking, axe throwing, archery, and zorbing. Good for a few hours. You can rent mountain bikes here and ride the trails that wind through the mountains.\n\n**Hatta Heritage Village.** A restored mountain village showing what life looked like here before Dubai became what it is. Small but worth 30 minutes.\n\n**Hatta Hill Park.** A viewpoint above the town with panoramic views of the mountains and the dam. Drive or hike up.\n\n**Mountain bike trails.** Hatta has some of the best mountain biking trails in the UAE, ranging from beginner-friendly paths to technical single track. Bikes can be rented at Wadi Hub.',
+      },
+      {
+        heading: 'Do You Need a 4x4?',
+        content:
+          'No. The main route to Hatta and all the key attractions are accessible by any normal car. The E44 is a standard highway and the roads within Hatta are paved.\n\nA 4x4 or SUV is only needed if you plan to go off the main roads into the wadis or take the unpaved tracks into the mountains. If you stick to the dam, the heritage village, and Wadi Hub, any car will do.\n\nThat said, the roads do have some elevation changes and tight bends in the mountain section. A car with reasonable ground clearance handles the speed bumps and occasional rough patches more comfortably than a low sports car.',
+      },
+      {
+        heading: 'Best Time to Go',
+        content:
+          'October to April is the ideal window. The mountain air is cooler than Dubai but summer temperatures in Hatta still hit 40°C and above, which makes outdoor activities unpleasant.\n\nWeekdays are significantly quieter than weekends. Friday and Saturday see heavy traffic on the E44, especially in the cooler months. If you can go on a Tuesday or Wednesday, you will have the dam and trails largely to yourself.\n\nLeave Dubai by 7-8 AM to arrive before the crowds. Late afternoon light in the mountains is excellent for photos on the drive back.',
+      },
+      {
+        heading: 'Driving Tips for the Hatta Road',
+        content:
+          'Speed cameras are present on the E44, particularly in the first half of the route. Use Waze for live alerts.\n\nThe mountain section has some sharp bends with limited visibility. Do not overtake on blind corners. The road narrows in places and there is occasional oncoming traffic.\n\nFill up your fuel tank before leaving Dubai or at the stations along the highway. There is a petrol station in Hatta town but the options are limited.\n\nWatch for speed bumps as you enter Hatta and the smaller roads around the dam area. Some of them are steep enough to scrape a low car.\n\nIf you are renting a car for this trip, an SUV or a comfortable GT car is the best choice. Something like a Range Rover or a Porsche Cayenne handles the highway comfortably and deals with the mountain roads without any issues. Check our fleet at LuxeClub if you want something that suits the drive.',
+      },
+    ],
+  },
+  {
+    slug: 'rental-car-fines-dubai-what-happens',
+    title: 'What Happens If You Get a Traffic Fine in a Rental Car in Dubai?',
+    metaTitle: 'Traffic Fine in a Rental Car Dubai — What Happens & How to Handle It',
+    metaDescription:
+      'Got a traffic fine in a rental car in Dubai? Here is what happens next, how rental companies charge you, admin fees to watch for, and how to dispute unfair charges.',
+    publishedDate: '2026-03-16',
+    image: '/guides/rental-car-fines-dubai.jpg',
+    imageAlt: 'Person driving a car on a Dubai highway',
+    sections: [
+      {
+        heading: 'How Rental Car Fines Work in Dubai',
+        content:
+          'When you trigger a speed camera or commit a traffic violation in a rental car, the fine is registered against the vehicle plate number, not your name. Dubai Police logs the violation automatically and it appears in their system within a few days.\n\nThe rental company receives the fine notification because the car is registered to them. They then pass the cost on to you, the renter. This usually happens one of two ways: they deduct it from your security deposit, or they charge the credit card you used for the booking.',
+      },
+      {
+        heading: 'When Will You Find Out About the Fine?',
+        content:
+          'Most fines do not appear instantly. Speed camera violations can take 2-7 days to show up in the system. Red light fines and manually issued tickets tend to appear faster.\n\nIf you return the rental car before the fine is processed, the company will typically contact you by email or phone. Some companies hold your deposit for up to 30 days after the rental ends specifically to cover any fines that come in late.\n\nYou can check for fines yourself using the Dubai Police app or website. Enter the rental car plate number to see any violations registered during your rental period. This is worth doing before you return the car so there are no surprises.',
+      },
+      {
+        heading: 'Admin Fees — The Hidden Cost',
+        content:
+          'Here is where it gets expensive. Most rental companies in Dubai charge an admin fee on top of every traffic fine. This fee ranges from AED 50 to AED 200 per violation depending on the company.\n\nSo a single AED 300 speeding fine can end up costing you AED 400-500 once the admin fee is added. Rack up three or four fines over a week and the admin fees alone could be AED 600-800 on top of the actual fines.\n\nSome companies bury this in the small print of the rental agreement. Others do not mention it at all until they send you the bill. Always ask about the admin fee per fine before you sign the contract.\n\nAt LuxeClub, we charge the fine amount only. No admin fee. We show you the official screenshot from Dublin Police so you can verify the fine is legitimate.',
+      },
+      {
+        heading: 'What If You Are a Tourist and Leave the Country?',
+        content:
+          'This is where things get complicated. If you leave the UAE before the fine is processed, the rental company will charge your credit card for the fine plus their admin fee. If the card declines or you dispute it, the fine remains attached to the rental company vehicle.\n\nUnpaid fines in Dubai do not expire. If you return to the UAE in the future, any outstanding fines linked to your name or passport could cause problems at immigration or when trying to rent another car.\n\nSome rental companies will pursue unpaid fines through debt collection agencies. It is not worth ignoring them. If you get a fine, pay it and move on.',
+      },
+      {
+        heading: 'Disputing a Fine',
+        content:
+          'If you believe a fine is unfair or was not your fault, you have options.\n\n**Check the evidence first.** Ask the rental company for the official fine details from Dubai Police, including the reference number, date, time, and location. Cross-reference this with your own timeline. Were you actually driving the car at that time and place?\n\n**Challenge through Dubai Police.** You can dispute a fine through the Dubai Police app or at a traffic department service centre. You will need to provide evidence that the fine is incorrect. If the fine is for a camera violation, they can show you the photo.\n\n**Challenge through the rental company.** If the company is charging you for a fine that does not match your rental period, or if they cannot provide proof from Dubai Police, push back. A legitimate fine has a reference number, date, time, location, and offence detail. If the company cannot produce these, the fine may not exist.',
+      },
+      {
+        heading: 'How to Avoid Fines in a Rental Car',
+        content:
+          '**Use navigation apps.** Waze and Google Maps both show live speed camera locations and current speed limits. Run one of these the entire time you are driving.\n\n**Know the speed limits.** Dubai has almost zero tolerance for speeding. Radars trigger at 1 km/h over the posted limit. Do not rely on the old 20 km/h buffer — it no longer exists.\n\n**Photograph the car at pickup.** Take photos and videos of the exterior, interior, and odometer. This protects you against false damage claims but also establishes a baseline for any disputes.\n\n**Ask about Salik charges.** Salik toll gates charge AED 4-6 per pass. Some companies add an admin fee per toll on top. Ask what their Salik policy is before you drive off.\n\n**Read the contract.** Look specifically for the daily km limit, excess km rate, fine admin fee, and Salik admin fee. These are the four things that catch people out.',
+      },
+      {
+        heading: 'Worst Case Scenario — What AED 43,000 in Fines Looks Like',
+        content:
+          'It does happen. There have been documented cases of tourists racking up tens of thousands of dirhams in fines during a single rental period. One widely reported case involved a tourist with a AED 2,000 deposit who accumulated AED 43,000 in fines, which ballooned to AED 86,000 with late payment penalties.\n\nThe tourist left the country before the fines were processed. The rental company was left holding the bill. Cases like these are why rental companies charge high deposits and hold them for weeks after the rental ends.\n\nThe takeaway is simple: Dubai enforces traffic laws aggressively, the fines are real, and they add up fast. Drive within the limits, use a speed camera app, and you will be fine.',
+      },
+    ],
+  },
 ]
