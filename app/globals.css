@@ -208,6 +208,42 @@ iframe[src*="js.stripe.com/v3/controller-"] {
   }
 }
 
+/* Book Now shimmer for mobile */
+@keyframes btnShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@media (max-width: 639px) {
+  .book-now-shimmer {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(
+      110deg,
+      transparent 20%,
+      rgba(201, 169, 110, 0.15) 40%,
+      rgba(255, 255, 255, 0.12) 50%,
+      rgba(201, 169, 110, 0.15) 60%,
+      transparent 80%
+    );
+    background-size: 200% 100%;
+    animation: btnShimmer 3s ease-in-out infinite;
+  }
+
+  .book-now-shimmer:active {
+    transform: scale(0.95);
+    background: rgba(201, 169, 110, 0.25);
+    animation: none;
+    transition: transform 0.1s ease, background 0.1s ease;
+  }
+
+  .whatsapp-btn:active {
+    transform: scale(0.95);
+    background: rgba(37, 211, 102, 0.4);
+    transition: transform 0.1s ease, background 0.1s ease;
+  }
+}
+
 /* Smooth selection color */
 ::selection {
   background: rgba(139, 126, 200, 0.3);
