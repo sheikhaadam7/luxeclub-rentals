@@ -185,9 +185,9 @@ export default async function HomePage() {
         {/* What we do */}
         <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-24">
           <ScrollReveal>
-            <h3 className="font-display text-3xl sm:text-4xl font-medium text-white mb-10">
+            <h2 className="font-display text-3xl sm:text-4xl font-medium text-white mb-10">
               <T k="home.whatWeDo" />
-            </h3>
+            </h2>
           </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -205,7 +205,7 @@ export default async function HomePage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 </div>
                 <div className="p-6 text-center space-y-3">
-                  <h4 className="font-display text-xl font-medium text-white"><T k="home.luxuryCarRentals" /></h4>
+                  <h3 className="font-display text-xl font-medium text-white"><T k="home.luxuryCarRentals" /></h3>
                   <p className="text-sm text-white/40 leading-relaxed">
                     <T k="home.luxuryCarRentalsDesc" />
                   </p>
@@ -227,7 +227,7 @@ export default async function HomePage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 </div>
                 <div className="p-6 text-center space-y-3">
-                  <h4 className="font-display text-xl font-medium text-white"><T k="home.chauffeurService" /></h4>
+                  <h3 className="font-display text-xl font-medium text-white"><T k="home.chauffeurService" /></h3>
                   <p className="text-sm text-white/40 leading-relaxed">
                     <T k="home.chauffeurServiceDesc" />
                   </p>
@@ -250,7 +250,7 @@ export default async function HomePage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
               </div>
               <div className="p-6 text-center space-y-3">
-                <h4 className="font-display text-xl font-medium text-white"><T k="home.pickUpDropOff" /></h4>
+                <h3 className="font-display text-xl font-medium text-white"><T k="home.pickUpDropOff" /></h3>
                 <p className="text-sm text-white/40 leading-relaxed">
                   <T k="home.pickUpDropOffDesc" />
                 </p>
@@ -262,9 +262,9 @@ export default async function HomePage() {
         {/* How it works */}
         <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-24">
           <div className="text-center space-y-2 mb-12">
-            <h3 className="font-display text-3xl sm:text-4xl font-medium text-white">
+            <h2 className="font-display text-3xl sm:text-4xl font-medium text-white">
               <T k="home.howItWorks" />
-            </h3>
+            </h2>
             <p className="text-sm text-brand-muted">
               <T k="home.howItWorksSubtitle" />
             </p>
@@ -274,21 +274,21 @@ export default async function HomePage() {
               <div className="w-14 h-14 mx-auto rounded-full border border-brand-purple/30 flex items-center justify-center">
                 <span className="text-sm font-bold text-brand-purple">01</span>
               </div>
-              <h4 className="font-display text-lg font-medium text-white"><T k="home.step1Title" /></h4>
+              <h3 className="font-display text-lg font-medium text-white"><T k="home.step1Title" /></h3>
               <p className="text-sm text-white/40 leading-relaxed"><T k="home.step1Desc" /></p>
             </div>
             <div className="text-center space-y-4">
               <div className="w-14 h-14 mx-auto rounded-full border border-brand-purple/30 flex items-center justify-center">
                 <span className="text-sm font-bold text-brand-purple">02</span>
               </div>
-              <h4 className="font-display text-lg font-medium text-white"><T k="home.step2Title" /></h4>
+              <h3 className="font-display text-lg font-medium text-white"><T k="home.step2Title" /></h3>
               <p className="text-sm text-white/40 leading-relaxed"><T k="home.step2Desc" /></p>
             </div>
             <div className="text-center space-y-4">
               <div className="w-14 h-14 mx-auto rounded-full border border-brand-purple/30 flex items-center justify-center">
                 <span className="text-sm font-bold text-brand-purple">03</span>
               </div>
-              <h4 className="font-display text-lg font-medium text-white"><T k="home.step3Title" /></h4>
+              <h3 className="font-display text-lg font-medium text-white"><T k="home.step3Title" /></h3>
               <p className="text-sm text-white/40 leading-relaxed"><T k="home.step3Desc" /></p>
             </div>
           </div>
@@ -298,9 +298,9 @@ export default async function HomePage() {
         {shuffled.length > 0 && (
           <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
             <div className="text-center space-y-2 mb-10">
-              <h3 className="font-display text-2xl sm:text-3xl font-semibold text-white tracking-tight">
+              <h2 className="font-display text-2xl sm:text-3xl font-semibold text-white tracking-tight">
                 <T k="home.featuredVehicles" />
-              </h3>
+              </h2>
               <p className="text-sm text-brand-muted">
                 <T k="home.featuredVehiclesSubtitle" />
               </p>
@@ -333,9 +333,9 @@ export default async function HomePage() {
         {/* Testimonials */}
         <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-24">
           <div className="text-center space-y-2 mb-10">
-            <h3 className="font-display text-2xl sm:text-3xl font-semibold text-white tracking-tight">
+            <h2 className="font-display text-2xl sm:text-3xl font-semibold text-white tracking-tight">
               <T k="home.testimonials" />
-            </h3>
+            </h2>
             <p className="text-sm text-brand-muted">
               <T k="home.testimonialsSubtitle" />
             </p>
@@ -346,9 +346,9 @@ export default async function HomePage() {
         <section className="relative border-t border-white/[0.06] overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-brand-cyan/[0.02] to-transparent pointer-events-none" />
           <div className="max-w-3xl mx-auto px-4 sm:px-6 py-24 text-center relative z-10 space-y-6">
-            <h3 className="font-display text-3xl sm:text-4xl font-medium text-white">
+            <h2 className="font-display text-3xl sm:text-4xl font-medium text-white">
               <T k="home.ctaTitle" />
-            </h3>
+            </h2>
             <p className="text-base text-white/40 leading-relaxed">
               <T k="home.ctaSubtitle" />
             </p>

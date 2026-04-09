@@ -99,12 +99,13 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
             <button
               onClick={(e) => { e.stopPropagation(); prev() }}
               className="absolute left-4 top-1/2 -translate-y-1/2 z-20
-                         flex items-center justify-center
+                         w-11 h-11 flex items-center justify-center
+                         rounded-full bg-black/30 backdrop-blur-sm
                          text-white/70 hover:text-white
-                         opacity-0 group-hover:opacity-100 transition-all duration-200"
+                         opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-200"
               aria-label="Previous image"
             >
-              <svg className="w-8 h-8 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <svg className="w-6 h-6 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
               </svg>
             </button>
@@ -113,12 +114,13 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
             <button
               onClick={(e) => { e.stopPropagation(); next() }}
               className="absolute right-4 top-1/2 -translate-y-1/2 z-20
-                         flex items-center justify-center
+                         w-11 h-11 flex items-center justify-center
+                         rounded-full bg-black/30 backdrop-blur-sm
                          text-white/70 hover:text-white
-                         opacity-0 group-hover:opacity-100 transition-all duration-200"
+                         opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-200"
               aria-label="Next image"
             >
-              <svg className="w-8 h-8 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <svg className="w-6 h-6 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
             </button>

@@ -117,7 +117,7 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
           <button
             type="button"
             onClick={() => setMobileOpen((o) => !o)}
-            className="md:hidden relative flex items-center justify-center w-10 h-10 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.06] transition-colors duration-200"
+            className="md:hidden relative flex items-center justify-center w-11 h-11 rounded-xl text-white/70 hover:text-white hover:bg-white/[0.06] transition-colors duration-200"
             aria-label="Toggle menu"
           >
             <div className="w-[18px] h-[14px] relative">

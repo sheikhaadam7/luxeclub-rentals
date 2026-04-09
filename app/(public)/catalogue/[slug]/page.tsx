@@ -143,13 +143,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: `${title} — LuxeClub Rentals`,
       description,
       url,
-      images: vehicle.primary_image_url ? [{ url: vehicle.primary_image_url, width: 1200, height: 630, alt: vehicle.name }] : undefined,
     },
     twitter: {
       card: 'summary_large_image',
       title: `${title} — LuxeClub Rentals`,
       description,
-      images: vehicle.primary_image_url ? [vehicle.primary_image_url] : undefined,
     },
     alternates: { canonical: url },
   }
