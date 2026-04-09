@@ -75,7 +75,15 @@ export function HeroSearch({ vehicles }: HeroSearchProps) {
   useEffect(() => { setMounted(true) }, [])
 
   const filtered = query.trim()
-    ? vehicles.filter((v) => v.name.toLowerCase().includes(query.toLowerCase())).slice(0, 8)
+    ? vehicles
+        .filter((v) => v.name.toLowerCase().includes(query.toLowerCase()))
+        .sort((a, b) => {
+          const q = query.toLowerCase()
+          const aStarts = a.name.toLowerCase().startsWith(q) ? 0 : 1
+          const bStarts = b.name.toLowerCase().startsWith(q) ? 0 : 1
+          return aStarts - bStarts
+        })
+        .slice(0, 8)
     : []
 
   function handleSelect(slug: string) {

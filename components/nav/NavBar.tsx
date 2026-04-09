@@ -58,7 +58,7 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
   return (
     <>
       <nav className="glass border-b border-brand-border sticky top-0 z-[70]">
-        <div className="max-w-7xl mx-auto px-5 sm:px-6 flex items-center justify-between h-14">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 flex items-center justify-between h-16">
           {/* Logo */}
           <Link
             href="/"
@@ -77,7 +77,7 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
                 key={href}
                 href={href}
                 className={[
-                  'relative px-3.5 py-1.5 rounded-lg text-[13px] font-medium tracking-wide transition-all duration-200',
+                  'relative px-4 py-2 rounded-lg text-[15px] font-medium tracking-wide transition-all duration-200',
                   isActive(href)
                     ? 'text-white bg-white/[0.08]'
                     : 'text-brand-muted hover:text-white hover:bg-white/[0.04]',
@@ -98,7 +98,7 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
               <form action={logout}>
                 <button
                   type="submit"
-                  className="px-3.5 py-1.5 rounded-lg text-[13px] font-medium tracking-wide text-brand-muted hover:text-white hover:bg-white/[0.04] transition-all duration-200"
+                  className="px-4 py-2 rounded-lg text-[15px] font-medium tracking-wide text-brand-muted hover:text-white hover:bg-white/[0.04] transition-all duration-200"
                 >
                   {t('nav.logout')}
                 </button>
@@ -106,7 +106,7 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
             ) : (
               <Link
                 href="/sign-in"
-                className="px-3.5 py-1.5 rounded-lg text-[13px] font-medium tracking-wide text-brand-muted hover:text-white hover:bg-white/[0.04] transition-all duration-200"
+                className="px-4 py-2 rounded-lg text-[15px] font-medium tracking-wide text-brand-muted hover:text-white hover:bg-white/[0.04] transition-all duration-200"
               >
                 {t('nav.signIn')}
               </Link>
@@ -166,7 +166,7 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
         {/* Panel — full height below navbar, flex column so currency/language stick to bottom */}
         <div
           className={[
-            'absolute top-14 left-0 right-0 bottom-0 bg-[#0a0a0a]/95 backdrop-blur-2xl transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] flex flex-col',
+            'absolute top-16 left-0 right-0 bottom-0 bg-[#0a0a0a]/95 backdrop-blur-2xl transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] flex flex-col',
             mobileOpen
               ? 'translate-y-0 opacity-100'
               : '-translate-y-4 opacity-0',
