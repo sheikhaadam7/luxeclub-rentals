@@ -16,6 +16,7 @@ import { LazyVideo } from '@/components/ui/LazyVideo'
 import { TestimonialCarousel } from '@/components/ui/TestimonialCarousel'
 import { HeroSearch } from '@/components/ui/HeroSearch'
 import { BrandGrid } from '@/components/ui/BrandGrid'
+import { getGoogleReviews } from '@/lib/google/reviews'
 
 // ---------------------------------------------------------------------------
 // Page
@@ -40,7 +41,10 @@ export default async function HomePage() {
     ['featured-vehicles'],
     { revalidate: 300 },
   )
-  const featuredVehicles = await getFeaturedVehicles()
+  const [featuredVehicles, googleReviews] = await Promise.all([
+    getFeaturedVehicles(),
+    getGoogleReviews(),
+  ])
 
   const all = featuredVehicles ?? []
   const dayOffset = Math.floor(Date.now() / 86_400_000) % Math.max(all.length, 1)
@@ -336,7 +340,7 @@ export default async function HomePage() {
               <T k="home.testimonialsSubtitle" />
             </p>
           </div>
-          <TestimonialCarousel />
+          <TestimonialCarousel reviews={googleReviews} />
         </section>
         {/* Final CTA */}
         <section className="relative border-t border-white/[0.06] overflow-hidden">
