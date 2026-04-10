@@ -33,7 +33,7 @@ export default async function HomePage() {
       const adminSupabase = createAdminClient()
       const { data } = await adminSupabase
         .from('vehicles')
-        .select('slug, name, category, primary_image_url, daily_rate, weekly_rate, monthly_rate')
+        .select('slug, name, category, primary_image_url, image_urls, daily_rate, weekly_rate, monthly_rate')
         .eq('is_available', true)
         .order('name')
       return data

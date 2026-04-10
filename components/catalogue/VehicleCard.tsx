@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useCurrency } from '@/lib/currency/context'
@@ -30,6 +31,7 @@ export function VehicleCard({
 }: VehicleCardProps) {
   const { formatPrice } = useCurrency()
   const { t } = useTranslation()
+  const [isHovered, setIsHovered] = useState(false)
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Hi, I'm interested in renting the ${name}.`)}`
 
   const secondaryImage = image_urls && image_urls.length > 1
@@ -37,7 +39,11 @@ export function VehicleCard({
     : null
 
   return (
-    <div className="group aspect-[3/4] bg-brand-surface overflow-hidden flex flex-col">
+    <div
+      className="group aspect-[3/4] bg-brand-surface overflow-hidden flex flex-col"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       {/* Clickable image + info area */}
       <Link href={`/catalogue/${slug}`} className="block flex-1 flex flex-col min-h-0">
         {/* Image area */}
@@ -48,9 +54,8 @@ export function VehicleCard({
                 src={primary_image_url}
                 alt={name}
                 fill
-                className={`object-cover transition-opacity duration-500 ease-out ${
-                  secondaryImage ? 'md:group-hover:opacity-0' : ''
-                }`}
+                style={{ opacity: secondaryImage && isHovered ? 0 : 1 }}
+                className="object-cover transition-opacity duration-500 ease-out"
                 sizes="(max-width: 640px) 100vw, (max-width: 1200px) 33vw, 25vw"
                 quality={85}
               />
@@ -59,7 +64,8 @@ export function VehicleCard({
                   src={secondaryImage}
                   alt={`${name} — alternate view`}
                   fill
-                  className="object-cover opacity-0 md:group-hover:opacity-100 transition-opacity duration-500 ease-out"
+                  style={{ opacity: isHovered ? 1 : 0 }}
+                  className="object-cover transition-opacity duration-500 ease-out"
                   sizes="(max-width: 640px) 100vw, (max-width: 1200px) 33vw, 25vw"
                   quality={85}
                 />
