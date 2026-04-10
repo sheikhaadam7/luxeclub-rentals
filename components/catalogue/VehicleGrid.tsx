@@ -26,19 +26,19 @@ interface VehicleGridProps {
 
 /** All brands available across scraped sources */
 const BRANDS = [
-  'Audi',
-  'Porsche',
-  'Bentley',
-  'Maserati',
   'Aston Martin',
-  'Range Rover',
-  'Cadillac',
-  'Rolls Royce',
-  'Mercedes',
-  'Lamborghini',
-  'Ferrari',
-  'McLaren',
+  'Audi',
+  'Bentley',
   'BMW',
+  'Cadillac',
+  'Ferrari',
+  'Lamborghini',
+  'Maserati',
+  'McLaren',
+  'Mercedes',
+  'Porsche',
+  'Range Rover',
+  'Rolls Royce',
 ] as const
 
 /** Car types for filtering */
