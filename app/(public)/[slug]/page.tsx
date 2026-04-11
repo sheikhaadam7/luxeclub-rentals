@@ -112,6 +112,41 @@ function filterVehicles(vehicles: Vehicle[], filter: { type: string; value: stri
 }
 
 // ---------------------------------------------------------------------------
+// Section rendering helpers (mirrors guides pattern)
+// ---------------------------------------------------------------------------
+
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+}
+
+/** Render a content string as paragraphs, supporting **bold** markers. */
+function renderParagraphs(content: string) {
+  return content.split(/\n\n+/).map((para, i) => {
+    const parts = para.split(/(\*\*[^*]+\*\*)/g).filter(Boolean)
+    return (
+      <p
+        key={i}
+        className="text-[15px] text-brand-muted leading-relaxed max-w-3xl mb-4 last:mb-0"
+      >
+        {parts.map((part, j) =>
+          part.startsWith('**') && part.endsWith('**') ? (
+            <strong key={j} className="text-white font-medium">
+              {part.slice(2, -2)}
+            </strong>
+          ) : (
+            <span key={j}>{part}</span>
+          ),
+        )}
+      </p>
+    )
+  })
+}
+
+// ---------------------------------------------------------------------------
 // Static params & metadata
 // ---------------------------------------------------------------------------
 
@@ -152,6 +187,24 @@ export default async function MoneyPage({ params }: PageProps) {
   const allVehicles = await getVehicles()
   const vehicles = filterVehicles(allVehicles, page.filter)
 
+  // FAQ sections → FAQPage schema (only if page has any isFaq sections)
+  const faqSections = (page.sections ?? []).filter((s) => s.isFaq)
+  const faqJsonLd =
+    faqSections.length > 0
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: faqSections.map((s) => ({
+            '@type': 'Question',
+            name: s.heading,
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: s.content.replace(/\*\*/g, '').slice(0, 500),
+            },
+          })),
+        }
+      : null
+
   const jsonLd = [
     {
       '@context': 'https://schema.org',
@@ -188,6 +241,7 @@ export default async function MoneyPage({ params }: PageProps) {
           }
         : undefined,
     })),
+    ...(faqJsonLd ? [faqJsonLd] : []),
   ]
 
   return (
@@ -215,6 +269,23 @@ export default async function MoneyPage({ params }: PageProps) {
           {page.content}
         </p>
       </section>
+
+      {/* Long-form content sections — brand pages only */}
+      {page.sections && page.sections.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 space-y-8">
+          {page.sections.map((section) => (
+            <div key={section.heading} className="space-y-3">
+              <h2
+                id={slugify(section.heading)}
+                className="font-display text-xl sm:text-2xl font-medium text-white scroll-mt-24"
+              >
+                {section.heading}
+              </h2>
+              <div>{renderParagraphs(section.content)}</div>
+            </div>
+          ))}
+        </section>
+      )}
 
       {/* Browse by Brand */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 space-y-4">
