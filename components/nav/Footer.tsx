@@ -87,6 +87,7 @@ export function Footer() {
               <Link href="/rent-convertible-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Convertibles</Link>
               <Link href="/rent-luxury-car-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Luxury Cars</Link>
               <Link href="/rent-supercar-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Supercars</Link>
+              <Link href="/rent-exotic-car-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Exotic Cars</Link>
               <Link href="/rent-cheap-car-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Affordable Rentals</Link>
             </nav>
           </div>
