@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* Override Tailwind v4's default hover variant, which is gated behind
+   @media (hover: hover) and silently disables every `hover:` utility on
+   touchscreen-capable devices (e.g. Windows laptops with touch screens).
+   Redefining it as a plain &:hover restores mouse-hover effects. */
+@custom-variant hover (&:hover);
+
 html {
   scroll-behavior: smooth;
 }
