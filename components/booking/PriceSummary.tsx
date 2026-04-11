@@ -130,24 +130,57 @@ export function PriceSummary({ vehicle, form }: PriceSummaryProps) {
           {/* Divider */}
           <div className="border-t border-brand-border" />
 
-          {/* Total */}
+          {/* Booking total */}
           <div className="flex justify-between items-baseline gap-2">
-            <span className="text-sm font-medium text-white">{t('booking.totalDue')}</span>
-            <span className="text-xl font-semibold text-brand-cyan">
+            <span className="text-sm font-medium text-white">{t('booking.bookingTotal')}</span>
+            <span className="text-xl font-semibold text-white">
               {formatPrice(breakdown.totalDue)}
             </span>
           </div>
 
-          {/* Deposit hold note */}
-          {breakdown.depositAmount > 0 && (depositChoice === 'deposit') && (
-            <div className="bg-black/20 rounded-[var(--radius-card)] px-3 py-2.5 text-xs space-y-0.5">
-              <div className="flex justify-between gap-2">
-                <span className="text-brand-muted">{t('booking.depositHold')}</span>
-                <span className="text-white">{formatPrice(breakdown.depositAmount)}</span>
-              </div>
-              <p className="text-brand-muted/60">{t('booking.depositHoldNote')}</p>
+          {/* Reservation fee charged now */}
+          <div className="bg-brand-cyan/10 border border-brand-cyan/30 rounded-[var(--radius-card)] px-3 py-2.5 space-y-1">
+            <div className="flex justify-between items-baseline gap-2">
+              <span className="text-sm font-medium text-brand-cyan">
+                {t('booking.reservationFeeNow')}
+              </span>
+              <span className="text-lg font-semibold text-brand-cyan">
+                {formatPrice(breakdown.reservationFeeWithSurcharge)}
+              </span>
+            </div>
+            <p className="text-xs text-brand-cyan/80">
+              {t('booking.reservationFeeDesc')}
+            </p>
+          </div>
+
+          {/* Balance due on pickup */}
+          {breakdown.balanceDueOnPickup > 0 && (
+            <div className="flex justify-between items-baseline gap-2">
+              <span className="text-sm text-brand-muted">{t('booking.balanceDueOnPickup')}</span>
+              <span className="text-base font-medium text-white">
+                {formatPrice(breakdown.balanceDueOnPickup)}
+              </span>
             </div>
           )}
+
+          {/* Deposit handled in person notice */}
+          {(depositChoice === 'deposit' || depositChoice === 'no_deposit') && (
+            <p className="text-xs text-brand-muted/80">
+              {depositChoice === 'deposit'
+                ? t('booking.depositInPersonNote')
+                : t('booking.noDepositInPersonNote')}
+            </p>
+          )}
+
+          {/* Forfeit policy — prominent */}
+          <div className="bg-red-500/5 border border-red-500/30 rounded-[var(--radius-card)] px-3 py-2.5">
+            <p className="text-xs font-medium text-red-300 mb-1">
+              {t('booking.forfeitPolicyTitle')}
+            </p>
+            <p className="text-xs text-red-200/80 leading-relaxed">
+              {t('booking.forfeitPolicyBody')}
+            </p>
+          </div>
         </>
       ) : (
         <div className="py-6 text-center space-y-2">

@@ -20,12 +20,16 @@ import { BookingConfirmationEmail } from '@/components/email/BookingConfirmation
 
 export interface CreateBookingResult {
   bookingId: string
-  /** Client secret for the rental PaymentIntent (null for cash payments) */
+  /** Client secret for the reservation fee PaymentIntent (null for cash/crypto) */
   rentalClientSecret: string | null
   /** Client secret for the SetupIntent (card-on-file for cash bookings) */
   setupClientSecret: string | null
-  /** Server-validated price breakdown */
+  /** Full customer obligation (reservation fee + pickup balance) */
   totalDue: number
+  /** Amount charged now to secure the booking */
+  reservationFee: number
+  /** Amount owed in person on pickup day */
+  balanceDueOnPickup: number
   depositAmount: number
 }
 
@@ -67,6 +71,10 @@ export interface BookingDetail {
   no_deposit_surcharge: number
   deposit_amount: number
   total_due: number
+  reservation_fee: number
+  reservation_fee_status: string
+  balance_due_on_pickup: number
+  forfeit_reason: string | null
   payment_method: string
   payment_status: string
   status: string
@@ -205,6 +213,9 @@ export async function createBooking(
       return_fee: pricing.returnFee,
       no_deposit_surcharge: pricing.noDepositSurcharge,
       total_due: pricing.totalDue,
+      reservation_fee: pricing.reservationFeeWithSurcharge,
+      balance_due_on_pickup: pricing.balanceDueOnPickup,
+      reservation_fee_status: 'pending',
       payment_method: formData.paymentMethod,
       status: 'draft',
       payment_status:
@@ -225,28 +236,29 @@ export async function createBooking(
   // 5. Confirmation email is sent after payment succeeds (via webhook),
   //    not at draft creation — no email sent here.
 
-  // 6. Crypto path — no Stripe involvement
-  if (formData.paymentMethod === 'crypto') {
-    return {
-      bookingId,
-      rentalClientSecret: null,
-      setupClientSecret: null,
-      totalDue: pricing.totalDue,
-      depositAmount: pricing.depositAmount,
-    }
+  const commonResult = {
+    bookingId,
+    totalDue: pricing.totalDue,
+    reservationFee: pricing.reservationFeeWithSurcharge,
+    balanceDueOnPickup: pricing.balanceDueOnPickup,
+    depositAmount: pricing.depositAmount,
   }
 
-  // 6b. Cash path — create SetupIntent for card-on-file guarantee
+  // 6. Crypto path — NOWPayments invoice is created separately on the client.
+  //    Only the reservation fee is collected via crypto; the balance is
+  //    settled in person on pickup day.
+  if (formData.paymentMethod === 'crypto') {
+    return { ...commonResult, rentalClientSecret: null, setupClientSecret: null }
+  }
+
+  // 6b. Cash path — create SetupIntent for card-on-file guarantee. The
+  //     495 AED reservation fee is collected in person / via bank transfer
+  //     and marked received by an admin; the card-on-file is retained so
+  //     the reservation fee can be charged if the customer no-shows.
   if (formData.paymentMethod === 'cash') {
     if (!process.env.STRIPE_SECRET_KEY) {
       // Test mode — no Stripe key, skip card-on-file
-      return {
-        bookingId,
-        rentalClientSecret: null,
-        setupClientSecret: null,
-        totalDue: pricing.totalDue,
-        depositAmount: pricing.depositAmount,
-      }
+      return { ...commonResult, rentalClientSecret: null, setupClientSecret: null }
     }
 
     const setupResult = await createSetupIntent(bookingId, userId ?? 'guest')
@@ -255,37 +267,32 @@ export async function createBooking(
     }
 
     return {
-      bookingId,
+      ...commonResult,
       rentalClientSecret: null,
       setupClientSecret: setupResult.clientSecret,
-      totalDue: pricing.totalDue,
-      depositAmount: pricing.depositAmount,
     }
   }
 
-  // 7. Card / wallet path — create PaymentIntents
+  // 7. Card / wallet path — create a PaymentIntent for the reservation fee
+  //    only (not the full rental). The rest is paid in person on pickup day.
   // Test mode: skip Stripe when key is not configured
   if (!process.env.STRIPE_SECRET_KEY) {
-    return {
-      bookingId,
-      rentalClientSecret: null,
-      setupClientSecret: null,
-      totalDue: pricing.totalDue,
-      depositAmount: pricing.depositAmount,
-    }
+    return { ...commonResult, rentalClientSecret: null, setupClientSecret: null }
   }
 
-  const rentalResult = await createRentalPaymentIntent(bookingId, pricing.totalDue, userId ?? 'guest')
+  const rentalResult = await createRentalPaymentIntent(
+    bookingId,
+    pricing.reservationFeeWithSurcharge,
+    userId ?? 'guest'
+  )
   if ('error' in rentalResult) {
     return { error: rentalResult.error }
   }
 
   return {
-    bookingId,
+    ...commonResult,
     rentalClientSecret: rentalResult.clientSecret,
     setupClientSecret: null,
-    totalDue: pricing.totalDue,
-    depositAmount: pricing.depositAmount,
   }
 }
 
@@ -448,6 +455,10 @@ export async function getBookingDetail(
       no_deposit_surcharge,
       deposit_amount,
       total_due,
+      reservation_fee,
+      reservation_fee_status,
+      balance_due_on_pickup,
+      forfeit_reason,
       payment_method,
       payment_status,
       status,
@@ -544,16 +555,16 @@ export async function acceptDelivery(
 /**
  * Server Action — customer cancels their own booking.
  *
- * Policy:
- * - >24 hours before pickup: free cancellation, full refund
- * - <=24 hours before pickup: one-day rental fee charged, partial refund
- * - Cash bookings cannot be cancelled online
- *
- * Issues a Stripe refund on the rental PI, and voids the deposit PI if exists.
+ * Reservation fee policy:
+ * - Cancelled >24 hours before start: full reservation fee refunded (Stripe
+ *   refund on the rental PI for card/wallet paths; admin handles cash/crypto).
+ * - Cancelled <=24 hours before start: reservation fee forfeited, no refund,
+ *   forfeit_reason='late_cancel'.
+ * - Cannot cancel once the rental period has started.
  */
 export async function cancelBooking(
   bookingId: string
-): Promise<{ success: true; refundAmount: number; cancellationFee: number } | { error: string }> {
+): Promise<{ success: true; refundAmount: number; forfeited: boolean } | { error: string }> {
   const supabase = await createClient()
   const { data: claimsData } = await supabase.auth.getClaims()
   const claims = claimsData?.claims
@@ -567,7 +578,7 @@ export async function cancelBooking(
   // Fetch booking with ownership check
   const { data: booking, error: fetchError } = await admin
     .from('bookings')
-    .select('id, status, payment_method, start_date, start_time, total_due, vehicle_id, stripe_rental_pi_id, stripe_deposit_pi_id, stripe_payment_method_id')
+    .select('id, status, payment_method, start_date, start_time, reservation_fee, reservation_fee_status, stripe_rental_pi_id')
     .eq('id', bookingId)
     .eq('user_id', claims.sub)
     .single()
@@ -596,89 +607,46 @@ export async function cancelBooking(
   pickupDate.setUTCHours(hours, minutes, 0, 0)
   const hoursUntilStart = (pickupDate.getTime() - Date.now()) / (1000 * 60 * 60)
 
-  // Fetch vehicle daily rate
-  const { data: vehicle } = await admin
-    .from('vehicles')
-    .select('daily_rate')
-    .eq('id', booking.vehicle_id)
-    .single()
+  const reservationFee = Number(booking.reservation_fee ?? 0)
+  const lateCancel = hoursUntilStart <= 24
 
-  const dailyRate = vehicle?.daily_rate ?? 0
-  const totalDue = booking.total_due ?? 0
+  const refundAmount = lateCancel ? 0 : reservationFee
+  const newReservationFeeStatus = lateCancel ? 'forfeited' : 'refunded'
+  const forfeitReason = lateCancel ? 'late_cancel' : null
 
-  // Determine fee and refund
-  let cancellationFee = 0
-  let refundAmount = totalDue
-
-  if (hoursUntilStart <= 24) {
-    cancellationFee = dailyRate
-    refundAmount = Math.max(0, totalDue - dailyRate)
-  }
-
-  const { stripe } = await import('@/lib/stripe/server')
+  // Stripe refund — only for non-late cancels where the fee was actually
+  // paid via Stripe (card/wallet). Cash/crypto refunds are handled manually.
   let stripeRefundId: string | null = null
-  let paymentStatus = 'refunded'
-
-  if (booking.payment_method === 'cash') {
-    // Cash booking — charge saved card-on-file for cancellation fee
-    if (cancellationFee > 0 && booking.stripe_payment_method_id && stripe) {
+  if (
+    !lateCancel &&
+    refundAmount > 0 &&
+    booking.reservation_fee_status === 'paid' &&
+    booking.stripe_rental_pi_id
+  ) {
+    const { stripe } = await import('@/lib/stripe/server')
+    if (stripe) {
       try {
-        await stripe.paymentIntents.create({
-          amount: Math.round(cancellationFee * 100), // AED → fils
-          currency: 'aed',
-          payment_method: booking.stripe_payment_method_id,
-          off_session: true,
-          confirm: true,
-          metadata: {
-            booking_id: bookingId,
-            type: 'cancellation_fee',
-          },
+        const refund = await stripe.refunds.create({
+          payment_intent: booking.stripe_rental_pi_id,
+          amount: Math.round(refundAmount * 100),
         })
-      } catch (err) {
-        console.error('cancelBooking: cash cancellation charge error', err)
-        return { error: 'Failed to charge cancellation fee. Please contact us directly.' }
-      }
-    } else if (cancellationFee > 0 && !booking.stripe_payment_method_id) {
-      return { error: 'Cash bookings without a card on file cannot be cancelled online. Please contact us directly.' }
-    }
-    // Cash bookings have no rental PI to refund
-    refundAmount = 0
-    paymentStatus = cancellationFee > 0 ? 'cancellation_charged' : 'cancelled'
-  } else {
-    // Card/wallet booking — issue Stripe refund on rental PI
-    if (booking.stripe_rental_pi_id && stripe) {
-      try {
-        if (refundAmount > 0) {
-          const refund = await stripe.refunds.create({
-            payment_intent: booking.stripe_rental_pi_id,
-            amount: Math.round(refundAmount * 100), // AED -> fils
-          })
-          stripeRefundId = refund.id
-        }
+        stripeRefundId = refund.id
       } catch (err) {
         console.error('cancelBooking: stripe refund error', err)
         return { error: 'Failed to process refund. Please try again or contact support.' }
       }
     }
-
-    // Void deposit PI if exists (non-fatal)
-    if (booking.stripe_deposit_pi_id && stripe) {
-      try {
-        await stripe.paymentIntents.cancel(booking.stripe_deposit_pi_id)
-      } catch {
-        // Non-fatal — deposit may already be voided/captured
-      }
-    }
   }
 
-  // Update booking record
   const { error: updateError } = await admin
     .from('bookings')
     .update({
       status: 'cancelled',
-      payment_status: paymentStatus,
+      payment_status: lateCancel ? 'forfeited' : 'refunded',
+      reservation_fee_status: newReservationFeeStatus,
+      forfeit_reason: forfeitReason,
       cancelled_at: new Date().toISOString(),
-      cancellation_fee: cancellationFee,
+      cancellation_fee: lateCancel ? reservationFee : 0,
       cancellation_refund_amount: refundAmount,
       stripe_refund_id: stripeRefundId,
       updated_at: new Date().toISOString(),
@@ -690,7 +658,7 @@ export async function cancelBooking(
     return { error: 'Failed to update booking after cancellation' }
   }
 
-  return { success: true, refundAmount, cancellationFee }
+  return { success: true, refundAmount, forfeited: lateCancel }
 }
 
 // ---------------------------------------------------------------------------

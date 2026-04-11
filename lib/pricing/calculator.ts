@@ -1,4 +1,5 @@
 import { differenceInDays } from 'date-fns'
+import { RESERVATION_FEE_AED } from './constants'
 
 /**
  * Represents a vehicle record with only the fields needed for pricing.
@@ -45,12 +46,22 @@ export interface BookingPriceBreakdown {
   depositAmount: number
   /** 30% of daily_rate * rentalDays if no-deposit chosen, 0 otherwise */
   noDepositSurcharge: number
-  /** Payment processing surcharge percentage (0, 3, 5, or 7) */
+  /** Payment processing surcharge percentage (0, 3, or 5) */
   paymentSurchargePercent: number
-  /** Payment processing surcharge amount */
+  /** Payment processing surcharge amount — applied only to the reservation
+   *  fee, since that is the only amount processed online at booking time. */
   paymentSurcharge: number
-  /** rentalSubtotal + deliveryFee + returnFee + noDepositSurcharge + paymentSurcharge
-   *  Note: deposit is authorized separately and NOT included in totalDue */
+  /** Flat fee charged at booking time to secure the reservation, capped at
+   *  the booking subtotal so customers never pay more than they owe.
+   *  The rest (balanceDueOnPickup) is settled in person on pickup day. */
+  reservationFee: number
+  /** reservationFee + paymentSurcharge — the actual amount processed online. */
+  reservationFeeWithSurcharge: number
+  /** What the customer pays in person on pickup day. Includes any damage
+   *  deposit hold and the no-deposit surcharge (both settled in person). */
+  balanceDueOnPickup: number
+  /** Full customer obligation: subtotal + paymentSurcharge.
+   *  Equals reservationFeeWithSurcharge + balanceDueOnPickup. */
   totalDue: number
 }
 
@@ -108,20 +119,34 @@ export function calculateBookingTotal(
 
   const noDepositSurcharge = depositChoice === 'no_deposit' ? 200 : 0
 
-  // Payment method surcharge
+  // Payment method surcharge rate — applied only to the reservation fee,
+  // since that is the only amount processed online at booking time. Cash
+  // and crypto balances paid in person on pickup day carry no surcharge.
   let paymentSurchargePercent = 0
   if (paymentMethod === 'card') paymentSurchargePercent = 3
   else if (paymentMethod === 'apple_pay' || paymentMethod === 'google_pay') paymentSurchargePercent = 5
 
   const subtotalBeforeSurcharge = rentalSubtotal + deliveryFee + returnFee + noDepositSurcharge
-  const paymentSurcharge =
-    Math.round(subtotalBeforeSurcharge * (paymentSurchargePercent / 100) * 100) / 100
 
-  // Total due (deposit is authorized separately, NOT included)
+  // Reservation fee — flat RESERVATION_FEE_AED, capped at the booking
+  // subtotal so customers never pay more up-front than they owe.
+  const reservationFee = Math.min(RESERVATION_FEE_AED, subtotalBeforeSurcharge)
+
+  const paymentSurcharge =
+    Math.round(reservationFee * (paymentSurchargePercent / 100) * 100) / 100
+
+  const reservationFeeWithSurcharge =
+    Math.round((reservationFee + paymentSurcharge) * 100) / 100
+
+  // Balance owed in person on pickup day (subtotal minus the fee already
+  // secured at booking time). No payment surcharge here — cash/card tap on
+  // pickup day is handled in person and not processed through Stripe.
+  const balanceDueOnPickup =
+    Math.round((subtotalBeforeSurcharge - reservationFee) * 100) / 100
+
+  // Full customer obligation.
   const totalDue =
-    Math.round(
-      (subtotalBeforeSurcharge + paymentSurcharge) * 100
-    ) / 100
+    Math.round((subtotalBeforeSurcharge + paymentSurcharge) * 100) / 100
 
   return {
     baseRate,
@@ -134,6 +159,9 @@ export function calculateBookingTotal(
     noDepositSurcharge,
     paymentSurchargePercent,
     paymentSurcharge,
+    reservationFee,
+    reservationFeeWithSurcharge,
+    balanceDueOnPickup,
     totalDue,
   }
 }

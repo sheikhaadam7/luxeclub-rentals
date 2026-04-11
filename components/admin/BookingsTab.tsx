@@ -7,6 +7,9 @@ import {
   confirmManualPayment,
   approveModificationRequest,
   rejectModificationRequest,
+  markReservationFeeReceived,
+  refundReservationFee,
+  markNoShow,
   type AdminBooking,
   type BookingStatus,
 } from '@/app/actions/admin'
@@ -234,6 +237,52 @@ function BookingCard({
     })
   }
 
+  function handleMarkFeeReceived(e: React.MouseEvent) {
+    e.stopPropagation()
+    setCardError(null)
+    startTransition(async () => {
+      const result = await markReservationFeeReceived(booking.id)
+      if (result.error) {
+        setCardError(result.error)
+      } else {
+        onBookingUpdate({ id: booking.id, reservation_fee_status: 'paid' })
+      }
+    })
+  }
+
+  function handleRefundFee(e: React.MouseEvent) {
+    e.stopPropagation()
+    setCardError(null)
+    if (!confirm('Refund the reservation fee to the customer? This will issue a Stripe refund for card bookings.')) return
+    startTransition(async () => {
+      const result = await refundReservationFee(booking.id)
+      if (result.error) {
+        setCardError(result.error)
+      } else {
+        onBookingUpdate({ id: booking.id, reservation_fee_status: 'refunded' })
+      }
+    })
+  }
+
+  function handleMarkNoShow(e: React.MouseEvent) {
+    e.stopPropagation()
+    setCardError(null)
+    if (!confirm('Mark this booking as no-show? The reservation fee will be forfeited and the booking moved to cancelled.')) return
+    startTransition(async () => {
+      const result = await markNoShow(booking.id)
+      if (result.error) {
+        setCardError(result.error)
+      } else {
+        onBookingUpdate({
+          id: booking.id,
+          status: 'cancelled',
+          reservation_fee_status: 'forfeited',
+          forfeit_reason: 'no_show',
+        })
+      }
+    })
+  }
+
   return (
     <div
       className={`bg-brand-surface border rounded-[var(--radius-card)] transition-colors ${
@@ -350,7 +399,71 @@ function BookingCard({
                       : '—'}
                   </span>
                 </div>
+                {/* Reservation fee split */}
+                {booking.reservation_fee != null && booking.reservation_fee > 0 && (
+                  <>
+                    <div className="flex justify-between text-xs pt-1">
+                      <span className="text-brand-cyan">Reservation Fee</span>
+                      <span className="text-brand-cyan">
+                        AED {booking.reservation_fee.toLocaleString()}{' '}
+                        <span className="text-brand-cyan/60 capitalize">
+                          ({booking.reservation_fee_status ?? '—'})
+                        </span>
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-brand-muted">Balance Due on Pickup</span>
+                      <span className="text-white">
+                        AED {(booking.balance_due_on_pickup ?? 0).toLocaleString()}
+                      </span>
+                    </div>
+                    {booking.forfeit_reason && (
+                      <div className="flex justify-between text-xs">
+                        <span className="text-red-400">Forfeit Reason</span>
+                        <span className="text-red-400 capitalize">
+                          {booking.forfeit_reason.replace('_', ' ')}
+                        </span>
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
+
+              {/* Reservation fee admin actions */}
+              {booking.reservation_fee != null && booking.reservation_fee > 0 && booking.status !== 'cancelled' && booking.status !== 'completed' && (
+                <div className="flex flex-wrap gap-1.5 pt-2">
+                  {booking.reservation_fee_status === 'pending' && (
+                    <button
+                      type="button"
+                      onClick={handleMarkFeeReceived}
+                      disabled={isPending}
+                      className="text-[11px] px-2.5 py-1 rounded font-medium transition-colors disabled:opacity-40 bg-green-600 text-white hover:bg-green-500"
+                    >
+                      Mark Fee Received
+                    </button>
+                  )}
+                  {booking.reservation_fee_status === 'paid' && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={handleRefundFee}
+                        disabled={isPending}
+                        className="text-[11px] px-2.5 py-1 rounded font-medium transition-colors disabled:opacity-40 border border-brand-cyan/40 text-brand-cyan hover:bg-brand-cyan/10"
+                      >
+                        Refund Fee
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleMarkNoShow}
+                        disabled={isPending}
+                        className="text-[11px] px-2.5 py-1 rounded font-medium transition-colors disabled:opacity-40 border border-red-500/40 text-red-400 hover:bg-red-500/10"
+                      >
+                        Mark No-Show
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Section 2: Delivery & Collection */}

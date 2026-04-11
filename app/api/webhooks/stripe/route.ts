@@ -83,10 +83,16 @@ export async function POST(req: Request): Promise<Response> {
 
       if (bookingId) {
         if (type === 'rental') {
-          // Rental charge succeeded — mark booking as paid and promote to pending
+          // Reservation fee charge succeeded — mark the fee as paid and
+          // promote the booking from draft to pending. The remaining
+          // balance is still owed on pickup day.
           await admin
             .from('bookings')
-            .update({ payment_status: 'paid', status: 'pending' })
+            .update({
+              payment_status: 'paid',
+              reservation_fee_status: 'paid',
+              status: 'pending',
+            })
             .eq('id', bookingId)
 
           // Send confirmation email (non-blocking)
@@ -181,7 +187,8 @@ async function sendBookingConfirmationEmail(
     .select(`
       id, start_date, end_date, duration_type, pickup_method, return_method,
       delivery_address, deposit_choice, rental_subtotal, delivery_fee, return_fee,
-      no_deposit_surcharge, deposit_amount, total_due, payment_method, status,
+      no_deposit_surcharge, deposit_amount, total_due, reservation_fee,
+      balance_due_on_pickup, payment_method, status,
       user_id, guest_email,
       vehicles ( name, primary_image_url )
     `)
@@ -225,6 +232,8 @@ async function sendBookingConfirmationEmail(
         noDepositSurcharge: booking.no_deposit_surcharge,
         depositAmount: booking.deposit_amount,
         totalDue: booking.total_due,
+        reservationFee: booking.reservation_fee,
+        balanceDueOnPickup: booking.balance_due_on_pickup,
         paymentMethod: booking.payment_method as 'card' | 'apple_pay' | 'google_pay' | 'cash' | 'crypto',
         status: booking.status,
       },

@@ -105,13 +105,13 @@ export function StepDepositChoice({ form, vehicle }: StepDepositChoiceProps) {
         </button>
       </div>
 
-      {/* Info note */}
-      <div className="flex items-start gap-2 text-xs text-brand-muted">
+      {/* Info note — deposit is settled in person on pickup day */}
+      <div className="flex items-start gap-2 text-xs text-brand-muted bg-black/20 rounded-[var(--radius-card)] p-3">
         <svg className="w-4 h-4 mt-0.5 shrink-0 text-brand-cyan/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
         </svg>
-        <p>
-          {t('booking.depositCardNote')}
+        <p className="leading-relaxed">
+          {t('booking.depositHandledInPersonNote')}
         </p>
       </div>
     </div>

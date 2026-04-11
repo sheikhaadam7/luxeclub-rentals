@@ -73,6 +73,8 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
   const [rentalClientSecret, setRentalClientSecret] = useState<string | null>(null)
   const [setupClientSecret, setSetupClientSecret] = useState<string | null>(null)
   const [bookingTotalDue, setBookingTotalDue] = useState<number>(0)
+  const [bookingReservationFee, setBookingReservationFee] = useState<number>(0)
+  const [bookingBalanceDueOnPickup, setBookingBalanceDueOnPickup] = useState<number>(0)
   const [bookingDepositAmount, setBookingDepositAmount] = useState<number>(0)
   const [bookingError, setBookingError] = useState<string | null>(null)
   const [isCreatingBooking, setIsCreatingBooking] = useState(false)
@@ -148,6 +150,8 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
       setRentalClientSecret(result.rentalClientSecret)
       setSetupClientSecret(result.setupClientSecret)
       setBookingTotalDue(result.totalDue)
+      setBookingReservationFee(result.reservationFee)
+      setBookingBalanceDueOnPickup(result.balanceDueOnPickup)
       setBookingDepositAmount(result.depositAmount)
       setStep(paymentIndex)
       scrollToTop()
@@ -350,6 +354,8 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
               onSuccess={handlePaymentSuccess}
               bookingId={bookingId ?? ''}
               totalDue={bookingTotalDue}
+              reservationFee={bookingReservationFee}
+              balanceDueOnPickup={bookingBalanceDueOnPickup}
               depositAmount={bookingDepositAmount}
               isGuest={!isAuthed}
               guestEmail={!isAuthed ? form.getValues('guestEmail') : undefined}

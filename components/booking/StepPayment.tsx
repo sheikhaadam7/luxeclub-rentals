@@ -30,6 +30,10 @@ interface StepPaymentProps {
   onSuccess: (bookingId: string) => void
   bookingId: string
   totalDue: number
+  /** Flat reservation fee collected now to secure the booking */
+  reservationFee: number
+  /** Remaining amount owed on pickup day (in person) */
+  balanceDueOnPickup: number
   depositAmount: number
   isGuest?: boolean
   guestEmail?: string
@@ -158,13 +162,14 @@ function PaymentForm({
 
 interface CryptoPaymentProps {
   bookingId: string
-  totalDue: number
+  reservationFee: number
+  balanceDueOnPickup: number
   isGuest: boolean
   guestEmail?: string
   onSuccess: (bookingId: string) => void
 }
 
-function CryptoPayment({ bookingId, totalDue, isGuest, guestEmail, onSuccess }: CryptoPaymentProps) {
+function CryptoPayment({ bookingId, reservationFee, balanceDueOnPickup, isGuest, guestEmail, onSuccess }: CryptoPaymentProps) {
   const { formatPrice } = useCurrency()
   const { t } = useTranslation()
   const [isProcessing, setIsProcessing] = useState(false)
@@ -207,19 +212,22 @@ function CryptoPayment({ bookingId, totalDue, isGuest, guestEmail, onSuccess }: 
           </h3>
         </div>
         <p className="text-sm text-brand-muted leading-relaxed">
-          {t('booking.cryptoTotalDue')}{' '}
-          <span className="text-white font-semibold">{formatPrice(totalDue)}</span>.
-          {t('booking.cryptoDesc')}
+          {t('booking.cryptoReservationFeeDesc').replace('{amount}', formatPrice(reservationFee))}
         </p>
+        {balanceDueOnPickup > 0 && (
+          <p className="text-sm text-brand-muted leading-relaxed">
+            {t('booking.balanceDueOnPickupDesc').replace('{amount}', formatPrice(balanceDueOnPickup))}
+          </p>
+        )}
       </div>
 
-      {/* Cancellation policy */}
-      <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
-        <p className="font-semibold text-white/70 mb-1.5 text-xs uppercase tracking-wider">
-          {t('booking.cancellationPolicy')}
+      {/* Forfeit policy */}
+      <div className="rounded-[var(--radius-card)] border border-red-500/30 bg-red-500/5 p-4 text-sm">
+        <p className="font-semibold text-red-300 mb-1.5 text-xs uppercase tracking-wider">
+          {t('booking.forfeitPolicyTitle')}
         </p>
-        <p>
-          {t('booking.cancellationPolicyText')}
+        <p className="text-red-200/80 leading-relaxed">
+          {t('booking.forfeitPolicyBody')}
         </p>
       </div>
 
@@ -344,6 +352,8 @@ export function StepPayment({
   onSuccess,
   bookingId,
   totalDue,
+  reservationFee,
+  balanceDueOnPickup,
   depositAmount,
   isGuest = false,
   guestEmail,
@@ -356,7 +366,8 @@ export function StepPayment({
     return (
       <CryptoPayment
         bookingId={bookingId}
-        totalDue={totalDue}
+        reservationFee={reservationFee}
+        balanceDueOnPickup={balanceDueOnPickup}
         isGuest={isGuest}
         guestEmail={guestEmail}
         onSuccess={onSuccess}
@@ -390,11 +401,24 @@ export function StepPayment({
             </h3>
           </div>
           <p className="text-sm text-brand-muted leading-relaxed">
+            {t('booking.cashReservationFeeDesc').replace('{amount}', formatPrice(reservationFee))}
+          </p>
+          <p className="text-sm text-brand-muted leading-relaxed">
             {t('booking.pleaseHave')}{' '}
             <span className="text-white font-semibold">
-              {formatPrice(totalDue)}
+              {formatPrice(balanceDueOnPickup)}
             </span>{' '}
             {t('booking.cashReadyText')}
+          </p>
+        </div>
+
+        {/* Forfeit policy — cash path */}
+        <div className="rounded-[var(--radius-card)] border border-red-500/30 bg-red-500/5 p-4 text-sm">
+          <p className="font-semibold text-red-300 mb-1.5 text-xs uppercase tracking-wider">
+            {t('booking.forfeitPolicyTitle')}
+          </p>
+          <p className="text-red-200/80 leading-relaxed">
+            {t('booking.forfeitPolicyBody')}
           </p>
         </div>
 
@@ -520,11 +544,37 @@ export function StepPayment({
 
   return (
     <div className="space-y-6">
-      {depositAmount > 0 && (
-        <div className="rounded-lg border border-brand-cyan/30 bg-brand-cyan/5 p-4 text-sm text-brand-muted">
-          {t('booking.securityDepositNotice').split('{amount}')[0]}<span className="font-semibold text-white">{formatPrice(depositAmount)}</span>{t('booking.securityDepositNotice').split('{amount}')[1]}
+      {/* Reservation fee summary */}
+      <div className="rounded-[var(--radius-card)] border border-brand-cyan/30 bg-brand-cyan/5 p-4 space-y-2">
+        <div className="flex items-baseline justify-between gap-2">
+          <span className="text-sm font-medium text-brand-cyan">
+            {t('booking.reservationFeeNow')}
+          </span>
+          <span className="text-lg font-semibold text-brand-cyan">
+            {formatPrice(reservationFee)}
+          </span>
         </div>
-      )}
+        {balanceDueOnPickup > 0 && (
+          <div className="flex items-baseline justify-between gap-2 text-sm">
+            <span className="text-brand-muted">{t('booking.balanceDueOnPickup')}</span>
+            <span className="text-white font-medium">{formatPrice(balanceDueOnPickup)}</span>
+          </div>
+        )}
+        <p className="text-xs text-brand-cyan/80 pt-1">
+          {t('booking.reservationFeeDesc')}
+        </p>
+      </div>
+
+      {/* Forfeit policy — card path */}
+      <div className="rounded-[var(--radius-card)] border border-red-500/30 bg-red-500/5 p-4 text-sm">
+        <p className="font-semibold text-red-300 mb-1.5 text-xs uppercase tracking-wider">
+          {t('booking.forfeitPolicyTitle')}
+        </p>
+        <p className="text-red-200/80 leading-relaxed">
+          {t('booking.forfeitPolicyBody')}
+        </p>
+      </div>
+
       <Elements
         stripe={stripePromise}
         options={{

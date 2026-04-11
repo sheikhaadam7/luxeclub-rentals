@@ -89,11 +89,13 @@ export async function POST(req: Request): Promise<Response> {
   // 6. Handle payment statuses
   try {
     if (paymentStatus === 'finished' || paymentStatus === 'confirmed') {
-      // Payment complete — mark booking as paid and confirmed
+      // Crypto reservation fee received — mark the fee as paid and promote
+      // the booking to confirmed. The rest is still owed on pickup day.
       await admin
         .from('bookings')
         .update({
           payment_status: 'paid',
+          reservation_fee_status: 'paid',
           status: 'confirmed',
           nowpayments_payment_id: paymentIdStr,
         })

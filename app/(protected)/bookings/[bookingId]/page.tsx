@@ -280,8 +280,7 @@ export default async function BookingDetailPage({ params }: PageProps) {
                 <h2 className="text-xs text-brand-muted uppercase tracking-widest font-medium"><T k="lookup.cancelBooking" /></h2>
                 <CancelBookingButton
                   bookingId={booking.id}
-                  dailyRate={vehicle?.daily_rate ?? 0}
-                  totalDue={booking.total_due}
+                  reservationFee={booking.reservation_fee ?? 0}
                   hoursUntilStart={hoursUntilStart}
                 />
               </section>

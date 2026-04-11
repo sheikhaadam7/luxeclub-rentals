@@ -155,12 +155,17 @@ export async function lookupGuestBooking(
 
 /**
  * Server Action — cancels a guest booking verified via email match.
- * Same cancellation policy and Stripe refund logic as cancelBooking.
+ *
+ * Reservation fee policy:
+ * - Cancelled >24 hours before start: full reservation fee refunded.
+ * - Cancelled <=24 hours before start: reservation fee forfeited (no refund),
+ *   forfeit_reason='late_cancel'.
+ * - Cannot cancel once the rental period has started.
  */
 export async function cancelGuestBooking(
   bookingId: string,
   guestEmail: string
-): Promise<{ success: true; refundAmount: number; cancellationFee: number } | { error: string }> {
+): Promise<{ success: true; refundAmount: number; forfeited: boolean } | { error: string }> {
   if (!bookingId || !guestEmail) {
     return { error: 'Booking ID and email are required' }
   }
@@ -170,7 +175,7 @@ export async function cancelGuestBooking(
   // Fetch booking
   const { data: booking, error: fetchError } = await admin
     .from('bookings')
-    .select('id, status, payment_method, start_date, start_time, total_due, vehicle_id, stripe_rental_pi_id, stripe_deposit_pi_id, guest_email, user_id')
+    .select('id, status, payment_method, start_date, start_time, reservation_fee, reservation_fee_status, stripe_rental_pi_id, guest_email, user_id')
     .eq('id', bookingId)
     .single()
 
@@ -196,11 +201,7 @@ export async function cancelGuestBooking(
     return { error: 'Bookings cannot be cancelled once the rental period has started' }
   }
 
-  if (booking.payment_method === 'cash') {
-    return { error: 'Cash bookings cannot be cancelled online. Please contact us directly.' }
-  }
-
-  // Calculate hours until pickup start
+  // Calculate hours until pickup start (using booked start time)
   const startDateStr = booking.start_date
   const startTimeStr = booking.start_time || '10:00'
   const [hours, minutes] = startTimeStr.split(':').map(Number)
@@ -208,50 +209,36 @@ export async function cancelGuestBooking(
   pickupDate.setUTCHours(hours, minutes, 0, 0)
   const hoursUntilStart = (pickupDate.getTime() - Date.now()) / (1000 * 60 * 60)
 
-  // Fetch vehicle daily rate
-  const { data: vehicle } = await admin
-    .from('vehicles')
-    .select('daily_rate')
-    .eq('id', booking.vehicle_id)
-    .single()
+  const reservationFee = Number(booking.reservation_fee ?? 0)
+  const lateCancel = hoursUntilStart <= 24
 
-  const dailyRate = vehicle?.daily_rate ?? 0
-  const totalDue = booking.total_due ?? 0
+  // Determine outcome
+  const refundAmount = lateCancel ? 0 : reservationFee
+  const newReservationFeeStatus = lateCancel ? 'forfeited' : 'refunded'
+  const forfeitReason = lateCancel ? 'late_cancel' : null
 
-  // Determine fee and refund
-  let cancellationFee = 0
-  let refundAmount = totalDue
-
-  if (hoursUntilStart <= 24) {
-    cancellationFee = dailyRate
-    refundAmount = Math.max(0, totalDue - dailyRate)
-  }
-
-  // Issue Stripe refund on rental PI
+  // Issue Stripe refund on the rental PI (only for non-late cancels and
+  // only if the fee was actually paid via Stripe). Cash/crypto paths are
+  // handled manually by admin.
   let stripeRefundId: string | null = null
-  const { stripe } = await import('@/lib/stripe/server')
-
-  if (booking.stripe_rental_pi_id && stripe) {
-    try {
-      if (refundAmount > 0) {
+  if (
+    !lateCancel &&
+    refundAmount > 0 &&
+    booking.reservation_fee_status === 'paid' &&
+    booking.stripe_rental_pi_id
+  ) {
+    const { stripe } = await import('@/lib/stripe/server')
+    if (stripe) {
+      try {
         const refund = await stripe.refunds.create({
           payment_intent: booking.stripe_rental_pi_id,
           amount: Math.round(refundAmount * 100), // AED -> fils
         })
         stripeRefundId = refund.id
+      } catch (err) {
+        console.error('cancelGuestBooking: stripe refund error', err)
+        return { error: 'Failed to process refund. Please try again or contact support.' }
       }
-    } catch (err) {
-      console.error('cancelGuestBooking: stripe refund error', err)
-      return { error: 'Failed to process refund. Please try again or contact support.' }
-    }
-  }
-
-  // Void deposit PI if exists (non-fatal)
-  if (booking.stripe_deposit_pi_id && stripe) {
-    try {
-      await stripe.paymentIntents.cancel(booking.stripe_deposit_pi_id)
-    } catch {
-      // Non-fatal — deposit may already be voided/captured
     }
   }
 
@@ -260,9 +247,11 @@ export async function cancelGuestBooking(
     .from('bookings')
     .update({
       status: 'cancelled',
-      payment_status: 'refunded',
+      payment_status: lateCancel ? 'forfeited' : 'refunded',
+      reservation_fee_status: newReservationFeeStatus,
+      forfeit_reason: forfeitReason,
       cancelled_at: new Date().toISOString(),
-      cancellation_fee: cancellationFee,
+      cancellation_fee: lateCancel ? reservationFee : 0,
       cancellation_refund_amount: refundAmount,
       stripe_refund_id: stripeRefundId,
       updated_at: new Date().toISOString(),
@@ -271,10 +260,10 @@ export async function cancelGuestBooking(
 
   if (updateError) {
     console.error('cancelGuestBooking: update error', updateError)
-    return { error: 'Failed to update booking after refund' }
+    return { error: 'Failed to update booking after cancellation' }
   }
 
-  return { success: true, refundAmount, cancellationFee }
+  return { success: true, refundAmount, forfeited: lateCancel }
 }
 
 // ---------------------------------------------------------------------------

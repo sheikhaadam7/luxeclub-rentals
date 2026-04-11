@@ -329,8 +329,7 @@ export default function BookingLookupPage() {
                 <GuestCancelButton
                   bookingId={booking.id}
                   guestEmail={lookupEmail}
-                  dailyRate={vehicle?.daily_rate ?? 0}
-                  totalDue={booking.total_due}
+                  reservationFee={booking.reservation_fee ?? 0}
                   hoursUntilStart={hoursUntilStart}
                   onCancelled={handleRefresh}
                 />

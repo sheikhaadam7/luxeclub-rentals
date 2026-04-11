@@ -476,6 +476,11 @@ export interface AdminBooking {
   start_time: string | null
   end_time: string | null
   stripe_deposit_pi_id: string | null
+  stripe_rental_pi_id: string | null
+  reservation_fee: number | null
+  reservation_fee_status: string | null
+  balance_due_on_pickup: number | null
+  forfeit_reason: string | null
   modification_status: string | null
   modification_requested_start: string | null
   modification_requested_end: string | null
@@ -502,7 +507,7 @@ export async function getAllBookings(): Promise<
   const { data: bookings, error: bookingsError } = await admin
     .from('bookings')
     .select(
-      'id, vehicle_id, user_id, start_date, end_date, duration_type, status, payment_status, payment_method, total_due, pickup_method, delivery_address, created_at, updated_at, guest_name, guest_email, guest_phone, rental_subtotal, delivery_fee, return_fee, no_deposit_surcharge, deposit_choice, deposit_amount, deposit_status, return_method, collection_address, start_time, end_time, stripe_deposit_pi_id, modification_status, modification_requested_start, modification_requested_end, vehicles(name, slug)'
+      'id, vehicle_id, user_id, start_date, end_date, duration_type, status, payment_status, payment_method, total_due, pickup_method, delivery_address, created_at, updated_at, guest_name, guest_email, guest_phone, rental_subtotal, delivery_fee, return_fee, no_deposit_surcharge, deposit_choice, deposit_amount, deposit_status, return_method, collection_address, start_time, end_time, stripe_deposit_pi_id, stripe_rental_pi_id, reservation_fee, reservation_fee_status, balance_due_on_pickup, forfeit_reason, modification_status, modification_requested_start, modification_requested_end, vehicles(name, slug)'
     )
     .order('created_at', { ascending: false })
 
@@ -566,6 +571,11 @@ export async function getAllBookings(): Promise<
       start_time: b.start_time ?? null,
       end_time: b.end_time ?? null,
       stripe_deposit_pi_id: b.stripe_deposit_pi_id ?? null,
+      stripe_rental_pi_id: b.stripe_rental_pi_id ?? null,
+      reservation_fee: b.reservation_fee ?? null,
+      reservation_fee_status: b.reservation_fee_status ?? null,
+      balance_due_on_pickup: b.balance_due_on_pickup ?? null,
+      forfeit_reason: b.forfeit_reason ?? null,
       modification_status: b.modification_status ?? null,
       modification_requested_start: b.modification_requested_start ?? null,
       modification_requested_end: b.modification_requested_end ?? null,
@@ -573,6 +583,126 @@ export async function getAllBookings(): Promise<
   })
 
   return result
+}
+
+// ============================================================
+// Reservation Fee Admin Actions
+// ============================================================
+
+/**
+ * Mark the reservation fee as received manually. Used for cash / crypto /
+ * bank-transfer paths where the customer pays out-of-band.
+ */
+export async function markReservationFeeReceived(
+  bookingId: string
+): Promise<{ error: string | null }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error }
+
+  const admin = createAdminClient()
+  const { error } = await admin
+    .from('bookings')
+    .update({
+      reservation_fee_status: 'paid',
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', bookingId)
+
+  if (error) {
+    console.error('markReservationFeeReceived error:', error)
+    return { error: error.message }
+  }
+  return { error: null }
+}
+
+/**
+ * Refund the reservation fee back to the customer. For card/wallet paths
+ * this issues a Stripe refund against the rental PI; for cash/crypto the
+ * refund is marked in the DB only and the admin handles it manually.
+ */
+export async function refundReservationFee(
+  bookingId: string
+): Promise<{ error: string | null }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error }
+
+  const admin = createAdminClient()
+  const { data: booking, error: fetchError } = await admin
+    .from('bookings')
+    .select('id, reservation_fee, reservation_fee_status, stripe_rental_pi_id, payment_method')
+    .eq('id', bookingId)
+    .single()
+
+  if (fetchError || !booking) {
+    return { error: fetchError?.message ?? 'Booking not found' }
+  }
+
+  if (booking.reservation_fee_status !== 'paid') {
+    return { error: 'Reservation fee is not in a refundable state' }
+  }
+
+  const amount = Number(booking.reservation_fee ?? 0)
+
+  // Card / wallet — issue Stripe refund
+  if (amount > 0 && booking.stripe_rental_pi_id) {
+    try {
+      const { stripe } = await import('@/lib/stripe/server')
+      if (stripe) {
+        await stripe.refunds.create({
+          payment_intent: booking.stripe_rental_pi_id,
+          amount: Math.round(amount * 100),
+        })
+      }
+    } catch (err) {
+      console.error('refundReservationFee: stripe error', err)
+      return { error: 'Stripe refund failed. Please try again or contact support.' }
+    }
+  }
+
+  const { error: updateError } = await admin
+    .from('bookings')
+    .update({
+      reservation_fee_status: 'refunded',
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', bookingId)
+
+  if (updateError) {
+    console.error('refundReservationFee update error:', updateError)
+    return { error: updateError.message }
+  }
+  return { error: null }
+}
+
+/**
+ * Mark a booking as a no-show. The reservation fee is forfeited and the
+ * booking is moved to cancelled state. Used when the customer fails to
+ * turn up on the agreed start date/time.
+ */
+export async function markNoShow(
+  bookingId: string
+): Promise<{ error: string | null }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error }
+
+  const admin = createAdminClient()
+  const { error } = await admin
+    .from('bookings')
+    .update({
+      status: 'cancelled',
+      payment_status: 'forfeited',
+      reservation_fee_status: 'forfeited',
+      forfeit_reason: 'no_show',
+      cancelled_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', bookingId)
+
+  if (error) {
+    console.error('markNoShow error:', error)
+    return { error: error.message }
+  }
+  return { error: null }
 }
 
 /**
@@ -823,7 +953,7 @@ export async function getDashboardOverview(): Promise<
     admin
       .from('bookings')
       .select(
-        'id, vehicle_id, user_id, start_date, end_date, duration_type, status, payment_status, payment_method, total_due, pickup_method, delivery_address, created_at, updated_at, guest_name, guest_email, guest_phone, rental_subtotal, delivery_fee, return_fee, no_deposit_surcharge, deposit_choice, deposit_amount, deposit_status, return_method, collection_address, start_time, end_time, stripe_deposit_pi_id, modification_status, modification_requested_start, modification_requested_end, vehicles(name, slug)'
+        'id, vehicle_id, user_id, start_date, end_date, duration_type, status, payment_status, payment_method, total_due, pickup_method, delivery_address, created_at, updated_at, guest_name, guest_email, guest_phone, rental_subtotal, delivery_fee, return_fee, no_deposit_surcharge, deposit_choice, deposit_amount, deposit_status, return_method, collection_address, start_time, end_time, stripe_deposit_pi_id, stripe_rental_pi_id, reservation_fee, reservation_fee_status, balance_due_on_pickup, forfeit_reason, modification_status, modification_requested_start, modification_requested_end, vehicles(name, slug)'
       )
       .order('created_at', { ascending: false })
       .limit(10),
@@ -905,6 +1035,11 @@ export async function getDashboardOverview(): Promise<
       start_time: b.start_time ?? null,
       end_time: b.end_time ?? null,
       stripe_deposit_pi_id: b.stripe_deposit_pi_id ?? null,
+      stripe_rental_pi_id: b.stripe_rental_pi_id ?? null,
+      reservation_fee: b.reservation_fee ?? null,
+      reservation_fee_status: b.reservation_fee_status ?? null,
+      balance_due_on_pickup: b.balance_due_on_pickup ?? null,
+      forfeit_reason: b.forfeit_reason ?? null,
       modification_status: b.modification_status ?? null,
       modification_requested_start: b.modification_requested_start ?? null,
       modification_requested_end: b.modification_requested_end ?? null,

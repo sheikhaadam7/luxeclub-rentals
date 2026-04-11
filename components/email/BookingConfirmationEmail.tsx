@@ -32,6 +32,10 @@ export interface BookingConfirmationEmailProps {
     noDepositSurcharge: number
     depositAmount: number
     totalDue: number
+    /** Flat fee collected at booking time to secure the reservation */
+    reservationFee: number
+    /** Amount owed in person on pickup day */
+    balanceDueOnPickup: number
     paymentMethod: 'card' | 'apple_pay' | 'google_pay' | 'cash' | 'crypto'
     status: string
   }
@@ -441,36 +445,83 @@ export function BookingConfirmationEmail({ booking }: BookingConfirmationEmailPr
 
             <Hr style={{ borderColor: '#2a2a2a', margin: '12px 0' }} />
 
-            {/* Total */}
-            <table width="100%" cellPadding="0" cellSpacing="0" style={{ marginBottom: '0' }}>
+            {/* Booking total */}
+            <table width="100%" cellPadding="0" cellSpacing="0" style={{ marginBottom: '12px' }}>
               <tbody>
                 <tr>
-                  <td style={styles.totalLabel}>Total Due</td>
-                  <td style={{ ...styles.totalValue, textAlign: 'right' }}>{formatAED(booking.totalDue)}</td>
+                  <td style={styles.pricingLabel}>Booking Total</td>
+                  <td style={{ ...styles.pricingValue, textAlign: 'right' }}>{formatAED(booking.totalDue)}</td>
                 </tr>
               </tbody>
             </table>
 
-            {/* Deposit hold */}
-            {booking.depositChoice === 'deposit' && booking.depositAmount > 0 && (
-              <table width="100%" cellPadding="0" cellSpacing="0" style={{ marginTop: '12px' }}>
+            {/* Reservation fee paid now */}
+            <table width="100%" cellPadding="0" cellSpacing="0" style={{ marginBottom: '8px' }}>
+              <tbody>
+                <tr>
+                  <td style={{ ...styles.totalLabel, color: '#C9A96E' }}>Reservation Fee (paid now)</td>
+                  <td style={{ ...styles.totalValue, textAlign: 'right', color: '#C9A96E' }}>{formatAED(booking.reservationFee)}</td>
+                </tr>
+              </tbody>
+            </table>
+            <Text style={{ ...styles.depositNote, marginTop: '0', marginBottom: '12px' }}>
+              This reservation fee has been deducted from your booking total.
+            </Text>
+
+            {/* Balance due on pickup */}
+            {booking.balanceDueOnPickup > 0 && (
+              <table width="100%" cellPadding="0" cellSpacing="0" style={{ marginBottom: '4px' }}>
                 <tbody>
                   <tr>
-                    <td style={styles.pricingLabel}>Security Deposit Hold</td>
-                    <td style={{ textAlign: 'right' as const }}>
-                      <Text style={{ ...styles.pricingValue, margin: '0', textAlign: 'right' }}>{formatAED(booking.depositAmount)}</Text>
-                      <Text style={styles.depositNote}>Pre-authorized, not charged</Text>
-                    </td>
+                    <td style={styles.totalLabel}>Balance Due on Pickup Day</td>
+                    <td style={{ ...styles.totalValue, textAlign: 'right' }}>{formatAED(booking.balanceDueOnPickup)}</td>
                   </tr>
                 </tbody>
               </table>
             )}
+            <Text style={{ ...styles.depositNote, marginTop: '0' }}>
+              Payable in person at the start of your booking, along with any security deposit hold or no-deposit surcharge you selected.
+            </Text>
+          </Section>
+
+          {/* ---- Forfeit policy notice ---- */}
+          <Section
+            style={{
+              backgroundColor: '#2a0d0d',
+              border: '1px solid #5a1f1f',
+              borderRadius: '8px',
+              padding: '16px 18px',
+              marginBottom: '18px',
+            }}
+          >
+            <Text
+              style={{
+                color: '#ff9a9a',
+                fontSize: '11px',
+                fontWeight: 600,
+                textTransform: 'uppercase' as const,
+                letterSpacing: '0.6px',
+                margin: '0 0 6px 0',
+              }}
+            >
+              Reservation Fee Forfeit Policy
+            </Text>
+            <Text
+              style={{
+                color: '#e3b4b4',
+                fontSize: '13px',
+                lineHeight: '1.5',
+                margin: 0,
+              }}
+            >
+              Your {formatAED(booking.reservationFee)} reservation fee is non-refundable if you (1) fail to show up for your booking, or (2) cancel within 24 hours of the booking start time. Cancel more than 24 hours in advance for a full refund.
+            </Text>
           </Section>
 
           {/* ---- Payment Method ---- */}
           <Section style={styles.paymentBadgeContainer}>
             <Text style={styles.paymentBadge}>
-              Paid via {formatPaymentMethod(booking.paymentMethod)}
+              Reservation fee paid via {formatPaymentMethod(booking.paymentMethod)}
             </Text>
           </Section>
 

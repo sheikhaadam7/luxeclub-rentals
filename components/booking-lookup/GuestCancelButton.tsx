@@ -7,8 +7,7 @@ import { useCurrency } from '@/lib/currency/context'
 interface GuestCancelButtonProps {
   bookingId: string
   guestEmail: string
-  dailyRate: number
-  totalDue: number
+  reservationFee: number
   hoursUntilStart: number
   onCancelled: () => void
 }
@@ -16,8 +15,7 @@ interface GuestCancelButtonProps {
 export default function GuestCancelButton({
   bookingId,
   guestEmail,
-  dailyRate,
-  totalDue,
+  reservationFee,
   hoursUntilStart,
   onCancelled,
 }: GuestCancelButtonProps) {
@@ -25,11 +23,9 @@ export default function GuestCancelButton({
   const [phase, setPhase] = useState<'initial' | 'confirm' | 'success'>('initial')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [resultData, setResultData] = useState<{ refundAmount: number; cancellationFee: number } | null>(null)
+  const [resultData, setResultData] = useState<{ refundAmount: number; forfeited: boolean } | null>(null)
 
-  const isFree = hoursUntilStart > 24
-  const cancellationFee = isFree ? 0 : dailyRate
-  const refundAmount = isFree ? totalDue : Math.max(0, totalDue - dailyRate)
+  const isFreeRefund = hoursUntilStart > 24
 
   async function handleConfirmCancel() {
     setLoading(true)
@@ -43,25 +39,24 @@ export default function GuestCancelButton({
       return
     }
 
-    setResultData({ refundAmount: result.refundAmount, cancellationFee: result.cancellationFee })
+    setResultData({ refundAmount: result.refundAmount, forfeited: result.forfeited })
     setPhase('success')
     setLoading(false)
 
-    setTimeout(() => onCancelled(), 2000)
+    setTimeout(() => onCancelled(), 2500)
   }
 
   if (phase === 'success' && resultData) {
     return (
       <div className="rounded-lg border border-green-800 bg-green-950/40 p-4 space-y-2">
-        <p className="text-sm font-medium text-green-300">Booking cancelled successfully</p>
-        {resultData.refundAmount > 0 && (
-          <p className="text-sm text-green-300/80">
-            Refund of {formatPrice(resultData.refundAmount)} will be processed to your original payment method.
-          </p>
-        )}
-        {resultData.cancellationFee > 0 && (
+        <p className="text-sm font-medium text-green-300">Booking cancelled</p>
+        {resultData.forfeited ? (
           <p className="text-sm text-yellow-300/80">
-            A cancellation fee of {formatPrice(resultData.cancellationFee)} (one-day rental) was applied.
+            Because this cancellation is within 24 hours of the booking start, the {formatPrice(reservationFee)} reservation fee has been forfeited as per our policy.
+          </p>
+        ) : (
+          <p className="text-sm text-green-300/80">
+            Your {formatPrice(resultData.refundAmount)} reservation fee will be refunded to your original payment method within 5–10 business days.
           </p>
         )}
       </div>
@@ -80,29 +75,24 @@ export default function GuestCancelButton({
         <div className="rounded-lg border border-brand-border bg-brand-black/50 p-4 space-y-3">
           <p className="text-sm font-medium text-white">Cancellation Summary</p>
 
-          {isFree ? (
-            <div className="space-y-1">
+          {isFreeRefund ? (
+            <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-brand-muted">Cancellation fee</span>
-                <span className="text-green-400">Free</span>
+                <span className="text-brand-muted">Reservation fee refund</span>
+                <span className="text-green-400">{formatPrice(reservationFee)}</span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-brand-muted">Refund amount</span>
-                <span className="text-white">{formatPrice(totalDue)}</span>
-              </div>
+              <p className="text-xs text-brand-muted/70">
+                You are cancelling more than 24 hours before the booking start, so your full reservation fee will be refunded.
+              </p>
             </div>
           ) : (
-            <div className="space-y-1">
+            <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-brand-muted">Cancellation fee (one-day rental)</span>
-                <span className="text-yellow-400">{formatPrice(cancellationFee)}</span>
+                <span className="text-brand-muted">Reservation fee</span>
+                <span className="text-red-400">Forfeited ({formatPrice(reservationFee)})</span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-brand-muted">Refund amount</span>
-                <span className="text-white">{formatPrice(refundAmount)}</span>
-              </div>
-              <p className="text-xs text-brand-muted/70 pt-1">
-                Cancellations within 24 hours of pickup incur a one-day rental fee.
+              <p className="text-xs text-red-300/80 leading-relaxed">
+                You are cancelling within 24 hours of the booking start. As per our policy, your {formatPrice(reservationFee)} reservation fee is non-refundable and will NOT be returned. Proceed only if you are sure.
               </p>
             </div>
           )}
