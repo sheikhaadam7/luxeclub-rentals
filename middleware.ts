@@ -1,5 +1,11 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { moneyPages } from '@/lib/money-pages'
+
+// Build a Set of all money-page slugs at module load. These are SEO landing
+// pages registered in lib/money-pages.ts — all must be publicly accessible.
+// Using a Set keeps the per-request lookup O(1).
+const MONEY_PAGE_PATHS = new Set(moneyPages.map((p) => `/${p.slug}`))
 
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -38,7 +44,17 @@ export async function middleware(request: NextRequest) {
 
   // Public routes — accessible without auth
   const publicPaths = ['/', '/sign-in', '/about', '/contact', '/faq', '/catalogue', '/guides', '/reset-password', '/booking-lookup']
-  const isPublicRoute = publicPaths.includes(pathname) || pathname.startsWith('/catalogue/') || pathname.startsWith('/book/') || pathname.startsWith('/auth/') || pathname.startsWith('/guides/') || pathname.startsWith('/rent-') || pathname.startsWith('/api/') || pathname === '/sitemap.xml' || pathname === '/robots.txt'
+  const isPublicRoute =
+    publicPaths.includes(pathname) ||
+    MONEY_PAGE_PATHS.has(pathname) ||
+    pathname.startsWith('/catalogue/') ||
+    pathname.startsWith('/book/') ||
+    pathname.startsWith('/auth/') ||
+    pathname.startsWith('/guides/') ||
+    pathname.startsWith('/rent-') ||
+    pathname.startsWith('/api/') ||
+    pathname === '/sitemap.xml' ||
+    pathname === '/robots.txt'
 
   // Unauthenticated user trying to access a protected route — redirect to sign-in
   // Preserve the intended destination so we can redirect back after login
