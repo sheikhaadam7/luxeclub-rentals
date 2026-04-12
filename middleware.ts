@@ -8,6 +8,15 @@ import { moneyPages } from '@/lib/money-pages'
 const MONEY_PAGE_PATHS = new Set(moneyPages.map((p) => `/${p.slug}`))
 
 export async function middleware(request: NextRequest) {
+  // www → non-www 301 redirect. Google indexes both www and non-www
+  // as separate sites, splitting authority. Force everything to non-www.
+  const host = request.headers.get('host') ?? ''
+  if (host.startsWith('www.')) {
+    const url = request.nextUrl.clone()
+    url.host = host.replace(/^www\./, '')
+    return NextResponse.redirect(url, 301)
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   })

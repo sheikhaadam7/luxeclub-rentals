@@ -19,6 +19,29 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      // Old /garage/* paths → current /catalogue/* equivalents.
+      // The previous version of the site used /garage/ as the vehicle
+      // detail route. Google still has these indexed — 301 redirects
+      // consolidate the signals into the canonical /catalogue/ URLs.
+      {
+        source: '/garage/:slug',
+        destination: '/catalogue/:slug',
+        permanent: true,
+      },
+      {
+        source: '/old-garage/:slug',
+        destination: '/catalogue/:slug',
+        permanent: true,
+      },
+      {
+        source: '/garage',
+        destination: '/catalogue',
+        permanent: true,
+      },
+    ]
+  },
 }
 
 export default nextConfig
