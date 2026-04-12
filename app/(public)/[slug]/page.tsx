@@ -6,6 +6,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { moneyPages, getMoneyPage, SITE_URL } from '@/lib/money-pages'
 import { guides } from '@/lib/guides'
 import { VehicleCard } from '@/components/catalogue/VehicleCard'
+import { FaqAccordion } from '@/components/ui/FaqAccordion'
 
 // ---------------------------------------------------------------------------
 // Navigation links for cross-linking between money pages
@@ -357,26 +358,50 @@ export default async function MoneyPage({ params }: PageProps) {
       </section>
 
       {/* Long-form content sections — below the grid so cars are seen first */}
-      {page.sections && page.sections.length > 0 && (
-        <section id="about" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 space-y-8">
-          <div className="border-t border-brand-border pt-8">
-            <p className="text-xs uppercase tracking-wider text-brand-muted mb-6">
-              About {page.heading}
-            </p>
-          </div>
-          {page.sections.map((section) => (
-            <div key={section.heading} className="space-y-3">
-              <h2
-                id={slugify(section.heading)}
-                className="font-display text-xl sm:text-2xl font-medium text-white scroll-mt-24"
-              >
-                {section.heading}
-              </h2>
-              <div>{renderParagraphs(section.content)}</div>
+      {page.sections && page.sections.length > 0 && (() => {
+        const bodySections = page.sections!.filter((s) => !s.isFaq)
+        const faqSections = page.sections!.filter((s) => s.isFaq)
+        return (
+          <section id="about" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 space-y-8">
+            <div className="border-t border-brand-border pt-8">
+              <p className="text-xs uppercase tracking-wider text-brand-muted mb-6">
+                About {page.heading}
+              </p>
             </div>
-          ))}
-        </section>
-      )}
+
+            {/* Body sections — rendered as H2 + paragraphs */}
+            {bodySections.map((section) => (
+              <div key={section.heading} className="space-y-3">
+                <h2
+                  id={slugify(section.heading)}
+                  className="font-display text-xl sm:text-2xl font-medium text-white scroll-mt-24"
+                >
+                  {section.heading}
+                </h2>
+                <div>{renderParagraphs(section.content)}</div>
+              </div>
+            ))}
+
+            {/* FAQ sections — smooth accordion */}
+            {faqSections.length > 0 && (
+              <div className="space-y-4 pt-4">
+                <h2
+                  id="frequently-asked-questions"
+                  className="font-display text-xl sm:text-2xl font-medium text-white scroll-mt-24"
+                >
+                  Frequently Asked Questions
+                </h2>
+                <FaqAccordion
+                  items={faqSections.map((s) => ({
+                    question: s.heading,
+                    answer: <div>{renderParagraphs(s.content)}</div>,
+                  }))}
+                />
+              </div>
+            )}
+          </section>
+        )
+      })()}
 
       {/* CTA section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center space-y-6">
