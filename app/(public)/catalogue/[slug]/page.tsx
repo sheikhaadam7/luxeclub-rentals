@@ -5,7 +5,9 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { AvailabilityCalendar } from '@/components/ui/AvailabilityCalendar'
 import { ImageGallery } from '@/components/catalogue/ImageGallery'
 import { PriceDisplay } from '@/components/catalogue/PriceDisplay'
+import { FaqAccordion } from '@/components/ui/FaqAccordion'
 import { T } from '@/components/ui/T'
+import { vehicleContentMap } from '@/lib/vehicle-content'
 
 /** Map a free-form DB spec key to a translation key (spec.*) */
 const SPEC_KEY_MAP: Record<string, string> = {
@@ -132,7 +134,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!vehicle) return { title: 'Vehicle Not Found' }
 
-  const title = `Rent ${vehicle.name} in Dubai`
+  const seoContent = vehicleContentMap[slug]
+  const title = seoContent?.metaTitle ?? `Rent ${vehicle.name} in Dubai`
   const description = `Rent a ${vehicle.name} in Dubai from AED ${vehicle.daily_rate?.toLocaleString('en-US') ?? ''}/day. Insurance included, delivery all over Dubai. Book online with LuxeClub Rentals.`
   const url = `https://luxeclubrentals.com/catalogue/${slug}`
 
@@ -209,6 +212,8 @@ export default async function VehicleDetailPage({ params }: PageProps) {
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Hi, I'm interested in renting the ${vehicle.name}.`)}`
   const callUrl = `tel:+${WHATSAPP_NUMBER}`
 
+  const seoContent = vehicleContentMap[slug]
+
   const productJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -227,11 +232,23 @@ export default async function VehicleDetailPage({ params }: PageProps) {
     },
   }
 
+  const faqJsonLd = seoContent?.faqs?.length
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: seoContent.faqs.map((f) => ({
+          '@type': 'Question',
+          name: f.question,
+          acceptedAnswer: { '@type': 'Answer', text: f.answer },
+        })),
+      }
+    : null
+
   return (
     <main className="min-h-screen bg-luxury">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd ? [productJsonLd, faqJsonLd] : productJsonLd) }}
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
@@ -453,6 +470,40 @@ export default async function VehicleDetailPage({ params }: PageProps) {
           </p>
           <AvailabilityCalendar bookedRanges={bookedRanges} />
         </div>
+
+        {/* Model-specific SEO content — below all visual content */}
+        {seoContent && (
+          <div className="mt-16 space-y-8 border-t border-white/[0.08] pt-10">
+            <div>
+              <p className="text-xs uppercase tracking-wider text-brand-muted mb-4">
+                About renting the {vehicle.name} in Dubai
+              </p>
+              {seoContent.description.split(/\n\n+/).map((para, i) => (
+                <p key={i} className="text-[15px] text-brand-muted leading-relaxed max-w-3xl mb-4 last:mb-0">
+                  {para}
+                </p>
+              ))}
+            </div>
+
+            {seoContent.faqs.length > 0 && (
+              <div className="space-y-4">
+                <h2 className="font-display text-xl font-medium text-white">
+                  Frequently Asked Questions
+                </h2>
+                <FaqAccordion
+                  items={seoContent.faqs.map((f) => ({
+                    question: f.question,
+                    answer: (
+                      <p className="text-[15px] text-brand-muted leading-relaxed max-w-3xl">
+                        {f.answer}
+                      </p>
+                    ),
+                  }))}
+                />
+              </div>
+            )}
+          </div>
+        )}
 
       </div>
     </main>
