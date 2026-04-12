@@ -113,11 +113,11 @@ export default async function HomePage() {
           <div className="animate-fade-in-left relative z-10 flex flex-col items-center gap-3" style={{ animationDelay: '400ms' }}>
             <div className="flex items-center gap-4">
               {/* Bitcoin */}
-              <svg className="w-9 h-9 sm:w-10 sm:h-10 drop-shadow-[0_0_8px_rgba(247,147,26,0.4)]" viewBox="0 0 32 32" fill="#F7931A">
+              <svg className="w-[52px] h-[52px] sm:w-[60px] sm:h-[60px] drop-shadow-[0_0_10px_rgba(247,147,26,0.4)]" viewBox="0 0 32 32" fill="#F7931A">
                 <path d="M23.03 14.34c.32-2.13-.97-3.28-2.63-4.04l.54-2.16-1.31-.33-.52 2.1c-.35-.09-.7-.17-1.05-.24l.53-2.11-1.31-.33-.54 2.16c-.28-.07-.57-.13-.84-.2l.01-.01-1.81-.45-.35 1.4s.97.22.95.24c.53.13.63.49.61.77l-.61 2.46c.04.01.08.02.13.04l-.13-.03-.86 3.44c-.07.16-.23.41-.6.32.01.02-.95-.24-.95-.24L11.5 18.6l1.71.43c.32.08.63.16.94.24l-.54 2.18 1.31.33.54-2.17c.36.1.71.19 1.05.28l-.54 2.15 1.31.33.54-2.17c2.23.42 3.91.25 4.62-1.77.57-1.63-.03-2.57-1.2-3.18.86-.2 1.5-.76 1.67-1.93zM20.54 18c-.4 1.63-3.14.75-4.03.53l.72-2.88c.89.22 3.74.66 3.31 2.35zm.41-4.18c-.37 1.48-2.65.73-3.38.54l.65-2.61c.74.18 3.12.53 2.73 2.07z" />
               </svg>
               {/* Ethereum */}
-              <svg className="w-8 h-8 sm:w-9 sm:h-9 drop-shadow-[0_0_8px_rgba(98,126,234,0.4)]" viewBox="0 0 32 32" fill="#627EEA">
+              <svg className="w-10 h-10 sm:w-11 sm:h-11 drop-shadow-[0_0_10px_rgba(98,126,234,0.4)]" viewBox="0 0 32 32" fill="#627EEA">
                 <path d="M16 2l-.22.74V20.3l.22.22.22-.12L24 16.06 16 2z" opacity="0.6" />
                 <path d="M16 2L8 16.06l8 4.34V2z" />
                 <path d="M16 22.08l-.12.15v6.53l.12.35L24 17.74l-8 4.34z" opacity="0.6" />
@@ -126,11 +126,11 @@ export default async function HomePage() {
                 <path d="M8 16.06l8 4.34v-7.97l-8 3.63z" opacity="0.6" />
               </svg>
               {/* USDT / Tether */}
-              <svg className="w-8 h-8 sm:w-9 sm:h-9 drop-shadow-[0_0_8px_rgba(38,161,123,0.4)]" viewBox="0 0 32 32" fill="#26A17B">
+              <svg className="w-12 h-12 sm:w-[52px] sm:h-[52px] drop-shadow-[0_0_10px_rgba(38,161,123,0.4)]" viewBox="0 0 32 32" fill="#26A17B">
                 <path d="M18.15 17.14c-.12.01-.58.04-1.66.04-0.86 0-1.47-.03-1.68-.04-3.33-.15-5.81-.73-5.81-1.42s2.48-1.27 5.81-1.43v2.27c.21.01.84.06 1.69.06 1.03 0 1.52-.05 1.65-.06v-2.27c3.32.16 5.79.74 5.79 1.43s-2.47 1.27-5.79 1.42zm0-3.09v-2.03h4.65V8.87H9.22v3.15h4.64v2.03c-3.77.17-6.6.93-6.6 1.83s2.83 1.66 6.6 1.83v6.55h3.29v-6.55c3.76-.17 6.58-.93 6.58-1.83s-2.82-1.66-6.58-1.83z" />
               </svg>
             </div>
-            <p className="text-sm sm:text-base font-medium text-white/70 tracking-wide">
+            <p className="text-sm sm:text-base font-semibold text-brand-cyan tracking-wide drop-shadow-[0_0_12px_rgba(201,169,110,0.5)]">
               Crypto Payments Accepted
             </p>
           </div>
