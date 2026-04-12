@@ -65,6 +65,24 @@ export default function GuidesPage() {
           </p>
         </div>
 
+        {/* Table of contents */}
+        <nav className="flex flex-wrap gap-3">
+          {(Object.keys(GUIDE_CATEGORIES) as GuideCategory[]).map((cat) => {
+            const count = guides.filter((g) => g.category === cat).length
+            if (count === 0) return null
+            return (
+              <a
+                key={cat}
+                href={`#${cat}`}
+                className="px-4 py-2.5 bg-white/[0.04] border border-white/[0.1] text-sm font-medium text-white/80 hover:text-white hover:border-brand-cyan/40 hover:bg-brand-cyan/5 transition-all duration-200"
+              >
+                {GUIDE_CATEGORIES[cat]}
+                <span className="ml-2 text-xs text-brand-muted">{count}</span>
+              </a>
+            )
+          })}
+        </nav>
+
         {/* Guides grouped by category, newest first within each */}
         {(Object.keys(GUIDE_CATEGORIES) as GuideCategory[]).map((cat) => {
           const catGuides = guides
@@ -72,7 +90,7 @@ export default function GuidesPage() {
             .sort((a, b) => b.publishedDate.localeCompare(a.publishedDate))
           if (catGuides.length === 0) return null
           return (
-            <div key={cat} className="space-y-5">
+            <div key={cat} id={cat} className="space-y-5 scroll-mt-24">
               <h2 className="font-display text-xl font-medium text-white border-b border-brand-border pb-3">
                 {GUIDE_CATEGORIES[cat]}
               </h2>
