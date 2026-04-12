@@ -157,6 +157,32 @@ export default async function HomePage() {
           </div>
         </section>
 
+        {/* Crypto accepted badge */}
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-8 pb-2">
+          <div className="flex items-center justify-center gap-3 sm:gap-4">
+            <div className="flex items-center gap-2.5">
+              {/* Bitcoin */}
+              <svg className="w-6 h-6 text-[#F7931A]" viewBox="0 0 32 32" fill="currentColor">
+                <path d="M23.03 14.34c.32-2.13-.97-3.28-2.63-4.04l.54-2.16-1.31-.33-.52 2.1c-.35-.09-.7-.17-1.05-.24l.53-2.11-1.31-.33-.54 2.16c-.28-.07-.57-.13-.84-.2l.01-.01-1.81-.45-.35 1.4s.97.22.95.24c.53.13.63.49.61.77l-.61 2.46c.04.01.08.02.13.04l-.13-.03-.86 3.44c-.07.16-.23.41-.6.32.01.02-.95-.24-.95-.24L11.5 18.6l1.71.43c.32.08.63.16.94.24l-.54 2.18 1.31.33.54-2.17c.36.1.71.19 1.05.28l-.54 2.15 1.31.33.54-2.17c2.23.42 3.91.25 4.62-1.77.57-1.63-.03-2.57-1.2-3.18.86-.2 1.5-.76 1.67-1.93zM20.54 18c-.4 1.63-3.14.75-4.03.53l.72-2.88c.89.22 3.74.66 3.31 2.35zm.41-4.18c-.37 1.48-2.65.73-3.38.54l.65-2.61c.74.18 3.12.53 2.73 2.07z" />
+              </svg>
+              {/* Ethereum */}
+              <svg className="w-5 h-5 text-[#627EEA]" viewBox="0 0 32 32" fill="currentColor">
+                <path d="M16 2l-.22.74V20.3l.22.22.22-.12L24 16.06 16 2z" opacity="0.6" />
+                <path d="M16 2L8 16.06l8 4.34V2z" />
+                <path d="M16 22.08l-.12.15v6.53l.12.35L24 17.74l-8 4.34z" opacity="0.6" />
+                <path d="M16 29.11v-7.03L8 17.74l8 11.37z" />
+                <path d="M16 20.4l8-4.34-8-3.63v7.97z" opacity="0.2" />
+                <path d="M8 16.06l8 4.34v-7.97l-8 3.63z" opacity="0.6" />
+              </svg>
+              {/* USDT / Tether */}
+              <svg className="w-5 h-5 text-[#26A17B]" viewBox="0 0 32 32" fill="currentColor">
+                <path d="M18.15 17.14c-.12.01-.58.04-1.66.04-0.86 0-1.47-.03-1.68-.04-3.33-.15-5.81-.73-5.81-1.42s2.48-1.27 5.81-1.43v2.27c.21.01.84.06 1.69.06 1.03 0 1.52-.05 1.65-.06v-2.27c3.32.16 5.79.74 5.79 1.43s-2.47 1.27-5.79 1.42zm0-3.09v-2.03h4.65V8.87H9.22v3.15h4.64v2.03c-3.77.17-6.6.93-6.6 1.83s2.83 1.66 6.6 1.83v6.55h3.29v-6.55c3.76-.17 6.58-.93 6.58-1.83s-2.82-1.66-6.58-1.83z" />
+              </svg>
+            </div>
+            <span className="text-xs text-white/40 tracking-wide">Bitcoin, Ethereum & USDT accepted</span>
+          </div>
+        </div>
+
         {/* Trusted by strip */}
         <section className="max-w-5xl mx-auto px-4 sm:px-6 py-12 text-center">
           <p className="text-xs text-white/25 uppercase tracking-[0.2em] font-medium mb-6"><T k="home.featuredIn" /></p>
