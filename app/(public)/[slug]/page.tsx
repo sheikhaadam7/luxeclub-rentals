@@ -270,23 +270,6 @@ export default async function MoneyPage({ params }: PageProps) {
         </p>
       </section>
 
-      {/* Long-form content sections — brand pages only */}
-      {page.sections && page.sections.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 space-y-8">
-          {page.sections.map((section) => (
-            <div key={section.heading} className="space-y-3">
-              <h2
-                id={slugify(section.heading)}
-                className="font-display text-xl sm:text-2xl font-medium text-white scroll-mt-24"
-              >
-                {section.heading}
-              </h2>
-              <div>{renderParagraphs(section.content)}</div>
-            </div>
-          ))}
-        </section>
-      )}
-
       {/* Browse by Brand */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 space-y-4">
         <div>
@@ -372,6 +355,28 @@ export default async function MoneyPage({ params }: PageProps) {
           ))}
         </div>
       </section>
+
+      {/* Long-form content sections — below the grid so cars are seen first */}
+      {page.sections && page.sections.length > 0 && (
+        <section id="about" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 space-y-8">
+          <div className="border-t border-brand-border pt-8">
+            <p className="text-xs uppercase tracking-wider text-brand-muted mb-6">
+              About {page.heading}
+            </p>
+          </div>
+          {page.sections.map((section) => (
+            <div key={section.heading} className="space-y-3">
+              <h2
+                id={slugify(section.heading)}
+                className="font-display text-xl sm:text-2xl font-medium text-white scroll-mt-24"
+              >
+                {section.heading}
+              </h2>
+              <div>{renderParagraphs(section.content)}</div>
+            </div>
+          ))}
+        </section>
+      )}
 
       {/* CTA section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center space-y-6">
