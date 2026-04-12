@@ -609,7 +609,7 @@ export const guides: Guide[] = [
     metaTitle: 'Rent a Car in Dubai with Bitcoin & Crypto — How It Works (2026)',
     metaDescription:
       'How to rent a luxury car in Dubai paying with Bitcoin, Ethereum, USDT, or other cryptocurrency. Step-by-step process, which coins are accepted, and what to expect.',
-    publishedDate: '2026-04-12',
+    publishedDate: '2026-04-07',
     category: 'cars',
     sections: [
       {
@@ -701,7 +701,7 @@ export const guides: Guide[] = [
     metaTitle: 'Is Dubai Safe to Visit in 2026? — Honest Travel Safety Guide | LuxeClub',
     metaDescription:
       'Is it safe to visit Dubai in 2026? An honest, factual guide to Dubai safety for tourists — flights, infrastructure, economy, and what the regional situation means for your trip.',
-    publishedDate: '2026-04-12',
+    publishedDate: '2026-03-24',
     category: 'planning',
     sections: [
       {
@@ -747,7 +747,7 @@ export const guides: Guide[] = [
     metaTitle: 'Dubai Mall Guide 2026 — Parking, Access & Tips for Every Major Mall | LuxeClub',
     metaDescription:
       'Complete guide to Dubai malls for visitors. Parking fees, access routes, opening hours, and tips for Dubai Mall, Mall of the Emirates, Ibn Battuta, and more.',
-    publishedDate: '2026-04-12',
+    publishedDate: '2026-03-31',
     category: 'planning',
     sections: [
       {

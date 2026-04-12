@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { guides } from '@/lib/guides'
+import { guides, GUIDE_CATEGORIES, type GuideCategory } from '@/lib/guides'
 
 const SITE_URL = 'https://luxeclubrentals.com'
 
@@ -65,42 +65,55 @@ export default function GuidesPage() {
           </p>
         </div>
 
-        {/* Guide cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {guides.map((guide) => (
-            <Link
-              key={guide.slug}
-              href={`/guides/${guide.slug}`}
-              className="group bg-brand-surface border border-brand-border rounded-2xl p-6 space-y-3 hover:border-brand-border-hover transition-all duration-300"
-            >
-              <p className="text-xs text-brand-muted">
-                {new Date(guide.publishedDate).toLocaleDateString('en-GB', {
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric',
-                })}
-              </p>
-              <h2 className="font-display text-lg font-medium text-white group-hover:text-brand-cyan transition-colors duration-300">
-                {guide.title}
+        {/* Guides grouped by category, newest first within each */}
+        {(Object.keys(GUIDE_CATEGORIES) as GuideCategory[]).map((cat) => {
+          const catGuides = guides
+            .filter((g) => g.category === cat)
+            .sort((a, b) => b.publishedDate.localeCompare(a.publishedDate))
+          if (catGuides.length === 0) return null
+          return (
+            <div key={cat} className="space-y-5">
+              <h2 className="font-display text-xl font-medium text-white border-b border-brand-border pb-3">
+                {GUIDE_CATEGORIES[cat]}
               </h2>
-              <p className="text-sm text-brand-muted leading-relaxed line-clamp-3">
-                {guide.metaDescription}
-              </p>
-              <span className="inline-flex items-center gap-1 text-sm text-brand-cyan font-medium">
-                Read guide
-                <svg
-                  className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                </svg>
-              </span>
-            </Link>
-          ))}
-        </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {catGuides.map((guide) => (
+                  <Link
+                    key={guide.slug}
+                    href={`/guides/${guide.slug}`}
+                    className="group bg-brand-surface border border-brand-border rounded-2xl p-6 space-y-3 hover:border-brand-border-hover transition-all duration-300"
+                  >
+                    <p className="text-xs text-brand-muted">
+                      {new Date(guide.publishedDate).toLocaleDateString('en-GB', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                      })}
+                    </p>
+                    <h2 className="font-display text-lg font-medium text-white group-hover:text-brand-cyan transition-colors duration-300">
+                      {guide.title}
+                    </h2>
+                    <p className="text-sm text-brand-muted leading-relaxed line-clamp-3">
+                      {guide.metaDescription}
+                    </p>
+                    <span className="inline-flex items-center gap-1 text-sm text-brand-cyan font-medium">
+                      Read guide
+                      <svg
+                        className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                      </svg>
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )
+        })}
       </div>
     </main>
   )
