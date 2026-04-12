@@ -100,18 +100,38 @@ Rule: no more than **25% of backlinks should point at the homepage**. No URL sho
 
 Log every assignment here. Columns: angle (from pitches.md), target outlet, insider contact, status, target URL, anchor used, article URL (once published), date sent, date published, notes.
 
+### Owned-fleet priority rule (updated 2026-04-12)
+
+LuxeClub directly owns 4 vehicles: **Audi RSQ8**, **Bentley Bentayga** (3 variants), **Audi A3** (not yet on site), **Audi Q3** (not yet on site). The remaining ~43 cars are B2B-sourced at lower margin. Bookings for owned cars generate 2–3× the profit.
+
+**Rule:** at least 40% of backlink target URLs should point at owned-car pages or their parent brand pages. The remaining 60% spreads across the broader fleet to maintain anchor/URL diversity and domain-wide authority. This is a soft target, not a hard cap — if an outlet's audience strongly matches a B2B car (e.g. Robb Report + Lamborghini Revuelto), take the placement. But when the choice is neutral, default to owned fleet.
+
+**Owned-car target URLs (prioritize these):**
+- `/catalogue/audi-rsq8` — 161 impressions, pos 76 (has expanded SEO content)
+- `/catalogue/bentley-bentayga` — Bentayga black variant
+- `/catalogue/bentley-bentayga-brown` — Bentayga brown variant  
+- `/catalogue/bentley-bentayga-s` — Bentayga S variant
+- `/rent-audi-in-dubai` — brand page (Audi covers all 7 Audi models but RSQ8 is owned)
+- `/rent-bentley-in-dubai` — brand page (Bentley covers all 5 but Bentayga variants are owned)
+- `/catalogue/audi-a3` — **NOT YET ON SITE** — add vehicle first, then target
+- `/catalogue/audi-q3` — **NOT YET ON SITE** — add vehicle first, then target
+
+**Best Search Console opportunity among owned cars:** Audi RSQ8 at 161 impressions (pos 76) — the RSQ8 vs Urus comparison angle in the SEO content is strong and editors love the "half the price, 90% of the performance" framing.
+
+### Month 1 pitch queue
+
 | # | Angle | Outlet | Insider | Status | Target URL | Anchor | Article URL | Sent | Published | Notes |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Pitch 1 (Autumn in Dubai) | Condé Nast Traveller UK | — | pending | `/rent-luxury-car-in-dubai` | generic | — | — | — | Lead outlet for Month 1. Substituted from `/car-rental-dubai` (blocked by middleware — see Known Issues in pitches.md). |
-| 2 | Pitch 6 (fleet cost breakdown) | Robb Report UK | — | pending | `/catalogue` | generic | — | — | — | Link-bait article as source |
-| 3 | Pitch 1 (Autumn in Dubai) | Condé Nast Traveller DE | — | pending | `/rent-exotic-car-in-dubai` | partial-match | — | — | — | German adaptation |
-| 4 | Pitch 6 (fleet cost breakdown) | Forbes Russia Life | — | pending | `/catalogue` | URL | — | — | — | Anchor varies from #2 for diversity |
-| 5 | Pitch 1 (Autumn in Dubai) | Time Out Dubai | — | pending | `/rent-supercar-in-dubai` | branded | — | — | — | UAE local relevance |
-| 6 | Pitch 2 (subscription rentals) | FT How To Spend It | — | pending | `/rent-luxury-car-in-dubai` | branded | — | — | — | Wealth/lifestyle angle. Substituted from `/luxury-car-rental-no-deposit-dubai` (blocked by middleware — see Known Issues in pitches.md). |
-| 7 | Pitch 4 (family half-term) | Telegraph Travel | — | pending | `/guides/dubai-driving-rules-for-tourists` | URL | — | — | — | UK family audience |
-| 8 | Pitch 5 (Russian-speaking guide) | Russian Emirates | — | pending | `/rent-rolls-royce-in-dubai` | branded | — | — | — | Expat outlet, high acceptance |
+| 1 | Pitch 2 (subscription rentals) | FT How To Spend It | — | pending | `/catalogue/audi-rsq8` | branded | — | — | — | **OWNED CAR.** Lead with RSQ8 as the "best-value performance SUV" example. Wealth audience fits. |
+| 2 | Pitch 6 (fleet cost breakdown) | Robb Report UK | — | pending | `/rent-bentley-in-dubai` | generic | — | — | — | **OWNED BRAND.** Link-bait article as source, feature Bentayga pricing prominently. |
+| 3 | Pitch 1 (Autumn in Dubai) | Condé Nast Traveller UK | — | pending | `/rent-audi-in-dubai` | partial-match | — | — | — | **OWNED BRAND.** Lead with RSQ8/RS6 as the autumn-trip car. |
+| 4 | Pitch 1 (Autumn in Dubai) | Condé Nast Traveller DE | — | pending | `/catalogue/bentley-bentayga-s` | URL | — | — | — | **OWNED CAR.** German audience, Bentley resonates with DE market. |
+| 5 | Pitch 3 (driving roads) | Esquire ME | — | pending | `/catalogue/aston-martin-dbx-707` | generic | — | — | — | B2B car BUT closest to page 1 (pos 27) — high domain-authority ROI. |
+| 6 | Pitch 6 (fleet cost breakdown) | Forbes Russia Life | — | pending | `/catalogue` | URL | — | — | — | Full fleet link-bait, fleet pricing features Bentayga + RSQ8 numbers. |
+| 7 | Pitch 4 (family half-term) | Telegraph Travel | — | pending | `/guides/dubai-driving-rules-for-tourists` | URL | — | — | — | Guide link — builds domain authority that lifts all pages. |
+| 8 | Pitch 5 (Russian-speaking guide) | Russian Emirates | — | pending | `/rent-bentley-in-dubai` | branded | — | — | — | **OWNED BRAND.** Expat outlet, high acceptance, Bentayga as long-stay car. |
 
-**Month 1 target:** 8 articles sent to pitch. At least 1 published by end of month.
+**Month 1 target:** 8 pitches sent. At least 1 published. At least 4 of 8 target URLs point at owned-car or owned-brand pages (currently 5 of 8 = 63%).
 
 Add rows as pitches go out. When a placement is published, update the row AND tick the anchor + target URL trackers above.
 
