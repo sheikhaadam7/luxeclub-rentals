@@ -21,6 +21,28 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // Renamed / removed vehicles — specific slug overrides must come
+      // BEFORE the wildcard /garage/:slug rule so they match first.
+      {
+        source: '/garage/range-rover-orange',
+        destination: '/catalogue/range-rover-svr',
+        permanent: true,
+      },
+      {
+        source: '/old-garage/range-rover-orange',
+        destination: '/catalogue/range-rover-svr',
+        permanent: true,
+      },
+      {
+        source: '/garage/rolls-royce-dawn',
+        destination: '/rent-rolls-royce-in-dubai',
+        permanent: true,
+      },
+      {
+        source: '/old-garage/rolls-royce-dawn',
+        destination: '/rent-rolls-royce-in-dubai',
+        permanent: true,
+      },
       // Old /garage/* paths → current /catalogue/* equivalents.
       // The previous version of the site used /garage/ as the vehicle
       // detail route. Google still has these indexed — 301 redirects
