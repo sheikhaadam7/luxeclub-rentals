@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     template: '%s | LuxeClub Rentals Dubai',
   },
   description:
-    'Rent luxury and sports cars in Dubai. Lamborghini, Ferrari, Rolls-Royce, Bentley and more. Insurance included, delivery all over Dubai, 24/7 concierge. Book online today.',
+    'Rent luxury and sports cars in Dubai. Lamborghini, Ferrari, Rolls-Royce, Bentley and more. Insurance included, delivery across Dubai.',
   keywords: [
     'luxury car rental Dubai',
     'rent supercar Dubai',

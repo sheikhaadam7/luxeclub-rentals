@@ -9,6 +9,9 @@ export const metadata: Metadata = {
     description:
       'Reach us via WhatsApp, phone, or email. Binary Tower, 32 Marasi Drive, Business Bay, Dubai.',
     url: 'https://luxeclubrentals.com/contact',
+    type: 'website',
+    siteName: 'LuxeClub Rentals',
+    images: [{ url: 'https://luxeclubrentals.com/opengraph-image', width: 1200, height: 630, alt: 'Contact LuxeClub Rentals' }],
   },
   alternates: { canonical: 'https://luxeclubrentals.com/contact' },
 }

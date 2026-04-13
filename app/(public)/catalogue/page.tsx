@@ -13,6 +13,9 @@ export const metadata: Metadata = {
     description:
       'Browse our collection of luxury cars for rent in Dubai. Lamborghini, Ferrari, Rolls-Royce, Bentley and more.',
     url: 'https://luxeclubrentals.com/catalogue',
+    type: 'website',
+    siteName: 'LuxeClub Rentals',
+    images: [{ url: 'https://luxeclubrentals.com/opengraph-image', width: 1200, height: 630, alt: 'LuxeClub Rentals Fleet' }],
   },
   alternates: { canonical: 'https://luxeclubrentals.com/catalogue' },
 }

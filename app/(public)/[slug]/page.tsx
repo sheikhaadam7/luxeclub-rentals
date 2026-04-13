@@ -34,6 +34,15 @@ const TYPE_LINKS = [
   { label: 'Convertibles', slug: 'rent-convertible-in-dubai' },
 ] as const
 
+const KEYWORD_LINKS = [
+  { label: 'Car Rental Dubai', slug: 'car-rental-dubai' },
+  { label: 'Luxury Cars', slug: 'rent-luxury-car-in-dubai' },
+  { label: 'Supercars', slug: 'rent-supercar-in-dubai' },
+  { label: 'Exotic Cars', slug: 'rent-exotic-car-in-dubai' },
+  { label: 'No Deposit', slug: 'luxury-car-rental-no-deposit-dubai' },
+  { label: 'Affordable', slug: 'rent-cheap-car-in-dubai' },
+] as const
+
 // ---------------------------------------------------------------------------
 // Brand & type extraction (mirrors VehicleGrid logic)
 // ---------------------------------------------------------------------------
@@ -171,6 +180,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: page.metaTitle,
       description: page.metaDescription,
       url: `${SITE_URL}/${page.slug}`,
+      type: 'website',
+      siteName: 'LuxeClub Rentals',
+      images: [{ url: `${SITE_URL}/opengraph-image`, width: 1200, height: 630, alt: page.metaTitle }],
     },
     alternates: { canonical: `${SITE_URL}/${page.slug}` },
   }
@@ -200,7 +212,7 @@ export default async function MoneyPage({ params }: PageProps) {
             name: s.heading,
             acceptedAnswer: {
               '@type': 'Answer',
-              text: s.content.replace(/\*\*/g, '').slice(0, 500),
+              text: s.content.replace(/\*\*/g, ''),
             },
           })),
         }
@@ -231,13 +243,16 @@ export default async function MoneyPage({ params }: PageProps) {
       '@context': 'https://schema.org',
       '@type': 'Product',
       name: v.name,
+      description: `Rent a ${v.name} in Dubai with LuxeClub Rentals. Insurance included, delivery across Dubai.`,
       image: v.primary_image_url,
       url: `${SITE_URL}/catalogue/${v.slug}`,
+      brand: { '@type': 'Brand', name: extractBrand(v.name) },
       offers: v.daily_rate
         ? {
             '@type': 'Offer',
             priceCurrency: 'AED',
             price: v.daily_rate,
+            url: `${SITE_URL}/catalogue/${v.slug}`,
             availability: 'https://schema.org/InStock',
           }
         : undefined,
@@ -247,10 +262,13 @@ export default async function MoneyPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-luxury">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      {jsonLd.map((schema, i) => (
+        <script
+          key={i}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+      ))}
 
       {/* Hero section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 space-y-4">
@@ -305,6 +323,24 @@ export default async function MoneyPage({ params }: PageProps) {
                 }`}
               >
                 {t.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+        <div>
+          <p className="text-xs uppercase tracking-wider text-brand-muted mb-2">Popular Searches</p>
+          <div className="flex flex-wrap gap-2">
+            {KEYWORD_LINKS.map((k) => (
+              <Link
+                key={k.slug}
+                href={`/${k.slug}`}
+                className={`px-4 py-2 text-sm font-medium rounded-none border whitespace-nowrap transition-all duration-200 ${
+                  slug === k.slug
+                    ? 'bg-white text-black border-white'
+                    : 'bg-transparent text-white/60 border-white/[0.12] hover:text-white hover:border-white/30'
+                }`}
+              >
+                {k.label}
               </Link>
             ))}
           </div>

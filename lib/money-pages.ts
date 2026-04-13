@@ -33,7 +33,7 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'rent-lamborghini-in-dubai',
     title: 'Lamborghini Rental Dubai',
-    metaTitle: 'Lamborghini Car Rental Dubai — Hire from AED 2,500/day | LuxeClub',
+    metaTitle: 'Lamborghini Car Rental Dubai — Hire from AED 2,500/day',
     metaDescription:
       'Lamborghini car rental in Dubai — Urus, Huracan, Revuelto available. Insurance included, free delivery across Dubai. Book online today.',
     heading: 'Lamborghini Car Rental Dubai',
@@ -119,7 +119,7 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'rent-ferrari-in-dubai',
     title: 'Ferrari Rental Dubai',
-    metaTitle: 'Ferrari Car Rental Dubai — Hire from AED 2,500/day | LuxeClub',
+    metaTitle: 'Ferrari Car Rental Dubai — Hire from AED 2,500/day',
     metaDescription:
       'Ferrari car rental in Dubai — Roma, Portofino, 488, F8 Tributo, SF90 available. Insurance included, free delivery across Dubai. Book your Ferrari today.',
     heading: 'Ferrari Car Rental Dubai',
@@ -205,7 +205,7 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'rent-rolls-royce-in-dubai',
     title: 'Rolls Royce Rental Dubai',
-    metaTitle: 'Rolls Royce Car Rental Dubai — Hire a Cullinan or Ghost | LuxeClub',
+    metaTitle: 'Rolls Royce Car Rental Dubai — Hire a Cullinan or Ghost',
     metaDescription:
       'Rolls Royce car rental in Dubai — Ghost, Wraith, Dawn, Cullinan available. Chauffeur optional. Insurance and delivery included.',
     heading: 'Rolls Royce Car Rental Dubai',
@@ -291,7 +291,7 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'rent-bentley-in-dubai',
     title: 'Bentley Rental Dubai',
-    metaTitle: 'Bentley Car Rental Dubai — Hire a Continental GT or Bentayga | LuxeClub',
+    metaTitle: 'Bentley Car Rental Dubai — Hire a Continental GT or Bentayga',
     metaDescription:
       'Bentley car rental in Dubai — Continental GT, Bentayga, Flying Spur available. Insurance included, free delivery across Dubai.',
     heading: 'Bentley Car Rental Dubai',
@@ -377,7 +377,7 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'rent-porsche-in-dubai',
     title: 'Porsche Rental Dubai',
-    metaTitle: 'Porsche Car Rental Dubai — Hire a 911, Cayenne or Macan | LuxeClub',
+    metaTitle: 'Porsche Car Rental Dubai — Hire a 911, Cayenne or Macan',
     metaDescription:
       'Porsche car rental in Dubai — 911 Turbo S, 911 GT3, Cayenne, Macan available. Insurance included, free delivery across Dubai. Book online.',
     heading: 'Porsche Car Rental Dubai',
@@ -463,7 +463,7 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'rent-mercedes-in-dubai',
     title: 'Mercedes Rental Dubai',
-    metaTitle: 'Mercedes Car Rental Dubai — Hire a G63 or AMG GT | LuxeClub',
+    metaTitle: 'Mercedes Car Rental Dubai — Hire a G63 or AMG GT',
     metaDescription:
       'Mercedes car rental in Dubai — AMG GT, G63, GLE, S-Class available. Insurance included, free delivery across Dubai.',
     heading: 'Mercedes Car Rental Dubai',
@@ -549,7 +549,7 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'rent-range-rover-in-dubai',
     title: 'Range Rover Rental Dubai',
-    metaTitle: 'Range Rover Car Rental Dubai — Hire a Vogue or Sport | LuxeClub',
+    metaTitle: 'Range Rover Car Rental Dubai — Hire a Vogue or Sport',
     metaDescription:
       'Range Rover car rental in Dubai — Vogue, Sport, Autobiography available. Insurance included, free delivery across Dubai.',
     heading: 'Range Rover Car Rental Dubai',
@@ -635,7 +635,7 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'rent-mclaren-in-dubai',
     title: 'McLaren Rental Dubai',
-    metaTitle: 'McLaren Car Rental Dubai — Hire a 720S, 765LT or Artura | LuxeClub',
+    metaTitle: 'McLaren Car Rental Dubai — Hire a 720S, 765LT or Artura',
     metaDescription:
       'McLaren car rental in Dubai — 720S, 765LT, Artura, GT available. Insurance included, free delivery across Dubai. Book online.',
     heading: 'McLaren Car Rental Dubai',
@@ -721,7 +721,7 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'rent-aston-martin-in-dubai',
     title: 'Aston Martin Rental Dubai',
-    metaTitle: 'Aston Martin Car Rental Dubai — Hire a DBX or Vantage | LuxeClub',
+    metaTitle: 'Aston Martin Car Rental Dubai — Hire a DBX or Vantage',
     metaDescription:
       'Aston Martin car rental in Dubai — DB11, Vantage, DBX 707 available. Insurance included, free delivery across Dubai. Book online.',
     heading: 'Aston Martin Car Rental Dubai',
@@ -807,7 +807,7 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'rent-bmw-in-dubai',
     title: 'BMW Rental Dubai',
-    metaTitle: 'BMW Car Rental Dubai — Hire an M4, M5, X6 or X5 | LuxeClub',
+    metaTitle: 'BMW Car Rental Dubai — Hire an M4, M5, X6 or X5',
     metaDescription:
       'BMW car rental in Dubai — M3, M4, M5 Competition, X5, X6 M available. Insurance included, free delivery across Dubai.',
     heading: 'BMW Car Rental Dubai',
@@ -899,7 +899,7 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'rent-audi-in-dubai',
     title: 'Audi Rental Dubai',
-    metaTitle: 'Audi Car Rental Dubai — Hire an RS7, R8 or RSQ8 | LuxeClub',
+    metaTitle: 'Audi Car Rental Dubai — Hire an RS7, R8 or RSQ8',
     metaDescription:
       'Audi car rental in Dubai — RS7, RS6, R8 Spyder, RSQ8 available. Insurance included, free delivery across Dubai. Book online.',
     heading: 'Audi Car Rental Dubai',
@@ -985,7 +985,7 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'rent-maserati-in-dubai',
     title: 'Maserati Rental Dubai',
-    metaTitle: 'Maserati Car Rental Dubai — Hire an MC20 | LuxeClub',
+    metaTitle: 'Maserati Car Rental Dubai — Hire an MC20',
     metaDescription:
       'Maserati car rental in Dubai — MC20, Levante, Ghibli available. Insurance included, free delivery across Dubai. Book online.',
     heading: 'Maserati Car Rental Dubai',
@@ -1071,7 +1071,7 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'rent-cadillac-in-dubai',
     title: 'Cadillac Rental Dubai',
-    metaTitle: 'Cadillac Car Rental Dubai — Hire an Escalade | LuxeClub',
+    metaTitle: 'Cadillac Car Rental Dubai — Hire an Escalade',
     metaDescription:
       'Cadillac car rental in Dubai — Escalade Sports Platinum available. Insurance included, free delivery across Dubai. Book online.',
     heading: 'Cadillac Car Rental Dubai',
@@ -1158,7 +1158,7 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'car-rental-dubai',
     title: 'Car Rental Dubai',
-    metaTitle: 'Car Rental Dubai — Rent a Car from AED 800/day | LuxeClub',
+    metaTitle: 'Car Rental Dubai — Rent a Car from AED 800/day',
     metaDescription:
       'Rent a car in Dubai with LuxeClub Rentals. Luxury, sports, and SUV cars available. Insurance included, free delivery across Dubai. Book online today.',
     heading: 'Car Rental Dubai',
@@ -1170,7 +1170,7 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'rent-exotic-car-in-dubai',
     title: 'Exotic Car Rental Dubai',
-    metaTitle: 'Exotic Car Rental Dubai — Lamborghini, Ferrari, McLaren | LuxeClub',
+    metaTitle: 'Exotic Car Rental Dubai — Lamborghini, Ferrari, McLaren',
     metaDescription:
       'Rent exotic cars in Dubai. Lamborghini, Ferrari, McLaren, Aston Martin and more. Insurance included, delivery across Dubai. Book your exotic car today.',
     heading: 'Exotic Car Rental Dubai',
@@ -1182,7 +1182,7 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'luxury-car-rental-no-deposit-dubai',
     title: 'Luxury Car Rental Dubai — Low Deposit',
-    metaTitle: 'Luxury Car Rental Dubai No Deposit Hassle — Low Deposit | LuxeClub',
+    metaTitle: 'Luxury Car Rental Dubai No Deposit Hassle — Low Deposit',
     metaDescription:
       'Rent luxury cars in Dubai with the lowest deposits in the market. Deposit equals just one day\'s rental. Full refund guaranteed. No hidden deductions.',
     heading: 'Luxury Car Rental Dubai — Low Deposit, No Hassle',
@@ -1195,7 +1195,7 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'rent-luxury-suv-in-dubai',
     title: 'Luxury SUV Rental Dubai',
-    metaTitle: 'Luxury SUV Rental Dubai — Hire an SUV | LuxeClub',
+    metaTitle: 'Luxury SUV Rental Dubai — Hire an SUV',
     metaDescription:
       'Rent a luxury SUV in Dubai. Range Rover, G63, Bentayga, Cullinan, Urus and more. Insurance included, delivery across Dubai.',
     heading: 'Luxury SUV Rental Dubai',
@@ -1207,7 +1207,7 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'rent-sports-car-in-dubai',
     title: 'Sports Car Rental Dubai',
-    metaTitle: 'Sports Car Rental Dubai — Hire a Supercar | LuxeClub',
+    metaTitle: 'Sports Car Rental Dubai — Hire a Supercar',
     metaDescription:
       'Rent a sports car in Dubai. Ferrari, Lamborghini, McLaren, Porsche and more. Insurance included, delivery across Dubai.',
     heading: 'Sports Car Rental Dubai',
@@ -1219,7 +1219,7 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'rent-convertible-in-dubai',
     title: 'Convertible Rental Dubai',
-    metaTitle: 'Convertible Rental Dubai — Hire a Convertible | LuxeClub',
+    metaTitle: 'Convertible Rental Dubai — Hire a Convertible',
     metaDescription:
       'Rent a convertible in Dubai. Ferrari Portofino, Rolls Royce Dawn, Bentley GTC and more. Insurance included, delivery across Dubai.',
     heading: 'Convertible Rental Dubai',
@@ -1232,7 +1232,7 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'rent-luxury-car-in-dubai',
     title: 'Luxury Car Rental Dubai',
-    metaTitle: 'Luxury Car Rental Dubai — Hire from AED 800/day | LuxeClub',
+    metaTitle: 'Luxury Car Rental Dubai — Hire from AED 800/day',
     metaDescription:
       'Rent luxury cars in Dubai. Ferrari, Lamborghini, Rolls Royce, Bentley, Range Rover and more. Insurance included, delivery across Dubai. Book online.',
     heading: 'Luxury Car Rental Dubai',
@@ -1244,7 +1244,7 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'rent-supercar-in-dubai',
     title: 'Supercar Rental Dubai',
-    metaTitle: 'Supercar Rental Dubai — Hire a Supercar | LuxeClub',
+    metaTitle: 'Supercar Rental Dubai — Hire a Supercar',
     metaDescription:
       'Rent a supercar in Dubai. Lamborghini, Ferrari, McLaren, Porsche 911 Turbo S and more. Insurance included, delivered to your hotel.',
     heading: 'Supercar Rental Dubai',
@@ -1256,7 +1256,7 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'rent-cheap-car-in-dubai',
     title: 'Affordable Car Rental Dubai',
-    metaTitle: 'Affordable Luxury Car Rental Dubai — From AED 800/day | LuxeClub',
+    metaTitle: 'Affordable Luxury Car Rental Dubai — From AED 800/day',
     metaDescription:
       'Rent luxury cars in Dubai from AED 800/day. Transparent pricing, insurance included, no hidden fees. Browse our fleet and book online.',
     heading: 'Affordable Luxury Car Rental Dubai',

@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/admin', '/dashboard', '/account', '/bookings', '/book/'],
+        disallow: ['/admin', '/dashboard', '/account', '/bookings', '/book/', '/sign-in', '/reset-password'],
       },
     ],
     sitemap: 'https://luxeclubrentals.com/sitemap.xml',

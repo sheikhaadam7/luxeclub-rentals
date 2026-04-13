@@ -233,7 +233,7 @@ export const guides: Guide[] = [
       'I chased a Dubai car rental company for 3 months to get my deposit back. Here is what happened, the WhatsApp receipts to prove it, and how to protect yourself.',
     publishedDate: '2026-03-07',
     category: 'cars',
-    image: '/guides/car-rental-deposits-dubai.gif',
+    image: '/guides/car-rental-deposits-dubai.webp',
     imageAlt: 'Tom signing a contract — car rental deposit scams in Dubai',
     sections: [
       {
@@ -560,7 +560,7 @@ export const guides: Guide[] = [
     title: 'What Happens If You Get a Traffic Fine in a Rental Car in Dubai?',
     metaTitle: 'Traffic Fine in a Rental Car Dubai — What Happens & How to Handle It',
     metaDescription:
-      'Got a traffic fine in a rental car in Dubai? Here is what happens next, how rental companies charge you, admin fees to watch for, and how to dispute unfair charges.',
+      'Got a traffic fine in a rental car in Dubai? What happens next, how rental companies charge you, and how to dispute unfair charges.',
     publishedDate: '2026-03-16',
     category: 'driving',
     image: '/guides/rental-car-fines-dubai.jpg',
@@ -608,7 +608,7 @@ export const guides: Guide[] = [
     title: 'Renting a Car in Dubai with Cryptocurrency: How It Works',
     metaTitle: 'Rent a Car in Dubai with Bitcoin & Crypto — How It Works (2026)',
     metaDescription:
-      'How to rent a luxury car in Dubai paying with Bitcoin, Ethereum, USDT, or other cryptocurrency. Step-by-step process, which coins are accepted, and what to expect.',
+      'How to rent a luxury car in Dubai with Bitcoin, Ethereum, or USDT. Step-by-step process, which coins are accepted, and what to expect.',
     publishedDate: '2026-04-07',
     category: 'cars',
     sections: [
@@ -652,9 +652,9 @@ export const guides: Guide[] = [
   {
     slug: 'best-cars-rent-dubai-wedding',
     title: 'Best Cars to Rent for a Dubai Wedding (2026)',
-    metaTitle: 'Best Cars to Rent for a Dubai Wedding — Luxury Wedding Car Hire | LuxeClub',
+    metaTitle: 'Best Cars to Rent for a Dubai Wedding — Luxury Wedding Car Hire',
     metaDescription:
-      'The best luxury cars to rent for a wedding in Dubai. Rolls-Royce Cullinan, Bentley Continental GTC, Mercedes G63, and more. Pricing, chauffeur options, and booking tips.',
+      'The best luxury cars to rent for a Dubai wedding. Rolls-Royce, Bentley, Mercedes G63 and more. Pricing, chauffeur options, and booking tips.',
     publishedDate: '2026-04-12',
     category: 'cars',
     sections: [
@@ -698,9 +698,9 @@ export const guides: Guide[] = [
   {
     slug: 'is-dubai-safe-to-visit-2026',
     title: 'Is Dubai Safe to Visit in 2026? What Tourists Actually Need to Know',
-    metaTitle: 'Is Dubai Safe to Visit in 2026? — Honest Travel Safety Guide | LuxeClub',
+    metaTitle: 'Is Dubai Safe to Visit in 2026? — Honest Travel Safety Guide',
     metaDescription:
-      'Is it safe to visit Dubai in 2026? An honest, factual guide to Dubai safety for tourists — flights, infrastructure, economy, and what the regional situation means for your trip.',
+      'Is it safe to visit Dubai in 2026? An honest guide to Dubai safety for tourists — flights, infrastructure, economy, and what it means for your trip.',
     publishedDate: '2026-03-24',
     category: 'planning',
     sections: [
@@ -744,7 +744,7 @@ export const guides: Guide[] = [
   {
     slug: 'dubai-mall-guide-parking-access',
     title: 'The Ultimate Dubai Mall Guide: Every Major Mall, How to Get There & Where to Park',
-    metaTitle: 'Dubai Mall Guide 2026 — Parking, Access & Tips for Every Major Mall | LuxeClub',
+    metaTitle: 'Dubai Mall Guide 2026 — Parking, Access & Tips for Every Major Mall',
     metaDescription:
       'Complete guide to Dubai malls for visitors. Parking fees, access routes, opening hours, and tips for Dubai Mall, Mall of the Emirates, Ibn Battuta, and more.',
     publishedDate: '2026-03-31',

@@ -146,6 +146,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: `${title} — LuxeClub Rentals`,
       description,
       url,
+      type: 'website',
+      siteName: 'LuxeClub Rentals',
+      images: vehicle.primary_image_url
+        ? [{ url: vehicle.primary_image_url, width: 1200, height: 630, alt: vehicle.name }]
+        : [{ url: 'https://luxeclubrentals.com/opengraph-image', width: 1200, height: 630, alt: title }],
     },
     twitter: {
       card: 'summary_large_image',
@@ -214,17 +219,32 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
   const seoContent = vehicleContentMap[slug]
 
+  // Extract brand — handle multi-word brands
+  const MULTI_WORD = ['Aston Martin', 'Range Rover', 'Rolls Royce']
+  let brandName = vehicle.name.split(' ')[0]
+  for (const mw of MULTI_WORD) {
+    if (vehicle.name.toLowerCase().startsWith(mw.toLowerCase())) {
+      brandName = mw
+      break
+    }
+  }
+  if (vehicle.name.toLowerCase().includes('amg') || vehicle.name.toLowerCase().startsWith('g63')) {
+    brandName = 'Mercedes'
+  }
+
   const productJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: vehicle.name,
-    description: `Rent a ${vehicle.name} in Dubai with LuxeClub Rentals. Insurance included, delivery all over Dubai.`,
+    description: `Rent a ${vehicle.name} in Dubai with LuxeClub Rentals. Insurance included, delivery across Dubai.`,
     image: allImages[0],
-    brand: { '@type': 'Brand', name: vehicle.name.split(' ')[0] },
+    url: `https://luxeclubrentals.com/catalogue/${slug}`,
+    brand: { '@type': 'Brand', name: brandName },
     offers: {
       '@type': 'Offer',
       priceCurrency: 'AED',
       price: vehicle.daily_rate,
+      url: `https://luxeclubrentals.com/catalogue/${slug}`,
       availability: vehicle.is_available
         ? 'https://schema.org/InStock'
         : 'https://schema.org/OutOfStock',

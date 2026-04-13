@@ -5,7 +5,7 @@ import { guides, GUIDE_CATEGORIES, type GuideCategory } from '@/lib/guides'
 const SITE_URL = 'https://luxeclubrentals.com'
 
 export const metadata: Metadata = {
-  title: 'Guides, Blogs & Just... Venting — LuxeClub Rentals',
+  title: 'Guides, Blogs & Just... Venting',
   description:
     'Practical guides for tourists renting luxury cars in Dubai. Driving rules, licence requirements, scenic routes, and insider tips for an unforgettable road trip.',
   openGraph: {
@@ -13,6 +13,9 @@ export const metadata: Metadata = {
     description:
       'Practical guides for tourists renting luxury cars in Dubai. Driving rules, scenic routes, and insider tips.',
     url: `${SITE_URL}/guides`,
+    type: 'website',
+    siteName: 'LuxeClub Rentals',
+    images: [{ url: `${SITE_URL}/opengraph-image`, width: 1200, height: 630, alt: 'LuxeClub Rentals Guides' }],
   },
   alternates: { canonical: `${SITE_URL}/guides` },
 }

@@ -5,12 +5,15 @@ import { FaqList } from './FaqList'
 export const metadata: Metadata = {
   title: 'FAQ',
   description:
-    'Frequently asked questions about LuxeClub Rentals Dubai. Learn about identity verification, delivery, payment methods, deposits, cancellation policy and returns.',
+    'Frequently asked questions about LuxeClub Rentals Dubai. Identity verification, delivery, payment methods, deposits, and cancellation policy.',
   openGraph: {
     title: 'FAQ — LuxeClub Rentals Dubai',
     description:
       'Everything you need to know about renting a luxury car with LuxeClub in Dubai.',
     url: 'https://luxeclubrentals.com/faq',
+    type: 'website',
+    siteName: 'LuxeClub Rentals',
+    images: [{ url: 'https://luxeclubrentals.com/opengraph-image', width: 1200, height: 630, alt: 'LuxeClub Rentals FAQ' }],
   },
   alternates: { canonical: 'https://luxeclubrentals.com/faq' },
 }

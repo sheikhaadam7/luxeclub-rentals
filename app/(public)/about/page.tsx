@@ -4,12 +4,15 @@ import { T } from '@/components/ui/T'
 export const metadata: Metadata = {
   title: 'About Us',
   description:
-    'LuxeClub Rentals — Dubai\'s premium luxury car rental service. 3+ years of experience, 500+ happy clients, curated fleet of 29 luxury vehicles with 24/7 concierge.',
+    'LuxeClub Rentals — Dubai\'s premium luxury car rental service. 500+ happy clients, curated fleet of 29 luxury vehicles with 24/7 concierge.',
   openGraph: {
     title: 'About LuxeClub Rentals — Dubai Luxury Car Hire',
     description:
       'More than a rental company — a passion for extraordinary driving experiences in Dubai. Curated fleet, personal service, complete transparency.',
     url: 'https://luxeclubrentals.com/about',
+    type: 'website',
+    siteName: 'LuxeClub Rentals',
+    images: [{ url: 'https://luxeclubrentals.com/opengraph-image', width: 1200, height: 630, alt: 'About LuxeClub Rentals' }],
   },
   alternates: { canonical: 'https://luxeclubrentals.com/about' },
 }

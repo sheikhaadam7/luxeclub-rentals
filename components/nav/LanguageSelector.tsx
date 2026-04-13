@@ -31,7 +31,7 @@ export function LanguageSelector() {
       >
         <Image
           src={flagUrl(current.country, 'w40')}
-          alt=""
+          alt={`${current.label} flag`}
           width={18}
           height={13}
           className="rounded-[2px] object-cover"
@@ -68,7 +68,7 @@ export function LanguageSelector() {
             >
               <Image
                 src={flagUrl(country, 'w40')}
-                alt=""
+                alt={`${label} flag`}
                 width={20}
                 height={15}
                 className="rounded-[2px] object-cover shrink-0"
@@ -104,7 +104,7 @@ export function LanguageSelectorInline() {
         >
           <Image
             src={flagUrl(country, 'w40')}
-            alt=""
+            alt={`${code.toUpperCase()} flag`}
             width={22}
             height={16}
             className="rounded-[2px] object-cover"

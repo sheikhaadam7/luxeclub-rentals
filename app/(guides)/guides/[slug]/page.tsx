@@ -28,7 +28,11 @@ export async function generateMetadata({
       description: guide.metaDescription,
       url: `${SITE_URL}/guides/${guide.slug}`,
       type: 'article',
+      siteName: 'LuxeClub Rentals',
       publishedTime: guide.publishedDate,
+      images: guide.image
+        ? [{ url: `${SITE_URL}${guide.image}`, width: 1200, height: 630, alt: guide.imageAlt || guide.title }]
+        : [{ url: `${SITE_URL}/opengraph-image`, width: 1200, height: 630, alt: guide.title }],
     },
     alternates: { canonical: `${SITE_URL}/guides/${guide.slug}` },
   }
@@ -138,7 +142,7 @@ export default async function GuidePage({
 
         {/* Hero image */}
         {guide.image && (
-          guide.image.endsWith('.gif') ? (
+          guide.image.endsWith('.gif') || guide.image.endsWith('.webp') ? (
             <div className="relative w-full rounded-2xl overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
