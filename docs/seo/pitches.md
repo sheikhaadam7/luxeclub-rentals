@@ -23,9 +23,8 @@ Each pitch is an **angle**, not an article. The outlet writes the piece — the 
 
 **Hook (2 sentences):** Dubai in September–November is what July in the Mediterranean is for people who actually know how to travel — 28–32°C, empty roads, hotel rates 30–40% below peak, and the long Gulf weekends before the European winter-escape crowds arrive in December. This is the window when seasoned travellers quietly book their Dubai trips.
 
-**Target URL:** `https://luxeclubrentals.com/rent-luxury-car-in-dubai`
+**Target URL:** `https://luxeclubrentals.com/car-rental-dubai`
 **Suggested anchor:** *"a Dubai luxury rental company"* (generic — 25% bucket)
-**Note:** Originally targeted `/car-rental-dubai` but that URL is currently blocked by the auth middleware (see "Known issues" section at the bottom of this file) — substituted with `/rent-luxury-car-in-dubai` which has equivalent SEO intent and is publicly accessible.
 **Anchor alternatives** if over-indexed on generic: branded ("LuxeClub Rentals") or partial-match ("luxury car rental in Dubai")
 
 **Word-count guidance:** 1,200–1,800 words. This is a feature, not a listicle.
@@ -57,10 +56,9 @@ Each pitch is an **angle**, not an article. The outlet writes the piece — the 
 
 **Hook (2 sentences):** A shift visible in the fastest-growing luxury fleets in Dubai: high-earners are increasingly choosing weekly or monthly rental of supercars over ownership. The maths (depreciation, insurance, deposit capital, garage space, resale friction) increasingly favours access over ownership — and Dubai, with the largest luxury rental market per capita in the world, is the clearest case study.
 
-**Target URL:** `https://luxeclubrentals.com/rent-luxury-car-in-dubai`
+**Target URL:** `https://luxeclubrentals.com/luxury-car-rental-no-deposit-dubai`
 **Suggested anchor:** *"LuxeClub Rentals"* (branded — 30% bucket)
 **Anchor alternatives:** URL ("luxeclubrentals.com") or generic ("a Dubai rental operator")
-**Note:** Originally `/luxury-car-rental-no-deposit-dubai` but that URL is blocked by middleware. When the bug is fixed (see Known issues below), switch back to the no-deposit-specific URL which is a better topical match for this pitch.
 
 **Word-count guidance:** 1,500–2,200 words. This is a think-piece, data-backed.
 
@@ -155,10 +153,9 @@ Each pitch is an **angle**, not an article. The outlet writes the piece — the 
 
 **Hook:** Every year thousands of Europeans move to Dubai — for tax reasons, climate, or work — and every one of them has the same confused first three months about rental economics, residency rules, and navigating the bureaucracy in a language they understand. This is the guide that cuts that to one week.
 
-**Target URL:** `https://luxeclubrentals.com/rent-luxury-car-in-dubai`
+**Target URL:** `https://luxeclubrentals.com/luxury-car-rental-no-deposit-dubai`
 **Suggested anchor:** *"LuxeClub Rentals"* (branded — 30% bucket)
 **Anchor alternatives:** URL or generic
-**Note:** Same substitution as Pitch 2 — the no-deposit-specific URL is currently blocked by middleware. Switch back after the fix lands.
 
 **Word-count guidance:** 1,800–2,500 words in the base language. Adaptations can be tighter.
 
@@ -221,14 +218,13 @@ Across Pitches 1–6, if each ran once:
 
 That's already slightly over-indexed on branded+generic vs the 30/25/25/15/5 target. The first round of placements is fine — adjust from Month 3 onwards by substituting URL and partial-match anchors when placing the *repeat* rounds of these same pitches. The tracker in `content-calendar.md` will catch it.
 
-## Known issues — fix before pitching at volume
+## Known issues — resolved
 
-**Blocked money pages (discovered 2026-04-11 during kit verification):** Two of the site's money pages redirect anonymous visitors to `/sign-in` because the middleware at `middleware.ts:41` uses `pathname.startsWith('/rent-')` to whitelist money pages as public, but these two slugs don't start with `/rent-`:
+~~**Blocked money pages:**~~ Fixed on 2026-04-13. Both `/car-rental-dubai` and `/luxury-car-rental-no-deposit-dubai` are now publicly accessible. The middleware already used `MONEY_PAGE_PATHS` from `lib/money-pages.ts` which includes both slugs. The orphan issue on `/luxury-car-rental-no-deposit-dubai` was also resolved — it now has internal links from all other money pages via the "Popular Searches" cross-link row.
 
-- `/car-rental-dubai` (was Pitch 1 target) — 307 → /sign-in
-- `/luxury-car-rental-no-deposit-dubai` (was Pitch 2 & 5 target) — 307 → /sign-in
-
-This is a pre-existing bug independent of this kit, but it has SEO consequences — Google's crawler cannot access either page, which means neither is indexed and neither ranks. **Fix before placing any backlinks that would target these URLs.** The fix is a one-line change to the `isPublicRoute` check to add both paths to the whitelist (or switch to checking against `money-pages.ts`). Once fixed, substitute the updated target URLs back into Pitches 1, 2, and 5 — they're better topical matches than the `/rent-luxury-car-in-dubai` fallbacks currently in place.
+**Target URL updates (2026-04-13):**
+- Pitch 1: target URL can now be switched back to `/car-rental-dubai` (better topical match than the `/rent-luxury-car-in-dubai` fallback)
+- Pitch 2 & 5: target URL can now be switched back to `/luxury-car-rental-no-deposit-dubai` (better topical match for the no-deposit angle)
 
 ## What to do when a pitch lands
 

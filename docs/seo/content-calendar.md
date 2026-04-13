@@ -57,11 +57,11 @@ Rule: no more than **25% of backlinks should point at the homepage**. No URL sho
 |---|---|---|---|---|
 | `/` (homepage) | Homepage | — | 0 | Max 25% of total (35 of 140) |
 | `/catalogue` | Fleet | — | 0 | Primary link-bait landing |
-| `/car-rental-dubai` | Money page — generic | — | 0 | ⚠️ Currently blocked by middleware — do NOT pitch until fixed |
+| `/car-rental-dubai` | Money page — generic | — | 0 | ✅ Fixed 2026-04-13 — publicly accessible, ready to pitch |
 | `/rent-exotic-car-in-dubai` | Money page — keyword | — | 0 | Recently added to footer |
 | `/rent-luxury-car-in-dubai` | Money page — keyword | — | 0 | |
 | `/rent-supercar-in-dubai` | Money page — keyword | — | 0 | |
-| `/luxury-car-rental-no-deposit-dubai` | Money page — keyword | — | 0 | ⚠️ Currently blocked by middleware — do NOT pitch until fixed |
+| `/luxury-car-rental-no-deposit-dubai` | Money page — keyword | — | 0 | ✅ Fixed 2026-04-13 — publicly accessible + internal links added, ready to pitch |
 | `/rent-lamborghini-in-dubai` | Money page — brand | — | 0 | |
 | `/rent-ferrari-in-dubai` | Money page — brand | — | 0 | |
 | `/rent-rolls-royce-in-dubai` | Money page — brand | — | 0 | |
