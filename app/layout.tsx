@@ -101,7 +101,7 @@ const jsonLd = {
     'Premium luxury and sports car rental service in Dubai, UAE. Featuring Lamborghini, Ferrari, Rolls-Royce, Bentley and more.',
   url: SITE_URL,
   telephone: '+971588086137',
-  email: 'hello@luxeclubrentals.com',
+  email: 'bookings@luxeclubrentals.com',
   address: {
     '@type': 'PostalAddress',
     streetAddress: 'Binary Tower, 32 Marasi Drive Street',

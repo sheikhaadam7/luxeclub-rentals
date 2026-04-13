@@ -22,7 +22,7 @@ const jsonLd = {
     '@type': 'LocalBusiness',
     name: 'LuxeClub Rentals',
     telephone: '+971588086137',
-    email: 'hello@luxeclubrentals.com',
+    email: 'bookings@luxeclubrentals.com',
     address: {
       '@type': 'PostalAddress',
       streetAddress: 'Binary Tower, 32 Marasi Drive Street',

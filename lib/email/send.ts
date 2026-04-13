@@ -34,7 +34,7 @@ export async function sendEmail({ to, subject, react }: SendEmailOptions) {
   const html = await render(react)
 
   const result = await resend.emails.send({
-    from: process.env.RESEND_FROM_EMAIL ?? 'LuxeClub Rentals <onboarding@resend.dev>',
+    from: process.env.RESEND_FROM_EMAIL ?? 'LuxeClub Rentals <bookings@luxeclubrentals.com>',
     to,
     subject,
     html,

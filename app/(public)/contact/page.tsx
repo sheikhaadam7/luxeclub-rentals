@@ -43,10 +43,10 @@ export default function ContactPage() {
             <p className="text-sm text-white/50 font-medium">{t('contact.contactDetails')}</p>
             <div className="space-y-2">
               <a
-                href="mailto:hello@luxeclubrentals.com"
+                href="mailto:bookings@luxeclubrentals.com"
                 className="block text-lg text-white hover:text-brand-cyan transition-colors duration-300"
               >
-                hello@luxeclubrentals.com
+                bookings@luxeclubrentals.com
               </a>
               <a
                 href={`tel:+${WHATSAPP_NUMBER}`}

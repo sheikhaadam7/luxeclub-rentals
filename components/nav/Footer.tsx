@@ -109,11 +109,11 @@ export function Footer() {
                 </svg>
                 +971 58 808 6137
               </a>
-              <a href="mailto:hello@luxeclubrentals.com" className="text-sm text-white/60 hover:text-white transition-colors duration-300 flex items-center gap-2">
+              <a href="mailto:bookings@luxeclubrentals.com" className="text-sm text-white/60 hover:text-white transition-colors duration-300 flex items-center gap-2">
                 <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                 </svg>
-                hello@luxeclubrentals.com
+                bookings@luxeclubrentals.com
               </a>
             </div>
           </div>
