@@ -274,6 +274,14 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
           {recalcMessage && <span className="text-xs text-white/60">{recalcMessage}</span>}
           <button
             type="button"
+            onClick={() => router.refresh()}
+            title="Re-fetch the editor list from the database"
+            className="px-3 py-1.5 text-xs border border-white/15 text-white hover:bg-white/5 transition-colors rounded"
+          >
+            ↻ Refresh list
+          </button>
+          <button
+            type="button"
             onClick={handleRecalculate}
             disabled={isRecalc}
             className="px-3 py-1.5 text-xs border border-white/15 text-white hover:bg-white/5 transition-colors rounded disabled:opacity-50"
