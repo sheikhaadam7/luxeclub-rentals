@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState, useTransition } from 'react'
+import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   discoverEditors,
@@ -91,8 +91,7 @@ export function DomainsList({ domains }: { domains: Domain[] }) {
     if (sortKey !== key) return ''
     return sortDir === 'desc' ? ' ↓' : ' ↑'
   }
-  const [isPending, startTransition] = useTransition()
-  const [busyId, setBusyId] = useState<string | null>(null)
+  const [discoverBusy, setDiscoverBusy] = useState<Set<string>>(new Set())
   const [results, setResults] = useState<Record<string, { ok: boolean; message: string }>>({})
   const [metricsBusy, setMetricsBusy] = useState<string | null>(null)
   const [batchBusy, setBatchBusy] = useState(false)
@@ -100,10 +99,14 @@ export function DomainsList({ domains }: { domains: Domain[] }) {
   const [editingScore, setEditingScore] = useState<string | null>(null)
   const [scoreDraft, setScoreDraft] = useState<string>('')
 
-  function handleDiscover(domainId: string) {
-    setBusyId(domainId)
-    setResults((r) => ({ ...r, [domainId]: undefined as unknown as { ok: boolean; message: string } }))
-    startTransition(async () => {
+  async function handleDiscover(domainId: string) {
+    setDiscoverBusy((prev) => {
+      const next = new Set(prev); next.add(domainId); return next
+    })
+    setResults((r) => {
+      const next = { ...r }; delete next[domainId]; return next
+    })
+    try {
       const res = await discoverEditors(domainId)
       if (res.error) {
         setResults((r) => ({ ...r, [domainId]: { ok: false, message: res.error! } }))
@@ -117,8 +120,16 @@ export function DomainsList({ domains }: { domains: Domain[] }) {
         }))
         router.refresh()
       }
-      setBusyId(null)
-    })
+    } finally {
+      setDiscoverBusy((prev) => {
+        const next = new Set(prev); next.delete(domainId); return next
+      })
+    }
+  }
+
+  async function handleDiscoverAll() {
+    if (!confirm(`Discover editors across all ${sortedDomains.length} outlets in parallel? This will fire ${sortedDomains.length} Hunter searches at once.`)) return
+    await Promise.all(sortedDomains.map((d) => handleDiscover(d.id)))
   }
 
   async function handleRefreshMetrics(domainId: string) {
@@ -178,6 +189,14 @@ export function DomainsList({ domains }: { domains: Domain[] }) {
           >
             {batchBusy ? 'Refreshing…' : 'Refresh all metrics'}
           </button>
+          <button
+            type="button"
+            onClick={handleDiscoverAll}
+            disabled={discoverBusy.size > 0}
+            className="px-3 py-1.5 text-xs bg-brand-cyan/15 border border-brand-cyan/30 text-brand-cyan hover:bg-brand-cyan/25 transition-colors rounded disabled:opacity-50"
+          >
+            {discoverBusy.size > 0 ? `Discovering ${discoverBusy.size}…` : 'Discover all'}
+          </button>
           <p className="text-xs text-brand-muted">{domains.length} domains</p>
         </div>
       </div>
@@ -231,7 +250,7 @@ export function DomainsList({ domains }: { domains: Domain[] }) {
           <tbody>
             {sortedDomains.map((d) => {
               const result = results[d.id]
-              const isBusy = isPending && busyId === d.id
+              const isBusy = discoverBusy.has(d.id)
               const isMetricsBusy = metricsBusy === d.id
               const drLow = d.dr != null && d.dr < DR_FLOOR
               return (
