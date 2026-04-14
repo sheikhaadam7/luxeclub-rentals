@@ -119,7 +119,7 @@ export function EditorDetail({ editor, onClose }: EditorDetailProps) {
       } else {
         setMessage({
           ok: true,
-          text: `Found ${res.inserted} articles. Topical score: ${res.topicalScore ?? 'n/a'}`,
+          text: `Found ${res.inserted} articles. Coverage score: ${res.topicalScore ?? 'n/a'}`,
         })
         router.refresh()
         // Refetch articles list
@@ -178,11 +178,11 @@ export function EditorDetail({ editor, onClose }: EditorDetailProps) {
               <p className="text-white">{editor.seniority ?? '—'}</p>
             </div>
             <div>
-              <p className="text-xs uppercase tracking-wider text-brand-muted mb-1">Profile score</p>
+              <p className="text-xs uppercase tracking-wider text-brand-muted mb-1">Match score</p>
               <p className="text-white font-mono">{editor.relevance_score ?? '—'}</p>
             </div>
             <div>
-              <p className="text-xs uppercase tracking-wider text-brand-muted mb-1">Combined score</p>
+              <p className="text-xs uppercase tracking-wider text-brand-muted mb-1">Overall score</p>
               <p className="text-white font-mono">{editor.combined_score ?? '—'}</p>
             </div>
           </div>

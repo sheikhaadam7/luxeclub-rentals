@@ -51,8 +51,8 @@ function scorePillClass(score: number | null): string {
 
 function breakdown(profile: number | null, topical: number | null, combined: number | null): string {
   if (combined == null) return 'Not scored yet'
-  if (topical == null) return `Profile-only: ${profile ?? 0}/100 (no articles indexed yet)`
-  return `Profile ${profile ?? 0} × 60% + Topical ${topical} × 40% = ${combined}/100`
+  if (topical == null) return `Match-only: ${profile ?? 0}/100 (no articles indexed yet)`
+  return `Match ${profile ?? 0} × 60% + Coverage ${topical} × 40% = ${combined}/100`
 }
 
 export function EditorsList({ editors }: { editors: EditorRow[] }) {
@@ -180,9 +180,9 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
                 <th className="px-4 py-3 font-medium cursor-pointer select-none hover:text-white" onClick={() => toggleSort('name')}>Name{sortArrow('name')}</th>
                 <th className="px-4 py-3 font-medium">Position</th>
                 <th className="px-4 py-3 font-medium cursor-pointer select-none hover:text-white" onClick={() => toggleSort('outlet')}>Outlet{sortArrow('outlet')}</th>
-                <th className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white" onClick={() => toggleSort('profile')} title="Profile score (Hunter data: title, seniority, tier)">Profile{sortArrow('profile')}</th>
-                <th className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white" onClick={() => toggleSort('topical')} title="Topical score (article history relevance)">Topical{sortArrow('topical')}</th>
-                <th className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white" onClick={() => toggleSort('combined')} title="60% profile + 40% topical">Combined{sortArrow('combined')}</th>
+                <th className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white" onClick={() => toggleSort('profile')} title="Match score: is this the right role at the right outlet? (title + seniority + outlet priority + enrichment)">Match{sortArrow('profile')}</th>
+                <th className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white" onClick={() => toggleSort('topical')} title="Coverage score: do they actually write about our topic? (average of their top 5 indexed articles)">Coverage{sortArrow('topical')}</th>
+                <th className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white" onClick={() => toggleSort('combined')} title="Overall: 60% Match + 40% Coverage (or Match-only until articles are fetched)">Overall{sortArrow('combined')}</th>
                 <th className="px-4 py-3 font-medium">Email</th>
                 <th className="px-4 py-3 font-medium">Links</th>
                 <th className="px-4 py-3 font-medium">Status</th>
