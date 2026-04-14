@@ -159,7 +159,7 @@ export function PitchComposer({
               className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-brand-cyan"
             >
               {PITCH_TEMPLATES.map((t) => (
-                <option key={t.id} value={t.id}>{t.name}</option>
+                <option key={t.id} value={t.id} className="bg-white text-black">{t.name}</option>
               ))}
             </select>
             {selectedTemplate && (
@@ -184,11 +184,11 @@ export function PitchComposer({
                 onChange={(e) => setAnchorType(e.target.value as AnchorType)}
                 className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-brand-cyan"
               >
-                <option value="branded">Branded (30%)</option>
-                <option value="url">URL (25%)</option>
-                <option value="generic">Generic (25%)</option>
-                <option value="partial">Partial match (15%)</option>
-                <option value="exact">Exact match (5%)</option>
+                <option value="branded" className="bg-white text-black">Branded (30%)</option>
+                <option value="url" className="bg-white text-black">URL (25%)</option>
+                <option value="generic" className="bg-white text-black">Generic (25%)</option>
+                <option value="partial" className="bg-white text-black">Partial match (15%)</option>
+                <option value="exact" className="bg-white text-black">Exact match (5%)</option>
               </select>
             </div>
           </div>

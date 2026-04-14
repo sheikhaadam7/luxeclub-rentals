@@ -10,6 +10,15 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Native <select> dropdowns open using OS chrome, which ignores our
+   text-white styling on the trigger and renders <option> rows with the OS
+   default (usually white) background. Force dark text on white so they stay
+   readable when the menu pops up. */
+select option {
+  color: #000;
+  background-color: #fff;
+}
+
 @theme {
   /* Brand Colors */
   --color-brand-black: #000000;
