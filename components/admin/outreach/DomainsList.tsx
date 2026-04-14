@@ -7,7 +7,9 @@ import {
   refreshDomainMetrics,
   refreshAllDomainMetrics,
   updateDomainPriorityScore,
+  getDiscoverTimingStats,
 } from '@/app/actions/outreach'
+import { useEffect } from 'react'
 import { GlassTooltip } from '@/components/ui/GlassTooltip'
 
 interface Domain {
@@ -27,7 +29,16 @@ interface Domain {
     skipped?: number
     enriched?: number
     ran_at?: string
+    duration_ms?: number
   } | null
+}
+
+function formatDuration(ms: number): string {
+  const s = Math.round(ms / 1000)
+  if (s < 60) return `${s}s`
+  const m = Math.floor(s / 60)
+  const rem = s % 60
+  return `${m}m${rem > 0 ? ` ${rem}s` : ''}`
 }
 
 const TIER_STYLES: Record<string, string> = {
@@ -99,6 +110,13 @@ export function DomainsList({ domains }: { domains: Domain[] }) {
   }
   const [discoverBusy, setDiscoverBusy] = useState<Set<string>>(new Set())
   const [results, setResults] = useState<Record<string, { ok: boolean; message: string }>>({})
+  const [timingStats, setTimingStats] = useState<{ runs: number; avgMs: number | null; medianMs: number | null; minMs: number | null; maxMs: number | null } | null>(null)
+
+  async function refreshTimingStats() {
+    const res = await getDiscoverTimingStats()
+    if (!res.error) setTimingStats({ runs: res.runs, avgMs: res.avgMs, medianMs: res.medianMs, minMs: res.minMs, maxMs: res.maxMs })
+  }
+  useEffect(() => { refreshTimingStats() }, [])
   const [metricsBusy, setMetricsBusy] = useState<string | null>(null)
   const [batchBusy, setBatchBusy] = useState(false)
   const [batchMessage, setBatchMessage] = useState<string | null>(null)
@@ -120,11 +138,13 @@ export function DomainsList({ domains }: { domains: Domain[] }) {
         const enrichedText = typeof res.enriched === 'number'
           ? `, enriched top ${res.enriched}`
           : ''
+        const durationText = typeof res.durationMs === 'number' ? ` · ${formatDuration(res.durationMs)}` : ''
         setResults((r) => ({
           ...r,
-          [domainId]: { ok: true, message: `+${res.inserted} editors (${res.skipped} skipped${enrichedText})` },
+          [domainId]: { ok: true, message: `+${res.inserted} editors (${res.skipped} skipped${enrichedText})${durationText}` },
         }))
         router.refresh()
+        refreshTimingStats()
       }
     } finally {
       setDiscoverBusy((prev) => {
@@ -203,6 +223,14 @@ export function DomainsList({ domains }: { domains: Domain[] }) {
           >
             {discoverBusy.size > 0 ? `Discovering ${discoverBusy.size}…` : 'Discover all'}
           </button>
+          {timingStats && timingStats.runs > 0 && timingStats.avgMs !== null && (
+            <span
+              className="text-[11px] text-white/50 font-mono"
+              title={`${timingStats.runs} Discover runs · avg ${formatDuration(timingStats.avgMs)} · median ${formatDuration(timingStats.medianMs!)} · min ${formatDuration(timingStats.minMs!)} · max ${formatDuration(timingStats.maxMs!)}`}
+            >
+              Ø {formatDuration(timingStats.avgMs)} ({timingStats.runs})
+            </span>
+          )}
           <p className="text-xs text-brand-muted">{domains.length} domains</p>
         </div>
       </div>
@@ -349,6 +377,7 @@ export function DomainsList({ domains }: { domains: Domain[] }) {
                       >
                         +{d.last_discover_result.inserted ?? 0} ({d.last_discover_result.skipped ?? 0} skipped
                         {typeof d.last_discover_result.enriched === 'number' ? `, enriched top ${d.last_discover_result.enriched}` : ''})
+                        {typeof d.last_discover_result.duration_ms === 'number' ? ` · ${formatDuration(d.last_discover_result.duration_ms)}` : ''}
                       </p>
                     ) : null}
                   </td>

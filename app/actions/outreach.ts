@@ -336,10 +336,12 @@ async function fullyEnrichEditor(
 
 export async function discoverEditors(
   domainId: string
-): Promise<{ error: string | null; inserted: number; skipped: number; enriched?: number }> {
+): Promise<{ error: string | null; inserted: number; skipped: number; enriched?: number; durationMs?: number }> {
   const auth = await verifyAdmin()
   if ('error' in auth) return { error: auth.error, inserted: 0, skipped: 0 }
 
+  const startedAt = Date.now()
+  const startedAtIso = new Date(startedAt).toISOString()
   const admin = createAdminClient()
 
   // Fetch domain details
@@ -476,19 +478,35 @@ export async function discoverEditors(
     )
   }
 
-  // Mark the domain as searched + persist the summary so the UI can still
-  // show it after page reloads.
+  // Mark the domain as searched + persist the summary + wall-clock duration.
   const enriched = topToEnrich.length
+  const durationMs = Date.now() - startedAt
+  const ranAt = new Date().toISOString()
   await admin
     .from('outreach_domains')
     .update({
-      hunter_searched_at: new Date().toISOString(),
-      last_discover_result: { inserted, skipped, enriched, ran_at: new Date().toISOString() },
+      hunter_searched_at: ranAt,
+      last_discover_result: { inserted, skipped, enriched, ran_at: ranAt, duration_ms: durationMs },
     })
     .eq('id', domain.id)
 
+  // Log to outreach_job_runs so we can compute historical averages per outlet.
+  await admin.from('outreach_job_runs').insert({
+    job_name: 'discover',
+    started_at: startedAtIso,
+    finished_at: ranAt,
+    items_processed: inserted,
+    errors_count: 0,
+    summary: {
+      domain_id: domain.id,
+      domain: domain.domain,
+      inserted, skipped, enriched,
+      duration_ms: durationMs,
+    },
+  })
+
   revalidatePath('/admin')
-  return { error: null, inserted, skipped, enriched }
+  return { error: null, inserted, skipped, enriched, durationMs }
 }
 
 export async function fetchEditorArticles(
@@ -2260,6 +2278,49 @@ export async function fetchEditorFullArchive(
 
   revalidatePath('/admin')
   return { error: null, inserted }
+}
+
+// ---------------------------------------------------------------------------
+// getDiscoverTimingStats — aggregate runtimes across all recorded discover
+// runs so the UI can show "avg 142s over 18 runs".
+// ---------------------------------------------------------------------------
+export async function getDiscoverTimingStats(): Promise<{
+  error: string | null
+  runs: number
+  avgMs: number | null
+  medianMs: number | null
+  minMs: number | null
+  maxMs: number | null
+}> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error, runs: 0, avgMs: null, medianMs: null, minMs: null, maxMs: null }
+  const admin = createAdminClient()
+  const { data } = await admin
+    .from('outreach_job_runs')
+    .select('summary')
+    .eq('job_name', 'discover')
+    .order('started_at', { ascending: false })
+    .limit(500)
+  const durations = (data ?? [])
+    .map((r) => {
+      const s = r.summary as { duration_ms?: number } | null
+      return s && typeof s.duration_ms === 'number' ? s.duration_ms : null
+    })
+    .filter((n): n is number => n !== null)
+  if (durations.length === 0) {
+    return { error: null, runs: 0, avgMs: null, medianMs: null, minMs: null, maxMs: null }
+  }
+  const sorted = [...durations].sort((a, b) => a - b)
+  const avg = Math.round(durations.reduce((a, b) => a + b, 0) / durations.length)
+  const median = sorted[Math.floor(sorted.length / 2)]
+  return {
+    error: null,
+    runs: durations.length,
+    avgMs: avg,
+    medianMs: median,
+    minMs: sorted[0],
+    maxMs: sorted[sorted.length - 1],
+  }
 }
 
 export async function getRecentJobRuns(limit = 10): Promise<{
