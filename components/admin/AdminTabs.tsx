@@ -7,7 +7,6 @@ const TABS = [
   { id: 'payments', label: 'Payments' },
   { id: 'analytics', label: 'Analytics' },
   { id: 'locations', label: 'Locations' },
-  { id: 'outreach', label: 'Outreach' },
 ] as const
 
 export function AdminTabs({ activeTab }: { activeTab: string }) {

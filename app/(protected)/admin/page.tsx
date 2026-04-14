@@ -7,15 +7,9 @@ import { BookingsTab } from '@/components/admin/BookingsTab'
 import { PaymentsTab } from '@/components/admin/PaymentsTab'
 import { AnalyticsTab } from '@/components/admin/AnalyticsTab'
 import { LocationsTab } from '@/components/admin/LocationsTab'
-import { OutreachTab } from '@/components/admin/OutreachTab'
 
-// Outreach "Discover editors" runs the full enrichment pipeline per editor
-// (Serper + ScrapingBee + OpenAI + LinkedIn) which can take several minutes
-// on a domain with 10 editors. Bump the serverless timeout to 5 minutes.
-export const maxDuration = 300
-
-type TabId = 'fleet' | 'bookings' | 'payments' | 'analytics' | 'locations' | 'outreach'
-const VALID_TABS: TabId[] = ['fleet', 'bookings', 'payments', 'analytics', 'locations', 'outreach']
+type TabId = 'fleet' | 'bookings' | 'payments' | 'analytics' | 'locations'
+const VALID_TABS: TabId[] = ['fleet', 'bookings', 'payments', 'analytics', 'locations']
 
 interface AdminPageProps {
   searchParams: Promise<{ tab?: string }>
@@ -97,11 +91,6 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
         {activeTab === 'locations' && (
           <Suspense fallback={<TabSkeleton />}>
             <LocationsTab />
-          </Suspense>
-        )}
-        {activeTab === 'outreach' && (
-          <Suspense fallback={<TabSkeleton />}>
-            <OutreachTab />
           </Suspense>
         )}
 
