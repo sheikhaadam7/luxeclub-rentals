@@ -1255,6 +1255,65 @@ export async function fetchLinkedInProfile(
 }
 
 // ---------------------------------------------------------------------------
+// recalculateAllArticleScores — re-run analyzeArticleTitle on every stored
+// article with the current scoring rules, persist the new topic_match_score
+// per article, recompute each editor's topical_score, and rescore all
+// editors. Use after changing the scoring formula so existing data catches up.
+// ---------------------------------------------------------------------------
+export async function recalculateAllArticleScores(): Promise<{
+  error: string | null
+  articles: number
+  editors: number
+}> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error, articles: 0, editors: 0 }
+  const admin = createAdminClient()
+
+  const { data: articles } = await admin
+    .from('outreach_articles')
+    .select('id, editor_id, title, snippet')
+  if (!articles) return { error: null, articles: 0, editors: 0 }
+
+  // Re-score each article with the current analyzeArticleTitle logic
+  let articlesUpdated = 0
+  const editorIds = new Set<string>()
+  for (const a of articles) {
+    const { score, matchedKeywords } = analyzeArticleTitle({
+      title: a.title,
+      snippet: a.snippet,
+    })
+    const { error } = await admin
+      .from('outreach_articles')
+      .update({ topic_match_score: score, topic_keywords: matchedKeywords })
+      .eq('id', a.id)
+    if (!error) {
+      articlesUpdated++
+      editorIds.add(a.editor_id)
+    }
+  }
+
+  // Recompute topical_score per affected editor, then rescore
+  let editorsUpdated = 0
+  for (const editorId of editorIds) {
+    const { data: rows } = await admin
+      .from('outreach_articles')
+      .select('topic_match_score')
+      .eq('editor_id', editorId)
+    const scores = (rows ?? []).map((r) => r.topic_match_score ?? 0)
+    const topical = scoreEditorTopical(scores)
+    await admin
+      .from('outreach_editors')
+      .update({ topical_score: topical })
+      .eq('id', editorId)
+    const res = await rescoreEditor(editorId, admin)
+    if (!res.error) editorsUpdated++
+  }
+
+  revalidatePath('/admin')
+  return { error: null, articles: articlesUpdated, editors: editorsUpdated }
+}
+
+// ---------------------------------------------------------------------------
 // rescoreAllEditors — batch re-score every editor. Useful after scoring
 // rules change or mass enrichment.
 // ---------------------------------------------------------------------------

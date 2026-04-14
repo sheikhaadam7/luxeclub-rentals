@@ -186,8 +186,14 @@ export function scoreEditorProfile(input: EditorProfileInput): number {
 // Article topical score — 0-100 per article; editor score = avg of top 5
 // ---------------------------------------------------------------------------
 
-// Keyword tiers for article titles/snippets. Point-capped per tier.
-const TIER_A = { max: 50, per: 25, keywords: ['dubai', 'uae', 'abu dhabi', 'emirates'] }
+// Keyword tiers for article titles/snippets.
+//
+// Tier A is GEOGRAPHIC context — it does not score on its own, because an
+// article about (for example) Dubai property or Dubai food is irrelevant to
+// luxury car rental even if it mentions Dubai. Instead, Tier A acts as a
+// multiplier on the topical base (Tier B + C + D). An article needs at least
+// one real topical keyword before any points are awarded.
+const TIER_A = { keywords: ['dubai', 'uae', 'abu dhabi', 'emirates'], multiplier: 1.4 }
 const TIER_B = {
   max: 40, per: 20,
   keywords: [
@@ -211,22 +217,44 @@ export function analyzeArticleTitle(input: ArticleScoreInput): {
 } {
   const text = `${input.title} ${input.snippet ?? ''}`.toLowerCase()
   const matchedKeywords: string[] = []
-  let score = 0
 
-  for (const tier of [TIER_A, TIER_B, TIER_C, TIER_D]) {
-    let tierPoints = 0
+  function collectTier(tier: { max: number; per: number; keywords: string[] }): number {
+    let pts = 0
     for (const kw of tier.keywords) {
       if (text.includes(kw)) {
         if (!matchedKeywords.includes(kw)) matchedKeywords.push(kw)
-        tierPoints += tier.per
-        if (tierPoints >= tier.max) break
+        pts += tier.per
+        if (pts >= tier.max) break
       }
     }
-    score += Math.min(tier.max, tierPoints)
+    return Math.min(tier.max, pts)
   }
 
-  return { score: Math.min(100, score), matchedKeywords }
+  // Topical base comes from automotive/travel/luxury keyword hits (B+C+D).
+  const topicalBase = collectTier(TIER_B) + collectTier(TIER_C) + collectTier(TIER_D)
+
+  // Detect geographic (Tier A) match separately.
+  let hasGeo = false
+  for (const kw of TIER_A.keywords) {
+    if (text.includes(kw)) {
+      hasGeo = true
+      if (!matchedKeywords.includes(kw)) matchedKeywords.push(kw)
+    }
+  }
+
+  // Geo-only floor: if the article has no topical signal but mentions Dubai/UAE,
+  // give a small floor score. A Dubai-focused editor is still a plausible pitch
+  // target even if a given article is about property or food, but the score
+  // should be clearly lower than articles that are actually on-topic.
+  if (topicalBase === 0) {
+    return { score: hasGeo ? GEO_ONLY_FLOOR : 0, matchedKeywords }
+  }
+
+  const score = Math.min(100, Math.round(topicalBase * (hasGeo ? TIER_A.multiplier : 1)))
+  return { score, matchedKeywords }
 }
+
+const GEO_ONLY_FLOOR = 5
 
 export function scoreEditorTopical(articleScores: number[]): number | null {
   if (articleScores.length === 0) return null

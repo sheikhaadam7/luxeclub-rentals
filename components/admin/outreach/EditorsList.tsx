@@ -1,7 +1,9 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import { EditorDetail } from './EditorDetail'
+import { recalculateAllArticleScores } from '@/app/actions/outreach'
 
 export interface EditorRow {
   id: string
@@ -63,6 +65,23 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
   const [selectedEditor, setSelectedEditor] = useState<EditorRow | null>(null)
   const [sortKey, setSortKey] = useState<SortKey>('combined')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
+  const router = useRouter()
+  const [isRecalc, startRecalcTransition] = useTransition()
+  const [recalcMessage, setRecalcMessage] = useState<string | null>(null)
+
+  function handleRecalculate() {
+    setRecalcMessage('Recalculating…')
+    startRecalcTransition(async () => {
+      const res = await recalculateAllArticleScores()
+      if (res.error) {
+        setRecalcMessage(`Failed: ${res.error}`)
+      } else {
+        setRecalcMessage(`Updated ${res.articles} articles, ${res.editors} editors`)
+        router.refresh()
+      }
+      setTimeout(() => setRecalcMessage(null), 5000)
+    })
+  }
 
   const filtered = useMemo(() => {
     const base = editors.filter((e) => {
@@ -120,9 +139,21 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <h3 className="font-display text-lg font-medium text-white">Discovered Editors</h3>
-        <p className="text-xs text-brand-muted">
-          {filtered.length} of {editors.length} editors
-        </p>
+        <div className="flex items-center gap-3">
+          {recalcMessage && <span className="text-xs text-white/60">{recalcMessage}</span>}
+          <button
+            type="button"
+            onClick={handleRecalculate}
+            disabled={isRecalc}
+            className="px-3 py-1.5 text-xs border border-white/15 text-white hover:bg-white/5 transition-colors rounded disabled:opacity-50"
+            title="Re-score every stored article + editor with the current scoring rules. Use after tweaking weights."
+          >
+            {isRecalc ? 'Recalculating…' : 'Recalculate scores'}
+          </button>
+          <p className="text-xs text-brand-muted">
+            {filtered.length} of {editors.length} editors
+          </p>
+        </div>
       </div>
 
       {/* Filters */}
