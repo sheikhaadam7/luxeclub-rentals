@@ -71,7 +71,13 @@ function formatTraffic(n: number | null): string {
 
 type DomainSortKey = 'outlet' | 'tier' | 'dr' | 'traffic' | 'priority' | 'discovered'
 
-export function DomainsList({ domains }: { domains: Domain[] }) {
+export function DomainsList({
+  domains,
+  editorCountsByDomain = {},
+}: {
+  domains: Domain[]
+  editorCountsByDomain?: Record<string, { active: number; skipped: number }>
+}) {
   const router = useRouter()
   const [sortKey, setSortKey] = useState<DomainSortKey>('priority')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
@@ -272,6 +278,11 @@ export function DomainsList({ domains }: { domains: Domain[] }) {
                   <span>Traffic{sortArrow('traffic')}</span>
                 </GlassTooltip>
               </th>
+              <th className="px-4 py-3 font-medium text-right">
+                <GlassTooltip label="Active (non-skipped) editors discovered at this outlet, followed by skipped editors in parentheses. Skipped rows are in the Skipped tab of the editor list.">
+                  <span>Editors</span>
+                </GlassTooltip>
+              </th>
               <th onClick={() => toggleDomainSort('priority')} className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white">
                 <GlassTooltip label="Editorial priority score (0–100). Our rubric: section fit (does the outlet have a Motors/Travel/Luxury section?) + geographic fit (UAE > expat > UK/DE/RU) + reachability (smaller outlets respond to cold pitches). Click a row value to edit." width="w-80">
                   <span>Priority{sortArrow('priority')}</span>
@@ -321,6 +332,14 @@ export function DomainsList({ domains }: { domains: Domain[] }) {
                   </td>
                   <td className="px-4 py-3 text-right font-mono text-xs text-white/70">
                     {formatTraffic(d.monthly_traffic)}
+                  </td>
+                  <td className="px-4 py-3 text-right font-mono text-xs">
+                    <span className={editorCountsByDomain[d.id]?.active ? 'text-white' : 'text-white/30'}>
+                      {editorCountsByDomain[d.id]?.active ?? 0}
+                    </span>
+                    {(editorCountsByDomain[d.id]?.skipped ?? 0) > 0 && (
+                      <span className="text-white/40"> ({editorCountsByDomain[d.id]?.skipped})</span>
+                    )}
                   </td>
                   <td className="px-4 py-3 text-right">
                     {editingScore === d.id ? (

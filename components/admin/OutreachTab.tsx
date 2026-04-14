@@ -139,6 +139,15 @@ export async function OutreachTab() {
     }
   })
 
+  // Per-domain editor counts for the Target Outlets table
+  const editorCountsByDomain: Record<string, { active: number; skipped: number }> = {}
+  for (const e of editorsRaw ?? []) {
+    const id = e.domain_id as string
+    if (!editorCountsByDomain[id]) editorCountsByDomain[id] = { active: 0, skipped: 0 }
+    if (e.skipped) editorCountsByDomain[id].skipped++
+    else editorCountsByDomain[id].active++
+  }
+
   // Quota indicators
   const [hunterUsage, serperUsage, scrapingbeeUsage, gmailConn] = await Promise.all([
     getUsage(admin, 'hunter'),
@@ -225,7 +234,7 @@ export async function OutreachTab() {
 
       <AnchorTracker />
 
-      <DomainsList domains={domains} />
+      <DomainsList domains={domains} editorCountsByDomain={editorCountsByDomain} />
 
       <EditorsList editors={editors} />
 
