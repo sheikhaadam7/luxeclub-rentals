@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState, useTransition } from 'react'
+import { Fragment, useMemo, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { EditorDetail } from './EditorDetail'
 import {
@@ -338,6 +338,57 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
   const activeCount = useMemo(() => editors.filter((e) => !e.skipped).length, [editors])
   const skippedCount = useMemo(() => editors.filter((e) => e.skipped).length, [editors])
 
+  // Group filtered editors by outlet, sorted by top Overall score within group
+  const groupedByOutlet = useMemo(() => {
+    const groups = new Map<string, EditorRow[]>()
+    for (const e of filtered) {
+      const key = e.outlet_name || '—'
+      if (!groups.has(key)) groups.set(key, [])
+      groups.get(key)!.push(e)
+    }
+    return Array.from(groups.entries())
+      .map(([outletName, rows]) => ({
+        outletName,
+        rows,
+        topScore: rows.reduce((m, r) => Math.max(m, r.combined_score ?? 0), 0),
+        tier: rows[0]?.outlet_tier ?? '',
+      }))
+      .sort((a, b) => b.topScore - a.topScore || a.outletName.localeCompare(b.outletName))
+  }, [filtered])
+
+  const [expandedOutlets, setExpandedOutlets] = useState<Set<string>>(() => {
+    if (typeof window === 'undefined') return new Set()
+    try {
+      const raw = localStorage.getItem('outreach:expandedOutlets')
+      return raw ? new Set(JSON.parse(raw) as string[]) : new Set()
+    } catch { return new Set() }
+  })
+
+  function persistExpanded(next: Set<string>) {
+    try { localStorage.setItem('outreach:expandedOutlets', JSON.stringify([...next])) } catch {}
+  }
+
+  function toggleOutlet(name: string) {
+    setExpandedOutlets((prev) => {
+      const next = new Set(prev)
+      if (next.has(name)) next.delete(name); else next.add(name)
+      persistExpanded(next)
+      return next
+    })
+  }
+
+  function expandAll() {
+    const next = new Set(groupedByOutlet.map((g) => g.outletName))
+    setExpandedOutlets(next); persistExpanded(next)
+  }
+  function collapseAll() {
+    setExpandedOutlets(new Set()); persistExpanded(new Set())
+  }
+
+  // Any active narrowing filter auto-expands matching outlets so search still surfaces results
+  const hasActiveFilter = search.trim().length > 0 || beatFilter !== 'all' || tierFilter !== 'all' || minOverall > 0 || minMatch > 0 || minCoverage > 0 || minDr > 0 || contactedFilter !== 'all'
+  const effectiveExpanded = (name: string) => hasActiveFilter || expandedOutlets.has(name)
+
   const allBeats = useMemo(() => {
     const set = new Set<string>()
     for (const e of editors) for (const b of e.beats ?? []) set.add(b)
@@ -436,8 +487,22 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
           >
             {isRecalc ? 'Recalculating…' : 'Recalculate scores'}
           </button>
+          <button
+            type="button"
+            onClick={expandAll}
+            className="px-3 py-1.5 text-xs border border-white/15 text-white/70 hover:bg-white/5 transition-colors rounded"
+          >
+            Expand all
+          </button>
+          <button
+            type="button"
+            onClick={collapseAll}
+            className="px-3 py-1.5 text-xs border border-white/15 text-white/70 hover:bg-white/5 transition-colors rounded"
+          >
+            Collapse all
+          </button>
           <p className="text-xs text-brand-muted">
-            {filtered.length} of {editors.length} editors
+            {filtered.length} of {editors.length} editors · {groupedByOutlet.length} outlet{groupedByOutlet.length === 1 ? '' : 's'}
           </p>
         </div>
       </div>
@@ -667,8 +732,34 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((e) => {
-                const name = [e.first_name, e.last_name].filter(Boolean).join(' ') || '—'
+              {groupedByOutlet.map((group) => {
+                const isExpanded = effectiveExpanded(group.outletName)
+                return (
+                  <Fragment key={group.outletName}>
+                    <tr
+                      className="bg-white/[0.03] border-b border-brand-border cursor-pointer hover:bg-white/[0.05]"
+                      onClick={() => toggleOutlet(group.outletName)}
+                    >
+                      <td colSpan={11} className="px-4 py-2 text-xs">
+                        <div className="flex items-center gap-3">
+                          <span className="text-white/50 w-3">{isExpanded ? '▾' : '▸'}</span>
+                          <span className="font-display text-sm font-medium text-white">{group.outletName}</span>
+                          {group.tier && (
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-white/50 border border-white/10">
+                              {group.tier}
+                            </span>
+                          )}
+                          <span className="text-white/40 text-[11px]">{group.rows.length} editor{group.rows.length === 1 ? '' : 's'}</span>
+                          {group.topScore > 0 && (
+                            <span className={`inline-block px-2 py-0.5 rounded border font-mono text-[11px] font-bold ${scorePillClass(group.topScore)} ml-auto`}>
+                              top {group.topScore}/100
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                    {isExpanded && group.rows.map((e) => {
+                      const name = [e.first_name, e.last_name].filter(Boolean).join(' ') || '—'
                 const isRevealed = revealed.has(e.id)
                 const isSelected = selected.has(e.id)
                 return (
@@ -819,6 +910,9 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
                       </div>
                     </td>
                   </tr>
+                )
+              })}
+                  </Fragment>
                 )
               })}
             </tbody>
