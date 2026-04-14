@@ -44,11 +44,22 @@ export class HunterApiError extends Error {
   }
 }
 
-export async function fetchDomainEmails(domain: string): Promise<HunterDomainResponse> {
-  const apiKey = process.env.HUNTER_API_KEY
-  if (!apiKey) throw new HunterApiError(500, 'HUNTER_API_KEY not configured')
+const PAGE_SIZE = 100 // Hunter's hard max per call
+const MAX_PAGES = 5   // up to 500 emails per domain — safety cap
 
-  const url = `https://api.hunter.io/v2/domain-search?domain=${encodeURIComponent(domain)}&limit=10&api_key=${apiKey}`
+async function fetchDomainEmailsPage(
+  domain: string,
+  apiKey: string,
+  offset: number
+): Promise<HunterDomainResponse> {
+  const url =
+    `https://api.hunter.io/v2/domain-search` +
+    `?domain=${encodeURIComponent(domain)}` +
+    `&type=personal` + // skip generic role accounts (info@, support@)
+    `&limit=${PAGE_SIZE}` +
+    `&offset=${offset}` +
+    `&api_key=${apiKey}`
+
   const res = await fetch(url, { method: 'GET' })
 
   if (!res.ok) {
@@ -61,4 +72,38 @@ export async function fetchDomainEmails(domain: string): Promise<HunterDomainRes
   }
 
   return await res.json() as HunterDomainResponse
+}
+
+/**
+ * Fetch every personal email Hunter has for a domain (paginated).
+ * Each page is a separate Hunter search and counts against quota.
+ * We stop when we've seen everything or hit MAX_PAGES (safety).
+ */
+export async function fetchDomainEmails(domain: string): Promise<HunterDomainResponse> {
+  const apiKey = process.env.HUNTER_API_KEY
+  if (!apiKey) throw new HunterApiError(500, 'HUNTER_API_KEY not configured')
+
+  const first = await fetchDomainEmailsPage(domain, apiKey, 0)
+  const totalResults = first.meta?.results ?? first.data.emails.length
+  if (totalResults <= PAGE_SIZE) return first
+
+  const all: HunterEmail[] = [...first.data.emails]
+  for (let page = 1; page < MAX_PAGES; page++) {
+    const offset = page * PAGE_SIZE
+    if (offset >= totalResults) break
+    try {
+      const next = await fetchDomainEmailsPage(domain, apiKey, offset)
+      if (next.data.emails.length === 0) break
+      all.push(...next.data.emails)
+    } catch (err) {
+      console.error(`[hunter] pagination failed at offset ${offset} for ${domain}:`, err instanceof Error ? err.message : err)
+      break
+    }
+  }
+
+  return {
+    ...first,
+    data: { ...first.data, emails: all },
+    meta: { ...first.meta, limit: all.length, offset: 0 },
+  }
 }

@@ -319,7 +319,7 @@ async function fullyEnrichEditor(
 
 export async function discoverEditors(
   domainId: string
-): Promise<{ error: string | null; inserted: number; skipped: number }> {
+): Promise<{ error: string | null; inserted: number; skipped: number; enriched?: number }> {
   const auth = await verifyAdmin()
   if ('error' in auth) return { error: auth.error, inserted: 0, skipped: 0 }
 
@@ -361,7 +361,20 @@ export async function discoverEditors(
   // Increment quota immediately after successful call
   await incrementUsage(admin, 'hunter')
 
-  // Parse emails, score, insert
+  // PHASE 1 — insert every editor Hunter returned that passes the scoring
+  // gate. This phase is fast (no external API calls) so we can handle
+  // domains with 50+ editors within the 300s serverless budget.
+  const outletPriority = typeof domain.priority_score === 'number' ? domain.priority_score : 50
+  type PendingEnrich = {
+    id: string
+    firstName: string | null
+    lastName: string | null
+    linkedinUrl: string | null
+    twitterHandle: string | null
+    emailForLogs: string
+    initialScore: number
+  }
+  const toEnrich: PendingEnrich[] = []
   let inserted = 0
   let skipped = 0
 
@@ -371,10 +384,10 @@ export async function discoverEditors(
       seniority: email.seniority,
       department: email.department,
       confidence: email.confidence,
-      outletPriorityScore: typeof domain.priority_score === 'number' ? domain.priority_score : 50,
+      outletPriorityScore: outletPriority,
     })
 
-    // Skip zero-scored editors (sales/HR/off-topic) — don't pollute the list
+    // Hard-zeroed editors (non-editorial / sales / HR) never make it in
     if (profileScore === 0) {
       skipped++
       continue
@@ -406,25 +419,44 @@ export async function discoverEditors(
     if (insErr) {
       if (insErr.code === '23505') skipped++  // duplicate email for this domain
       else console.error(`[discoverEditors] Insert failed for ${email.value}:`, insErr.message)
-    } else {
-      inserted++
-
-      // Full auto-enrichment pipeline for this editor. Each step is
-      // best-effort: a single failure or quota-exhaustion does not halt
-      // the others. Final rescore picks up whatever enrichment succeeded.
-      if (insertedRow?.id) {
-        await fullyEnrichEditor(
-          admin,
-          insertedRow.id,
-          email.first_name,
-          email.last_name,
-          email.linkedin,
-          email.twitter,
-          domain.domain,
-          email.value
-        )
-      }
+      continue
     }
+
+    inserted++
+    if (insertedRow?.id) {
+      toEnrich.push({
+        id: insertedRow.id,
+        firstName: email.first_name,
+        lastName: email.last_name,
+        linkedinUrl: email.linkedin,
+        twitterHandle: email.twitter,
+        emailForLogs: email.value,
+        initialScore: profileScore,
+      })
+    }
+  }
+
+  // PHASE 2 — run full enrichment (Serper + ScrapingBee + OpenAI + LinkedIn)
+  // for only the top-N editors by initial match score. Others remain in the
+  // list with Hunter-only scoring; users can click into any editor's detail
+  // panel to run the full enrichment on demand. This keeps Discover within
+  // the 300s Vercel budget even for outlets with 50+ emails.
+  const ENRICH_TOP_N = 15
+  const topToEnrich = [...toEnrich]
+    .sort((a, b) => b.initialScore - a.initialScore)
+    .slice(0, ENRICH_TOP_N)
+
+  for (const p of topToEnrich) {
+    await fullyEnrichEditor(
+      admin,
+      p.id,
+      p.firstName,
+      p.lastName,
+      p.linkedinUrl,
+      p.twitterHandle,
+      domain.domain,
+      p.emailForLogs
+    )
   }
 
   // Mark the domain as searched
@@ -434,7 +466,7 @@ export async function discoverEditors(
     .eq('id', domain.id)
 
   revalidatePath('/admin')
-  return { error: null, inserted, skipped }
+  return { error: null, inserted, skipped, enriched: topToEnrich.length }
 }
 
 export async function fetchEditorArticles(

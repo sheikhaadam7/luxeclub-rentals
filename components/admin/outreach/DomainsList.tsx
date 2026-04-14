@@ -108,9 +108,12 @@ export function DomainsList({ domains }: { domains: Domain[] }) {
       if (res.error) {
         setResults((r) => ({ ...r, [domainId]: { ok: false, message: res.error! } }))
       } else {
+        const enrichedText = typeof res.enriched === 'number'
+          ? `, enriched top ${res.enriched}`
+          : ''
         setResults((r) => ({
           ...r,
-          [domainId]: { ok: true, message: `+${res.inserted} editors (${res.skipped} skipped)` },
+          [domainId]: { ok: true, message: `+${res.inserted} editors (${res.skipped} skipped${enrichedText})` },
         }))
         router.refresh()
       }
