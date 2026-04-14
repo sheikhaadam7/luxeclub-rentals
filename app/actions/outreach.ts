@@ -1,0 +1,867 @@
+'use server'
+
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { revalidatePath } from 'next/cache'
+import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { fetchDomainEmails, HunterApiError } from '@/lib/outreach/hunter'
+import { searchEditorArticles, parseSerperDate, SerperApiError } from '@/lib/outreach/serper'
+import {
+  scoreEditorProfile,
+  analyzeArticleTitle,
+  scoreEditorTopical,
+  computeCombinedScore,
+} from '@/lib/outreach/scorer'
+import { canUseQuota, getUsage, incrementUsage } from '@/lib/outreach/quota'
+import { getPitchTemplate, fillTemplate, type AnchorType } from '@/lib/outreach/pitch-templates'
+
+// ---------------------------------------------------------------------------
+// Auth helper — mirrors app/actions/admin.ts#verifyAdmin
+// ---------------------------------------------------------------------------
+async function verifyAdmin(): Promise<{ error: string } | { userId: string }> {
+  const supabase = await createClient()
+  const { data: claimsData } = await supabase.auth.getClaims()
+  const claims = claimsData?.claims
+  if (!claims?.sub) return { error: 'Unauthorized' }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', claims.sub)
+    .single()
+
+  if (profile?.role !== 'admin') return { error: 'Unauthorized' }
+  return { userId: claims.sub }
+}
+
+// ---------------------------------------------------------------------------
+// seedDomains — parses docs/seo/hunter-domains.csv into outreach_domains
+// Idempotent: uses UNIQUE constraint on domain to avoid duplicates.
+// ---------------------------------------------------------------------------
+
+interface DomainRow {
+  domain: string
+  outlet: string
+  tier: string
+  priority: string
+  notes: string
+}
+
+function parseHunterDomainsCsv(): DomainRow[] {
+  const csvPath = join(process.cwd(), 'docs', 'seo', 'hunter-domains.csv')
+  const content = readFileSync(csvPath, 'utf-8')
+  const lines = content.split('\n').filter((l) => l.trim())
+  const header = lines[0].split(',')
+  const idxDomain = header.indexOf('domain')
+  const idxOutlet = header.indexOf('outlet')
+  const idxTier = header.indexOf('tier')
+  const idxPriority = header.indexOf('priority')
+  const idxNotes = header.indexOf('notes')
+
+  return lines.slice(1).map((line) => {
+    // Simple CSV parse — no quoted fields in our source
+    const cells = line.split(',')
+    return {
+      domain: cells[idxDomain]?.trim() ?? '',
+      outlet: cells[idxOutlet]?.trim() ?? '',
+      tier: cells[idxTier]?.trim() ?? '',
+      priority: cells[idxPriority]?.trim() ?? '',
+      notes: cells[idxNotes]?.trim() ?? '',
+    }
+  }).filter((r) => r.domain && r.outlet)
+}
+
+export async function seedDomains(): Promise<{ error: string | null; inserted: number; skipped: number }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error, inserted: 0, skipped: 0 }
+
+  let rows: DomainRow[]
+  try {
+    rows = parseHunterDomainsCsv()
+  } catch (err) {
+    return {
+      error: `Failed to read hunter-domains.csv: ${err instanceof Error ? err.message : String(err)}`,
+      inserted: 0,
+      skipped: 0,
+    }
+  }
+
+  const admin = createAdminClient()
+  let inserted = 0
+  let skipped = 0
+
+  for (const row of rows) {
+    const { error } = await admin.from('outreach_domains').insert({
+      domain: row.domain,
+      outlet_name: row.outlet,
+      tier: row.tier,
+      priority: row.priority,
+      notes: row.notes || null,
+    })
+    if (error) {
+      // Duplicate key (domain already exists) — skip silently
+      if (error.code === '23505') skipped++
+      else console.error(`[seedDomains] Insert failed for ${row.domain}:`, error.message)
+    } else {
+      inserted++
+    }
+  }
+
+  revalidatePath('/admin')
+  return { error: null, inserted, skipped }
+}
+
+// ---------------------------------------------------------------------------
+// Future actions — stubbed for Phase 2+ so the UI can import them safely.
+// Will be implemented as each phase lands.
+// ---------------------------------------------------------------------------
+
+export async function discoverEditors(
+  domainId: string
+): Promise<{ error: string | null; inserted: number; skipped: number }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error, inserted: 0, skipped: 0 }
+
+  const admin = createAdminClient()
+
+  // Fetch domain details
+  const { data: domain, error: domainErr } = await admin
+    .from('outreach_domains')
+    .select('id, domain, priority')
+    .eq('id', domainId)
+    .single()
+
+  if (domainErr || !domain) {
+    return { error: 'Domain not found', inserted: 0, skipped: 0 }
+  }
+
+  // Check Hunter quota
+  const canUse = await canUseQuota(admin, 'hunter')
+  if (!canUse) {
+    const { used, limit } = await getUsage(admin, 'hunter')
+    return {
+      error: `Hunter monthly quota reached (${used}/${limit}). Resets on the 1st.`,
+      inserted: 0,
+      skipped: 0,
+    }
+  }
+
+  // Call Hunter API
+  let hunterData
+  try {
+    hunterData = await fetchDomainEmails(domain.domain)
+  } catch (err) {
+    const msg = err instanceof HunterApiError
+      ? err.message
+      : (err instanceof Error ? err.message : 'Unknown Hunter error')
+    return { error: msg, inserted: 0, skipped: 0 }
+  }
+
+  // Increment quota immediately after successful call
+  await incrementUsage(admin, 'hunter')
+
+  // Parse emails, score, insert
+  let inserted = 0
+  let skipped = 0
+
+  for (const email of hunterData.data.emails) {
+    const profileScore = scoreEditorProfile({
+      position: email.position,
+      seniority: email.seniority,
+      department: email.department,
+      confidence: email.confidence,
+      outletPriority: domain.priority as 'P1' | 'P2' | 'P3',
+    })
+
+    // Skip zero-scored editors (sales/HR/off-topic) — don't pollute the list
+    if (profileScore === 0) {
+      skipped++
+      continue
+    }
+
+    const combinedScore = computeCombinedScore(profileScore, null)
+
+    const { error: insErr } = await admin.from('outreach_editors').insert({
+      domain_id: domain.id,
+      email: email.value,
+      first_name: email.first_name,
+      last_name: email.last_name,
+      position: email.position,
+      seniority: email.seniority,
+      department: email.department,
+      linkedin_url: email.linkedin,
+      twitter_handle: email.twitter,
+      confidence: email.confidence,
+      relevance_score: profileScore,
+      topical_score: null,
+      combined_score: combinedScore,
+      hunter_raw: email,
+    })
+
+    if (insErr) {
+      if (insErr.code === '23505') skipped++  // duplicate email for this domain
+      else console.error(`[discoverEditors] Insert failed for ${email.value}:`, insErr.message)
+    } else {
+      inserted++
+    }
+  }
+
+  // Mark the domain as searched
+  await admin
+    .from('outreach_domains')
+    .update({ hunter_searched_at: new Date().toISOString() })
+    .eq('id', domain.id)
+
+  revalidatePath('/admin')
+  return { error: null, inserted, skipped }
+}
+
+export async function fetchEditorArticles(
+  editorId: string
+): Promise<{ error: string | null; inserted: number; topicalScore: number | null }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error, inserted: 0, topicalScore: null }
+
+  const admin = createAdminClient()
+
+  // Fetch editor + their domain
+  const { data: editor, error: editorErr } = await admin
+    .from('outreach_editors')
+    .select('id, first_name, last_name, relevance_score, outreach_domains (domain)')
+    .eq('id', editorId)
+    .single()
+
+  if (editorErr || !editor) return { error: 'Editor not found', inserted: 0, topicalScore: null }
+  if (!editor.first_name || !editor.last_name) {
+    return { error: 'Editor has no name — Serper search requires both first and last name', inserted: 0, topicalScore: null }
+  }
+
+  const domainRow = Array.isArray(editor.outreach_domains) ? editor.outreach_domains[0] : editor.outreach_domains
+  if (!domainRow?.domain) return { error: 'Editor has no associated domain', inserted: 0, topicalScore: null }
+
+  // Quota check
+  const canUse = await canUseQuota(admin, 'serper')
+  if (!canUse) {
+    const { used, limit } = await getUsage(admin, 'serper')
+    return {
+      error: `Serper monthly quota reached (${used}/${limit}). Resets on the 1st.`,
+      inserted: 0,
+      topicalScore: null,
+    }
+  }
+
+  // Call Serper API
+  let results
+  try {
+    results = await searchEditorArticles(editor.first_name, editor.last_name, domainRow.domain)
+  } catch (err) {
+    const msg = err instanceof SerperApiError
+      ? err.message
+      : (err instanceof Error ? err.message : 'Unknown Serper error')
+    return { error: msg, inserted: 0, topicalScore: null }
+  }
+
+  await incrementUsage(admin, 'serper')
+
+  // Delete existing articles for this editor (refresh semantics)
+  await admin.from('outreach_articles').delete().eq('editor_id', editorId)
+
+  // Analyze and insert each article
+  let inserted = 0
+  const articleScores: number[] = []
+
+  for (const r of results) {
+    const { score, matchedKeywords } = analyzeArticleTitle({
+      title: r.title,
+      snippet: r.snippet,
+    })
+    articleScores.push(score)
+
+    const { error: insErr } = await admin.from('outreach_articles').insert({
+      editor_id: editorId,
+      url: r.link,
+      title: r.title,
+      snippet: r.snippet ?? null,
+      published_date: parseSerperDate(r.date),
+      topic_match_score: score,
+      topic_keywords: matchedKeywords,
+      serper_raw: r as unknown as Record<string, unknown>,
+    })
+    if (!insErr) inserted++
+    else if (insErr.code !== '23505') {
+      console.error(`[fetchEditorArticles] Insert failed for ${r.link}:`, insErr.message)
+    }
+  }
+
+  // Recompute topical + combined score
+  const topicalScore = scoreEditorTopical(articleScores)
+  const combined = computeCombinedScore(editor.relevance_score ?? 0, topicalScore)
+
+  await admin
+    .from('outreach_editors')
+    .update({
+      topical_score: topicalScore,
+      combined_score: combined,
+      articles_fetched_at: new Date().toISOString(),
+    })
+    .eq('id', editorId)
+
+  revalidatePath('/admin')
+  return { error: null, inserted, topicalScore }
+}
+
+// ---------------------------------------------------------------------------
+// Pitch composer actions
+// ---------------------------------------------------------------------------
+
+export interface DraftPitchResult {
+  error: string | null
+  pitch?: {
+    subject: string
+    body: string
+    targetUrl: string
+    anchorType: AnchorType
+    anchorText: string
+  }
+  editorEmail?: string
+}
+
+/**
+ * Generate a drafted pitch (not saved yet). Returns the filled template
+ * ready for the composer to display. The actual "send" action is
+ * updatePitchStatus(pitchId, 'sent').
+ */
+export async function draftPitch(
+  editorId: string,
+  angleId: string
+): Promise<DraftPitchResult> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error }
+
+  const template = getPitchTemplate(angleId)
+  if (!template) return { error: `Unknown pitch angle: ${angleId}` }
+
+  const admin = createAdminClient()
+  const { data: editor, error } = await admin
+    .from('outreach_editors')
+    .select('email, first_name, position, outreach_domains (outlet_name)')
+    .eq('id', editorId)
+    .single()
+
+  if (error || !editor) return { error: 'Editor not found' }
+
+  const domain = Array.isArray(editor.outreach_domains) ? editor.outreach_domains[0] : editor.outreach_domains
+  const outletName = domain?.outlet_name ?? 'your publication'
+
+  const filled = fillTemplate(template, {
+    editorFirstName: editor.first_name,
+    outletName,
+    position: editor.position,
+  })
+
+  return {
+    error: null,
+    pitch: {
+      subject: filled.subject,
+      body: filled.body,
+      targetUrl: template.targetUrl,
+      anchorType: template.anchorType,
+      anchorText: template.anchorText,
+    },
+    editorEmail: editor.email,
+  }
+}
+
+/**
+ * Save a pitch as sent. Inserts outreach_pitches row and updates
+ * outreach_editors.contacted_at.
+ */
+export async function savePitchAsSent(
+  editorId: string,
+  angleId: string,
+  subject: string,
+  body: string,
+  targetUrl: string,
+  anchorType: AnchorType,
+  anchorText: string
+): Promise<{ error: string | null; pitchId?: string }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error }
+
+  const admin = createAdminClient()
+  const now = new Date().toISOString()
+
+  const { data, error } = await admin
+    .from('outreach_pitches')
+    .insert({
+      editor_id: editorId,
+      pitch_angle: angleId,
+      target_url: targetUrl,
+      anchor_type: anchorType,
+      anchor_text: anchorText,
+      subject,
+      body,
+      status: 'sent',
+      sent_at: now,
+    })
+    .select('id')
+    .single()
+
+  if (error) return { error: error.message }
+
+  // Mark editor as contacted
+  await admin
+    .from('outreach_editors')
+    .update({ contacted_at: now })
+    .eq('id', editorId)
+
+  revalidatePath('/admin')
+  return { error: null, pitchId: data?.id }
+}
+
+/**
+ * Update a pitch's status (replied / published / rejected) with optional metadata.
+ */
+export async function updatePitchStatus(
+  pitchId: string,
+  status: 'sent' | 'replied' | 'published' | 'rejected',
+  metadata?: { publishedUrl?: string; notes?: string }
+): Promise<{ error: string | null }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error }
+
+  const admin = createAdminClient()
+  const now = new Date().toISOString()
+
+  const update: Record<string, unknown> = { status }
+  if (status === 'replied') update.replied_at = now
+  if (status === 'published') {
+    update.published_at = now
+    if (metadata?.publishedUrl) update.published_url = metadata.publishedUrl
+  }
+  if (metadata?.notes !== undefined) update.notes = metadata.notes
+
+  const { error } = await admin
+    .from('outreach_pitches')
+    .update(update)
+    .eq('id', pitchId)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/admin')
+  return { error: null }
+}
+
+// ---------------------------------------------------------------------------
+// AI pitch personalization (Phase 6)
+// ---------------------------------------------------------------------------
+
+export async function generatePitchOpener(
+  editorId: string,
+  angleId: string
+): Promise<{ error: string | null; opener: string }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error, opener: '' }
+
+  const { getPitchTemplate: getTemplate } = await import('@/lib/outreach/pitch-templates')
+  const { generateOpener } = await import('@/lib/outreach/ai-personalizer')
+
+  const template = getTemplate(angleId)
+  if (!template) return { error: `Unknown pitch angle: ${angleId}`, opener: '' }
+
+  const admin = createAdminClient()
+  const { data: editor, error: editorErr } = await admin
+    .from('outreach_editors')
+    .select('first_name, last_name, position, bio_text, ai_summary, outreach_domains (outlet_name, domain)')
+    .eq('id', editorId)
+    .single()
+
+  if (editorErr || !editor) return { error: 'Editor not found', opener: '' }
+
+  const domainRow = Array.isArray(editor.outreach_domains) ? editor.outreach_domains[0] : editor.outreach_domains
+  const outletName = domainRow?.outlet_name ?? 'your publication'
+  const outletDomain = domainRow?.domain ?? ''
+
+  // Fetch top article titles for context
+  const { data: articles } = await admin
+    .from('outreach_articles')
+    .select('title')
+    .eq('editor_id', editorId)
+    .order('topic_match_score', { ascending: false })
+    .limit(5)
+
+  const recentArticleTitles = (articles ?? []).map((a) => a.title)
+
+  const result = await generateOpener({
+    editorFirstName: editor.first_name,
+    editorLastName: editor.last_name,
+    position: editor.position,
+    outletName,
+    outletDomain,
+    pitchAngleName: template.name,
+    pitchAngleDescription: template.description,
+    recentArticleTitles,
+    bioText: editor.bio_text ?? null,
+    aiSummary: editor.ai_summary ?? null,
+  })
+
+  if (result.error) return { error: result.error, opener: '' }
+  return { error: null, opener: result.opener }
+}
+
+// ---------------------------------------------------------------------------
+// Editor bio scraping (Phase 7)
+// ---------------------------------------------------------------------------
+
+export async function scrapeEditorBio(
+  editorId: string
+): Promise<{ error: string | null; bioText: string | null; bioUrl: string | null }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error, bioText: null, bioUrl: null }
+
+  const admin = createAdminClient()
+  const { data: editor, error: editorErr } = await admin
+    .from('outreach_editors')
+    .select('first_name, last_name, outreach_domains (domain)')
+    .eq('id', editorId)
+    .single()
+
+  if (editorErr || !editor) return { error: 'Editor not found', bioText: null, bioUrl: null }
+  if (!editor.first_name || !editor.last_name) {
+    return { error: 'Editor needs both first + last name', bioText: null, bioUrl: null }
+  }
+  const domainRow = Array.isArray(editor.outreach_domains) ? editor.outreach_domains[0] : editor.outreach_domains
+  if (!domainRow?.domain) return { error: 'No domain', bioText: null, bioUrl: null }
+
+  // Check both Serper quota (for finding bio URL) and ScrapingBee quota
+  const serperOk = await canUseQuota(admin, 'serper')
+  const sbOk = await canUseQuota(admin, 'scrapingbee')
+  if (!serperOk) {
+    const { used, limit } = await getUsage(admin, 'serper')
+    return { error: `Serper monthly quota reached (${used}/${limit})`, bioText: null, bioUrl: null }
+  }
+  if (!sbOk) {
+    const { used, limit } = await getUsage(admin, 'scrapingbee')
+    return { error: `ScrapingBee monthly quota reached (${used}/${limit})`, bioText: null, bioUrl: null }
+  }
+
+  const { findAndFetchEditorBioPage, ScrapingBeeError } = await import('@/lib/outreach/scrapingbee')
+  const { extractBio } = await import('@/lib/outreach/bio-extractor')
+  const { searchEditorArticles: _, SerperApiError: _SE } = await import('@/lib/outreach/serper')
+
+  // Use Serper to find bio page
+  const apiKey = process.env.SERPER_API_KEY
+  const serperSearch = async (q: string) => {
+    const res = await fetch('https://google.serper.dev/search', {
+      method: 'POST',
+      headers: { 'X-API-KEY': apiKey!, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ q, num: 5, gl: 'ae', hl: 'en' }),
+    })
+    if (!res.ok) throw new Error(`Serper error ${res.status}`)
+    const data = await res.json()
+    return (data.organic ?? []).map((r: { link: string; title: string }) => ({ link: r.link, title: r.title }))
+  }
+
+  let fetchResult
+  try {
+    fetchResult = await findAndFetchEditorBioPage(editor.first_name, editor.last_name, domainRow.domain, serperSearch)
+    // Both Serper and ScrapingBee were called if we got here with success
+    await incrementUsage(admin, 'serper')
+    if (fetchResult) await incrementUsage(admin, 'scrapingbee')
+  } catch (err) {
+    const msg = err instanceof ScrapingBeeError ? err.message
+      : err instanceof Error ? err.message : 'Unknown scrape error'
+    return { error: msg, bioText: null, bioUrl: null }
+  }
+
+  if (!fetchResult) {
+    // Mark attempted (no bio found) so UI shows "searched, 0 found"
+    await admin
+      .from('outreach_editors')
+      .update({ bio_fetched_at: new Date().toISOString() })
+      .eq('id', editorId)
+    revalidatePath('/admin')
+    return { error: 'No author/bio page found in Google results', bioText: null, bioUrl: null }
+  }
+
+  const bioText = extractBio(fetchResult.html)
+  const now = new Date().toISOString()
+
+  // Re-score editor: bio contributes to topical score as a virtual "article".
+  // When bio has strong keyword match (e.g. "Motors Editor covering supercars"),
+  // this meaningfully boosts combined_score.
+  let newTopicalScore: number | null = null
+  let newCombinedScore: number | null = null
+  if (bioText) {
+    const bioAnalysis = analyzeArticleTitle({ title: bioText, snippet: null })
+
+    // Fetch editor's existing article scores + profile score
+    const { data: existingArticles } = await admin
+      .from('outreach_articles')
+      .select('topic_match_score')
+      .eq('editor_id', editorId)
+
+    const { data: editorFull } = await admin
+      .from('outreach_editors')
+      .select('relevance_score')
+      .eq('id', editorId)
+      .single()
+
+    const articleScores = (existingArticles ?? []).map((a) => a.topic_match_score ?? 0)
+    // Add bio as a virtual article in the pool
+    articleScores.push(bioAnalysis.score)
+    newTopicalScore = scoreEditorTopical(articleScores)
+    newCombinedScore = computeCombinedScore(editorFull?.relevance_score ?? 0, newTopicalScore)
+  }
+
+  const updatePayload: Record<string, unknown> = {
+    bio_text: bioText,
+    bio_url: fetchResult.url,
+    bio_fetched_at: now,
+  }
+  if (newTopicalScore !== null) {
+    updatePayload.topical_score = newTopicalScore
+    updatePayload.combined_score = newCombinedScore
+  }
+
+  await admin
+    .from('outreach_editors')
+    .update(updatePayload)
+    .eq('id', editorId)
+
+  revalidatePath('/admin')
+  return { error: null, bioText, bioUrl: fetchResult.url }
+}
+
+// ---------------------------------------------------------------------------
+// Full-article enrichment + AI summary (Phase 8)
+// ---------------------------------------------------------------------------
+
+export async function enrichEditorArticles(
+  editorId: string
+): Promise<{ error: string | null; fetched: number; summary: string | null }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error, fetched: 0, summary: null }
+
+  const admin = createAdminClient()
+  const { data: editor, error: editorErr } = await admin
+    .from('outreach_editors')
+    .select('first_name, last_name, outreach_domains (outlet_name)')
+    .eq('id', editorId)
+    .single()
+
+  if (editorErr || !editor) return { error: 'Editor not found', fetched: 0, summary: null }
+  const domainRow = Array.isArray(editor.outreach_domains) ? editor.outreach_domains[0] : editor.outreach_domains
+  const outletName = domainRow?.outlet_name ?? 'the outlet'
+
+  // Get top 3 articles by topic_match_score
+  const { data: topArticles } = await admin
+    .from('outreach_articles')
+    .select('id, url, title, full_text')
+    .eq('editor_id', editorId)
+    .order('topic_match_score', { ascending: false })
+    .limit(3)
+
+  if (!topArticles || topArticles.length === 0) {
+    return { error: 'No articles to enrich. Fetch articles first.', fetched: 0, summary: null }
+  }
+
+  // Quota check for ScrapingBee (3 calls)
+  const { used, limit } = await getUsage(admin, 'scrapingbee')
+  if (used + 3 > limit) {
+    return { error: `ScrapingBee quota would exceed limit (${used}/${limit}, need 3)`, fetched: 0, summary: null }
+  }
+
+  const { fetchArticleText } = await import('@/lib/outreach/article-fetcher')
+  const { summarizeForEditor } = await import('@/lib/outreach/article-summarizer')
+
+  // Fetch full text for each (skip if already stored)
+  const enriched: Array<{ title: string; text: string }> = []
+  let fetchedCount = 0
+
+  for (const a of topArticles) {
+    if (a.full_text && a.full_text.length > 200) {
+      enriched.push({ title: a.title, text: a.full_text })
+      continue
+    }
+    const text = await fetchArticleText(a.url)
+    await incrementUsage(admin, 'scrapingbee')
+    if (text) {
+      await admin.from('outreach_articles').update({ full_text: text }).eq('id', a.id)
+      enriched.push({ title: a.title, text })
+      fetchedCount++
+    }
+  }
+
+  if (enriched.length === 0) {
+    return { error: 'No articles could be fetched (all blocked or empty)', fetched: 0, summary: null }
+  }
+
+  // Generate summary
+  const editorName = [editor.first_name, editor.last_name].filter(Boolean).join(' ') || 'the editor'
+  const { summary, error: sumErr } = await summarizeForEditor({
+    editorName,
+    outletName,
+    articles: enriched,
+  })
+
+  if (sumErr) {
+    console.error('[enrichEditorArticles] Summary error:', sumErr)
+  } else {
+    await admin
+      .from('outreach_editors')
+      .update({ ai_summary: summary })
+      .eq('id', editorId)
+  }
+
+  revalidatePath('/admin')
+  return {
+    error: sumErr,
+    fetched: fetchedCount,
+    summary: summary || null,
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Gmail OAuth + reply detection (Phase 9)
+// ---------------------------------------------------------------------------
+
+export async function getGoogleAuthUrl(): Promise<{ error: string | null; url: string | null }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error, url: null }
+
+  try {
+    const { buildAuthUrl } = await import('@/lib/outreach/gmail')
+    const state = auth.userId // tie the OAuth request back to the admin
+    const url = buildAuthUrl(state)
+    return { error: null, url }
+  } catch (err) {
+    return {
+      error: err instanceof Error ? err.message : 'Failed to build auth URL',
+      url: null,
+    }
+  }
+}
+
+export async function getGmailConnection(): Promise<{
+  connected: boolean
+  email: string | null
+}> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { connected: false, email: null }
+
+  const admin = createAdminClient()
+  const { data } = await admin
+    .from('outreach_oauth_tokens')
+    .select('email, refresh_token')
+    .eq('provider', 'google')
+    .eq('admin_user_id', auth.userId)
+    .maybeSingle()
+
+  return {
+    connected: !!data?.refresh_token,
+    email: data?.email ?? null,
+  }
+}
+
+export async function disconnectGmail(): Promise<{ error: string | null }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error }
+
+  const admin = createAdminClient()
+  await admin
+    .from('outreach_oauth_tokens')
+    .delete()
+    .eq('provider', 'google')
+    .eq('admin_user_id', auth.userId)
+
+  revalidatePath('/admin')
+  return { error: null }
+}
+
+export async function checkForReplies(): Promise<{
+  error: string | null
+  checked: number
+  matched: number
+}> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error, checked: 0, matched: 0 }
+
+  const admin = createAdminClient()
+
+  // Load stored refresh token
+  const { data: tokenRow } = await admin
+    .from('outreach_oauth_tokens')
+    .select('access_token, refresh_token, expires_at')
+    .eq('provider', 'google')
+    .eq('admin_user_id', auth.userId)
+    .maybeSingle()
+
+  if (!tokenRow?.refresh_token) {
+    return { error: 'Gmail not connected. Click Connect Gmail first.', checked: 0, matched: 0 }
+  }
+
+  const { createOAuthClient, listRecentMessages, extractEmail } = await import('@/lib/outreach/gmail')
+  const oauth = createOAuthClient()
+  oauth.setCredentials({
+    access_token: tokenRow.access_token ?? undefined,
+    refresh_token: tokenRow.refresh_token,
+    expiry_date: tokenRow.expires_at ? new Date(tokenRow.expires_at).getTime() : undefined,
+  })
+
+  // Load all sent pitches waiting for a reply
+  const { data: pitches } = await admin
+    .from('outreach_pitches')
+    .select('id, sent_at, subject, outreach_editors (email)')
+    .eq('status', 'sent')
+
+  if (!pitches || pitches.length === 0) {
+    return { error: null, checked: 0, matched: 0 }
+  }
+
+  const oldestSent = pitches.reduce((earliest: Date, p) => {
+    const sentAt = p.sent_at ? new Date(p.sent_at) : new Date()
+    return sentAt < earliest ? sentAt : earliest
+  }, new Date())
+
+  let messages
+  try {
+    messages = await listRecentMessages(oauth, oldestSent)
+  } catch (err) {
+    return {
+      error: err instanceof Error ? err.message : 'Gmail API error',
+      checked: 0,
+      matched: 0,
+    }
+  }
+
+  let matched = 0
+
+  for (const p of pitches) {
+    const editor = Array.isArray(p.outreach_editors) ? p.outreach_editors[0] : p.outreach_editors
+    const editorEmail = editor?.email?.toLowerCase()
+    if (!editorEmail || !p.sent_at) continue
+
+    const sentAt = new Date(p.sent_at)
+    const reply = messages.find((m) => {
+      if (m.receivedAt <= sentAt) return false
+      return extractEmail(m.from) === editorEmail
+    })
+
+    if (reply) {
+      await admin
+        .from('outreach_pitches')
+        .update({
+          status: 'replied',
+          replied_at: reply.receivedAt.toISOString(),
+          notes: reply.snippet.slice(0, 500),
+        })
+        .eq('id', p.id)
+      matched++
+    }
+  }
+
+  revalidatePath('/admin')
+  return { error: null, checked: pitches.length, matched }
+}

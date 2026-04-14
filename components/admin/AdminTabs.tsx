@@ -4,9 +4,10 @@ import Link from 'next/link'
 const TABS = [
   { id: 'fleet', label: 'Fleet' },
   { id: 'bookings', label: 'Bookings' },
-{ id: 'payments', label: 'Payments' },
+  { id: 'payments', label: 'Payments' },
   { id: 'analytics', label: 'Analytics' },
   { id: 'locations', label: 'Locations' },
+  { id: 'outreach', label: 'Outreach' },
 ] as const
 
 export function AdminTabs({ activeTab }: { activeTab: string }) {

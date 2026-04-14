@@ -24,6 +24,7 @@
     "@veriff/js-sdk": "^2.0.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "googleapis": "^171.4.0",
     "mapbox-gl": "^3.18.1",
     "next": "16.1.6",
     "react": "19.2.3",

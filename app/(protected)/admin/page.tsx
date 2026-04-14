@@ -7,9 +7,10 @@ import { BookingsTab } from '@/components/admin/BookingsTab'
 import { PaymentsTab } from '@/components/admin/PaymentsTab'
 import { AnalyticsTab } from '@/components/admin/AnalyticsTab'
 import { LocationsTab } from '@/components/admin/LocationsTab'
+import { OutreachTab } from '@/components/admin/OutreachTab'
 
-type TabId = 'fleet' | 'bookings' | 'payments' | 'analytics' | 'locations'
-const VALID_TABS: TabId[] = ['fleet', 'bookings', 'payments', 'analytics', 'locations']
+type TabId = 'fleet' | 'bookings' | 'payments' | 'analytics' | 'locations' | 'outreach'
+const VALID_TABS: TabId[] = ['fleet', 'bookings', 'payments', 'analytics', 'locations', 'outreach']
 
 interface AdminPageProps {
   searchParams: Promise<{ tab?: string }>
@@ -91,6 +92,11 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
         {activeTab === 'locations' && (
           <Suspense fallback={<TabSkeleton />}>
             <LocationsTab />
+          </Suspense>
+        )}
+        {activeTab === 'outreach' && (
+          <Suspense fallback={<TabSkeleton />}>
+            <OutreachTab />
           </Suspense>
         )}
 
