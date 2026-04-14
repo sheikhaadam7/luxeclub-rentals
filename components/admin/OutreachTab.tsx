@@ -12,11 +12,11 @@ import { getGmailConnection } from '@/app/actions/outreach'
 export async function OutreachTab() {
   const admin = createAdminClient()
 
-  // Fetch domains sorted by priority (P1 first)
+  // Fetch domains sorted by priority_score (highest first)
   const { data: domains, error: domainsError } = await admin
     .from('outreach_domains')
     .select('*')
-    .order('priority', { ascending: true })
+    .order('priority_score', { ascending: false, nullsFirst: false })
     .order('tier', { ascending: true })
     .order('outlet_name', { ascending: true })
 

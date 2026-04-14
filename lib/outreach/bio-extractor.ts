@@ -55,26 +55,48 @@ export function extractBio(html: string): string | null {
     if (desc.length > 40 && desc.length < 600) return desc
   }
 
-  // 3. First paragraph inside an author-ish container
+  // 3. First paragraph inside an author-ish container — only if it LOOKS
+  //    like a bio (first/third person self-description, not an article lede).
   const containerRegex = /<(div|section|article)[^>]+(?:class|id)=["'][^"']*(?:author|bio|profile|about|contributor)[^"']*["'][^>]*>([\s\S]*?)<\/\1>/i
   const containerMatch = html.match(containerRegex)
   if (containerMatch) {
     const inner = containerMatch[2]
-    const pMatch = inner.match(/<p[^>]*>([\s\S]*?)<\/p>/i)
-    if (pMatch) {
+    const pMatches = Array.from(inner.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi))
+    for (const pMatch of pMatches) {
       const text = decode(stripTags(pMatch[1]))
-      if (text.length > 40) return text.slice(0, 500)
+      if (looksLikeBio(text)) return text.slice(0, 500)
     }
   }
 
-  // 4. Fall back to first p tag with substantial text
-  const allPs = Array.from(html.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi))
-  for (const p of allPs) {
-    const text = decode(stripTags(p[1]))
-    if (text.length > 80 && text.length < 1000 && !/cookie|privacy|subscribe/i.test(text)) {
-      return text.slice(0, 500)
-    }
-  }
-
+  // No reliable bio found. Returning null is better than guessing —
+  // the old fallback often grabbed the lede of the author's latest article.
   return null
+}
+
+/**
+ * Heuristic: does this paragraph read like a short professional bio,
+ * or like the opening of a news article? Bios describe a person;
+ * article ledes describe an event, product, or place.
+ */
+function looksLikeBio(text: string): boolean {
+  if (text.length < 40 || text.length > 1000) return false
+  if (/cookie|privacy|subscribe|newsletter/i.test(text)) return false
+
+  // Strong bio signals: self-description phrasing
+  const bioPhrases = [
+    /\b(is|was)\s+(a|an|the)\s+(senior|staff|contributing|freelance|former|award[- ]winning|deputy|managing|assistant)?\s*(editor|journalist|writer|reporter|correspondent|columnist|contributor|producer|author)\b/i,
+    /\b(writes|covers|reports|edits|contributes|specializes|focuses)\s+(on|for|about)\b/i,
+    /\bjoined\s+[A-Z]/, // "joined Vogue in 2019"
+    /\b(years? of experience|based in|lives in)\b/i,
+    /\bholds? (a|an)\s+(BA|MA|degree|PhD)\b/i,
+  ]
+  if (bioPhrases.some((r) => r.test(text))) return true
+
+  // Reject article-lede patterns (proper-noun-heavy, event-driven)
+  // Article ledes often start with a brand/place/event, not a person descriptor.
+  if (/^(In|On|At|After|When|While|The|A|An)\s+[A-Z]/.test(text) && !/\b(editor|journalist|writer|reporter)\b/i.test(text)) {
+    return false
+  }
+
+  return false
 }

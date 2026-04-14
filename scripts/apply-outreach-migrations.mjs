@@ -33,6 +33,7 @@ async function run() {
   const migrations = [
     'supabase/migrations/20260414000000_outreach_tables.sql',
     'supabase/migrations/20260414010000_outreach_oauth.sql',
+    'supabase/migrations/20260414020000_outreach_metrics.sql',
   ]
 
   for (const path of migrations) {

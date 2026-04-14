@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { fetchDomainEmails, HunterApiError } from '@/lib/outreach/hunter'
+import { fetchDomainMetrics, AhrefsApiError } from '@/lib/outreach/ahrefs'
 import { searchEditorArticles, parseSerperDate, SerperApiError } from '@/lib/outreach/serper'
 import {
   scoreEditorProfile,
@@ -128,7 +129,7 @@ export async function discoverEditors(
   // Fetch domain details
   const { data: domain, error: domainErr } = await admin
     .from('outreach_domains')
-    .select('id, domain, priority')
+    .select('id, domain, priority, priority_score')
     .eq('id', domainId)
     .single()
 
@@ -171,7 +172,7 @@ export async function discoverEditors(
       seniority: email.seniority,
       department: email.department,
       confidence: email.confidence,
-      outletPriority: domain.priority as 'P1' | 'P2' | 'P3',
+      outletPriorityScore: typeof domain.priority_score === 'number' ? domain.priority_score : 50,
     })
 
     // Skip zero-scored editors (sales/HR/off-topic) — don't pollute the list
@@ -864,4 +865,112 @@ export async function checkForReplies(): Promise<{
 
   revalidatePath('/admin')
   return { error: null, checked: pitches.length, matched }
+}
+
+// ---------------------------------------------------------------------------
+// refreshDomainMetrics — pull DR + organic traffic from Ahrefs for one domain
+// ---------------------------------------------------------------------------
+export async function refreshDomainMetrics(
+  domainId: string
+): Promise<{ error: string | null; dr?: number | null; monthlyTraffic?: number | null }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error }
+
+  const admin = createAdminClient()
+  const { data: row, error: fetchErr } = await admin
+    .from('outreach_domains')
+    .select('domain')
+    .eq('id', domainId)
+    .single()
+
+  if (fetchErr || !row) return { error: 'Domain not found' }
+
+  try {
+    const { dr, monthlyTraffic } = await fetchDomainMetrics(row.domain)
+    const { error: updateErr } = await admin
+      .from('outreach_domains')
+      .update({
+        dr,
+        monthly_traffic: monthlyTraffic,
+        metrics_fetched_at: new Date().toISOString(),
+      })
+      .eq('id', domainId)
+    if (updateErr) return { error: updateErr.message }
+
+    revalidatePath('/admin')
+    return { error: null, dr, monthlyTraffic }
+  } catch (err) {
+    const msg = err instanceof AhrefsApiError ? err.message : 'Ahrefs request failed'
+    return { error: msg }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// refreshAllDomainMetrics — batch-refresh DR + traffic for every domain.
+// Serial with a small delay to stay polite to the Ahrefs API.
+// ---------------------------------------------------------------------------
+export async function refreshAllDomainMetrics(): Promise<{
+  error: string | null
+  updated: number
+  failed: number
+}> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error, updated: 0, failed: 0 }
+
+  const admin = createAdminClient()
+  const { data: rows, error: fetchErr } = await admin
+    .from('outreach_domains')
+    .select('id, domain')
+
+  if (fetchErr || !rows) return { error: fetchErr?.message ?? 'Load failed', updated: 0, failed: 0 }
+
+  let updated = 0
+  let failed = 0
+  for (const row of rows) {
+    try {
+      const { dr, monthlyTraffic } = await fetchDomainMetrics(row.domain)
+      await admin
+        .from('outreach_domains')
+        .update({
+          dr,
+          monthly_traffic: monthlyTraffic,
+          metrics_fetched_at: new Date().toISOString(),
+        })
+        .eq('id', row.id)
+      updated++
+    } catch (err) {
+      console.error(`[refreshAllDomainMetrics] ${row.domain}:`, err)
+      failed++
+    }
+    // Brief pause between requests
+    await new Promise((r) => setTimeout(r, 250))
+  }
+
+  revalidatePath('/admin')
+  return { error: null, updated, failed }
+}
+
+// ---------------------------------------------------------------------------
+// updateDomainPriorityScore — inline edit the 0-100 priority_score
+// ---------------------------------------------------------------------------
+export async function updateDomainPriorityScore(
+  domainId: string,
+  score: number
+): Promise<{ error: string | null }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error }
+
+  if (!Number.isFinite(score) || score < 0 || score > 100) {
+    return { error: 'Priority score must be between 0 and 100' }
+  }
+
+  const admin = createAdminClient()
+  const { error } = await admin
+    .from('outreach_domains')
+    .update({ priority_score: Math.round(score) })
+    .eq('id', domainId)
+
+  if (error) return { error: error.message }
+  revalidatePath('/admin')
+  return { error: null }
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { EditorDetail } from './EditorDetail'
 
 export interface EditorRow {
@@ -31,28 +31,72 @@ export interface EditorRow {
   outlet_priority: string
 }
 
-function scoreColor(score: number | null): string {
-  if (score == null) return 'text-white/40'
-  if (score >= 80) return 'text-green-400'
-  if (score >= 60) return 'text-brand-cyan'
-  if (score >= 40) return 'text-amber-400'
-  return 'text-white/50'
+type SortKey = 'profile' | 'topical' | 'combined' | 'name' | 'outlet'
+
+function scorePillClass(score: number | null): string {
+  if (score == null) return 'bg-white/5 text-white/40 border-white/10'
+  if (score >= 80) return 'bg-green-500/15 text-green-400 border-green-500/30'
+  if (score >= 60) return 'bg-brand-cyan/15 text-brand-cyan border-brand-cyan/30'
+  if (score >= 40) return 'bg-amber-400/15 text-amber-400 border-amber-400/30'
+  if (score >= 20) return 'bg-orange-500/15 text-orange-400 border-orange-500/30'
+  return 'bg-red-500/15 text-red-400 border-red-500/30'
+}
+
+function breakdown(profile: number | null, topical: number | null, combined: number | null): string {
+  if (combined == null) return 'Not scored yet'
+  if (topical == null) return `Profile-only: ${profile ?? 0}/100 (no articles indexed yet)`
+  return `Profile ${profile ?? 0} × 60% + Topical ${topical} × 40% = ${combined}/100`
 }
 
 export function EditorsList({ editors }: { editors: EditorRow[] }) {
-  const [minScore, setMinScore] = useState(0)
+  const [minScore, setMinScore] = useState(40)
   const [tierFilter, setTierFilter] = useState<string>('all')
   const [contactedFilter, setContactedFilter] = useState<'all' | 'contacted' | 'not-contacted'>('all')
   const [revealed, setRevealed] = useState<Set<string>>(new Set())
   const [selectedEditor, setSelectedEditor] = useState<EditorRow | null>(null)
+  const [sortKey, setSortKey] = useState<SortKey>('combined')
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
 
-  const filtered = editors.filter((e) => {
-    if ((e.combined_score ?? 0) < minScore) return false
-    if (tierFilter !== 'all' && e.outlet_tier !== tierFilter) return false
-    if (contactedFilter === 'contacted' && !e.contacted_at) return false
-    if (contactedFilter === 'not-contacted' && e.contacted_at) return false
-    return true
-  })
+  const filtered = useMemo(() => {
+    const base = editors.filter((e) => {
+      if ((e.combined_score ?? 0) < minScore) return false
+      if (tierFilter !== 'all' && e.outlet_tier !== tierFilter) return false
+      if (contactedFilter === 'contacted' && !e.contacted_at) return false
+      if (contactedFilter === 'not-contacted' && e.contacted_at) return false
+      return true
+    })
+
+    const dir = sortDir === 'desc' ? -1 : 1
+    const keyer = (e: EditorRow): number | string => {
+      switch (sortKey) {
+        case 'profile': return e.relevance_score ?? -1
+        case 'topical': return e.topical_score ?? -1
+        case 'combined': return e.combined_score ?? -1
+        case 'name': return [e.first_name, e.last_name].filter(Boolean).join(' ').toLowerCase()
+        case 'outlet': return e.outlet_name.toLowerCase()
+      }
+    }
+    return [...base].sort((a, b) => {
+      const ka = keyer(a); const kb = keyer(b)
+      if (ka < kb) return -1 * dir
+      if (ka > kb) return 1 * dir
+      return 0
+    })
+  }, [editors, minScore, tierFilter, contactedFilter, sortKey, sortDir])
+
+  function toggleSort(key: SortKey) {
+    if (sortKey === key) {
+      setSortDir((d) => (d === 'desc' ? 'asc' : 'desc'))
+    } else {
+      setSortKey(key)
+      setSortDir(key === 'name' || key === 'outlet' ? 'asc' : 'desc')
+    }
+  }
+
+  function sortArrow(key: SortKey) {
+    if (sortKey !== key) return ''
+    return sortDir === 'desc' ? ' ↓' : ' ↑'
+  }
 
   function toggleReveal(id: string) {
     setRevealed((prev) => {
@@ -126,12 +170,12 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
           <table className="w-full text-sm">
             <thead className="bg-white/[0.02] border-b border-brand-border">
               <tr className="text-left text-xs uppercase tracking-wider text-brand-muted">
-                <th className="px-4 py-3 font-medium">Name</th>
+                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:text-white" onClick={() => toggleSort('name')}>Name{sortArrow('name')}</th>
                 <th className="px-4 py-3 font-medium">Position</th>
-                <th className="px-4 py-3 font-medium">Outlet</th>
-                <th className="px-4 py-3 font-medium text-right">Profile</th>
-                <th className="px-4 py-3 font-medium text-right">Topical</th>
-                <th className="px-4 py-3 font-medium text-right">Combined</th>
+                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:text-white" onClick={() => toggleSort('outlet')}>Outlet{sortArrow('outlet')}</th>
+                <th className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white" onClick={() => toggleSort('profile')} title="Profile score (Hunter data: title, seniority, tier)">Profile{sortArrow('profile')}</th>
+                <th className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white" onClick={() => toggleSort('topical')} title="Topical score (article history relevance)">Topical{sortArrow('topical')}</th>
+                <th className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white" onClick={() => toggleSort('combined')} title="60% profile + 40% topical">Combined{sortArrow('combined')}</th>
                 <th className="px-4 py-3 font-medium">Email</th>
                 <th className="px-4 py-3 font-medium">Links</th>
                 <th className="px-4 py-3 font-medium">Status</th>
@@ -150,14 +194,23 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
                     <td className="px-4 py-3 text-white font-medium">{name}</td>
                     <td className="px-4 py-3 text-white/70 text-xs">{e.position ?? '—'}</td>
                     <td className="px-4 py-3 text-brand-muted text-xs">{e.outlet_name}</td>
-                    <td className={`px-4 py-3 text-right font-mono text-xs font-semibold ${scoreColor(e.relevance_score)}`}>
-                      {e.relevance_score ?? '—'}
+                    <td className="px-4 py-3 text-right">
+                      <span className={`inline-block px-2 py-0.5 rounded border font-mono text-[11px] font-semibold ${scorePillClass(e.relevance_score)}`}>
+                        {e.relevance_score ?? '—'}
+                      </span>
                     </td>
-                    <td className={`px-4 py-3 text-right font-mono text-xs font-semibold ${scoreColor(e.topical_score)}`}>
-                      {e.topical_score ?? '—'}
+                    <td className="px-4 py-3 text-right">
+                      <span className={`inline-block px-2 py-0.5 rounded border font-mono text-[11px] font-semibold ${scorePillClass(e.topical_score)}`}>
+                        {e.topical_score ?? '—'}
+                      </span>
                     </td>
-                    <td className={`px-4 py-3 text-right font-mono text-xs font-bold ${scoreColor(e.combined_score)}`}>
-                      {e.combined_score ?? '—'}
+                    <td className="px-4 py-3 text-right">
+                      <span
+                        title={breakdown(e.relevance_score, e.topical_score, e.combined_score)}
+                        className={`inline-block px-2.5 py-1 rounded border font-mono text-xs font-bold ${scorePillClass(e.combined_score)}`}
+                      >
+                        {e.combined_score != null ? `${e.combined_score}/100` : '—'}
+                      </span>
                     </td>
                     <td className="px-4 py-3" onClick={(ev) => ev.stopPropagation()}>
                       {isRevealed ? (

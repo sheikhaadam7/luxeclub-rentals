@@ -14,7 +14,12 @@ export interface EditorProfileInput {
   seniority: 'executive' | 'senior' | 'junior' | null
   department: string | null
   confidence: number | null
-  outletPriority: 'P1' | 'P2' | 'P3'
+  /**
+   * Numeric outlet priority (0-100) from outreach_domains.priority_score.
+   * Replaces the old P1/P2/P3 tier. Contributes priority_score / 10 to the
+   * profile score (so a score of 80 is worth ~8 points, matching the old +10 P1).
+   */
+  outletPriorityScore: number
 }
 
 export interface ArticleScoreInput {
@@ -33,10 +38,28 @@ const HARD_ZERO_DEPARTMENTS = new Set([
 const HARD_ZERO_POSITION_KEYWORDS = [
   'sales', 'business dev', 'account exec', 'account manager', 'hr ',
   'human resources', 'recruiter', 'talent acquisition',
+  'engineer', 'developer', 'designer', 'analyst', 'consultant',
+  'ceo', 'cfo', 'coo', 'cto', 'founder', 'vp ', 'vice president',
 ]
 
+// Editorial-signal keywords — at least one must match somewhere
+// (position OR department) for the editor to score above zero.
+const EDITORIAL_KEYWORDS = [
+  'editor', 'journalist', 'writer', 'reporter', 'correspondent',
+  'contributor', 'columnist', 'producer', 'publisher', 'content',
+  'features', 'newsroom', 'editorial',
+]
+
+function hasEditorialSignal(position: string | null, department: string | null): boolean {
+  const blob = `${position ?? ''} ${department ?? ''}`.toLowerCase()
+  if (!blob.trim()) return false
+  // Treat Hunter's "communication" department as editorial-adjacent
+  if (department && department.toLowerCase() === 'communication') return true
+  return EDITORIAL_KEYWORDS.some((kw) => blob.includes(kw))
+}
+
 function titlePoints(position: string | null): number {
-  if (!position) return 5
+  if (!position) return 0
   const p = position.toLowerCase()
 
   // Hard-skip roles (not editorial)
@@ -99,17 +122,19 @@ function confidencePoints(c: number | null): number {
   return Math.min(10, Math.round(c / 10))
 }
 
-function tierPoints(priority: 'P1' | 'P2' | 'P3'): number {
-  switch (priority) {
-    case 'P1': return 10
-    case 'P2': return 6
-    case 'P3': return 3
-  }
+function priorityScorePoints(score: number): number {
+  // priority_score is 0-100; contribute up to ~10 points to profile score.
+  if (!Number.isFinite(score)) return 3
+  return Math.round(Math.max(0, Math.min(100, score)) / 10)
 }
 
 export function scoreEditorProfile(input: EditorProfileInput): number {
   // Hard-zero on off-topic department
   if (input.department && HARD_ZERO_DEPARTMENTS.has(input.department.toLowerCase())) return 0
+
+  // Require at least one editorial signal; otherwise the contact likely isn't
+  // an editor at all (PR reps, execs, sales, unknown roles).
+  if (!hasEditorialSignal(input.position, input.department)) return 0
 
   const title = titlePoints(input.position)
   if (title === 0) return 0 // Hard-zero on sales/HR keywords in title
@@ -118,9 +143,9 @@ export function scoreEditorProfile(input: EditorProfileInput): number {
   const kw = keywordBoostPoints(input.position)
   const sen = seniorityPoints(input.seniority)
   const conf = confidencePoints(input.confidence)
-  const tier = tierPoints(input.outletPriority)
+  const priority = priorityScorePoints(input.outletPriorityScore)
 
-  return Math.min(100, title + dept + kw + sen + conf + tier)
+  return Math.min(100, title + dept + kw + sen + conf + priority)
 }
 
 // ---------------------------------------------------------------------------
