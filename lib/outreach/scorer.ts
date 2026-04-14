@@ -149,6 +149,29 @@ function priorityScorePoints(score: number): number {
   return Math.round(Math.max(0, Math.min(100, score)) / 10)
 }
 
+/**
+ * When scoreEditorProfile returns 0, tell the caller WHY so we can store the
+ * reason on the skipped editor row (audit + recovery).
+ */
+export function diagnoseProfileZero(input: EditorProfileInput): string | null {
+  const dept = input.department?.toLowerCase()
+  if (dept && HARD_ZERO_DEPARTMENTS.has(dept)) return `department:${dept}`
+
+  if (input.position) {
+    const p = input.position.toLowerCase()
+    for (const kw of HARD_ZERO_POSITION_KEYWORDS) {
+      if (p.includes(kw)) return `title_keyword:${kw.trim()}`
+    }
+  }
+
+  const enrichment = input.enrichmentText?.trim() || null
+  if (!hasEditorialSignal(input.position, input.department, enrichment)) {
+    return 'no_editorial_signal'
+  }
+
+  return null
+}
+
 export function scoreEditorProfile(input: EditorProfileInput): number {
   // Hard-zero on off-topic department
   if (input.department && HARD_ZERO_DEPARTMENTS.has(input.department.toLowerCase())) return 0

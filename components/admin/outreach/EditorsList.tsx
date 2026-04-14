@@ -9,6 +9,7 @@ import {
   setEditorsContacted,
   rescoreEditors,
   classifyBeatsBulk,
+  promoteEditors,
 } from '@/app/actions/outreach'
 import { GlassTooltip } from '@/components/ui/GlassTooltip'
 
@@ -47,6 +48,8 @@ export interface EditorRow {
   preferences_scraped_at: string | null
   last_seen_at: string | null
   went_quiet_at: string | null
+  skipped: boolean
+  skip_reason: string | null
   // Joined fields
   outlet_name: string
   outlet_domain: string
@@ -81,6 +84,7 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
   const [contactedFilter, setContactedFilter] = useState<'all' | 'contacted' | 'not-contacted'>('all')
   const [search, setSearch] = useState('')
   const [beatFilter, setBeatFilter] = useState<string>('all')
+  const [viewMode, setViewMode] = useState<'active' | 'skipped'>('active')
   const [revealed, setRevealed] = useState<Set<string>>(new Set())
   const [selectedEditor, setSelectedEditor] = useState<EditorRow | null>(null)
   const [sortKey, setSortKey] = useState<SortKey>('combined')
@@ -161,6 +165,33 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
     })
   }
 
+  function handleBulkPromote() {
+    if (selected.size === 0) return
+    if (!confirm(`Promote ${selected.size} skipped editor(s)? Each will run the full enrichment pipeline.`)) return
+    flashBulk('Promoting…')
+    startBulkTransition(async () => {
+      const res = await promoteEditors([...selected])
+      if (res.error) flashBulk(`Promote failed: ${res.error}`)
+      else {
+        flashBulk(`Promoted ${res.promoted} editor(s)`)
+        setSelected(new Set())
+        router.refresh()
+      }
+    })
+  }
+
+  function handlePromoteOne(id: string, name: string) {
+    if (!confirm(`Promote ${name} and run full enrichment?`)) return
+    startBulkTransition(async () => {
+      const res = await promoteEditors([id])
+      if (res.error) flashBulk(`Promote failed: ${res.error}`)
+      else {
+        flashBulk(`Promoted ${name}`)
+        router.refresh()
+      }
+    })
+  }
+
   function handleBulkClassifyBeats() {
     if (selected.size === 0) return
     if (!confirm(`Run beat classification for ${selected.size} editor(s)? Uses ~1 Claude Haiku call each.`)) return
@@ -224,9 +255,15 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
     const base = editors.filter((e) => {
-      if ((e.combined_score ?? 0) < minOverall) return false
-      if ((e.relevance_score ?? 0) < minMatch) return false
-      if ((e.topical_score ?? 0) < minCoverage) return false
+      // Skipped-vs-active split comes first
+      if (viewMode === 'active' && e.skipped) return false
+      if (viewMode === 'skipped' && !e.skipped) return false
+      // Score filters don't make sense in skipped view
+      if (viewMode === 'active') {
+        if ((e.combined_score ?? 0) < minOverall) return false
+        if ((e.relevance_score ?? 0) < minMatch) return false
+        if ((e.topical_score ?? 0) < minCoverage) return false
+      }
       if (minDr > 0 && (e.outlet_dr ?? 0) < minDr) return false
       if (tierFilter !== 'all' && e.outlet_tier !== tierFilter) return false
       if (beatFilter !== 'all' && !(e.beats ?? []).includes(beatFilter)) return false
@@ -239,6 +276,7 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
           e.email, e.position, e.outlet_name, e.outlet_domain,
           e.department,
           e.beat_summary,
+          e.skip_reason,
           ...(e.beats ?? []),
         ]
           .filter(Boolean)
@@ -265,7 +303,10 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
       if (ka > kb) return 1 * dir
       return 0
     })
-  }, [editors, minOverall, minMatch, minCoverage, minDr, tierFilter, contactedFilter, beatFilter, search, sortKey, sortDir])
+  }, [editors, viewMode, minOverall, minMatch, minCoverage, minDr, tierFilter, contactedFilter, beatFilter, search, sortKey, sortDir])
+
+  const activeCount = useMemo(() => editors.filter((e) => !e.skipped).length, [editors])
+  const skippedCount = useMemo(() => editors.filter((e) => e.skipped).length, [editors])
 
   const allBeats = useMemo(() => {
     const set = new Set<string>()
@@ -301,7 +342,33 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="font-display text-lg font-medium text-white">Discovered Editors</h3>
+        <div className="flex items-center gap-3">
+          <h3 className="font-display text-lg font-medium text-white">Discovered Editors</h3>
+          <div className="flex items-center gap-1 bg-white/[0.03] border border-white/10 rounded p-0.5">
+            <button
+              type="button"
+              onClick={() => { setViewMode('active'); setSelected(new Set()) }}
+              className={`px-3 py-1 text-xs rounded transition-colors ${
+                viewMode === 'active'
+                  ? 'bg-brand-cyan/15 text-brand-cyan'
+                  : 'text-white/60 hover:text-white'
+              }`}
+            >
+              Active ({activeCount})
+            </button>
+            <button
+              type="button"
+              onClick={() => { setViewMode('skipped'); setSelected(new Set()) }}
+              className={`px-3 py-1 text-xs rounded transition-colors ${
+                viewMode === 'skipped'
+                  ? 'bg-amber-400/15 text-amber-400'
+                  : 'text-white/60 hover:text-white'
+              }`}
+            >
+              Skipped ({skippedCount})
+            </button>
+          </div>
+        </div>
         <div className="flex items-center gap-3">
           {recalcMessage && <span className="text-xs text-white/60">{recalcMessage}</span>}
           <button
@@ -420,6 +487,14 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
       {selected.size > 0 && (
         <div className="bg-brand-cyan/[0.08] border border-brand-cyan/30 rounded p-3 flex flex-wrap items-center gap-2">
           <span className="text-sm text-white font-medium mr-2">{selected.size} selected</span>
+          {viewMode === 'skipped' && (
+            <button
+              type="button" onClick={handleBulkPromote} disabled={isBulkBusy}
+              className="px-3 py-1.5 text-xs bg-green-500/15 border border-green-500/40 text-green-300 rounded hover:bg-green-500/25 transition-colors disabled:opacity-50"
+            >
+              ↑ Promote
+            </button>
+          )}
           <button
             type="button" onClick={handleBulkDelete} disabled={isBulkBusy}
             className="px-3 py-1.5 text-xs bg-red-500/15 border border-red-500/40 text-red-300 rounded hover:bg-red-500/25 transition-colors disabled:opacity-50"
@@ -586,6 +661,16 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
                     </td>
                     <td className="px-4 py-3 text-xs">
                       <div className="text-white/70">{e.position ?? '—'}</div>
+                      {e.skipped && e.skip_reason && (
+                        <div className="mt-1">
+                          <span
+                            title={`Skipped because: ${e.skip_reason}`}
+                            className="text-[10px] px-1.5 py-0.5 rounded bg-amber-400/10 text-amber-400 border border-amber-400/20 font-mono"
+                          >
+                            {e.skip_reason}
+                          </span>
+                        </div>
+                      )}
                       {e.beats && e.beats.length > 0 && (
                         <div className="flex flex-wrap gap-1 mt-1">
                           {e.beats.slice(0, 3).map((b) => (
@@ -651,22 +736,39 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
                       )}
                     </td>
                     <td className="px-3 py-3 text-right" onClick={(ev) => ev.stopPropagation()}>
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteOne(e.id, name)}
-                        disabled={isBulkBusy}
-                        title="Delete this editor"
-                        aria-label={`Delete ${name}`}
-                        className="text-red-400 hover:text-red-300 hover:bg-red-500/10 p-1.5 rounded transition-colors disabled:opacity-50"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="3 6 5 6 21 6"></polyline>
-                          <path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"></path>
-                          <path d="M10 11v6"></path>
-                          <path d="M14 11v6"></path>
-                          <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"></path>
-                        </svg>
-                      </button>
+                      <div className="flex items-center justify-end gap-1">
+                        {e.skipped && (
+                          <button
+                            type="button"
+                            onClick={() => handlePromoteOne(e.id, name)}
+                            disabled={isBulkBusy}
+                            title="Promote to active editor + run full enrichment"
+                            aria-label={`Promote ${name}`}
+                            className="text-green-400 hover:text-green-300 hover:bg-green-500/10 p-1.5 rounded transition-colors disabled:opacity-50"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M12 19V5"></path>
+                              <polyline points="5 12 12 5 19 12"></polyline>
+                            </svg>
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteOne(e.id, name)}
+                          disabled={isBulkBusy}
+                          title="Delete this editor"
+                          aria-label={`Delete ${name}`}
+                          className="text-red-400 hover:text-red-300 hover:bg-red-500/10 p-1.5 rounded transition-colors disabled:opacity-50"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"></path>
+                            <path d="M10 11v6"></path>
+                            <path d="M14 11v6"></path>
+                            <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"></path>
+                          </svg>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 )

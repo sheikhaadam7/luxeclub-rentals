@@ -49,6 +49,7 @@ export async function OutreachTab() {
       beats, beat_summary, beats_classified_at,
       pitch_preferences, preferences_scraped_at,
       last_seen_at, went_quiet_at,
+      skipped, skip_reason,
       outreach_domains (outlet_name, domain, tier, priority, dr)
     `)
     .order('combined_score', { ascending: false, nullsFirst: false })
@@ -88,6 +89,8 @@ export async function OutreachTab() {
     preferences_scraped_at: string | null
     last_seen_at: string | null
     went_quiet_at: string | null
+    skipped: boolean | null
+    skip_reason: string | null
     outreach_domains: { outlet_name: string; domain: string; tier: string; priority: string; dr: number | null } | { outlet_name: string; domain: string; tier: string; priority: string; dr: number | null }[] | null
   }) => {
     const domain = Array.isArray(e.outreach_domains) ? e.outreach_domains[0] : e.outreach_domains
@@ -125,6 +128,8 @@ export async function OutreachTab() {
       preferences_scraped_at: e.preferences_scraped_at,
       last_seen_at: e.last_seen_at,
       went_quiet_at: e.went_quiet_at,
+      skipped: e.skipped ?? false,
+      skip_reason: e.skip_reason,
       twitter_bio: e.twitter_bio,
       outlet_name: domain?.outlet_name ?? '—',
       outlet_domain: domain?.domain ?? '',

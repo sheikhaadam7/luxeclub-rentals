@@ -21,6 +21,7 @@ import { fetchByline } from '@/lib/outreach/byline-archive'
 import { searchEditorArticles, parseSerperDate, SerperApiError } from '@/lib/outreach/serper'
 import {
   scoreEditorProfile,
+  diagnoseProfileZero,
   analyzeArticleTitle,
   scoreEditorTopical,
   computeCombinedScore,
@@ -398,21 +399,17 @@ export async function discoverEditors(
   let skipped = 0
 
   for (const email of hunterData.data.emails) {
-    const profileScore = scoreEditorProfile({
+    const profileInput = {
       position: email.position,
       seniority: email.seniority,
       department: email.department,
       confidence: email.confidence,
       outletPriorityScore: outletPriority,
-    })
-
-    // Hard-zeroed editors (non-editorial / sales / HR) never make it in
-    if (profileScore === 0) {
-      skipped++
-      continue
     }
-
-    const combinedScore = computeCombinedScore(profileScore, null)
+    const profileScore = scoreEditorProfile(profileInput)
+    const skipReason = profileScore === 0 ? diagnoseProfileZero(profileInput) : null
+    const isSkipped = profileScore === 0
+    const combinedScore = isSkipped ? 0 : computeCombinedScore(profileScore, null)
 
     const { data: insertedRow, error: insErr } = await admin
       .from('outreach_editors')
@@ -431,13 +428,20 @@ export async function discoverEditors(
         topical_score: null,
         combined_score: combinedScore,
         hunter_raw: email,
+        skipped: isSkipped,
+        skip_reason: skipReason,
       })
       .select('id')
       .single()
 
     if (insErr) {
-      if (insErr.code === '23505') skipped++  // duplicate email for this domain
+      if (insErr.code === '23505') skipped++  // duplicate email for this domain — already in DB
       else console.error(`[discoverEditors] Insert failed for ${email.value}:`, insErr.message)
+      continue
+    }
+
+    if (isSkipped) {
+      skipped++
       continue
     }
 
@@ -1642,6 +1646,58 @@ export async function rescoreAllEditors(): Promise<{ error: string | null; updat
   }
   revalidatePath('/admin')
   return { error: null, updated }
+}
+
+// ---------------------------------------------------------------------------
+// promoteEditors — un-skip one or more editors (skipped=false) and trigger
+// the full enrichment pipeline so their scores get computed for real.
+// ---------------------------------------------------------------------------
+export async function promoteEditors(
+  editorIds: string[]
+): Promise<{ error: string | null; promoted: number }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error, promoted: 0 }
+  if (editorIds.length === 0) return { error: null, promoted: 0 }
+
+  const admin = createAdminClient()
+
+  // Load enough to run enrichment
+  const { data: editors } = await admin
+    .from('outreach_editors')
+    .select('id, email, first_name, last_name, linkedin_url, twitter_handle, outreach_domains (domain)')
+    .in('id', editorIds)
+
+  let promoted = 0
+  for (const e of editors ?? []) {
+    await admin
+      .from('outreach_editors')
+      .update({ skipped: false, skip_reason: null })
+      .eq('id', e.id as string)
+
+    const domainRow = Array.isArray(e.outreach_domains)
+      ? e.outreach_domains[0]
+      : e.outreach_domains
+    if (domainRow?.domain) {
+      try {
+        await fullyEnrichEditor(
+          admin,
+          e.id as string,
+          e.first_name as string | null,
+          e.last_name as string | null,
+          e.linkedin_url as string | null,
+          e.twitter_handle as string | null,
+          domainRow.domain as string,
+          e.email as string
+        )
+      } catch (err) {
+        console.error(`[promoteEditors] enrich ${e.email}:`, err instanceof Error ? err.message : err)
+      }
+    }
+    promoted++
+  }
+
+  revalidatePath('/admin')
+  return { error: null, promoted }
 }
 
 // ---------------------------------------------------------------------------
