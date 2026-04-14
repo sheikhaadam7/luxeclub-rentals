@@ -9,6 +9,7 @@ import {
   setEditorsContacted,
   rescoreEditors,
 } from '@/app/actions/outreach'
+import { GlassTooltip } from '@/components/ui/GlassTooltip'
 
 export interface EditorRow {
   id: string
@@ -437,15 +438,51 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
                     className="accent-brand-cyan cursor-pointer"
                   />
                 </th>
-                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:text-white" onClick={() => toggleSort('name')} title="Full name as reported by Hunter.io. Click a row to view the editor's detail panel (articles, bios, pitch composer).">Name{sortArrow('name')}</th>
-                <th className="px-4 py-3 font-medium" title="Job title from Hunter.io. May be null or stale — the scorer also reads LinkedIn title, outlet bio, external bio, Twitter bio, and AI summary to fill gaps.">Position</th>
-                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:text-white" onClick={() => toggleSort('outlet')} title="Publication the editor works at. Column is sortable alphabetically.">Outlet{sortArrow('outlet')}</th>
-                <th className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white" onClick={() => toggleSort('profile')} title="Match score: is this the right role at the right outlet? (title + seniority + outlet priority + enrichment)">Match{sortArrow('profile')}</th>
-                <th className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white" onClick={() => toggleSort('topical')} title="Coverage score: do they actually write about our topic? (average of their top 5 indexed articles)">Coverage{sortArrow('topical')}</th>
-                <th className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white" onClick={() => toggleSort('combined')} title="Overall: 60% Match + 40% Coverage (or Match-only until articles are fetched)">Overall{sortArrow('combined')}</th>
-                <th className="px-4 py-3 font-medium" title="Email from Hunter.io. Hidden behind a 'reveal' click to avoid accidental paste into client-visible fields.">Email</th>
-                <th className="px-4 py-3 font-medium" title="External profile links: LinkedIn (in) and Twitter/X (x). Opens in a new tab.">Links</th>
-                <th className="px-4 py-3 font-medium" title="Pitch status — 'contacted' means we've marked this editor as reached out to (manually via bulk actions or automatically after sending a pitch).">Status</th>
+                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:text-white" onClick={() => toggleSort('name')}>
+                  <GlassTooltip label="Full name as reported by Hunter.io. Click a row to view the editor's detail panel (articles, bios, pitch composer).">
+                    <span>Name{sortArrow('name')}</span>
+                  </GlassTooltip>
+                </th>
+                <th className="px-4 py-3 font-medium">
+                  <GlassTooltip label="Job title from Hunter.io. May be null or stale — the scorer also reads LinkedIn title, outlet bio, external bio, Twitter bio, and AI summary to fill in gaps." width="w-72">
+                    <span>Position</span>
+                  </GlassTooltip>
+                </th>
+                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:text-white" onClick={() => toggleSort('outlet')}>
+                  <GlassTooltip label="Publication the editor works at. Click to sort alphabetically.">
+                    <span>Outlet{sortArrow('outlet')}</span>
+                  </GlassTooltip>
+                </th>
+                <th className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white" onClick={() => toggleSort('profile')}>
+                  <GlassTooltip label="Match score (0–100). Is this the right role at the right outlet? Combines job title, department, seniority, Hunter confidence, outlet priority, and any enrichment text (LinkedIn, bios, AI summary)." width="w-80">
+                    <span>Match{sortArrow('profile')}</span>
+                  </GlassTooltip>
+                </th>
+                <th className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white" onClick={() => toggleSort('topical')}>
+                  <GlassTooltip label="Coverage score (0–100). Do they actually write about our topic? The average of their top 5 indexed articles, scored by keyword tiers (brands, luxury/travel, geography)." width="w-80">
+                    <span>Coverage{sortArrow('topical')}</span>
+                  </GlassTooltip>
+                </th>
+                <th className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white" onClick={() => toggleSort('combined')}>
+                  <GlassTooltip label="Overall score (0–100). Weighted average of Match (60%) and Coverage (40%). Falls back to Match-only until articles are fetched. Sort the list by this column by default.">
+                    <span>Overall{sortArrow('combined')}</span>
+                  </GlassTooltip>
+                </th>
+                <th className="px-4 py-3 font-medium">
+                  <GlassTooltip label="Email from Hunter.io. Hidden behind a 'reveal' click to avoid accidental paste into client-visible fields.">
+                    <span>Email</span>
+                  </GlassTooltip>
+                </th>
+                <th className="px-4 py-3 font-medium">
+                  <GlassTooltip label="External profile links: LinkedIn (in) and Twitter/X (x). Opens in a new tab.">
+                    <span>Links</span>
+                  </GlassTooltip>
+                </th>
+                <th className="px-4 py-3 font-medium">
+                  <GlassTooltip label="'contacted' means we've marked this editor as reached out to — either manually via the bulk action bar or automatically after sending a pitch." width="w-72">
+                    <span>Status</span>
+                  </GlassTooltip>
+                </th>
                 <th className="px-3 py-3 w-8"></th>
               </tr>
             </thead>

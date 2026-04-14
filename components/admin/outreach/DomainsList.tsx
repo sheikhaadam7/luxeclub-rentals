@@ -8,6 +8,7 @@ import {
   refreshAllDomainMetrics,
   updateDomainPriorityScore,
 } from '@/app/actions/outreach'
+import { GlassTooltip } from '@/components/ui/GlassTooltip'
 
 interface Domain {
   id: string
@@ -182,59 +183,45 @@ export function DomainsList({ domains }: { domains: Domain[] }) {
         <table className="w-full text-sm">
           <thead className="bg-white/[0.02] border-b border-brand-border">
             <tr className="text-left text-xs uppercase tracking-wider text-brand-muted">
-              <th
-                onClick={() => toggleDomainSort('outlet')}
-                title="Publication / brand name"
-                className="px-4 py-3 font-medium cursor-pointer select-none hover:text-white"
-              >
-                Outlet{sortArrow('outlet')}
+              <th onClick={() => toggleDomainSort('outlet')} className="px-4 py-3 font-medium cursor-pointer select-none hover:text-white">
+                <GlassTooltip label="Publication or brand name.">
+                  <span>Outlet{sortArrow('outlet')}</span>
+                </GlassTooltip>
               </th>
-              <th
-                title="Root domain used by Hunter, Serper, and Ahrefs lookups"
-                className="px-4 py-3 font-medium"
-              >
-                Domain
+              <th className="px-4 py-3 font-medium">
+                <GlassTooltip label="Root domain used by Hunter, Serper, and Ahrefs lookups.">
+                  <span>Domain</span>
+                </GlassTooltip>
               </th>
-              <th
-                onClick={() => toggleDomainSort('tier')}
-                title="Audience locality — who primarily reads this outlet (UAE, Expat, UK, Germany, Russia, Global, etc.)"
-                className="px-4 py-3 font-medium cursor-pointer select-none hover:text-white"
-              >
-                Location{sortArrow('tier')}
+              <th onClick={() => toggleDomainSort('tier')} className="px-4 py-3 font-medium cursor-pointer select-none hover:text-white">
+                <GlassTooltip label="Audience locality — who primarily reads this outlet (UAE, Expat, UK, Germany, Russia, Global, etc.).">
+                  <span>Location{sortArrow('tier')}</span>
+                </GlassTooltip>
               </th>
-              <th
-                onClick={() => toggleDomainSort('dr')}
-                title="Domain Rating from Ahrefs (0-100). Measures the strength of the site's backlink profile — a good proxy for SEO value of a link. DR < 40 shows a warning badge."
-                className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white"
-              >
-                DR{sortArrow('dr')}
+              <th onClick={() => toggleDomainSort('dr')} className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white">
+                <GlassTooltip label="Domain Rating from Ahrefs (0–100). Measures the strength of the site's backlink profile and is a good proxy for the SEO value of a link. Outlets with DR below 40 are flagged with a warning badge.">
+                  <span>DR{sortArrow('dr')}</span>
+                </GlassTooltip>
               </th>
-              <th
-                onClick={() => toggleDomainSort('traffic')}
-                title="Estimated monthly organic search traffic from Ahrefs (sum across subdomains where available). Display-only — not used in scoring."
-                className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white"
-              >
-                Traffic{sortArrow('traffic')}
+              <th onClick={() => toggleDomainSort('traffic')} className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white">
+                <GlassTooltip label="Estimated monthly organic search traffic from Ahrefs (sum across subdomains where available). Display-only — not used in scoring.">
+                  <span>Traffic{sortArrow('traffic')}</span>
+                </GlassTooltip>
               </th>
-              <th
-                onClick={() => toggleDomainSort('priority')}
-                title="Editorial priority score (0-100). Our rubric: section fit (is there a Motors/Travel/Luxury section?) + geographic fit (UAE > expat > UK/DE/RU) + reachability (smaller outlets respond to cold pitches). Click a row value to edit."
-                className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white"
-              >
-                Priority{sortArrow('priority')}
+              <th onClick={() => toggleDomainSort('priority')} className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white">
+                <GlassTooltip label="Editorial priority score (0–100). Our rubric: section fit (does the outlet have a Motors/Travel/Luxury section?) + geographic fit (UAE > expat > UK/DE/RU) + reachability (smaller outlets respond to cold pitches). Click a row value to edit." width="w-80">
+                  <span>Priority{sortArrow('priority')}</span>
+                </GlassTooltip>
               </th>
-              <th
-                onClick={() => toggleDomainSort('discovered')}
-                title="Last time we ran Hunter to pull editors from this outlet"
-                className="px-4 py-3 font-medium cursor-pointer select-none hover:text-white"
-              >
-                Discovered{sortArrow('discovered')}
+              <th onClick={() => toggleDomainSort('discovered')} className="px-4 py-3 font-medium cursor-pointer select-none hover:text-white">
+                <GlassTooltip label="Last time we ran Hunter to pull editors from this outlet.">
+                  <span>Discovered{sortArrow('discovered')}</span>
+                </GlassTooltip>
               </th>
-              <th
-                title="Refresh Ahrefs metrics or run Hunter discovery"
-                className="px-4 py-3 font-medium text-right"
-              >
-                Actions
+              <th className="px-4 py-3 font-medium text-right">
+                <GlassTooltip label="Refresh Ahrefs DR + traffic metrics, or run Hunter editor discovery.">
+                  <span>Actions</span>
+                </GlassTooltip>
               </th>
             </tr>
           </thead>
