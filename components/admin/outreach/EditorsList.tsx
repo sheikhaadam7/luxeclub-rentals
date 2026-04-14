@@ -385,9 +385,11 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
     setExpandedOutlets(new Set()); persistExpanded(new Set())
   }
 
-  // Any active narrowing filter auto-expands matching outlets so search still surfaces results
-  const hasActiveFilter = search.trim().length > 0 || beatFilter !== 'all' || tierFilter !== 'all' || minOverall > 0 || minMatch > 0 || minCoverage > 0 || minDr > 0 || contactedFilter !== 'all'
-  const effectiveExpanded = (name: string) => hasActiveFilter || expandedOutlets.has(name)
+  // Only text search auto-expands — so users can still collapse outlets while
+  // filters narrow the list. Slider/dropdown filters leave the user's
+  // expand/collapse state alone.
+  const autoExpandForSearch = search.trim().length > 0
+  const effectiveExpanded = (name: string) => autoExpandForSearch || expandedOutlets.has(name)
 
   const allBeats = useMemo(() => {
     const set = new Set<string>()
