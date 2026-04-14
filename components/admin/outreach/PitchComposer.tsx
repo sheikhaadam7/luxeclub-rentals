@@ -34,6 +34,20 @@ export function PitchComposer({
   const [isGeneratingOpener, startOpenerTransition] = useTransition()
   const [openerMessage, setOpenerMessage] = useState<string | null>(null)
 
+  // Lock body scroll + close on Escape while modal is open
+  useEffect(() => {
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = prevOverflow
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [onClose])
+
   // Load draft when angle changes
   useEffect(() => {
     setLoadError(null)
@@ -116,8 +130,11 @@ export function PitchComposer({
   const selectedTemplate = PITCH_TEMPLATES.find((t) => t.id === angleId)
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[60] flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-brand-surface border border-brand-border rounded max-w-3xl w-full my-8 max-h-[95vh] overflow-y-auto">
+    <div
+      className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[60] flex items-center justify-center p-4"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
+    >
+      <div className="bg-brand-surface border border-brand-border rounded max-w-3xl w-full max-h-[95vh] overflow-y-auto">
         <div className="sticky top-0 bg-brand-surface border-b border-brand-border px-6 py-4 flex items-center justify-between z-10">
           <div>
             <h3 className="font-display text-xl font-semibold text-white">Draft Pitch</h3>
