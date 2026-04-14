@@ -1493,6 +1493,37 @@ export async function enrichEditorProfile(
 }
 
 // ---------------------------------------------------------------------------
+// classifyEditorBeatsAction — admin-gated wrapper around enrichEditorProfile
+// used as the "Classify beats" button handler.
+// ---------------------------------------------------------------------------
+export async function classifyEditorBeatsAction(
+  editorId: string
+): Promise<{ error: string | null; beats?: Beat[] }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error }
+  return enrichEditorProfile(editorId)
+}
+
+// ---------------------------------------------------------------------------
+// classifyBeatsBulk — batch-run beat classification for a list of editor IDs
+// (used from the bulk action bar).
+// ---------------------------------------------------------------------------
+export async function classifyBeatsBulk(
+  editorIds: string[]
+): Promise<{ error: string | null; updated: number }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error, updated: 0 }
+  const admin = createAdminClient()
+  let updated = 0
+  for (const id of editorIds) {
+    const res = await enrichEditorProfile(id, admin)
+    if (!res.error) updated++
+  }
+  revalidatePath('/admin')
+  return { error: null, updated }
+}
+
+// ---------------------------------------------------------------------------
 // getPitchFollowUps — pitches that need a nudge or are going dormant.
 // Purely derived from outreach_pitches; no new table.
 // ---------------------------------------------------------------------------

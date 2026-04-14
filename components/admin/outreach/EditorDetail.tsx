@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { fetchEditorArticles, scrapeEditorBio, enrichEditorArticles, fetchLinkedInProfile, fetchEditorFullArchive } from '@/app/actions/outreach'
+import { fetchEditorArticles, scrapeEditorBio, enrichEditorArticles, fetchLinkedInProfile, fetchEditorFullArchive, classifyEditorBeatsAction } from '@/app/actions/outreach'
 import type { EditorRow } from './EditorsList'
 import { PitchComposer } from './PitchComposer'
 
@@ -102,6 +102,24 @@ export function EditorDetail({ editor, onClose }: EditorDetailProps) {
   const [linkedinMessage, setLinkedinMessage] = useState<{ ok: boolean; text: string } | null>(null)
   const [isFetchingArchive, startArchiveTransition] = useTransition()
   const [archiveMessage, setArchiveMessage] = useState<{ ok: boolean; text: string } | null>(null)
+  const [isClassifying, startClassifyTransition] = useTransition()
+  const [classifyMessage, setClassifyMessage] = useState<{ ok: boolean; text: string } | null>(null)
+  const [liveBeats, setLiveBeats] = useState<string[] | null>(editor.beats ?? null)
+  const [liveSummary, setLiveSummary] = useState<string | null>(editor.beat_summary ?? null)
+
+  function handleClassifyBeats() {
+    setClassifyMessage(null)
+    startClassifyTransition(async () => {
+      const res = await classifyEditorBeatsAction(editor.id)
+      if (res.error) {
+        setClassifyMessage({ ok: false, text: res.error })
+        return
+      }
+      setLiveBeats(res.beats ?? [])
+      setClassifyMessage({ ok: true, text: `Classified ${res.beats?.length ?? 0} beat(s) ✓` })
+      router.refresh()
+    })
+  }
 
   function handleFullArchive() {
     if (!confirm('Crawl the full byline archive? Uses ~30 ScrapingBee credits.')) return
@@ -321,25 +339,43 @@ export function EditorDetail({ editor, onClose }: EditorDetailProps) {
           )}
 
           {/* Beats + coverage summary (Claude classification) */}
-          {(editor.beats && editor.beats.length > 0) || editor.beat_summary ? (
-            <div className="space-y-2">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
               <h4 className="font-display text-sm font-medium text-white uppercase tracking-wider">
                 Beats
               </h4>
-              {editor.beats && editor.beats.length > 0 && (
-                <div className="flex flex-wrap gap-1.5">
-                  {editor.beats.map((b) => (
-                    <span key={b} className="text-[11px] px-2 py-0.5 rounded bg-brand-cyan/[0.08] text-brand-cyan/90 border border-brand-cyan/20">
-                      {b}
-                    </span>
-                  ))}
-                </div>
-              )}
-              {editor.beat_summary && (
-                <p className="text-xs text-white/70 leading-relaxed">{editor.beat_summary}</p>
-              )}
+              <button
+                type="button"
+                onClick={handleClassifyBeats}
+                disabled={isClassifying}
+                className="px-3 py-1.5 text-xs border border-white/15 text-white hover:bg-white/5 transition-colors rounded disabled:opacity-50"
+                title="Run Claude over this editor's bio + articles to classify their beats"
+              >
+                {isClassifying ? 'Classifying…' : liveBeats && liveBeats.length > 0 ? 'Re-classify' : 'Classify beats'}
+              </button>
             </div>
-          ) : null}
+            {classifyMessage && (
+              <p className={`text-[11px] ${classifyMessage.ok ? 'text-green-400' : 'text-red-400'}`}>
+                {classifyMessage.text}
+              </p>
+            )}
+            {liveBeats && liveBeats.length > 0 ? (
+              <div className="flex flex-wrap gap-1.5">
+                {liveBeats.map((b) => (
+                  <span key={b} className="text-[11px] px-2 py-0.5 rounded bg-brand-cyan/[0.08] text-brand-cyan/90 border border-brand-cyan/20">
+                    {b}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p className="text-xs text-white/40 italic">
+                Not classified yet. Click the button to run Claude over their bio + article titles.
+              </p>
+            )}
+            {liveSummary && (
+              <p className="text-xs text-white/70 leading-relaxed">{liveSummary}</p>
+            )}
+          </div>
 
           {/* Pitch preferences (scraped from bio / socials) */}
           {editor.pitch_preferences && (

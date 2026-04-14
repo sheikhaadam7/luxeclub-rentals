@@ -8,6 +8,7 @@ import {
   deleteEditors,
   setEditorsContacted,
   rescoreEditors,
+  classifyBeatsBulk,
 } from '@/app/actions/outreach'
 import { GlassTooltip } from '@/components/ui/GlassTooltip'
 
@@ -155,6 +156,20 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
       if (res.error) flashBulk(`Rescore failed: ${res.error}`)
       else {
         flashBulk(`Rescored ${res.updated} editor(s)`)
+        router.refresh()
+      }
+    })
+  }
+
+  function handleBulkClassifyBeats() {
+    if (selected.size === 0) return
+    if (!confirm(`Run beat classification for ${selected.size} editor(s)? Uses ~1 Claude Haiku call each.`)) return
+    flashBulk('Classifying beats…')
+    startBulkTransition(async () => {
+      const res = await classifyBeatsBulk([...selected])
+      if (res.error) flashBulk(`Failed: ${res.error}`)
+      else {
+        flashBulk(`Classified beats for ${res.updated} editor(s)`)
         router.refresh()
       }
     })
@@ -428,6 +443,12 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
             className="px-3 py-1.5 text-xs border border-white/15 text-white/70 rounded hover:bg-white/5 transition-colors disabled:opacity-50"
           >
             Rescore
+          </button>
+          <button
+            type="button" onClick={handleBulkClassifyBeats} disabled={isBulkBusy}
+            className="px-3 py-1.5 text-xs border border-white/15 text-white/70 rounded hover:bg-white/5 transition-colors disabled:opacity-50"
+          >
+            Classify beats
           </button>
           <button
             type="button" onClick={handleBulkExport} disabled={isBulkBusy}
