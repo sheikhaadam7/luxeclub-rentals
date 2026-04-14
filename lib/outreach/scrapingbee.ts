@@ -73,10 +73,12 @@ export async function findAndFetchEditorBioPage(
   const query = `"${firstName} ${lastName}" site:${domain} (author OR contributor OR about OR bio OR team)`
   const results = await serperSearch(query)
 
-  // Pick the first result that looks like an author page
+  // Pick the first result that looks like an author page. Outlets use a
+  // variety of slugs: /author/, /authors/, /contributor(s)/, /writer(s)/,
+  // /journalist(s)/, /profile(s)/, /about/, /team/, /staff/.
   const candidate = results.find((r) => {
     const l = r.link.toLowerCase()
-    return /\/author\/|\/contributors?\/|\/about\/|\/team\/|\/staff\//.test(l)
+    return /\/(authors?|contributors?|writers?|journalists?|profiles?|about|team|staff)\//.test(l)
   }) ?? results[0]
 
   if (!candidate) return null

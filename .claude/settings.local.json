@@ -47,7 +47,18 @@
       "Bash(find:*)",
       "Bash(ls:*)",
       "Bash(npx next:*)",
-      "WebFetch(domain:www.logo.wine)"
+      "WebFetch(domain:www.logo.wine)",
+      "Bash(vercel --version)",
+      "Bash(vercel whoami:*)",
+      "Bash(wc -l *.md)",
+      "Read(//c/Users/cherr/Downloads/luxeclubrentals.com-Performance-on-Search-2026-04-12/**)",
+      "WebFetch(domain:firstsupercarrental.com)",
+      "WebFetch(domain:timeoutdubai.com)",
+      "WebFetch(domain:gulfnews.com)",
+      "WebFetch(domain:www.timeoutdubai.com)",
+      "WebFetch(domain:russianemirates.com)",
+      "Bash(npx supabase:*)",
+      "Bash(npm run:*)"
     ]
   }
 }

@@ -3,6 +3,7 @@
 import { useEffect, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { fetchEditorArticles, scrapeEditorBio, enrichEditorArticles, fetchLinkedInProfile, fetchEditorFullArchive, classifyEditorBeatsAction } from '@/app/actions/outreach'
+import { useBackgroundTasks } from '@/components/ui/BackgroundTasks'
 import type { EditorRow } from './EditorsList'
 import { PitchComposer } from './PitchComposer'
 
@@ -85,6 +86,7 @@ interface EditorDetailProps {
 
 export function EditorDetail({ editor, onClose }: EditorDetailProps) {
   const router = useRouter()
+  const { run } = useBackgroundTasks()
   const [isPending, startTransition] = useTransition()
   const [articles, setArticles] = useState<Article[] | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -110,7 +112,11 @@ export function EditorDetail({ editor, onClose }: EditorDetailProps) {
   function handleClassifyBeats() {
     setClassifyMessage(null)
     startClassifyTransition(async () => {
-      const res = await classifyEditorBeatsAction(editor.id)
+      const label = `Classify beats · ${[editor.first_name, editor.last_name].filter(Boolean).join(' ') || editor.email}`
+      const res = await run(label, () => classifyEditorBeatsAction(editor.id), (r) =>
+        r.error ? `error: ${r.error}` : `${r.beats?.length ?? 0} beat(s)`
+      )
+      if (!res) return
       if (res.error) {
         setClassifyMessage({ ok: false, text: res.error })
         return
@@ -125,7 +131,11 @@ export function EditorDetail({ editor, onClose }: EditorDetailProps) {
     if (!confirm('Crawl the full byline archive? Uses ~30 ScrapingBee credits.')) return
     setArchiveMessage(null)
     startArchiveTransition(async () => {
-      const res = await fetchEditorFullArchive(editor.id)
+      const label = `Full archive · ${[editor.first_name, editor.last_name].filter(Boolean).join(' ') || editor.email}`
+      const res = await run(label, () => fetchEditorFullArchive(editor.id), (r) =>
+        r.error ? `error: ${r.error}` : `added ${r.inserted} article(s)`
+      )
+      if (!res) return
       if (res.error) {
         setArchiveMessage({ ok: false, text: res.error })
         return
@@ -138,7 +148,11 @@ export function EditorDetail({ editor, onClose }: EditorDetailProps) {
   function handleScrapeLinkedIn() {
     setLinkedinMessage(null)
     startLinkedinTransition(async () => {
-      const res = await fetchLinkedInProfile(editor.id)
+      const label = `LinkedIn · ${[editor.first_name, editor.last_name].filter(Boolean).join(' ') || editor.email}`
+      const res = await run(label, () => fetchLinkedInProfile(editor.id), (r) =>
+        r.error ? `error: ${r.error}` : r.linkedinTitle ? r.linkedinTitle : 'no title'
+      )
+      if (!res) return
       if (res.error) {
         setLinkedinMessage({ ok: false, text: res.error })
         return
@@ -155,7 +169,11 @@ export function EditorDetail({ editor, onClose }: EditorDetailProps) {
   function handleDeepEnrich() {
     setEnrichMessage(null)
     startEnrichTransition(async () => {
-      const res = await enrichEditorArticles(editor.id)
+      const label = `AI summary · ${[editor.first_name, editor.last_name].filter(Boolean).join(' ') || editor.email}`
+      const res = await run(label, () => enrichEditorArticles(editor.id), (r) =>
+        r.error ? `error: ${r.error}` : `fetched ${r.fetched} article(s)`
+      )
+      if (!res) return
       if (res.error) {
         setEnrichMessage({ ok: false, text: res.error })
         return
@@ -169,7 +187,11 @@ export function EditorDetail({ editor, onClose }: EditorDetailProps) {
   function handleScrapeBio() {
     setBioMessage(null)
     startScrapingTransition(async () => {
-      const res = await scrapeEditorBio(editor.id)
+      const label = `Scraping bio · ${[editor.first_name, editor.last_name].filter(Boolean).join(' ') || editor.email}`
+      const res = await run(label, () => scrapeEditorBio(editor.id), (r) =>
+        r.error ? `error: ${r.error}` : r.bioText ? 'bio extracted' : 'no bio found'
+      )
+      if (!res) return
       if (res.error) {
         setBioMessage({ ok: false, text: res.error })
         return

@@ -12,6 +12,7 @@ import { CompetitorAndMediaPanels } from './outreach/CompetitorAndMediaPanels'
 import { PitchHistory, type PitchRow } from './outreach/PitchHistory'
 import { GmailConnect } from './outreach/GmailConnect'
 import { getGmailConnection } from '@/app/actions/outreach'
+import { BackgroundTasksProvider } from '@/components/ui/BackgroundTasks'
 
 export async function OutreachTab() {
   const admin = createAdminClient()
@@ -206,6 +207,7 @@ export async function OutreachTab() {
   })
 
   return (
+    <BackgroundTasksProvider>
     <div className="space-y-8">
       <div>
         <h2 className="font-display text-2xl font-semibold text-white">Outreach</h2>
@@ -240,5 +242,6 @@ export async function OutreachTab() {
 
       <PitchHistory pitches={pitches} />
     </div>
+    </BackgroundTasksProvider>
   )
 }
