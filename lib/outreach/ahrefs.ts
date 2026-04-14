@@ -49,36 +49,60 @@ export interface DomainMetrics {
   monthlyTraffic: number | null
 }
 
+interface AhrefsMetricsResponse {
+  metrics?: {
+    org_traffic?: number
+    organic_traffic?: number
+  }
+}
+
+async function fetchMetricsForMode(domain: string, mode: 'subdomains' | 'domain'): Promise<number | null> {
+  const today = new Date().toISOString().slice(0, 10)
+  try {
+    const data = await ahrefsGet<AhrefsMetricsResponse>('/site-explorer/metrics', {
+      target: domain,
+      date: today,
+      mode,
+      protocol: 'both',
+      volume_mode: 'monthly',
+    })
+    const t = data?.metrics?.org_traffic ?? data?.metrics?.organic_traffic
+    if (typeof t === 'number') return Math.round(t)
+    console.warn(`[ahrefs] ${domain} mode=${mode} returned no org_traffic. Raw:`, JSON.stringify(data).slice(0, 300))
+    return null
+  } catch (err) {
+    console.error(`[ahrefs] metrics fetch failed for ${domain} mode=${mode}:`, err instanceof Error ? err.message : err)
+    return null
+  }
+}
+
 /**
  * Fetch DR + monthly organic traffic for a domain.
- * Returns nulls for any field the API omits rather than throwing so the
+ * For traffic we try mode=subdomains first (captures style.rbc.ru, blogs.*, etc.)
+ * and fall back to mode=domain. Returns nulls on persistent failure so the
  * refresh job keeps going on partial failures.
  */
 export async function fetchDomainMetrics(domain: string): Promise<DomainMetrics> {
-  const today = new Date().toISOString().slice(0, 10) // YYYY-MM-DD
+  const today = new Date().toISOString().slice(0, 10)
 
-  const [drData, metricsData] = await Promise.all([
-    ahrefsGet<{ domain_rating?: { domain_rating?: number } }>(
-      '/site-explorer/domain-rating',
-      { target: domain, date: today, protocol: 'both' }
-    ).catch((err) => {
-      console.error(`[ahrefs] DR fetch failed for ${domain}:`, err.message)
-      return null
-    }),
-    ahrefsGet<{ metrics?: { org_traffic?: number } }>(
-      '/site-explorer/metrics',
-      { target: domain, date: today, mode: 'domain', protocol: 'both', volume_mode: 'monthly' }
-    ).catch((err) => {
-      console.error(`[ahrefs] metrics fetch failed for ${domain}:`, err.message)
-      return null
-    }),
-  ])
+  const drData = await ahrefsGet<{ domain_rating?: { domain_rating?: number } }>(
+    '/site-explorer/domain-rating',
+    { target: domain, date: today, protocol: 'both' }
+  ).catch((err) => {
+    console.error(`[ahrefs] DR fetch failed for ${domain}:`, err.message)
+    return null
+  })
+
+  let traffic = await fetchMetricsForMode(domain, 'subdomains')
+  if (traffic == null || traffic === 0) {
+    const fallback = await fetchMetricsForMode(domain, 'domain')
+    if (fallback != null && fallback > 0) traffic = fallback
+  }
 
   const dr = drData?.domain_rating?.domain_rating
-  const traffic = metricsData?.metrics?.org_traffic
 
   return {
     dr: typeof dr === 'number' ? Math.round(dr) : null,
-    monthlyTraffic: typeof traffic === 'number' ? Math.round(traffic) : null,
+    monthlyTraffic: traffic,
   }
 }

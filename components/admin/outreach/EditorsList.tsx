@@ -437,15 +437,15 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
                     className="accent-brand-cyan cursor-pointer"
                   />
                 </th>
-                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:text-white" onClick={() => toggleSort('name')}>Name{sortArrow('name')}</th>
-                <th className="px-4 py-3 font-medium">Position</th>
-                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:text-white" onClick={() => toggleSort('outlet')}>Outlet{sortArrow('outlet')}</th>
+                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:text-white" onClick={() => toggleSort('name')} title="Full name as reported by Hunter.io. Click a row to view the editor's detail panel (articles, bios, pitch composer).">Name{sortArrow('name')}</th>
+                <th className="px-4 py-3 font-medium" title="Job title from Hunter.io. May be null or stale — the scorer also reads LinkedIn title, outlet bio, external bio, Twitter bio, and AI summary to fill gaps.">Position</th>
+                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:text-white" onClick={() => toggleSort('outlet')} title="Publication the editor works at. Column is sortable alphabetically.">Outlet{sortArrow('outlet')}</th>
                 <th className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white" onClick={() => toggleSort('profile')} title="Match score: is this the right role at the right outlet? (title + seniority + outlet priority + enrichment)">Match{sortArrow('profile')}</th>
                 <th className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white" onClick={() => toggleSort('topical')} title="Coverage score: do they actually write about our topic? (average of their top 5 indexed articles)">Coverage{sortArrow('topical')}</th>
                 <th className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white" onClick={() => toggleSort('combined')} title="Overall: 60% Match + 40% Coverage (or Match-only until articles are fetched)">Overall{sortArrow('combined')}</th>
-                <th className="px-4 py-3 font-medium">Email</th>
-                <th className="px-4 py-3 font-medium">Links</th>
-                <th className="px-4 py-3 font-medium">Status</th>
+                <th className="px-4 py-3 font-medium" title="Email from Hunter.io. Hidden behind a 'reveal' click to avoid accidental paste into client-visible fields.">Email</th>
+                <th className="px-4 py-3 font-medium" title="External profile links: LinkedIn (in) and Twitter/X (x). Opens in a new tab.">Links</th>
+                <th className="px-4 py-3 font-medium" title="Pitch status — 'contacted' means we've marked this editor as reached out to (manually via bulk actions or automatically after sending a pitch).">Status</th>
                 <th className="px-3 py-3 w-8"></th>
               </tr>
             </thead>

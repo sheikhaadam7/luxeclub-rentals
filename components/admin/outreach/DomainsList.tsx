@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useMemo, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   discoverEditors,
@@ -50,8 +50,46 @@ function formatTraffic(n: number | null): string {
   return String(n)
 }
 
+type DomainSortKey = 'outlet' | 'tier' | 'dr' | 'traffic' | 'priority' | 'discovered'
+
 export function DomainsList({ domains }: { domains: Domain[] }) {
   const router = useRouter()
+  const [sortKey, setSortKey] = useState<DomainSortKey>('priority')
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
+
+  const sortedDomains = useMemo(() => {
+    const dir = sortDir === 'desc' ? -1 : 1
+    const keyer = (d: Domain): number | string => {
+      switch (sortKey) {
+        case 'outlet': return d.outlet_name.toLowerCase()
+        case 'tier': return d.tier.toLowerCase()
+        case 'dr': return d.dr ?? -1
+        case 'traffic': return d.monthly_traffic ?? -1
+        case 'priority': return d.priority_score ?? -1
+        case 'discovered': return d.hunter_searched_at ? new Date(d.hunter_searched_at).getTime() : -1
+      }
+    }
+    return [...domains].sort((a, b) => {
+      const ka = keyer(a); const kb = keyer(b)
+      if (ka < kb) return -1 * dir
+      if (ka > kb) return 1 * dir
+      return 0
+    })
+  }, [domains, sortKey, sortDir])
+
+  function toggleDomainSort(key: DomainSortKey) {
+    if (sortKey === key) {
+      setSortDir((d) => (d === 'desc' ? 'asc' : 'desc'))
+    } else {
+      setSortKey(key)
+      setSortDir(key === 'outlet' || key === 'tier' ? 'asc' : 'desc')
+    }
+  }
+
+  function sortArrow(key: DomainSortKey) {
+    if (sortKey !== key) return ''
+    return sortDir === 'desc' ? ' ↓' : ' ↑'
+  }
   const [isPending, startTransition] = useTransition()
   const [busyId, setBusyId] = useState<string | null>(null)
   const [results, setResults] = useState<Record<string, { ok: boolean; message: string }>>({})
@@ -144,18 +182,64 @@ export function DomainsList({ domains }: { domains: Domain[] }) {
         <table className="w-full text-sm">
           <thead className="bg-white/[0.02] border-b border-brand-border">
             <tr className="text-left text-xs uppercase tracking-wider text-brand-muted">
-              <th className="px-4 py-3 font-medium">Outlet</th>
-              <th className="px-4 py-3 font-medium">Domain</th>
-              <th className="px-4 py-3 font-medium">Location</th>
-              <th className="px-4 py-3 font-medium text-right">DR</th>
-              <th className="px-4 py-3 font-medium text-right">Traffic</th>
-              <th className="px-4 py-3 font-medium text-right">Priority</th>
-              <th className="px-4 py-3 font-medium">Discovered</th>
-              <th className="px-4 py-3 font-medium text-right">Actions</th>
+              <th
+                onClick={() => toggleDomainSort('outlet')}
+                title="Publication / brand name"
+                className="px-4 py-3 font-medium cursor-pointer select-none hover:text-white"
+              >
+                Outlet{sortArrow('outlet')}
+              </th>
+              <th
+                title="Root domain used by Hunter, Serper, and Ahrefs lookups"
+                className="px-4 py-3 font-medium"
+              >
+                Domain
+              </th>
+              <th
+                onClick={() => toggleDomainSort('tier')}
+                title="Audience locality — who primarily reads this outlet (UAE, Expat, UK, Germany, Russia, Global, etc.)"
+                className="px-4 py-3 font-medium cursor-pointer select-none hover:text-white"
+              >
+                Location{sortArrow('tier')}
+              </th>
+              <th
+                onClick={() => toggleDomainSort('dr')}
+                title="Domain Rating from Ahrefs (0-100). Measures the strength of the site's backlink profile — a good proxy for SEO value of a link. DR < 40 shows a warning badge."
+                className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white"
+              >
+                DR{sortArrow('dr')}
+              </th>
+              <th
+                onClick={() => toggleDomainSort('traffic')}
+                title="Estimated monthly organic search traffic from Ahrefs (sum across subdomains where available). Display-only — not used in scoring."
+                className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white"
+              >
+                Traffic{sortArrow('traffic')}
+              </th>
+              <th
+                onClick={() => toggleDomainSort('priority')}
+                title="Editorial priority score (0-100). Our rubric: section fit (is there a Motors/Travel/Luxury section?) + geographic fit (UAE > expat > UK/DE/RU) + reachability (smaller outlets respond to cold pitches). Click a row value to edit."
+                className="px-4 py-3 font-medium text-right cursor-pointer select-none hover:text-white"
+              >
+                Priority{sortArrow('priority')}
+              </th>
+              <th
+                onClick={() => toggleDomainSort('discovered')}
+                title="Last time we ran Hunter to pull editors from this outlet"
+                className="px-4 py-3 font-medium cursor-pointer select-none hover:text-white"
+              >
+                Discovered{sortArrow('discovered')}
+              </th>
+              <th
+                title="Refresh Ahrefs metrics or run Hunter discovery"
+                className="px-4 py-3 font-medium text-right"
+              >
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
-            {domains.map((d) => {
+            {sortedDomains.map((d) => {
               const result = results[d.id]
               const isBusy = isPending && busyId === d.id
               const isMetricsBusy = metricsBusy === d.id
