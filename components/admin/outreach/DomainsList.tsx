@@ -11,6 +11,7 @@ import {
 } from '@/app/actions/outreach'
 import { useEffect } from 'react'
 import { GlassTooltip } from '@/components/ui/GlassTooltip'
+import { LoadingSparkle } from '@/components/ui/LoadingSparkle'
 
 interface Domain {
   id: string
@@ -109,6 +110,7 @@ export function DomainsList({ domains }: { domains: Domain[] }) {
     return sortDir === 'desc' ? ' ↓' : ' ↑'
   }
   const [discoverBusy, setDiscoverBusy] = useState<Set<string>>(new Set())
+  const [discoverStartedAt, setDiscoverStartedAt] = useState<Record<string, number>>({})
   const [results, setResults] = useState<Record<string, { ok: boolean; message: string }>>({})
   const [timingStats, setTimingStats] = useState<{ runs: number; avgMs: number | null; medianMs: number | null; minMs: number | null; maxMs: number | null } | null>(null)
 
@@ -127,6 +129,7 @@ export function DomainsList({ domains }: { domains: Domain[] }) {
     setDiscoverBusy((prev) => {
       const next = new Set(prev); next.add(domainId); return next
     })
+    setDiscoverStartedAt((prev) => ({ ...prev, [domainId]: Date.now() }))
     setResults((r) => {
       const next = { ...r }; delete next[domainId]; return next
     })
@@ -149,6 +152,9 @@ export function DomainsList({ domains }: { domains: Domain[] }) {
     } finally {
       setDiscoverBusy((prev) => {
         const next = new Set(prev); next.delete(domainId); return next
+      })
+      setDiscoverStartedAt((prev) => {
+        const next = { ...prev }; delete next[domainId]; return next
       })
     }
   }
@@ -221,7 +227,9 @@ export function DomainsList({ domains }: { domains: Domain[] }) {
             disabled={discoverBusy.size > 0}
             className="px-3 py-1.5 text-xs bg-brand-cyan/15 border border-brand-cyan/30 text-brand-cyan hover:bg-brand-cyan/25 transition-colors rounded disabled:opacity-50"
           >
-            {discoverBusy.size > 0 ? `Discovering ${discoverBusy.size}…` : 'Discover all'}
+            {discoverBusy.size > 0 ? (
+              <LoadingSparkle label={`Discovering ${discoverBusy.size}`} />
+            ) : 'Discover all'}
           </button>
           {timingStats && timingStats.runs > 0 && timingStats.avgMs !== null && (
             <span
@@ -363,7 +371,9 @@ export function DomainsList({ domains }: { domains: Domain[] }) {
                         disabled={isBusy}
                         className="px-3 py-1.5 text-xs border border-white/15 text-white hover:bg-white/5 transition-colors rounded disabled:opacity-50 disabled:cursor-wait"
                       >
-                        {isBusy ? 'Searching…' : d.hunter_searched_at ? 'Re-discover' : 'Discover editors'}
+                        {isBusy ? (
+                          <LoadingSparkle label="Searching" startedAt={discoverStartedAt[d.id]} />
+                        ) : d.hunter_searched_at ? 'Re-discover' : 'Discover editors'}
                       </button>
                     </div>
                     {result ? (
