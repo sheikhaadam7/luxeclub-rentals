@@ -22,6 +22,12 @@ interface Domain {
   metrics_fetched_at: string | null
   notes: string | null
   hunter_searched_at: string | null
+  last_discover_result: {
+    inserted?: number
+    skipped?: number
+    enriched?: number
+    ran_at?: string
+  } | null
 }
 
 const TIER_STYLES: Record<string, string> = {
@@ -332,11 +338,19 @@ export function DomainsList({ domains }: { domains: Domain[] }) {
                         {isBusy ? 'Searching…' : d.hunter_searched_at ? 'Re-discover' : 'Discover editors'}
                       </button>
                     </div>
-                    {result && (
+                    {result ? (
                       <p className={`text-[11px] ${result.ok ? 'text-green-400' : 'text-red-400'}`}>
                         {result.message}
                       </p>
-                    )}
+                    ) : d.last_discover_result ? (
+                      <p
+                        className="text-[11px] text-white/50"
+                        title={d.last_discover_result.ran_at ? `Last Discover: ${new Date(d.last_discover_result.ran_at).toLocaleString()}` : undefined}
+                      >
+                        +{d.last_discover_result.inserted ?? 0} ({d.last_discover_result.skipped ?? 0} skipped
+                        {typeof d.last_discover_result.enriched === 'number' ? `, enriched top ${d.last_discover_result.enriched}` : ''})
+                      </p>
+                    ) : null}
                   </td>
                 </tr>
               )

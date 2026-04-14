@@ -476,14 +476,19 @@ export async function discoverEditors(
     )
   }
 
-  // Mark the domain as searched
+  // Mark the domain as searched + persist the summary so the UI can still
+  // show it after page reloads.
+  const enriched = topToEnrich.length
   await admin
     .from('outreach_domains')
-    .update({ hunter_searched_at: new Date().toISOString() })
+    .update({
+      hunter_searched_at: new Date().toISOString(),
+      last_discover_result: { inserted, skipped, enriched, ran_at: new Date().toISOString() },
+    })
     .eq('id', domain.id)
 
   revalidatePath('/admin')
-  return { error: null, inserted, skipped, enriched: topToEnrich.length }
+  return { error: null, inserted, skipped, enriched }
 }
 
 export async function fetchEditorArticles(
