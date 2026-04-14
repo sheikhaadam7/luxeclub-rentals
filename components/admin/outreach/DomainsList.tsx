@@ -146,7 +146,7 @@ export function DomainsList({ domains }: { domains: Domain[] }) {
             <tr className="text-left text-xs uppercase tracking-wider text-brand-muted">
               <th className="px-4 py-3 font-medium">Outlet</th>
               <th className="px-4 py-3 font-medium">Domain</th>
-              <th className="px-4 py-3 font-medium">Tier</th>
+              <th className="px-4 py-3 font-medium">Location</th>
               <th className="px-4 py-3 font-medium text-right">DR</th>
               <th className="px-4 py-3 font-medium text-right">Traffic</th>
               <th className="px-4 py-3 font-medium text-right">Priority</th>

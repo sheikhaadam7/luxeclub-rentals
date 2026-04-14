@@ -42,7 +42,7 @@ export async function OutreachTab() {
       linkedin_title, linkedin_scraped_at,
       external_bio_text, external_bio_url, external_bio_source, external_fetched_at,
       twitter_bio,
-      outreach_domains (outlet_name, domain, tier, priority)
+      outreach_domains (outlet_name, domain, tier, priority, dr)
     `)
     .order('combined_score', { ascending: false, nullsFirst: false })
 
@@ -74,7 +74,7 @@ export async function OutreachTab() {
     external_bio_source: string | null
     external_fetched_at: string | null
     twitter_bio: string | null
-    outreach_domains: { outlet_name: string; domain: string; tier: string; priority: string } | { outlet_name: string; domain: string; tier: string; priority: string }[] | null
+    outreach_domains: { outlet_name: string; domain: string; tier: string; priority: string; dr: number | null } | { outlet_name: string; domain: string; tier: string; priority: string; dr: number | null }[] | null
   }) => {
     const domain = Array.isArray(e.outreach_domains) ? e.outreach_domains[0] : e.outreach_domains
     return {
@@ -109,6 +109,7 @@ export async function OutreachTab() {
       outlet_domain: domain?.domain ?? '',
       outlet_tier: domain?.tier ?? '',
       outlet_priority: domain?.priority ?? 'P3',
+      outlet_dr: domain?.dr ?? null,
     }
   })
 

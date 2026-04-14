@@ -188,28 +188,70 @@ export function scoreEditorProfile(input: EditorProfileInput): number {
 
 // Keyword tiers for article titles/snippets.
 //
-// Tier A is GEOGRAPHIC context — it does not score on its own, because an
-// article about (for example) Dubai property or Dubai food is irrelevant to
-// luxury car rental even if it mentions Dubai. Instead, Tier A acts as a
-// multiplier on the topical base (Tier B + C + D). An article needs at least
-// one real topical keyword before any points are awarded.
-const TIER_A = { keywords: ['dubai', 'uae', 'abu dhabi', 'emirates'], multiplier: 1.4 }
-const TIER_B = {
-  max: 40, per: 20,
+// Philosophy: we're running ORGANIC editorial outreach, not chasing paid
+// placements. A luxury-travel writer mentioning a Lamborghini in a Dubai
+// guide is the ideal hit — that's natural editorial value. A rental-listicle
+// writer covering "best car rental services" reads transactional and is
+// deliberately under-weighted.
+//
+// Tier A is GEOGRAPHIC context — it never scores on its own (a Dubai
+// property piece is not automotive coverage) but it multiplies the topical
+// base. Articles with zero topical signal but a geo match still get a small
+// floor score, since the editor is at least in the right market.
+const TIER_A = { keywords: ['dubai', 'uae', 'abu dhabi', 'emirates'], multiplier: 1.5 }
+
+// Tier S — the strongest signal. Supercar/luxury-car brand names and the
+// luxury-travel editorial vocabulary we most want to be embedded in.
+const TIER_S = {
+  max: 80, per: 40,
   keywords: [
-    'luxury car', 'supercar', 'exotic', 'rental', 'hire',
+    // Marques — organic brand mentions are exactly our target
     'lamborghini', 'ferrari', 'rolls-royce', 'rolls royce', 'bentley',
-    'porsche', 'mclaren', 'aston martin',
+    'porsche', 'mclaren', 'aston martin', 'bugatti', 'maserati', 'koenigsegg',
+    // Category terms
+    'supercar', 'supercars', 'hypercar', 'exotic car', 'luxury car',
+    // High-value travel / luxury-lifestyle editorial angles
+    'luxury travel', 'luxury lifestyle', 'luxury experience',
+    'dubai guide', 'dubai travel', 'dubai itinerary',
+    'things to do in dubai', 'visit dubai',
   ],
 }
-const TIER_C = {
-  max: 20, per: 10,
-  keywords: ['car', 'travel', 'lifestyle', 'luxury', 'drive', 'motor', 'automotive', 'auto'],
+
+// Tier B — broader automotive / driving editorial, plus rental signals.
+// "rental" and "hire" are kept here but at the standard weight so a rental
+// article edges out a non-rental car piece by a modest margin rather than
+// dominating the ranking (per backlink strategy: editorial mentions matter
+// more than comparison-shopping listicles, but rental coverage still signals
+// intent).
+const TIER_B = {
+  max: 30, per: 15,
+  keywords: [
+    'sports car', 'automotive', 'motor', 'motoring',
+    'drive', 'driving', 'road trip', 'grand tourer',
+    'convertible', 'roadster', 'test drive',
+    'rental', 'hire',
+  ],
 }
+
+// Tier C — luxury / travel / lifestyle editorial (higher cap than before
+// so lifestyle writers covering Dubai hotels, resorts, and travel rank
+// meaningfully even without a brand or supercar mention).
+const TIER_C = {
+  max: 40, per: 15,
+  keywords: [
+    'luxury', 'lifestyle', 'travel', 'hotel', 'resort',
+    'destination', 'experience', 'weekend getaway', 'staycation',
+    'concierge', 'vip', 'yacht', 'private jet',
+    'tourism', 'vacation', 'holiday',
+  ],
+}
+
+// Tier D — weak editorial markers (help distinguish features from news briefs)
 const TIER_D = {
   max: 10, per: 5,
-  keywords: ['weekend', 'review', 'feature', 'guide'],
+  keywords: ['review', 'feature', 'guide'],
 }
+
 
 export function analyzeArticleTitle(input: ArticleScoreInput): {
   score: number
@@ -230,8 +272,13 @@ export function analyzeArticleTitle(input: ArticleScoreInput): {
     return Math.min(tier.max, pts)
   }
 
-  // Topical base comes from automotive/travel/luxury keyword hits (B+C+D).
-  const topicalBase = collectTier(TIER_B) + collectTier(TIER_C) + collectTier(TIER_D)
+  // Topical base comes from brand/supercar signals (S) plus automotive (B),
+  // lifestyle (C), and editorial markers (D).
+  const topicalBase =
+    collectTier(TIER_S) +
+    collectTier(TIER_B) +
+    collectTier(TIER_C) +
+    collectTier(TIER_D)
 
   // Detect geographic (Tier A) match separately.
   let hasGeo = false

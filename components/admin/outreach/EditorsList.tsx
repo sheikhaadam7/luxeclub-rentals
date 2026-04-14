@@ -38,6 +38,7 @@ export interface EditorRow {
   outlet_domain: string
   outlet_tier: string
   outlet_priority: string
+  outlet_dr: number | null
 }
 
 type SortKey = 'profile' | 'topical' | 'combined' | 'name' | 'outlet'
@@ -58,9 +59,13 @@ function breakdown(profile: number | null, topical: number | null, combined: num
 }
 
 export function EditorsList({ editors }: { editors: EditorRow[] }) {
-  const [minScore, setMinScore] = useState(40)
+  const [minOverall, setMinOverall] = useState(40)
+  const [minMatch, setMinMatch] = useState(0)
+  const [minCoverage, setMinCoverage] = useState(0)
+  const [minDr, setMinDr] = useState(0)
   const [tierFilter, setTierFilter] = useState<string>('all')
   const [contactedFilter, setContactedFilter] = useState<'all' | 'contacted' | 'not-contacted'>('all')
+  const [search, setSearch] = useState('')
   const [revealed, setRevealed] = useState<Set<string>>(new Set())
   const [selectedEditor, setSelectedEditor] = useState<EditorRow | null>(null)
   const [sortKey, setSortKey] = useState<SortKey>('combined')
@@ -84,11 +89,27 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
   }
 
   const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase()
     const base = editors.filter((e) => {
-      if ((e.combined_score ?? 0) < minScore) return false
+      if ((e.combined_score ?? 0) < minOverall) return false
+      if ((e.relevance_score ?? 0) < minMatch) return false
+      if ((e.topical_score ?? 0) < minCoverage) return false
+      if (minDr > 0 && (e.outlet_dr ?? 0) < minDr) return false
       if (tierFilter !== 'all' && e.outlet_tier !== tierFilter) return false
       if (contactedFilter === 'contacted' && !e.contacted_at) return false
       if (contactedFilter === 'not-contacted' && e.contacted_at) return false
+      if (q) {
+        const haystack = [
+          e.first_name, e.last_name,
+          `${e.first_name ?? ''} ${e.last_name ?? ''}`,
+          e.email, e.position, e.outlet_name, e.outlet_domain,
+          e.department,
+        ]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase()
+        if (!haystack.includes(q)) return false
+      }
       return true
     })
 
@@ -108,7 +129,7 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
       if (ka > kb) return 1 * dir
       return 0
     })
-  }, [editors, minScore, tierFilter, contactedFilter, sortKey, sortDir])
+  }, [editors, minOverall, minMatch, minCoverage, minDr, tierFilter, contactedFilter, search, sortKey, sortDir])
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) {
@@ -156,42 +177,81 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-3 items-center bg-brand-surface border border-brand-border p-3 rounded">
-        <div className="flex items-center gap-2">
-          <label className="text-xs text-brand-muted">Min score:</label>
-          <input
-            type="range"
-            min={0}
-            max={100}
-            value={minScore}
-            onChange={(e) => setMinScore(parseInt(e.target.value, 10))}
-            className="w-32 accent-brand-cyan"
-          />
-          <span className="text-xs text-white font-mono w-8">{minScore}</span>
+      {/* Search + filter panel */}
+      <div className="bg-brand-surface border border-brand-border p-3 rounded space-y-3">
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search name, outlet, email, job title, department…"
+          className="w-full bg-white/[0.04] border border-white/[0.08] rounded px-3 py-2 text-sm text-white placeholder:text-white/30 outline-none focus:border-brand-cyan"
+        />
+        <div className="flex flex-wrap gap-4 items-center">
+          <div className="flex items-center gap-2">
+            <label className="text-xs text-brand-muted w-[60px]">Overall</label>
+            <input type="range" min={0} max={100} value={minOverall}
+              onChange={(e) => setMinOverall(parseInt(e.target.value, 10))}
+              className="w-28 accent-brand-cyan" />
+            <span className="text-xs text-white font-mono w-8">{minOverall}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="text-xs text-brand-muted w-[60px]">Match</label>
+            <input type="range" min={0} max={100} value={minMatch}
+              onChange={(e) => setMinMatch(parseInt(e.target.value, 10))}
+              className="w-28 accent-brand-cyan" />
+            <span className="text-xs text-white font-mono w-8">{minMatch}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="text-xs text-brand-muted w-[70px]">Coverage</label>
+            <input type="range" min={0} max={100} value={minCoverage}
+              onChange={(e) => setMinCoverage(parseInt(e.target.value, 10))}
+              className="w-28 accent-brand-cyan" />
+            <span className="text-xs text-white font-mono w-8">{minCoverage}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="text-xs text-brand-muted w-[50px]">DR ≥</label>
+            <input type="range" min={0} max={100} value={minDr}
+              onChange={(e) => setMinDr(parseInt(e.target.value, 10))}
+              className="w-28 accent-brand-cyan" />
+            <span className="text-xs text-white font-mono w-8">{minDr}</span>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <label className="text-xs text-brand-muted">Tier:</label>
-          <select
-            value={tierFilter}
-            onChange={(e) => setTierFilter(e.target.value)}
-            className="text-xs bg-brand-surface border border-white/10 text-white px-2 py-1 rounded"
-          >
-            <option value="all">All</option>
-            {tiers.map((t) => <option key={t} value={t}>{t}</option>)}
-          </select>
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-xs text-brand-muted">Status:</label>
-          <select
-            value={contactedFilter}
-            onChange={(e) => setContactedFilter(e.target.value as 'all' | 'contacted' | 'not-contacted')}
-            className="text-xs bg-brand-surface border border-white/10 text-white px-2 py-1 rounded"
-          >
-            <option value="all">All</option>
-            <option value="not-contacted">Not contacted</option>
-            <option value="contacted">Contacted</option>
-          </select>
+        <div className="flex flex-wrap gap-4 items-center">
+          <div className="flex items-center gap-2">
+            <label className="text-xs text-brand-muted">Location:</label>
+            <select
+              value={tierFilter}
+              onChange={(e) => setTierFilter(e.target.value)}
+              className="text-xs bg-brand-surface border border-white/10 text-white px-2 py-1 rounded"
+            >
+              <option value="all">All</option>
+              {tiers.map((t) => <option key={t} value={t}>{t}</option>)}
+            </select>
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="text-xs text-brand-muted">Status:</label>
+            <select
+              value={contactedFilter}
+              onChange={(e) => setContactedFilter(e.target.value as 'all' | 'contacted' | 'not-contacted')}
+              className="text-xs bg-brand-surface border border-white/10 text-white px-2 py-1 rounded"
+            >
+              <option value="all">All</option>
+              <option value="not-contacted">Not contacted</option>
+              <option value="contacted">Contacted</option>
+            </select>
+          </div>
+          {(search || minOverall > 0 || minMatch > 0 || minCoverage > 0 || minDr > 0 || tierFilter !== 'all' || contactedFilter !== 'all') && (
+            <button
+              type="button"
+              onClick={() => {
+                setSearch(''); setMinOverall(0); setMinMatch(0); setMinCoverage(0); setMinDr(0)
+                setTierFilter('all'); setContactedFilter('all')
+              }}
+              className="text-[11px] text-white/50 hover:text-white underline ml-auto"
+            >
+              Clear filters
+            </button>
+          )}
         </div>
       </div>
 
