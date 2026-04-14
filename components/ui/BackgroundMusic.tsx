@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect, useCallback, createContext, useContext } from 'react'
+import { useState, useRef, useCallback, createContext, useContext } from 'react'
 
 // Shared audio state across all MusicButton instances
 interface MusicContextValue {
@@ -17,25 +17,6 @@ const MusicContext = createContext<MusicContextValue>({ playing: false, toggle: 
 export function MusicProvider({ children }: { children: React.ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [playing, setPlaying] = useState(false)
-  const startedRef = useRef(false)
-
-  useEffect(() => {
-    function startOnGesture() {
-      if (startedRef.current) return
-      const audio = audioRef.current
-      if (!audio) return
-      startedRef.current = true
-      audio.play().then(() => setPlaying(true)).catch(() => {
-        startedRef.current = false
-      })
-    }
-
-    const events = ['click', 'touchstart', 'keydown', 'scroll'] as const
-    events.forEach((e) => document.addEventListener(e, startOnGesture, { once: true, passive: true }))
-    return () => {
-      events.forEach((e) => document.removeEventListener(e, startOnGesture))
-    }
-  }, [])
 
   const toggle = useCallback(() => {
     const audio = audioRef.current
