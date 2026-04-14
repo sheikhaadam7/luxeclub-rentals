@@ -10,7 +10,9 @@ import {
   rescoreEditors,
   classifyBeatsBulk,
   promoteEditors,
+  fetchMissingArticles,
 } from '@/app/actions/outreach'
+import { LoadingSparkle } from '@/components/ui/LoadingSparkle'
 import { GlassTooltip } from '@/components/ui/GlassTooltip'
 
 export interface EditorRow {
@@ -92,6 +94,34 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
   const router = useRouter()
   const [isRecalc, startRecalcTransition] = useTransition()
   const [recalcMessage, setRecalcMessage] = useState<string | null>(null)
+  const [isFetchMissing, startFetchMissingTransition] = useTransition()
+  const [fetchMissingMessage, setFetchMissingMessage] = useState<string | null>(null)
+  const [fetchMissingStartedAt, setFetchMissingStartedAt] = useState<number | null>(null)
+
+  const missingArticlesCount = useMemo(
+    () => editors.filter((e) => !e.skipped && !e.articles_fetched_at && e.first_name && e.last_name).length,
+    [editors]
+  )
+
+  function handleFetchMissingArticles() {
+    if (missingArticlesCount === 0) return
+    if (!confirm(`Run Serper article fetch for ${missingArticlesCount} editor(s) missing article history? One Serper credit per editor.`)) return
+    setFetchMissingMessage(null)
+    setFetchMissingStartedAt(Date.now())
+    startFetchMissingTransition(async () => {
+      const res = await fetchMissingArticles()
+      setFetchMissingStartedAt(null)
+      if (res.error) setFetchMissingMessage(`Failed: ${res.error}`)
+      else {
+        const bits = [`Fetched for ${res.processed}`]
+        if (res.skipped) bits.push(`${res.skipped} skipped (no domain)`)
+        if (res.quotaHit) bits.push('stopped at Serper quota')
+        setFetchMissingMessage(bits.join(' · '))
+        router.refresh()
+      }
+      setTimeout(() => setFetchMissingMessage(null), 6000)
+    })
+  }
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [isBulkBusy, startBulkTransition] = useTransition()
   const [bulkMessage, setBulkMessage] = useState<string | null>(null)
@@ -379,6 +409,24 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
           >
             ↻ Refresh list
           </button>
+          {missingArticlesCount > 0 && (
+            <button
+              type="button"
+              onClick={handleFetchMissingArticles}
+              disabled={isFetchMissing}
+              title={`Run Serper for ${missingArticlesCount} editor(s) missing article history (1 Serper credit each)`}
+              className="px-3 py-1.5 text-xs border border-brand-cyan/30 text-brand-cyan hover:bg-brand-cyan/10 transition-colors rounded disabled:opacity-50"
+            >
+              {isFetchMissing ? (
+                <LoadingSparkle label="Fetching" startedAt={fetchMissingStartedAt ?? undefined} />
+              ) : (
+                `Fetch missing articles (${missingArticlesCount})`
+              )}
+            </button>
+          )}
+          {fetchMissingMessage && (
+            <span className="text-xs text-white/60">{fetchMissingMessage}</span>
+          )}
           <button
             type="button"
             onClick={handleRecalculate}

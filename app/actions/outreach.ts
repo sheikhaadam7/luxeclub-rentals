@@ -1649,6 +1649,86 @@ export async function rescoreAllEditors(): Promise<{ error: string | null; updat
 }
 
 // ---------------------------------------------------------------------------
+// fetchMissingArticles — batch-run Serper article fetch + rescore for every
+// active editor whose articles_fetched_at is null. Skips editors without a
+// name (Serper needs both first + last).
+// ---------------------------------------------------------------------------
+export async function fetchMissingArticles(): Promise<{
+  error: string | null
+  processed: number
+  skipped: number
+  quotaHit: boolean
+}> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error, processed: 0, skipped: 0, quotaHit: false }
+  const admin = createAdminClient()
+
+  const { data: editors } = await admin
+    .from('outreach_editors')
+    .select('id, first_name, last_name, skipped, articles_fetched_at, outreach_domains (domain)')
+    .is('articles_fetched_at', null)
+    .eq('skipped', false)
+    .not('first_name', 'is', null)
+    .not('last_name', 'is', null)
+
+  if (!editors || editors.length === 0) {
+    return { error: null, processed: 0, skipped: 0, quotaHit: false }
+  }
+
+  let processed = 0
+  let skippedNoDomain = 0
+  let quotaHit = false
+
+  for (const editor of editors) {
+    if (!(await canUseQuota(admin, 'serper'))) { quotaHit = true; break }
+    const domainRow = Array.isArray(editor.outreach_domains)
+      ? editor.outreach_domains[0]
+      : editor.outreach_domains
+    if (!domainRow?.domain) { skippedNoDomain++; continue }
+
+    try {
+      const results = await searchEditorArticles(
+        editor.first_name as string,
+        editor.last_name as string,
+        domainRow.domain as string
+      )
+      await incrementUsage(admin, 'serper')
+
+      const articleScores: number[] = []
+      for (const r of results) {
+        const { score, matchedKeywords } = analyzeArticleTitle({ title: r.title, snippet: r.snippet })
+        articleScores.push(score)
+        await admin.from('outreach_articles').insert({
+          editor_id: editor.id,
+          url: r.link,
+          title: r.title,
+          snippet: r.snippet ?? null,
+          published_date: parseSerperDate(r.date),
+          topic_match_score: score,
+          topic_keywords: matchedKeywords,
+          serper_raw: r as unknown as Record<string, unknown>,
+        })
+      }
+      const topical = scoreEditorTopical(articleScores)
+      await admin
+        .from('outreach_editors')
+        .update({
+          topical_score: topical,
+          articles_fetched_at: new Date().toISOString(),
+        })
+        .eq('id', editor.id as string)
+      await rescoreEditor(editor.id as string, admin)
+      processed++
+    } catch (err) {
+      console.error(`[fetchMissingArticles] ${editor.first_name} ${editor.last_name}:`, err instanceof Error ? err.message : err)
+    }
+  }
+
+  revalidatePath('/admin')
+  return { error: null, processed, skipped: skippedNoDomain, quotaHit }
+}
+
+// ---------------------------------------------------------------------------
 // promoteEditors — un-skip one or more editors (skipped=false) and trigger
 // the full enrichment pipeline so their scores get computed for real.
 // ---------------------------------------------------------------------------
