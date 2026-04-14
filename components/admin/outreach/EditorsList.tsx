@@ -26,6 +26,11 @@ export interface EditorRow {
   ai_summary: string | null
   linkedin_title: string | null
   linkedin_scraped_at: string | null
+  external_bio_text: string | null
+  external_bio_url: string | null
+  external_bio_source: string | null
+  external_fetched_at: string | null
+  twitter_bio: string | null
   // Joined fields
   outlet_name: string
   outlet_domain: string

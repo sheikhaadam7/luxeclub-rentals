@@ -249,6 +249,40 @@ export function EditorDetail({ editor, onClose }: EditorDetailProps) {
             </div>
           )}
 
+          {/* External bio (Muckrack / personal site / etc) */}
+          {editor.external_bio_text && (
+            <div className="space-y-2">
+              <h4 className="font-display text-sm font-medium text-white uppercase tracking-wider flex items-center gap-2">
+                External Bio
+                {editor.external_bio_source && (
+                  <span className="text-[10px] font-normal text-white/50 px-1.5 py-0.5 bg-white/5 rounded">
+                    {editor.external_bio_source}
+                  </span>
+                )}
+              </h4>
+              <div className="text-xs text-white/70 leading-relaxed bg-white/[0.02] border border-white/[0.05] rounded p-3">
+                <p className="whitespace-pre-wrap">{editor.external_bio_text}</p>
+                {editor.external_bio_url && (
+                  <a href={editor.external_bio_url} target="_blank" rel="noopener noreferrer" className="text-brand-cyan text-[11px] mt-2 inline-block hover:underline">
+                    Source ↗
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Twitter / X bio */}
+          {editor.twitter_bio && (
+            <div className="space-y-2">
+              <h4 className="font-display text-sm font-medium text-white uppercase tracking-wider">
+                X / Twitter Bio
+              </h4>
+              <div className="text-xs text-white/70 leading-relaxed bg-white/[0.02] border border-white/[0.05] rounded p-3">
+                <p className="whitespace-pre-wrap">{editor.twitter_bio}</p>
+              </div>
+            </div>
+          )}
+
           {/* Bio section */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">

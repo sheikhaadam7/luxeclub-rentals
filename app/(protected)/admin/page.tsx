@@ -9,6 +9,11 @@ import { AnalyticsTab } from '@/components/admin/AnalyticsTab'
 import { LocationsTab } from '@/components/admin/LocationsTab'
 import { OutreachTab } from '@/components/admin/OutreachTab'
 
+// Outreach "Discover editors" runs the full enrichment pipeline per editor
+// (Serper + ScrapingBee + OpenAI + LinkedIn) which can take several minutes
+// on a domain with 10 editors. Bump the serverless timeout to 5 minutes.
+export const maxDuration = 300
+
 type TabId = 'fleet' | 'bookings' | 'payments' | 'analytics' | 'locations' | 'outreach'
 const VALID_TABS: TabId[] = ['fleet', 'bookings', 'payments', 'analytics', 'locations', 'outreach']
 

@@ -1,10 +1,5 @@
 'use server'
 
-// discoverEditors now runs full enrichment per editor (Serper + ScrapingBee +
-// OpenAI + LinkedIn). Bump the serverless timeout accordingly — a domain with
-// 10 editors can take 3-5 minutes end-to-end.
-export const maxDuration = 300
-
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { revalidatePath } from 'next/cache'
@@ -13,6 +8,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { fetchDomainEmails, HunterApiError } from '@/lib/outreach/hunter'
 import { fetchDomainMetrics, AhrefsApiError } from '@/lib/outreach/ahrefs'
 import { scrapeLinkedInTitle, LinkedInScrapeError } from '@/lib/outreach/linkedin'
+import { findExternalBio, scrapeTwitterBio } from '@/lib/outreach/external-bio'
 import { searchEditorArticles, parseSerperDate, SerperApiError } from '@/lib/outreach/serper'
 import {
   scoreEditorProfile,
@@ -137,6 +133,7 @@ async function fullyEnrichEditor(
   firstName: string | null,
   lastName: string | null,
   linkedinUrl: string | null,
+  twitterHandle: string | null,
   domain: string,
   emailForLogs: string
 ): Promise<void> {
@@ -216,6 +213,66 @@ async function fullyEnrichEditor(
       }
     } catch (err) {
       console.error(`[fullyEnrichEditor:bio] ${emailForLogs}:`, err instanceof Error ? err.message : err)
+    }
+  }
+
+  // 2b) External bio (Muckrack / Contently / personal site)
+  if (firstName && lastName) {
+    try {
+      const serperOk = await canUseQuota(admin, 'serper')
+      const sbOk = await canUseQuota(admin, 'scrapingbee')
+      if (serperOk && sbOk) {
+        const apiKey = process.env.SERPER_API_KEY
+        const serperSearch = async (q: string) => {
+          const res = await fetch('https://google.serper.dev/search', {
+            method: 'POST',
+            headers: { 'X-API-KEY': apiKey!, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ q, num: 10, gl: 'ae', hl: 'en' }),
+          })
+          if (!res.ok) throw new Error(`Serper error ${res.status}`)
+          const data = await res.json()
+          return (data.organic ?? []).map((r: { link: string; title: string }) => ({ link: r.link, title: r.title }))
+        }
+        const external = await findExternalBio(firstName, lastName, domain, serperSearch)
+        await incrementUsage(admin, 'serper')
+        if (external) {
+          await incrementUsage(admin, 'scrapingbee')
+          await admin
+            .from('outreach_editors')
+            .update({
+              external_bio_text: external.text,
+              external_bio_url: external.url,
+              external_bio_source: external.source,
+              external_fetched_at: new Date().toISOString(),
+            })
+            .eq('id', editorId)
+        } else {
+          await admin
+            .from('outreach_editors')
+            .update({ external_fetched_at: new Date().toISOString() })
+            .eq('id', editorId)
+        }
+      }
+    } catch (err) {
+      console.error(`[fullyEnrichEditor:external-bio] ${emailForLogs}:`, err instanceof Error ? err.message : err)
+    }
+  }
+
+  // 2c) Twitter / X bio
+  if (twitterHandle) {
+    try {
+      if (await canUseQuota(admin, 'scrapingbee')) {
+        const bio = await scrapeTwitterBio(twitterHandle)
+        await incrementUsage(admin, 'scrapingbee')
+        if (bio) {
+          await admin
+            .from('outreach_editors')
+            .update({ twitter_bio: bio })
+            .eq('id', editorId)
+        }
+      }
+    } catch (err) {
+      console.error(`[fullyEnrichEditor:twitter] ${emailForLogs}:`, err instanceof Error ? err.message : err)
     }
   }
 
@@ -362,6 +419,7 @@ export async function discoverEditors(
           email.first_name,
           email.last_name,
           email.linkedin,
+          email.twitter,
           domain.domain,
           email.value
         )
@@ -1102,6 +1160,7 @@ export async function rescoreEditor(
     .select(`
       position, department, seniority, confidence,
       bio_text, ai_summary, linkedin_title,
+      external_bio_text, twitter_bio,
       topical_score,
       outreach_domains ( priority_score )
     `)
@@ -1114,7 +1173,13 @@ export async function rescoreEditor(
     ? editor.outreach_domains[0]
     : editor.outreach_domains
 
-  const enrichment = [editor.bio_text, editor.ai_summary, editor.linkedin_title]
+  const enrichment = [
+    editor.bio_text,
+    editor.ai_summary,
+    editor.linkedin_title,
+    editor.external_bio_text,
+    editor.twitter_bio,
+  ]
     .filter((s): s is string => typeof s === 'string' && s.length > 0)
     .join('\n')
 
