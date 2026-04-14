@@ -8,7 +8,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 export type OutreachProvider = 'hunter' | 'serper' | 'scrapingbee'
 
 const QUOTA_LIMITS: Record<OutreachProvider, number> = {
-  hunter: 25,       // free tier
+  hunter: 500,      // Starter plan: 500 domain-searches / month
   serper: 2500,     // free credits first month; 100/mo thereafter
   scrapingbee: 1000, // free plan
 }
