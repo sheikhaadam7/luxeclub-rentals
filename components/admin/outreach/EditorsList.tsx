@@ -3,7 +3,12 @@
 import { useMemo, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { EditorDetail } from './EditorDetail'
-import { recalculateAllArticleScores } from '@/app/actions/outreach'
+import {
+  recalculateAllArticleScores,
+  deleteEditors,
+  setEditorsContacted,
+  rescoreEditors,
+} from '@/app/actions/outreach'
 
 export interface EditorRow {
   id: string
@@ -73,6 +78,110 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
   const router = useRouter()
   const [isRecalc, startRecalcTransition] = useTransition()
   const [recalcMessage, setRecalcMessage] = useState<string | null>(null)
+  const [selected, setSelected] = useState<Set<string>>(new Set())
+  const [isBulkBusy, startBulkTransition] = useTransition()
+  const [bulkMessage, setBulkMessage] = useState<string | null>(null)
+
+  function toggleSelect(id: string) {
+    setSelected((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  function flashBulk(text: string) {
+    setBulkMessage(text)
+    setTimeout(() => setBulkMessage(null), 4000)
+  }
+
+  function handleBulkDelete() {
+    if (selected.size === 0) return
+    if (!confirm(`Permanently delete ${selected.size} editor(s)? Articles and pitch history will also be removed.`)) return
+    startBulkTransition(async () => {
+      const ids = [...selected]
+      const res = await deleteEditors(ids)
+      if (res.error) flashBulk(`Delete failed: ${res.error}`)
+      else {
+        flashBulk(`Deleted ${res.deleted} editor(s)`)
+        setSelected(new Set())
+        router.refresh()
+      }
+    })
+  }
+
+  function handleDeleteOne(id: string, name: string) {
+    if (!confirm(`Delete ${name}? Their articles and any pitch history will also be removed.`)) return
+    startBulkTransition(async () => {
+      const res = await deleteEditors([id])
+      if (res.error) flashBulk(`Delete failed: ${res.error}`)
+      else {
+        flashBulk(`Deleted ${name}`)
+        setSelected((prev) => {
+          const next = new Set(prev); next.delete(id); return next
+        })
+        router.refresh()
+      }
+    })
+  }
+
+  function handleBulkContact(contacted: boolean) {
+    if (selected.size === 0) return
+    startBulkTransition(async () => {
+      const res = await setEditorsContacted([...selected], contacted)
+      if (res.error) flashBulk(`Update failed: ${res.error}`)
+      else {
+        flashBulk(`Marked ${res.updated} as ${contacted ? 'contacted' : 'not contacted'}`)
+        setSelected(new Set())
+        router.refresh()
+      }
+    })
+  }
+
+  function handleBulkRescore() {
+    if (selected.size === 0) return
+    startBulkTransition(async () => {
+      const res = await rescoreEditors([...selected])
+      if (res.error) flashBulk(`Rescore failed: ${res.error}`)
+      else {
+        flashBulk(`Rescored ${res.updated} editor(s)`)
+        router.refresh()
+      }
+    })
+  }
+
+  function handleBulkExport() {
+    if (selected.size === 0) return
+    const rows = editors.filter((e) => selected.has(e.id))
+    const header = [
+      'Name', 'Email', 'Position', 'Department', 'Outlet', 'Domain',
+      'Location', 'DR', 'Match', 'Coverage', 'Overall',
+      'LinkedIn', 'Twitter', 'Contacted',
+    ]
+    const csv = [
+      header.join(','),
+      ...rows.map((e) => [
+        [e.first_name, e.last_name].filter(Boolean).join(' '),
+        e.email, e.position ?? '', e.department ?? '',
+        e.outlet_name, e.outlet_domain, e.outlet_tier, e.outlet_dr ?? '',
+        e.relevance_score ?? '', e.topical_score ?? '', e.combined_score ?? '',
+        e.linkedin_url ?? '', e.twitter_handle ?? '',
+        e.contacted_at ? new Date(e.contacted_at).toISOString() : '',
+      ].map((v) => {
+        const s = String(v).replace(/"/g, '""')
+        return /[,"\n]/.test(s) ? `"${s}"` : s
+      }).join(',')),
+    ].join('\n')
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `editors-${new Date().toISOString().slice(0, 10)}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+    flashBulk(`Exported ${rows.length} row(s) to CSV`)
+  }
 
   function handleRecalculate() {
     setRecalcMessage('Recalculating…')
@@ -255,6 +364,50 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
         </div>
       </div>
 
+      {/* Bulk action bar — appears when at least one editor is selected */}
+      {selected.size > 0 && (
+        <div className="bg-brand-cyan/[0.08] border border-brand-cyan/30 rounded p-3 flex flex-wrap items-center gap-2">
+          <span className="text-sm text-white font-medium mr-2">{selected.size} selected</span>
+          <button
+            type="button" onClick={handleBulkDelete} disabled={isBulkBusy}
+            className="px-3 py-1.5 text-xs bg-red-500/15 border border-red-500/40 text-red-300 rounded hover:bg-red-500/25 transition-colors disabled:opacity-50"
+          >
+            🗑 Delete
+          </button>
+          <button
+            type="button" onClick={() => handleBulkContact(true)} disabled={isBulkBusy}
+            className="px-3 py-1.5 text-xs bg-amber-400/10 border border-amber-400/30 text-amber-400 rounded hover:bg-amber-400/20 transition-colors disabled:opacity-50"
+          >
+            Mark contacted
+          </button>
+          <button
+            type="button" onClick={() => handleBulkContact(false)} disabled={isBulkBusy}
+            className="px-3 py-1.5 text-xs border border-white/15 text-white/70 rounded hover:bg-white/5 transition-colors disabled:opacity-50"
+          >
+            Mark not contacted
+          </button>
+          <button
+            type="button" onClick={handleBulkRescore} disabled={isBulkBusy}
+            className="px-3 py-1.5 text-xs border border-white/15 text-white/70 rounded hover:bg-white/5 transition-colors disabled:opacity-50"
+          >
+            Rescore
+          </button>
+          <button
+            type="button" onClick={handleBulkExport} disabled={isBulkBusy}
+            className="px-3 py-1.5 text-xs border border-white/15 text-white/70 rounded hover:bg-white/5 transition-colors disabled:opacity-50"
+          >
+            Export CSV
+          </button>
+          <button
+            type="button" onClick={() => setSelected(new Set())} disabled={isBulkBusy}
+            className="text-[11px] text-white/50 hover:text-white underline ml-auto"
+          >
+            Clear selection
+          </button>
+          {bulkMessage && <span className="text-xs text-white/70 w-full">{bulkMessage}</span>}
+        </div>
+      )}
+
       {filtered.length === 0 ? (
         <div className="bg-brand-surface border border-brand-border p-6 rounded text-center">
           <p className="text-sm text-white/60">
@@ -268,6 +421,22 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
           <table className="w-full text-sm">
             <thead className="bg-white/[0.02] border-b border-brand-border">
               <tr className="text-left text-xs uppercase tracking-wider text-brand-muted">
+                <th className="px-3 py-3 w-8">
+                  <input
+                    type="checkbox"
+                    aria-label="Select all visible editors"
+                    checked={filtered.length > 0 && filtered.every((e) => selected.has(e.id))}
+                    onChange={(ev) => {
+                      setSelected((prev) => {
+                        const next = new Set(prev)
+                        if (ev.target.checked) filtered.forEach((e) => next.add(e.id))
+                        else filtered.forEach((e) => next.delete(e.id))
+                        return next
+                      })
+                    }}
+                    className="accent-brand-cyan cursor-pointer"
+                  />
+                </th>
                 <th className="px-4 py-3 font-medium cursor-pointer select-none hover:text-white" onClick={() => toggleSort('name')}>Name{sortArrow('name')}</th>
                 <th className="px-4 py-3 font-medium">Position</th>
                 <th className="px-4 py-3 font-medium cursor-pointer select-none hover:text-white" onClick={() => toggleSort('outlet')}>Outlet{sortArrow('outlet')}</th>
@@ -277,18 +446,29 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
                 <th className="px-4 py-3 font-medium">Email</th>
                 <th className="px-4 py-3 font-medium">Links</th>
                 <th className="px-4 py-3 font-medium">Status</th>
+                <th className="px-3 py-3 w-8"></th>
               </tr>
             </thead>
             <tbody>
               {filtered.map((e) => {
                 const name = [e.first_name, e.last_name].filter(Boolean).join(' ') || '—'
                 const isRevealed = revealed.has(e.id)
+                const isSelected = selected.has(e.id)
                 return (
                   <tr
                     key={e.id}
-                    className="border-b border-white/[0.04] hover:bg-white/[0.02] cursor-pointer"
+                    className={`border-b border-white/[0.04] hover:bg-white/[0.02] cursor-pointer ${isSelected ? 'bg-brand-cyan/[0.04]' : ''}`}
                     onClick={() => setSelectedEditor(e)}
                   >
+                    <td className="px-3 py-3" onClick={(ev) => ev.stopPropagation()}>
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => toggleSelect(e.id)}
+                        aria-label={`Select ${name}`}
+                        className="accent-brand-cyan cursor-pointer"
+                      />
+                    </td>
                     <td className="px-4 py-3 text-white font-medium">{name}</td>
                     <td className="px-4 py-3 text-white/70 text-xs">{e.position ?? '—'}</td>
                     <td className="px-4 py-3 text-brand-muted text-xs">{e.outlet_name}</td>
@@ -339,6 +519,24 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
                       ) : (
                         <span className="text-[11px] text-white/40">—</span>
                       )}
+                    </td>
+                    <td className="px-3 py-3 text-right" onClick={(ev) => ev.stopPropagation()}>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteOne(e.id, name)}
+                        disabled={isBulkBusy}
+                        title="Delete this editor"
+                        aria-label={`Delete ${name}`}
+                        className="text-red-400 hover:text-red-300 hover:bg-red-500/10 p-1.5 rounded transition-colors disabled:opacity-50"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="3 6 5 6 21 6"></polyline>
+                          <path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"></path>
+                          <path d="M10 11v6"></path>
+                          <path d="M14 11v6"></path>
+                          <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                      </button>
                     </td>
                   </tr>
                 )

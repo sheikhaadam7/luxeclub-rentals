@@ -1333,6 +1333,68 @@ export async function rescoreAllEditors(): Promise<{ error: string | null; updat
 }
 
 // ---------------------------------------------------------------------------
+// deleteEditors — remove one or more editors (articles/pitches cascade via FK)
+// ---------------------------------------------------------------------------
+export async function deleteEditors(
+  editorIds: string[]
+): Promise<{ error: string | null; deleted: number }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error, deleted: 0 }
+  if (editorIds.length === 0) return { error: null, deleted: 0 }
+
+  const admin = createAdminClient()
+  const { error, count } = await admin
+    .from('outreach_editors')
+    .delete({ count: 'exact' })
+    .in('id', editorIds)
+
+  if (error) return { error: error.message, deleted: 0 }
+  revalidatePath('/admin')
+  return { error: null, deleted: count ?? 0 }
+}
+
+// ---------------------------------------------------------------------------
+// setEditorsContacted — bulk toggle contacted_at (null = not contacted,
+// now = contacted)
+// ---------------------------------------------------------------------------
+export async function setEditorsContacted(
+  editorIds: string[],
+  contacted: boolean
+): Promise<{ error: string | null; updated: number }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error, updated: 0 }
+  if (editorIds.length === 0) return { error: null, updated: 0 }
+
+  const admin = createAdminClient()
+  const { error, count } = await admin
+    .from('outreach_editors')
+    .update({ contacted_at: contacted ? new Date().toISOString() : null }, { count: 'exact' })
+    .in('id', editorIds)
+
+  if (error) return { error: error.message, updated: 0 }
+  revalidatePath('/admin')
+  return { error: null, updated: count ?? 0 }
+}
+
+// ---------------------------------------------------------------------------
+// rescoreEditors — bulk rescore a subset (used by the Editor list bulk bar)
+// ---------------------------------------------------------------------------
+export async function rescoreEditors(
+  editorIds: string[]
+): Promise<{ error: string | null; updated: number }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error, updated: 0 }
+  const admin = createAdminClient()
+  let updated = 0
+  for (const id of editorIds) {
+    const res = await rescoreEditor(id, admin)
+    if (!res.error) updated++
+  }
+  revalidatePath('/admin')
+  return { error: null, updated }
+}
+
+// ---------------------------------------------------------------------------
 // updateDomainPriorityScore — inline edit the 0-100 priority_score
 // ---------------------------------------------------------------------------
 export async function updateDomainPriorityScore(
