@@ -20,6 +20,15 @@ export interface EditorProfileInput {
    * profile score (so a score of 80 is worth ~8 points, matching the old +10 P1).
    */
   outletPriorityScore: number
+  /**
+   * Optional secondary text about the editor (LinkedIn headline, scraped bio,
+   * AI-generated summary). Used to detect title + topical keywords when
+   * Hunter's position field is null, stale, or underspecified. For each
+   * signal we take the max of (Hunter-position match, enrichment match) so
+   * we neither double-count nor under-credit an editor whose Hunter record
+   * is thin.
+   */
+  enrichmentText?: string | null
 }
 
 export interface ArticleScoreInput {
@@ -50,13 +59,25 @@ const EDITORIAL_KEYWORDS = [
   'features', 'newsroom', 'editorial',
 ]
 
-function hasEditorialSignal(position: string | null, department: string | null): boolean {
-  const blob = `${position ?? ''} ${department ?? ''}`.toLowerCase()
+function hasEditorialSignal(
+  position: string | null,
+  department: string | null,
+  enrichment?: string | null
+): boolean {
+  const blob = `${position ?? ''} ${department ?? ''} ${enrichment ?? ''}`.toLowerCase()
   if (!blob.trim()) return false
   // Treat Hunter's "communication" department as editorial-adjacent
   if (department && department.toLowerCase() === 'communication') return true
   return EDITORIAL_KEYWORDS.some((kw) => blob.includes(kw))
 }
+
+/**
+ * Enrichment text can contain off-topic mentions (e.g. "former sales rep turned
+ * editor"). We only want to treat enrichment as a hard-zero source if it's
+ * overwhelmingly non-editorial AND Hunter also shows no editorial signal.
+ * For now we do NOT apply HARD_ZERO_POSITION_KEYWORDS to enrichment text,
+ * because a bio that mentions "sales" in passing shouldn't kill a clear editor.
+ */
 
 function titlePoints(position: string | null): number {
   if (!position) return 0
@@ -132,15 +153,28 @@ export function scoreEditorProfile(input: EditorProfileInput): number {
   // Hard-zero on off-topic department
   if (input.department && HARD_ZERO_DEPARTMENTS.has(input.department.toLowerCase())) return 0
 
-  // Require at least one editorial signal; otherwise the contact likely isn't
-  // an editor at all (PR reps, execs, sales, unknown roles).
-  if (!hasEditorialSignal(input.position, input.department)) return 0
+  const enrichment = input.enrichmentText?.trim() || null
 
-  const title = titlePoints(input.position)
-  if (title === 0) return 0 // Hard-zero on sales/HR keywords in title
+  // Require at least one editorial signal (from Hunter OR enrichment text).
+  if (!hasEditorialSignal(input.position, input.department, enrichment)) return 0
+
+  const hunterTitle = titlePoints(input.position)
+  // If Hunter's position explicitly looks like a sales/hr/exec role, that's a
+  // stronger signal than whatever the bio says — keep the hard-zero.
+  if (input.position && hunterTitle === 0) return 0
+
+  // Enrichment title match: only look if Hunter's title signal is weak.
+  // `titlePoints` returns the max bucket; we scan enrichment with the same
+  // regex tiers and take the max of the two values.
+  const enrichTitle = enrichment ? titlePoints(enrichment) : 0
+  const title = Math.max(hunterTitle, enrichTitle)
+
+  // Same "max" rule for the topical keyword boost.
+  const hunterKw = keywordBoostPoints(input.position)
+  const enrichKw = enrichment ? keywordBoostPoints(enrichment) : 0
+  const kw = Math.max(hunterKw, enrichKw)
 
   const dept = departmentPoints(input.department, input.position)
-  const kw = keywordBoostPoints(input.position)
   const sen = seniorityPoints(input.seniority)
   const conf = confidencePoints(input.confidence)
   const priority = priorityScorePoints(input.outletPriorityScore)

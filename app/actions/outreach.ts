@@ -1,5 +1,10 @@
 'use server'
 
+// discoverEditors now runs full enrichment per editor (Serper + ScrapingBee +
+// OpenAI + LinkedIn). Bump the serverless timeout accordingly — a domain with
+// 10 editors can take 3-5 minutes end-to-end.
+export const maxDuration = 300
+
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { revalidatePath } from 'next/cache'
@@ -7,6 +12,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { fetchDomainEmails, HunterApiError } from '@/lib/outreach/hunter'
 import { fetchDomainMetrics, AhrefsApiError } from '@/lib/outreach/ahrefs'
+import { scrapeLinkedInTitle, LinkedInScrapeError } from '@/lib/outreach/linkedin'
 import { searchEditorArticles, parseSerperDate, SerperApiError } from '@/lib/outreach/serper'
 import {
   scoreEditorProfile,
@@ -118,6 +124,142 @@ export async function seedDomains(): Promise<{ error: string | null; inserted: n
 // Will be implemented as each phase lands.
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// fullyEnrichEditor — best-effort run of every enrichment step for one editor:
+// fetch articles (Serper), scrape bio page (Serper + ScrapingBee), AI summary
+// (ScrapingBee + OpenAI), and LinkedIn headline (ScrapingBee premium proxy).
+// Called inline from discoverEditors so Discover is a "do everything" action.
+// Each step swallows its own errors to keep the pipeline going.
+// ---------------------------------------------------------------------------
+async function fullyEnrichEditor(
+  admin: ReturnType<typeof createAdminClient>,
+  editorId: string,
+  firstName: string | null,
+  lastName: string | null,
+  linkedinUrl: string | null,
+  domain: string,
+  emailForLogs: string
+): Promise<void> {
+  // 1) Fetch articles via Serper
+  if (firstName && lastName) {
+    try {
+      if (await canUseQuota(admin, 'serper')) {
+        const serperResults = await searchEditorArticles(firstName, lastName, domain)
+        await incrementUsage(admin, 'serper')
+
+        const scores: number[] = []
+        for (const r of serperResults) {
+          const { score, matchedKeywords } = analyzeArticleTitle({ title: r.title, snippet: r.snippet })
+          scores.push(score)
+          await admin.from('outreach_articles').insert({
+            editor_id: editorId,
+            url: r.link,
+            title: r.title,
+            snippet: r.snippet ?? null,
+            published_date: parseSerperDate(r.date),
+            topic_match_score: score,
+            topic_keywords: matchedKeywords,
+            serper_raw: r as unknown as Record<string, unknown>,
+          })
+        }
+        await admin
+          .from('outreach_editors')
+          .update({
+            topical_score: scoreEditorTopical(scores),
+            articles_fetched_at: new Date().toISOString(),
+          })
+          .eq('id', editorId)
+      }
+    } catch (err) {
+      console.error(`[fullyEnrichEditor:articles] ${emailForLogs}:`, err instanceof Error ? err.message : err)
+    }
+  }
+
+  // 2) Bio scrape (Serper search for author page + ScrapingBee fetch)
+  if (firstName && lastName) {
+    try {
+      const serperOk = await canUseQuota(admin, 'serper')
+      const sbOk = await canUseQuota(admin, 'scrapingbee')
+      if (serperOk && sbOk) {
+        const { findAndFetchEditorBioPage } = await import('@/lib/outreach/scrapingbee')
+        const { extractBio } = await import('@/lib/outreach/bio-extractor')
+        const apiKey = process.env.SERPER_API_KEY
+        const serperSearch = async (q: string) => {
+          const res = await fetch('https://google.serper.dev/search', {
+            method: 'POST',
+            headers: { 'X-API-KEY': apiKey!, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ q, num: 5, gl: 'ae', hl: 'en' }),
+          })
+          if (!res.ok) throw new Error(`Serper error ${res.status}`)
+          const data = await res.json()
+          return (data.organic ?? []).map((r: { link: string; title: string }) => ({ link: r.link, title: r.title }))
+        }
+        const fetchResult = await findAndFetchEditorBioPage(firstName, lastName, domain, serperSearch)
+        await incrementUsage(admin, 'serper')
+        if (fetchResult) {
+          await incrementUsage(admin, 'scrapingbee')
+          const bioText = extractBio(fetchResult.html)
+          await admin
+            .from('outreach_editors')
+            .update({
+              bio_text: bioText,
+              bio_url: fetchResult.url,
+              bio_fetched_at: new Date().toISOString(),
+            })
+            .eq('id', editorId)
+        } else {
+          await admin
+            .from('outreach_editors')
+            .update({ bio_fetched_at: new Date().toISOString() })
+            .eq('id', editorId)
+        }
+      }
+    } catch (err) {
+      console.error(`[fullyEnrichEditor:bio] ${emailForLogs}:`, err instanceof Error ? err.message : err)
+    }
+  }
+
+  // 3) AI coverage summary (fetches full article text + summarizes)
+  try {
+    // Only run if we inserted articles in step 1
+    const { count } = await admin
+      .from('outreach_articles')
+      .select('id', { count: 'exact', head: true })
+      .eq('editor_id', editorId)
+    if ((count ?? 0) > 0) {
+      await enrichEditorArticles(editorId)
+    }
+  } catch (err) {
+    console.error(`[fullyEnrichEditor:ai-summary] ${emailForLogs}:`, err instanceof Error ? err.message : err)
+  }
+
+  // Step renumbered above — LinkedIn is step 4
+  if (linkedinUrl) {
+    try {
+      if (await canUseQuota(admin, 'scrapingbee')) {
+        const title = await scrapeLinkedInTitle(linkedinUrl, firstName, lastName)
+        await incrementUsage(admin, 'scrapingbee')
+        await admin
+          .from('outreach_editors')
+          .update({
+            linkedin_title: title,
+            linkedin_scraped_at: new Date().toISOString(),
+          })
+          .eq('id', editorId)
+      }
+    } catch (err) {
+      console.error(`[fullyEnrichEditor:linkedin] ${emailForLogs}:`, err instanceof Error ? err.message : err)
+    }
+  }
+
+  // 5) Final rescore so everything we just gathered is reflected in combined_score
+  try {
+    await rescoreEditor(editorId, admin)
+  } catch (err) {
+    console.error(`[fullyEnrichEditor:rescore] ${emailForLogs}:`, err instanceof Error ? err.message : err)
+  }
+}
+
 export async function discoverEditors(
   domainId: string
 ): Promise<{ error: string | null; inserted: number; skipped: number }> {
@@ -183,28 +325,47 @@ export async function discoverEditors(
 
     const combinedScore = computeCombinedScore(profileScore, null)
 
-    const { error: insErr } = await admin.from('outreach_editors').insert({
-      domain_id: domain.id,
-      email: email.value,
-      first_name: email.first_name,
-      last_name: email.last_name,
-      position: email.position,
-      seniority: email.seniority,
-      department: email.department,
-      linkedin_url: email.linkedin,
-      twitter_handle: email.twitter,
-      confidence: email.confidence,
-      relevance_score: profileScore,
-      topical_score: null,
-      combined_score: combinedScore,
-      hunter_raw: email,
-    })
+    const { data: insertedRow, error: insErr } = await admin
+      .from('outreach_editors')
+      .insert({
+        domain_id: domain.id,
+        email: email.value,
+        first_name: email.first_name,
+        last_name: email.last_name,
+        position: email.position,
+        seniority: email.seniority,
+        department: email.department,
+        linkedin_url: email.linkedin,
+        twitter_handle: email.twitter,
+        confidence: email.confidence,
+        relevance_score: profileScore,
+        topical_score: null,
+        combined_score: combinedScore,
+        hunter_raw: email,
+      })
+      .select('id')
+      .single()
 
     if (insErr) {
       if (insErr.code === '23505') skipped++  // duplicate email for this domain
       else console.error(`[discoverEditors] Insert failed for ${email.value}:`, insErr.message)
     } else {
       inserted++
+
+      // Full auto-enrichment pipeline for this editor. Each step is
+      // best-effort: a single failure or quota-exhaustion does not halt
+      // the others. Final rescore picks up whatever enrichment succeeded.
+      if (insertedRow?.id) {
+        await fullyEnrichEditor(
+          admin,
+          insertedRow.id,
+          email.first_name,
+          email.last_name,
+          email.linkedin,
+          domain.domain,
+          email.value
+        )
+      }
     }
   }
 
@@ -295,18 +456,19 @@ export async function fetchEditorArticles(
     }
   }
 
-  // Recompute topical + combined score
+  // Persist topical + mark fetched, then run full rescore so profile picks
+  // up any enrichment text (bio, linkedin, ai summary) at the same time.
   const topicalScore = scoreEditorTopical(articleScores)
-  const combined = computeCombinedScore(editor.relevance_score ?? 0, topicalScore)
 
   await admin
     .from('outreach_editors')
     .update({
       topical_score: topicalScore,
-      combined_score: combined,
       articles_fetched_at: new Date().toISOString(),
     })
     .eq('id', editorId)
+
+  await rescoreEditor(editorId, admin)
 
   revalidatePath('/admin')
   return { error: null, inserted, topicalScore }
@@ -589,47 +751,18 @@ export async function scrapeEditorBio(
   const bioText = extractBio(fetchResult.html)
   const now = new Date().toISOString()
 
-  // Re-score editor: bio contributes to topical score as a virtual "article".
-  // When bio has strong keyword match (e.g. "Motors Editor covering supercars"),
-  // this meaningfully boosts combined_score.
-  let newTopicalScore: number | null = null
-  let newCombinedScore: number | null = null
-  if (bioText) {
-    const bioAnalysis = analyzeArticleTitle({ title: bioText, snippet: null })
-
-    // Fetch editor's existing article scores + profile score
-    const { data: existingArticles } = await admin
-      .from('outreach_articles')
-      .select('topic_match_score')
-      .eq('editor_id', editorId)
-
-    const { data: editorFull } = await admin
-      .from('outreach_editors')
-      .select('relevance_score')
-      .eq('id', editorId)
-      .single()
-
-    const articleScores = (existingArticles ?? []).map((a) => a.topic_match_score ?? 0)
-    // Add bio as a virtual article in the pool
-    articleScores.push(bioAnalysis.score)
-    newTopicalScore = scoreEditorTopical(articleScores)
-    newCombinedScore = computeCombinedScore(editorFull?.relevance_score ?? 0, newTopicalScore)
-  }
-
-  const updatePayload: Record<string, unknown> = {
-    bio_text: bioText,
-    bio_url: fetchResult.url,
-    bio_fetched_at: now,
-  }
-  if (newTopicalScore !== null) {
-    updatePayload.topical_score = newTopicalScore
-    updatePayload.combined_score = newCombinedScore
-  }
-
   await admin
     .from('outreach_editors')
-    .update(updatePayload)
+    .update({
+      bio_text: bioText,
+      bio_url: fetchResult.url,
+      bio_fetched_at: now,
+    })
     .eq('id', editorId)
+
+  // Rescore with bio folded into profile enrichment (title keyword matches
+  // against the bio text are now reflected in profile_score).
+  await rescoreEditor(editorId, admin)
 
   revalidatePath('/admin')
   return { error: null, bioText, bioUrl: fetchResult.url }
@@ -714,6 +847,8 @@ export async function enrichEditorArticles(
       .from('outreach_editors')
       .update({ ai_summary: summary })
       .eq('id', editorId)
+    // Fold the AI summary into the profile score
+    await rescoreEditor(editorId, admin)
   }
 
   revalidatePath('/admin')
@@ -948,6 +1083,129 @@ export async function refreshAllDomainMetrics(): Promise<{
 
   revalidatePath('/admin')
   return { error: null, updated, failed }
+}
+
+// ---------------------------------------------------------------------------
+// rescoreEditor — recompute profile + combined score using all available
+// enrichment (bio_text, ai_summary, linkedin_title) as well as Hunter data.
+// Use after any enrichment action so a "Senior Motors Editor" whose Hunter
+// title is null still picks up full credit from their bio or LinkedIn.
+// ---------------------------------------------------------------------------
+export async function rescoreEditor(
+  editorId: string,
+  adminClient?: ReturnType<typeof createAdminClient>
+): Promise<{ error: string | null; profileScore?: number; combinedScore?: number }> {
+  const admin = adminClient ?? createAdminClient()
+
+  const { data: editor, error: loadErr } = await admin
+    .from('outreach_editors')
+    .select(`
+      position, department, seniority, confidence,
+      bio_text, ai_summary, linkedin_title,
+      topical_score,
+      outreach_domains ( priority_score )
+    `)
+    .eq('id', editorId)
+    .single()
+
+  if (loadErr || !editor) return { error: loadErr?.message ?? 'Editor not found' }
+
+  const domain = Array.isArray(editor.outreach_domains)
+    ? editor.outreach_domains[0]
+    : editor.outreach_domains
+
+  const enrichment = [editor.bio_text, editor.ai_summary, editor.linkedin_title]
+    .filter((s): s is string => typeof s === 'string' && s.length > 0)
+    .join('\n')
+
+  const profileScore = scoreEditorProfile({
+    position: editor.position as string | null,
+    seniority: editor.seniority as 'executive' | 'senior' | 'junior' | null,
+    department: editor.department as string | null,
+    confidence: editor.confidence as number | null,
+    outletPriorityScore: typeof domain?.priority_score === 'number' ? domain.priority_score : 50,
+    enrichmentText: enrichment || null,
+  })
+
+  const combined = computeCombinedScore(profileScore, editor.topical_score as number | null)
+
+  const { error: updateErr } = await admin
+    .from('outreach_editors')
+    .update({ relevance_score: profileScore, combined_score: combined })
+    .eq('id', editorId)
+
+  if (updateErr) return { error: updateErr.message }
+  return { error: null, profileScore, combinedScore: combined }
+}
+
+// ---------------------------------------------------------------------------
+// fetchLinkedInProfile — scrape the editor's public LinkedIn headline via
+// ScrapingBee and rescore. Costs ~10-25 ScrapingBee credits (premium proxy).
+// ---------------------------------------------------------------------------
+export async function fetchLinkedInProfile(
+  editorId: string
+): Promise<{ error: string | null; linkedinTitle?: string | null }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error }
+
+  const admin = createAdminClient()
+
+  const { data: editor, error: loadErr } = await admin
+    .from('outreach_editors')
+    .select('linkedin_url, first_name, last_name')
+    .eq('id', editorId)
+    .single()
+
+  if (loadErr || !editor) return { error: 'Editor not found' }
+  if (!editor.linkedin_url) return { error: 'No LinkedIn URL on file for this editor' }
+
+  const sbOk = await canUseQuota(admin, 'scrapingbee')
+  if (!sbOk) {
+    const { used, limit } = await getUsage(admin, 'scrapingbee')
+    return { error: `ScrapingBee monthly quota reached (${used}/${limit})` }
+  }
+
+  let title: string | null = null
+  try {
+    title = await scrapeLinkedInTitle(editor.linkedin_url, editor.first_name, editor.last_name)
+    await incrementUsage(admin, 'scrapingbee')
+  } catch (err) {
+    const msg = err instanceof LinkedInScrapeError
+      ? err.message
+      : err instanceof Error ? err.message : 'LinkedIn scrape failed'
+    return { error: msg }
+  }
+
+  await admin
+    .from('outreach_editors')
+    .update({
+      linkedin_title: title,
+      linkedin_scraped_at: new Date().toISOString(),
+    })
+    .eq('id', editorId)
+
+  await rescoreEditor(editorId, admin)
+  revalidatePath('/admin')
+  return { error: null, linkedinTitle: title }
+}
+
+// ---------------------------------------------------------------------------
+// rescoreAllEditors — batch re-score every editor. Useful after scoring
+// rules change or mass enrichment.
+// ---------------------------------------------------------------------------
+export async function rescoreAllEditors(): Promise<{ error: string | null; updated: number }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error, updated: 0 }
+  const admin = createAdminClient()
+  const { data: rows } = await admin.from('outreach_editors').select('id')
+  if (!rows) return { error: null, updated: 0 }
+  let updated = 0
+  for (const r of rows) {
+    const res = await rescoreEditor(r.id, admin)
+    if (!res.error) updated++
+  }
+  revalidatePath('/admin')
+  return { error: null, updated }
 }
 
 // ---------------------------------------------------------------------------

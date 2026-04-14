@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { fetchEditorArticles, scrapeEditorBio, enrichEditorArticles } from '@/app/actions/outreach'
+import { fetchEditorArticles, scrapeEditorBio, enrichEditorArticles, fetchLinkedInProfile } from '@/app/actions/outreach'
 import type { EditorRow } from './EditorsList'
 import { PitchComposer } from './PitchComposer'
 
@@ -42,6 +42,26 @@ export function EditorDetail({ editor, onClose }: EditorDetailProps) {
   const [isEnriching, startEnrichTransition] = useTransition()
   const [enrichMessage, setEnrichMessage] = useState<{ ok: boolean; text: string } | null>(null)
   const [aiSummary, setAiSummary] = useState<string | null>(editor.ai_summary ?? null)
+  const [linkedinTitle, setLinkedinTitle] = useState<string | null>(editor.linkedin_title ?? null)
+  const [isScrapingLinkedin, startLinkedinTransition] = useTransition()
+  const [linkedinMessage, setLinkedinMessage] = useState<{ ok: boolean; text: string } | null>(null)
+
+  function handleScrapeLinkedIn() {
+    setLinkedinMessage(null)
+    startLinkedinTransition(async () => {
+      const res = await fetchLinkedInProfile(editor.id)
+      if (res.error) {
+        setLinkedinMessage({ ok: false, text: res.error })
+        return
+      }
+      setLinkedinTitle(res.linkedinTitle ?? null)
+      setLinkedinMessage({
+        ok: true,
+        text: res.linkedinTitle ? `LinkedIn title: ${res.linkedinTitle}` : 'LinkedIn fetched but no title extracted',
+      })
+      router.refresh()
+    })
+  }
 
   function handleDeepEnrich() {
     setEnrichMessage(null)
@@ -183,6 +203,51 @@ export function EditorDetail({ editor, onClose }: EditorDetailProps) {
               Search Google manually
             </a>
           </div>
+
+          {/* LinkedIn section */}
+          {editor.linkedin_url && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <h4 className="font-display text-sm font-medium text-white uppercase tracking-wider">
+                  LinkedIn Title
+                </h4>
+                <button
+                  type="button"
+                  onClick={handleScrapeLinkedIn}
+                  disabled={isScrapingLinkedin}
+                  className="px-3 py-1.5 text-xs border border-blue-400/30 text-blue-400 rounded hover:bg-blue-400/10 transition-colors disabled:opacity-50"
+                  title="Scrapes the public LinkedIn headline via ScrapingBee (~25 credits)"
+                >
+                  {isScrapingLinkedin
+                    ? 'Scraping…'
+                    : editor.linkedin_scraped_at
+                      ? 'Re-scrape LinkedIn'
+                      : 'Fetch LinkedIn title'}
+                </button>
+              </div>
+              {linkedinMessage && (
+                <p className={`text-[11px] ${linkedinMessage.ok ? 'text-green-400' : 'text-red-400'}`}>
+                  {linkedinMessage.text}
+                </p>
+              )}
+              {linkedinTitle ? (
+                <div className="text-sm text-white bg-blue-400/[0.05] border border-blue-400/20 rounded p-3">
+                  {linkedinTitle}
+                  {editor.position && editor.position !== linkedinTitle && (
+                    <p className="text-[11px] text-white/50 mt-1">
+                      Hunter position: <span className="text-white/70">{editor.position}</span>
+                    </p>
+                  )}
+                </div>
+              ) : editor.linkedin_scraped_at ? (
+                <p className="text-xs text-white/40 italic">LinkedIn fetched but no headline extracted (profile may be gated).</p>
+              ) : (
+                <p className="text-xs text-white/50 italic">
+                  Scrape LinkedIn to cross-check the job title. Useful when Hunter&apos;s position is null or stale.
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Bio section */}
           <div className="space-y-2">
