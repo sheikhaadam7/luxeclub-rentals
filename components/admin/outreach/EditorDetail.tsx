@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { fetchEditorArticles, scrapeEditorBio, enrichEditorArticles, fetchLinkedInProfile } from '@/app/actions/outreach'
+import { fetchEditorArticles, scrapeEditorBio, enrichEditorArticles, fetchLinkedInProfile, fetchEditorFullArchive } from '@/app/actions/outreach'
 import type { EditorRow } from './EditorsList'
 import { PitchComposer } from './PitchComposer'
 
@@ -14,6 +14,61 @@ interface Article {
   published_date: string | null
   topic_match_score: number
   topic_keywords: string[] | null
+}
+
+interface PitchPrefsShape {
+  prefers_dm?: boolean
+  email_preferred?: boolean
+  no_pr?: boolean
+  preferred_topics?: string[]
+  blocked_topics?: string[]
+  open_to_embargoes?: boolean | null
+  notes?: string | null
+}
+
+function PitchPreferencesBlock({ preferences }: { preferences: PitchPrefsShape }) {
+  const hasSignal =
+    preferences.prefers_dm ||
+    preferences.email_preferred ||
+    preferences.no_pr ||
+    (preferences.preferred_topics?.length ?? 0) > 0 ||
+    (preferences.blocked_topics?.length ?? 0) > 0 ||
+    preferences.open_to_embargoes !== null && preferences.open_to_embargoes !== undefined ||
+    !!preferences.notes
+
+  if (!hasSignal) return null
+
+  return (
+    <div className="space-y-2">
+      <h4 className="font-display text-sm font-medium text-white uppercase tracking-wider">
+        Pitch Preferences
+      </h4>
+      <div className="text-xs text-white/70 bg-white/[0.02] border border-white/[0.05] rounded p-3 space-y-1.5">
+        {preferences.no_pr && (
+          <p className="text-red-400">⚠ Editor does not accept PR pitches.</p>
+        )}
+        {preferences.prefers_dm && <p>Prefers DM outreach.</p>}
+        {preferences.email_preferred && <p>Email pitches welcome.</p>}
+        {preferences.open_to_embargoes === true && <p>Accepts embargoed news.</p>}
+        {preferences.open_to_embargoes === false && <p>No embargoes.</p>}
+        {(preferences.preferred_topics?.length ?? 0) > 0 && (
+          <p>
+            <span className="text-white/50">Welcomes:</span>{' '}
+            {preferences.preferred_topics!.join(', ')}
+          </p>
+        )}
+        {(preferences.blocked_topics?.length ?? 0) > 0 && (
+          <p>
+            <span className="text-white/50">Avoids:</span>{' '}
+            {preferences.blocked_topics!.join(', ')}
+          </p>
+        )}
+        {preferences.notes && (
+          <p className="text-white/60 italic">{preferences.notes}</p>
+        )}
+      </div>
+    </div>
+  )
 }
 
 function keywordChipColor(score: number): string {
@@ -45,6 +100,22 @@ export function EditorDetail({ editor, onClose }: EditorDetailProps) {
   const [linkedinTitle, setLinkedinTitle] = useState<string | null>(editor.linkedin_title ?? null)
   const [isScrapingLinkedin, startLinkedinTransition] = useTransition()
   const [linkedinMessage, setLinkedinMessage] = useState<{ ok: boolean; text: string } | null>(null)
+  const [isFetchingArchive, startArchiveTransition] = useTransition()
+  const [archiveMessage, setArchiveMessage] = useState<{ ok: boolean; text: string } | null>(null)
+
+  function handleFullArchive() {
+    if (!confirm('Crawl the full byline archive? Uses ~30 ScrapingBee credits.')) return
+    setArchiveMessage(null)
+    startArchiveTransition(async () => {
+      const res = await fetchEditorFullArchive(editor.id)
+      if (res.error) {
+        setArchiveMessage({ ok: false, text: res.error })
+        return
+      }
+      setArchiveMessage({ ok: true, text: `Added ${res.inserted} new article(s); scores recomputed.` })
+      router.refresh()
+    })
+  }
 
   function handleScrapeLinkedIn() {
     setLinkedinMessage(null)
@@ -249,6 +320,32 @@ export function EditorDetail({ editor, onClose }: EditorDetailProps) {
             </div>
           )}
 
+          {/* Beats + coverage summary (Claude classification) */}
+          {(editor.beats && editor.beats.length > 0) || editor.beat_summary ? (
+            <div className="space-y-2">
+              <h4 className="font-display text-sm font-medium text-white uppercase tracking-wider">
+                Beats
+              </h4>
+              {editor.beats && editor.beats.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {editor.beats.map((b) => (
+                    <span key={b} className="text-[11px] px-2 py-0.5 rounded bg-brand-cyan/[0.08] text-brand-cyan/90 border border-brand-cyan/20">
+                      {b}
+                    </span>
+                  ))}
+                </div>
+              )}
+              {editor.beat_summary && (
+                <p className="text-xs text-white/70 leading-relaxed">{editor.beat_summary}</p>
+              )}
+            </div>
+          ) : null}
+
+          {/* Pitch preferences (scraped from bio / socials) */}
+          {editor.pitch_preferences && (
+            <PitchPreferencesBlock preferences={editor.pitch_preferences as PitchPrefsShape} />
+          )}
+
           {/* External bio (Muckrack / personal site / etc) */}
           {editor.external_bio_text && (
             <div className="space-y-2">
@@ -331,19 +428,35 @@ export function EditorDetail({ editor, onClose }: EditorDetailProps) {
               <h4 className="font-display text-sm font-medium text-white uppercase tracking-wider">
                 Published Articles
               </h4>
-              <button
-                type="button"
-                onClick={handleFetch}
-                disabled={isPending}
-                className="px-3 py-1.5 text-xs bg-brand-cyan text-white rounded hover:bg-brand-cyan-hover transition-colors disabled:opacity-50"
-              >
-                {isPending
-                  ? 'Searching Google…'
-                  : editor.articles_fetched_at
-                    ? 'Refresh articles'
-                    : 'Fetch articles from Google'}
-              </button>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={handleFullArchive}
+                  disabled={isFetchingArchive}
+                  className="px-3 py-1.5 text-xs border border-white/15 text-white/70 rounded hover:bg-white/5 transition-colors disabled:opacity-50"
+                  title="Crawl the outlet's author page for the full byline archive (~30 SB credits)"
+                >
+                  {isFetchingArchive ? 'Crawling…' : 'Fetch full archive'}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleFetch}
+                  disabled={isPending}
+                  className="px-3 py-1.5 text-xs bg-brand-cyan text-white rounded hover:bg-brand-cyan-hover transition-colors disabled:opacity-50"
+                >
+                  {isPending
+                    ? 'Searching Google…'
+                    : editor.articles_fetched_at
+                      ? 'Refresh articles'
+                      : 'Fetch articles from Google'}
+                </button>
+              </div>
             </div>
+            {archiveMessage && (
+              <p className={`text-xs ${archiveMessage.ok ? 'text-green-400' : 'text-red-400'}`}>
+                {archiveMessage.text}
+              </p>
+            )}
             {message && (
               <p className={`text-xs ${message.ok ? 'text-green-400' : 'text-red-400'}`}>
                 {message.text}

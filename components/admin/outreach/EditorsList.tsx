@@ -39,6 +39,13 @@ export interface EditorRow {
   external_bio_source: string | null
   external_fetched_at: string | null
   twitter_bio: string | null
+  beats: string[] | null
+  beat_summary: string | null
+  beats_classified_at: string | null
+  pitch_preferences: Record<string, unknown> | null
+  preferences_scraped_at: string | null
+  last_seen_at: string | null
+  went_quiet_at: string | null
   // Joined fields
   outlet_name: string
   outlet_domain: string
@@ -72,6 +79,7 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
   const [tierFilter, setTierFilter] = useState<string>('all')
   const [contactedFilter, setContactedFilter] = useState<'all' | 'contacted' | 'not-contacted'>('all')
   const [search, setSearch] = useState('')
+  const [beatFilter, setBeatFilter] = useState<string>('all')
   const [revealed, setRevealed] = useState<Set<string>>(new Set())
   const [selectedEditor, setSelectedEditor] = useState<EditorRow | null>(null)
   const [sortKey, setSortKey] = useState<SortKey>('combined')
@@ -206,6 +214,7 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
       if ((e.topical_score ?? 0) < minCoverage) return false
       if (minDr > 0 && (e.outlet_dr ?? 0) < minDr) return false
       if (tierFilter !== 'all' && e.outlet_tier !== tierFilter) return false
+      if (beatFilter !== 'all' && !(e.beats ?? []).includes(beatFilter)) return false
       if (contactedFilter === 'contacted' && !e.contacted_at) return false
       if (contactedFilter === 'not-contacted' && e.contacted_at) return false
       if (q) {
@@ -214,6 +223,8 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
           `${e.first_name ?? ''} ${e.last_name ?? ''}`,
           e.email, e.position, e.outlet_name, e.outlet_domain,
           e.department,
+          e.beat_summary,
+          ...(e.beats ?? []),
         ]
           .filter(Boolean)
           .join(' ')
@@ -239,7 +250,13 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
       if (ka > kb) return 1 * dir
       return 0
     })
-  }, [editors, minOverall, minMatch, minCoverage, minDr, tierFilter, contactedFilter, search, sortKey, sortDir])
+  }, [editors, minOverall, minMatch, minCoverage, minDr, tierFilter, contactedFilter, beatFilter, search, sortKey, sortDir])
+
+  const allBeats = useMemo(() => {
+    const set = new Set<string>()
+    for (const e of editors) for (const b of e.beats ?? []) set.add(b)
+    return Array.from(set).sort()
+  }, [editors])
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) {
@@ -347,6 +364,17 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
             </select>
           </div>
           <div className="flex items-center gap-2">
+            <label className="text-xs text-brand-muted">Beat:</label>
+            <select
+              value={beatFilter}
+              onChange={(e) => setBeatFilter(e.target.value)}
+              className="text-xs bg-brand-surface border border-white/10 text-white px-2 py-1 rounded"
+            >
+              <option value="all">All</option>
+              {allBeats.map((b) => <option key={b} value={b}>{b}</option>)}
+            </select>
+          </div>
+          <div className="flex items-center gap-2">
             <label className="text-xs text-brand-muted">Status:</label>
             <select
               value={contactedFilter}
@@ -358,12 +386,12 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
               <option value="contacted">Contacted</option>
             </select>
           </div>
-          {(search || minOverall > 0 || minMatch > 0 || minCoverage > 0 || minDr > 0 || tierFilter !== 'all' || contactedFilter !== 'all') && (
+          {(search || minOverall > 0 || minMatch > 0 || minCoverage > 0 || minDr > 0 || tierFilter !== 'all' || contactedFilter !== 'all' || beatFilter !== 'all') && (
             <button
               type="button"
               onClick={() => {
                 setSearch(''); setMinOverall(0); setMinMatch(0); setMinCoverage(0); setMinDr(0)
-                setTierFilter('all'); setContactedFilter('all')
+                setTierFilter('all'); setContactedFilter('all'); setBeatFilter('all')
               }}
               className="text-[11px] text-white/50 hover:text-white underline ml-auto"
             >
@@ -514,8 +542,44 @@ export function EditorsList({ editors }: { editors: EditorRow[] }) {
                         className="accent-brand-cyan cursor-pointer"
                       />
                     </td>
-                    <td className="px-4 py-3 text-white font-medium">{name}</td>
-                    <td className="px-4 py-3 text-white/70 text-xs">{e.position ?? '—'}</td>
+                    <td className="px-4 py-3 text-white font-medium">
+                      <div className="flex items-center gap-1.5">
+                        <span>{name}</span>
+                        {(e.pitch_preferences as { no_pr?: boolean } | null)?.no_pr && (
+                          <span
+                            title="Editor has publicly stated they don't accept PR pitches"
+                            className="text-[10px] px-1.5 py-0.5 rounded bg-red-500/15 text-red-400 border border-red-500/30"
+                          >
+                            no PR
+                          </span>
+                        )}
+                        {e.went_quiet_at && (
+                          <span
+                            title={`No new byline since ${new Date(e.went_quiet_at).toLocaleDateString()}`}
+                            className="text-[10px] px-1.5 py-0.5 rounded bg-amber-400/10 text-amber-400 border border-amber-400/20"
+                          >
+                            quiet
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-xs">
+                      <div className="text-white/70">{e.position ?? '—'}</div>
+                      {e.beats && e.beats.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {e.beats.slice(0, 3).map((b) => (
+                            <span key={b} className="text-[10px] px-1.5 py-0.5 rounded bg-brand-cyan/[0.08] text-brand-cyan/90 border border-brand-cyan/20">
+                              {b}
+                            </span>
+                          ))}
+                          {e.beats.length > 3 && (
+                            <span title={e.beats.slice(3).join(', ')} className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-white/50 border border-white/10">
+                              +{e.beats.length - 3}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </td>
                     <td className="px-4 py-3 text-brand-muted text-xs">{e.outlet_name}</td>
                     <td className="px-4 py-3 text-right">
                       <span className={`inline-block px-2 py-0.5 rounded border font-mono text-[11px] font-semibold ${scorePillClass(e.relevance_score)}`}>

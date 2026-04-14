@@ -9,6 +9,15 @@ import { fetchDomainEmails, HunterApiError } from '@/lib/outreach/hunter'
 import { fetchDomainMetrics, AhrefsApiError } from '@/lib/outreach/ahrefs'
 import { scrapeLinkedInTitle, LinkedInScrapeError } from '@/lib/outreach/linkedin'
 import { findExternalBio, scrapeTwitterBio } from '@/lib/outreach/external-bio'
+import { classifyEditor, type Beat } from '@/lib/outreach/beats'
+import { findEmail } from '@/lib/outreach/email-finder'
+import {
+  fetchOutletIndex,
+  extractBylinesFromHtml,
+  isQuiet,
+  type ByLineCandidate,
+} from '@/lib/outreach/movement'
+import { fetchByline } from '@/lib/outreach/byline-archive'
 import { searchEditorArticles, parseSerperDate, SerperApiError } from '@/lib/outreach/serper'
 import {
   scoreEditorProfile,
@@ -309,7 +318,15 @@ async function fullyEnrichEditor(
     }
   }
 
-  // 5) Final rescore so everything we just gathered is reflected in combined_score
+  // 5) Classify beats + extract pitch preferences via Claude (one call each).
+  //    Beats are descriptive/filterable; do NOT modify scoring columns.
+  try {
+    await enrichEditorProfile(editorId, admin)
+  } catch (err) {
+    console.error(`[fullyEnrichEditor:beats] ${emailForLogs}:`, err instanceof Error ? err.message : err)
+  }
+
+  // 6) Final rescore so everything we just gathered is reflected in combined_score
   try {
     await rescoreEditor(editorId, admin)
   } catch (err) {
@@ -1006,6 +1023,117 @@ export async function disconnectGmail(): Promise<{ error: string | null }> {
   return { error: null }
 }
 
+/**
+ * Shared reply-matching routine used by both the user-triggered action
+ * (checkForReplies) and the hourly cron (pollRepliesForAllAdmins).
+ * Requires a valid Gmail token and walks outreach_pitches marking replies.
+ */
+async function runReplyMatch(
+  admin: ReturnType<typeof createAdminClient>,
+  tokenRow: { access_token: string | null; refresh_token: string; expires_at: string | null }
+): Promise<{ error: string | null; checked: number; matched: number }> {
+  const { createOAuthClient, listRecentMessages, extractEmail } = await import('@/lib/outreach/gmail')
+  const oauth = createOAuthClient()
+  oauth.setCredentials({
+    access_token: tokenRow.access_token ?? undefined,
+    refresh_token: tokenRow.refresh_token,
+    expiry_date: tokenRow.expires_at ? new Date(tokenRow.expires_at).getTime() : undefined,
+  })
+
+  const { data: pitches } = await admin
+    .from('outreach_pitches')
+    .select('id, sent_at, subject, outreach_editors (email)')
+    .eq('status', 'sent')
+
+  if (!pitches || pitches.length === 0) {
+    return { error: null, checked: 0, matched: 0 }
+  }
+
+  const oldestSent = pitches.reduce((earliest: Date, p) => {
+    const sentAt = p.sent_at ? new Date(p.sent_at as string) : new Date()
+    return sentAt < earliest ? sentAt : earliest
+  }, new Date())
+
+  let messages
+  try {
+    messages = await listRecentMessages(oauth, oldestSent)
+  } catch (err) {
+    return {
+      error: err instanceof Error ? err.message : 'Gmail API error',
+      checked: 0,
+      matched: 0,
+    }
+  }
+
+  let matched = 0
+  for (const p of pitches) {
+    const editor = Array.isArray(p.outreach_editors) ? p.outreach_editors[0] : p.outreach_editors
+    const editorEmail = (editor as { email: string } | null)?.email?.toLowerCase()
+    if (!editorEmail || !p.sent_at) continue
+
+    const sentAt = new Date(p.sent_at as string)
+    const reply = messages.find((m) => {
+      if (m.receivedAt <= sentAt) return false
+      return extractEmail(m.from) === editorEmail
+    })
+
+    if (reply) {
+      await admin
+        .from('outreach_pitches')
+        .update({
+          status: 'replied',
+          replied_at: reply.receivedAt.toISOString(),
+          notes: reply.snippet.slice(0, 500),
+        })
+        .eq('id', p.id as string)
+      matched++
+    }
+  }
+
+  return { error: null, checked: pitches.length, matched }
+}
+
+/**
+ * Cron-safe: checks replies using any admin's stored Gmail token.
+ * Iterates all tokens so reply-detection still works if multiple admins
+ * have connected Gmail.
+ */
+export async function pollRepliesForAllAdmins(): Promise<{
+  error: string | null
+  checked: number
+  matched: number
+}> {
+  const admin = createAdminClient()
+  const { data: tokens } = await admin
+    .from('outreach_oauth_tokens')
+    .select('access_token, refresh_token, expires_at, admin_user_id')
+    .eq('provider', 'google')
+
+  if (!tokens || tokens.length === 0) {
+    return { error: null, checked: 0, matched: 0 }
+  }
+
+  let totalChecked = 0
+  let totalMatched = 0
+  for (const t of tokens) {
+    if (!t.refresh_token) continue
+    const res = await runReplyMatch(admin, {
+      access_token: t.access_token as string | null,
+      refresh_token: t.refresh_token as string,
+      expires_at: t.expires_at as string | null,
+    })
+    if (res.error) {
+      console.error(`[pollRepliesForAllAdmins] token ${t.admin_user_id}:`, res.error)
+      continue
+    }
+    totalChecked += res.checked
+    totalMatched += res.matched
+  }
+
+  revalidatePath('/admin')
+  return { error: null, checked: totalChecked, matched: totalMatched }
+}
+
 export async function checkForReplies(): Promise<{
   error: string | null
   checked: number
@@ -1028,68 +1156,13 @@ export async function checkForReplies(): Promise<{
     return { error: 'Gmail not connected. Click Connect Gmail first.', checked: 0, matched: 0 }
   }
 
-  const { createOAuthClient, listRecentMessages, extractEmail } = await import('@/lib/outreach/gmail')
-  const oauth = createOAuthClient()
-  oauth.setCredentials({
-    access_token: tokenRow.access_token ?? undefined,
-    refresh_token: tokenRow.refresh_token,
-    expiry_date: tokenRow.expires_at ? new Date(tokenRow.expires_at).getTime() : undefined,
+  const res = await runReplyMatch(admin, {
+    access_token: tokenRow.access_token as string | null,
+    refresh_token: tokenRow.refresh_token as string,
+    expires_at: tokenRow.expires_at as string | null,
   })
-
-  // Load all sent pitches waiting for a reply
-  const { data: pitches } = await admin
-    .from('outreach_pitches')
-    .select('id, sent_at, subject, outreach_editors (email)')
-    .eq('status', 'sent')
-
-  if (!pitches || pitches.length === 0) {
-    return { error: null, checked: 0, matched: 0 }
-  }
-
-  const oldestSent = pitches.reduce((earliest: Date, p) => {
-    const sentAt = p.sent_at ? new Date(p.sent_at) : new Date()
-    return sentAt < earliest ? sentAt : earliest
-  }, new Date())
-
-  let messages
-  try {
-    messages = await listRecentMessages(oauth, oldestSent)
-  } catch (err) {
-    return {
-      error: err instanceof Error ? err.message : 'Gmail API error',
-      checked: 0,
-      matched: 0,
-    }
-  }
-
-  let matched = 0
-
-  for (const p of pitches) {
-    const editor = Array.isArray(p.outreach_editors) ? p.outreach_editors[0] : p.outreach_editors
-    const editorEmail = editor?.email?.toLowerCase()
-    if (!editorEmail || !p.sent_at) continue
-
-    const sentAt = new Date(p.sent_at)
-    const reply = messages.find((m) => {
-      if (m.receivedAt <= sentAt) return false
-      return extractEmail(m.from) === editorEmail
-    })
-
-    if (reply) {
-      await admin
-        .from('outreach_pitches')
-        .update({
-          status: 'replied',
-          replied_at: reply.receivedAt.toISOString(),
-          notes: reply.snippet.slice(0, 500),
-        })
-        .eq('id', p.id)
-      matched++
-    }
-  }
-
   revalidatePath('/admin')
-  return { error: null, checked: pitches.length, matched }
+  return res
 }
 
 // ---------------------------------------------------------------------------
@@ -1349,6 +1422,159 @@ export async function recalculateAllArticleScores(): Promise<{
 // rescoreAllEditors — batch re-score every editor. Useful after scoring
 // rules change or mass enrichment.
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// enrichEditorProfile — classify beats + pitch preferences via Claude.
+// Runs after all text-enrichment steps (bio/linkedin/twitter/ai-summary) so
+// it has the most context. Persists beats, beat_summary, pitch_preferences.
+// ---------------------------------------------------------------------------
+export async function enrichEditorProfile(
+  editorId: string,
+  adminClient?: ReturnType<typeof createAdminClient>
+): Promise<{ error: string | null; beats?: Beat[] }> {
+  const admin = adminClient ?? createAdminClient()
+
+  const { data: editor, error: loadErr } = await admin
+    .from('outreach_editors')
+    .select(`
+      id, first_name, last_name, position,
+      bio_text, external_bio_text, linkedin_title, twitter_bio, ai_summary,
+      outreach_domains ( outlet_name )
+    `)
+    .eq('id', editorId)
+    .single()
+
+  if (loadErr || !editor) return { error: loadErr?.message ?? 'Editor not found' }
+
+  const domain = Array.isArray(editor.outreach_domains)
+    ? editor.outreach_domains[0]
+    : editor.outreach_domains
+
+  const { data: articles } = await admin
+    .from('outreach_articles')
+    .select('title')
+    .eq('editor_id', editorId)
+    .order('topic_match_score', { ascending: false })
+    .limit(12)
+
+  const articleTitles = (articles ?? [])
+    .map((a) => a.title as string | null)
+    .filter((t): t is string => typeof t === 'string' && t.length > 0)
+
+  const name = [editor.first_name, editor.last_name].filter(Boolean).join(' ') || 'Unknown editor'
+
+  const { result, error } = await classifyEditor({
+    editorName: name,
+    outletName: domain?.outlet_name ?? 'unknown outlet',
+    position: editor.position as string | null,
+    bioText: editor.bio_text as string | null,
+    externalBioText: editor.external_bio_text as string | null,
+    linkedinTitle: editor.linkedin_title as string | null,
+    twitterBio: editor.twitter_bio as string | null,
+    aiSummary: editor.ai_summary as string | null,
+    articleTitles,
+  })
+
+  if (error || !result) return { error: error ?? 'Classifier returned no result' }
+
+  const now = new Date().toISOString()
+  const { error: updateErr } = await admin
+    .from('outreach_editors')
+    .update({
+      beats: result.beats,
+      beat_summary: result.beatSummary || null,
+      beats_classified_at: now,
+      pitch_preferences: result.pitchPreferences,
+      preferences_scraped_at: now,
+    })
+    .eq('id', editorId)
+
+  if (updateErr) return { error: updateErr.message }
+  return { error: null, beats: result.beats }
+}
+
+// ---------------------------------------------------------------------------
+// getPitchFollowUps — pitches that need a nudge or are going dormant.
+// Purely derived from outreach_pitches; no new table.
+// ---------------------------------------------------------------------------
+export interface PitchFollowUp {
+  pitchId: string
+  editorId: string
+  editorName: string
+  outletName: string
+  subject: string
+  sentAt: string
+  daysSinceSent: number
+  bucket: 'due_soon' | 'dormant'
+}
+
+export async function getPitchFollowUps(): Promise<{
+  error: string | null
+  items: PitchFollowUp[]
+}> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error, items: [] }
+  const admin = createAdminClient()
+
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+  const { data, error } = await admin
+    .from('outreach_pitches')
+    .select(`
+      id, subject, sent_at, editor_id,
+      outreach_editors (
+        first_name, last_name,
+        outreach_domains ( outlet_name )
+      )
+    `)
+    .eq('status', 'sent')
+    .is('replied_at', null)
+    .lt('sent_at', sevenDaysAgo)
+    .order('sent_at', { ascending: true })
+
+  if (error) return { error: error.message, items: [] }
+
+  const items: PitchFollowUp[] = (data ?? []).map((row) => {
+    const editor = Array.isArray(row.outreach_editors)
+      ? row.outreach_editors[0]
+      : row.outreach_editors
+    const domain = editor
+      ? (Array.isArray(editor.outreach_domains) ? editor.outreach_domains[0] : editor.outreach_domains)
+      : null
+    const name = editor
+      ? [editor.first_name, editor.last_name].filter(Boolean).join(' ') || '—'
+      : '—'
+    const sent = new Date(row.sent_at as string)
+    const days = Math.floor((Date.now() - sent.getTime()) / (24 * 60 * 60 * 1000))
+    return {
+      pitchId: row.id as string,
+      editorId: row.editor_id as string,
+      editorName: name,
+      outletName: domain?.outlet_name ?? '—',
+      subject: row.subject as string,
+      sentAt: row.sent_at as string,
+      daysSinceSent: days,
+      bucket: days >= 21 ? 'dormant' : 'due_soon',
+    }
+  })
+
+  return { error: null, items }
+}
+
+// ---------------------------------------------------------------------------
+// markPitchDormant — user manually gives up on a pitch (status='rejected')
+// ---------------------------------------------------------------------------
+export async function markPitchDormant(pitchId: string): Promise<{ error: string | null }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error }
+  const admin = createAdminClient()
+  const { error } = await admin
+    .from('outreach_pitches')
+    .update({ status: 'rejected' })
+    .eq('id', pitchId)
+  if (error) return { error: error.message }
+  revalidatePath('/admin')
+  return { error: null }
+}
+
 export async function rescoreAllEditors(): Promise<{ error: string | null; updated: number }> {
   const auth = await verifyAdmin()
   if ('error' in auth) return { error: auth.error, updated: 0 }
@@ -1449,4 +1675,572 @@ export async function updateDomainPriorityScore(
   if (error) return { error: error.message }
   revalidatePath('/admin')
   return { error: null }
+}
+
+// ===========================================================================
+// Phase B — Cron orchestrators + settings CRUD
+// ===========================================================================
+
+async function logJobRun(
+  admin: ReturnType<typeof createAdminClient>,
+  jobName: string,
+  startedAt: string,
+  itemsProcessed: number,
+  errorsCount: number,
+  summary: Record<string, unknown>
+) {
+  await admin.from('outreach_job_runs').insert({
+    job_name: jobName,
+    started_at: startedAt,
+    finished_at: new Date().toISOString(),
+    items_processed: itemsProcessed,
+    errors_count: errorsCount,
+    summary,
+  })
+}
+
+// ---------------------------------------------------------------------------
+// Competitor brand + monitor keyword CRUD (admin-gated)
+// ---------------------------------------------------------------------------
+export async function listCompetitorBrands(): Promise<{
+  error: string | null
+  items: { id: string; name: string; aliases: string[]; notes: string | null; active: boolean }[]
+}> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error, items: [] }
+  const admin = createAdminClient()
+  const { data, error } = await admin
+    .from('outreach_competitor_brands')
+    .select('id, name, aliases, notes, active')
+    .order('created_at', { ascending: false })
+  if (error) return { error: error.message, items: [] }
+  return { error: null, items: (data ?? []) as {
+    id: string; name: string; aliases: string[]; notes: string | null; active: boolean
+  }[] }
+}
+
+export async function createCompetitorBrand(
+  name: string,
+  aliasesCsv: string
+): Promise<{ error: string | null }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error }
+  const trimmed = name.trim()
+  if (!trimmed) return { error: 'Name required' }
+  const aliases = aliasesCsv.split(',').map((s) => s.trim()).filter(Boolean)
+  const admin = createAdminClient()
+  const { error } = await admin.from('outreach_competitor_brands').insert({
+    name: trimmed, aliases, active: true,
+  })
+  if (error) return { error: error.message }
+  revalidatePath('/admin')
+  return { error: null }
+}
+
+export async function toggleCompetitorBrand(id: string, active: boolean): Promise<{ error: string | null }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error }
+  const admin = createAdminClient()
+  const { error } = await admin.from('outreach_competitor_brands').update({ active }).eq('id', id)
+  if (error) return { error: error.message }
+  revalidatePath('/admin')
+  return { error: null }
+}
+
+export async function deleteCompetitorBrand(id: string): Promise<{ error: string | null }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error }
+  const admin = createAdminClient()
+  const { error } = await admin.from('outreach_competitor_brands').delete().eq('id', id)
+  if (error) return { error: error.message }
+  revalidatePath('/admin')
+  return { error: null }
+}
+
+export async function listMonitorKeywords(): Promise<{
+  error: string | null
+  items: { id: string; keyword: string; notes: string | null; active: boolean }[]
+}> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error, items: [] }
+  const admin = createAdminClient()
+  const { data, error } = await admin
+    .from('outreach_monitor_keywords')
+    .select('id, keyword, notes, active')
+    .order('created_at', { ascending: false })
+  if (error) return { error: error.message, items: [] }
+  return { error: null, items: (data ?? []) as {
+    id: string; keyword: string; notes: string | null; active: boolean
+  }[] }
+}
+
+export async function createMonitorKeyword(keyword: string): Promise<{ error: string | null }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error }
+  const trimmed = keyword.trim()
+  if (!trimmed) return { error: 'Keyword required' }
+  const admin = createAdminClient()
+  const { error } = await admin.from('outreach_monitor_keywords').insert({ keyword: trimmed, active: true })
+  if (error) return { error: error.message }
+  revalidatePath('/admin')
+  return { error: null }
+}
+
+export async function toggleMonitorKeyword(id: string, active: boolean): Promise<{ error: string | null }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error }
+  const admin = createAdminClient()
+  const { error } = await admin.from('outreach_monitor_keywords').update({ active }).eq('id', id)
+  if (error) return { error: error.message }
+  revalidatePath('/admin')
+  return { error: null }
+}
+
+export async function deleteMonitorKeyword(id: string): Promise<{ error: string | null }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error }
+  const admin = createAdminClient()
+  const { error } = await admin.from('outreach_monitor_keywords').delete().eq('id', id)
+  if (error) return { error: error.message }
+  revalidatePath('/admin')
+  return { error: null }
+}
+
+// ---------------------------------------------------------------------------
+// runMovementScan — weekly. Fetch outlet index, parse bylines, diff.
+// ---------------------------------------------------------------------------
+export async function runMovementScan(): Promise<{
+  error: string | null
+  domainsScanned: number
+  newEditors: number
+  wentQuiet: number
+  returned: number
+}> {
+  const startedAt = new Date().toISOString()
+  const admin = createAdminClient()
+
+  const { data: domains } = await admin
+    .from('outreach_domains')
+    .select('id, domain, priority_score')
+    .order('priority_score', { ascending: false, nullsFirst: false })
+
+  let newEditors = 0
+  let wentQuiet = 0
+  let returned = 0
+  let errors = 0
+
+  for (const d of domains ?? []) {
+    try {
+      const fetched = await fetchOutletIndex(d.domain as string)
+      if (!fetched) continue
+      const bylines = extractBylinesFromHtml(fetched.html, fetched.url)
+      const now = new Date().toISOString()
+
+      const { data: existing } = await admin
+        .from('outreach_editors')
+        .select('id, first_name, last_name, last_seen_at, went_quiet_at')
+        .eq('domain_id', d.id as string)
+
+      const existingMap = new Map<string, {
+        id: string; last_seen_at: string | null; went_quiet_at: string | null
+      }>()
+      for (const e of existing ?? []) {
+        const key = `${(e.first_name as string | null)?.toLowerCase() ?? ''} ${(e.last_name as string | null)?.toLowerCase() ?? ''}`.trim()
+        if (key) existingMap.set(key, {
+          id: e.id as string,
+          last_seen_at: e.last_seen_at as string | null,
+          went_quiet_at: e.went_quiet_at as string | null,
+        })
+      }
+
+      const seenKeys = new Set<string>()
+
+      for (const b of bylines) {
+        const key = `${b.firstName.toLowerCase()} ${b.lastName.toLowerCase()}`
+        seenKeys.add(key)
+        const match = existingMap.get(key)
+
+        if (match) {
+          const update: Record<string, unknown> = { last_seen_at: now }
+          if (match.went_quiet_at) {
+            update.went_quiet_at = null
+            returned++
+            await admin.from('outreach_editor_movements').insert({
+              editor_id: match.id,
+              domain_id: d.id as string,
+              event_type: 'returned',
+              source_url: b.sourceUrl,
+            })
+          }
+          await admin.from('outreach_editors').update(update).eq('id', match.id)
+        } else {
+          const enrichedOk = await enrichNewByline(admin, d.id as string, d.domain as string, b)
+          if (enrichedOk) {
+            newEditors++
+            await admin.from('outreach_editor_movements').insert({
+              domain_id: d.id as string,
+              event_type: 'new',
+              source_url: b.sourceUrl,
+              details: { first_name: b.firstName, last_name: b.lastName },
+            })
+          }
+        }
+      }
+
+      for (const [key, existingEditor] of existingMap) {
+        if (seenKeys.has(key)) continue
+        const lastSeen = existingEditor.last_seen_at ? new Date(existingEditor.last_seen_at) : null
+        if (!existingEditor.went_quiet_at && lastSeen && isQuiet(lastSeen)) {
+          await admin
+            .from('outreach_editors')
+            .update({ went_quiet_at: now })
+            .eq('id', existingEditor.id)
+          await admin.from('outreach_editor_movements').insert({
+            editor_id: existingEditor.id,
+            domain_id: d.id as string,
+            event_type: 'went_quiet',
+          })
+          wentQuiet++
+        }
+      }
+    } catch (err) {
+      errors++
+      console.error(`[runMovementScan] ${d.domain}:`, err instanceof Error ? err.message : err)
+    }
+  }
+
+  await logJobRun(admin, 'movement-scan', startedAt, domains?.length ?? 0, errors, {
+    newEditors, wentQuiet, returned,
+  })
+
+  revalidatePath('/admin')
+  return { error: null, domainsScanned: domains?.length ?? 0, newEditors, wentQuiet, returned }
+}
+
+async function enrichNewByline(
+  admin: ReturnType<typeof createAdminClient>,
+  domainId: string,
+  domain: string,
+  byline: ByLineCandidate
+): Promise<boolean> {
+  if (!(await canUseQuota(admin, 'hunter'))) return false
+
+  let finder
+  try {
+    finder = await findEmail(domain, byline.firstName, byline.lastName)
+    await incrementUsage(admin, 'hunter')
+  } catch (err) {
+    console.error(`[enrichNewByline] email-finder ${byline.firstName} ${byline.lastName}:`, err instanceof Error ? err.message : err)
+    return false
+  }
+
+  if (!finder.email) return false
+
+  const { data: inserted, error: insErr } = await admin
+    .from('outreach_editors')
+    .insert({
+      domain_id: domainId,
+      email: finder.email,
+      first_name: byline.firstName,
+      last_name: byline.lastName,
+      position: finder.position,
+      linkedin_url: finder.linkedin_url,
+      twitter_handle: finder.twitter_handle,
+      confidence: finder.score,
+      last_seen_at: new Date().toISOString(),
+    })
+    .select('id')
+    .single()
+
+  if (insErr || !inserted) return false
+
+  await fullyEnrichEditor(
+    admin,
+    inserted.id as string,
+    byline.firstName,
+    byline.lastName,
+    finder.linkedin_url,
+    finder.twitter_handle,
+    domain,
+    finder.email
+  )
+  return true
+}
+
+// ---------------------------------------------------------------------------
+// runCompetitorScan — weekly.
+// ---------------------------------------------------------------------------
+export async function runCompetitorScan(): Promise<{
+  error: string | null
+  hits: number
+}> {
+  const startedAt = new Date().toISOString()
+  const admin = createAdminClient()
+
+  const [{ data: brands }, { data: domains }] = await Promise.all([
+    admin.from('outreach_competitor_brands').select('id, name, aliases').eq('active', true),
+    admin.from('outreach_domains').select('id, domain'),
+  ])
+
+  if (!brands?.length || !domains?.length) {
+    await logJobRun(admin, 'competitor-scan', startedAt, 0, 0, { skipped: 'no brands or domains' })
+    return { error: null, hits: 0 }
+  }
+
+  let hits = 0
+  let errors = 0
+
+  for (const brand of brands) {
+    const aliases = (brand.aliases as string[] | null) ?? []
+    const phrases = [brand.name as string, ...aliases].filter(Boolean)
+    const queryBrand = phrases.map((p) => `"${p}"`).join(' OR ')
+
+    for (const d of domains) {
+      if (!(await canUseQuota(admin, 'serper'))) break
+      try {
+        const res = await fetch('https://google.serper.dev/search', {
+          method: 'POST',
+          headers: { 'X-API-KEY': process.env.SERPER_API_KEY!, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ q: `${queryBrand} site:${d.domain}`, num: 5 }),
+        })
+        await incrementUsage(admin, 'serper')
+        if (!res.ok) continue
+        const data = await res.json()
+        const results = (data.organic ?? []) as Array<{ link: string; title: string; snippet?: string }>
+        for (const r of results) {
+          const { data: existing } = await admin
+            .from('outreach_editor_movements')
+            .select('id')
+            .eq('source_url', r.link)
+            .eq('domain_id', d.id as string)
+            .maybeSingle()
+          if (existing) continue
+          await admin.from('outreach_editor_movements').insert({
+            domain_id: d.id as string,
+            event_type: 'new',
+            source_url: r.link,
+            details: { kind: 'competitor_coverage', brand_id: brand.id, brand: brand.name, title: r.title, snippet: r.snippet ?? null },
+          })
+          hits++
+        }
+      } catch (err) {
+        errors++
+        console.error(`[runCompetitorScan] ${brand.name} / ${d.domain}:`, err instanceof Error ? err.message : err)
+      }
+    }
+  }
+
+  await logJobRun(admin, 'competitor-scan', startedAt, brands.length * domains.length, errors, { hits })
+  revalidatePath('/admin')
+  return { error: null, hits }
+}
+
+// ---------------------------------------------------------------------------
+// runMediaMonitor — daily.
+// ---------------------------------------------------------------------------
+export async function runMediaMonitor(): Promise<{ error: string | null; hits: number }> {
+  const startedAt = new Date().toISOString()
+  const admin = createAdminClient()
+
+  const [{ data: keywords }, { data: domains }] = await Promise.all([
+    admin.from('outreach_monitor_keywords').select('id, keyword').eq('active', true),
+    admin.from('outreach_domains').select('id, domain'),
+  ])
+
+  if (!keywords?.length || !domains?.length) {
+    await logJobRun(admin, 'media-monitor', startedAt, 0, 0, { skipped: 'no keywords or domains' })
+    return { error: null, hits: 0 }
+  }
+
+  let hits = 0
+  let errors = 0
+
+  for (const k of keywords) {
+    for (const d of domains) {
+      if (!(await canUseQuota(admin, 'serper'))) break
+      try {
+        const res = await fetch('https://google.serper.dev/search', {
+          method: 'POST',
+          headers: { 'X-API-KEY': process.env.SERPER_API_KEY!, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ q: `"${k.keyword}" site:${d.domain}`, num: 5, tbs: 'qdr:m' }),
+        })
+        await incrementUsage(admin, 'serper')
+        if (!res.ok) continue
+        const data = await res.json()
+        const results = (data.organic ?? []) as Array<{ link: string; title: string; snippet?: string; date?: string }>
+        for (const r of results) {
+          const { data: existing } = await admin
+            .from('outreach_editor_movements')
+            .select('id')
+            .eq('source_url', r.link)
+            .eq('domain_id', d.id as string)
+            .maybeSingle()
+          if (existing) continue
+          await admin.from('outreach_editor_movements').insert({
+            domain_id: d.id as string,
+            event_type: 'new',
+            source_url: r.link,
+            details: { kind: 'media_match', keyword_id: k.id, keyword: k.keyword, title: r.title, snippet: r.snippet ?? null, date: r.date ?? null },
+          })
+          hits++
+        }
+      } catch (err) {
+        errors++
+        console.error(`[runMediaMonitor] ${k.keyword} / ${d.domain}:`, err instanceof Error ? err.message : err)
+      }
+    }
+  }
+
+  await logJobRun(admin, 'media-monitor', startedAt, keywords.length * domains.length, errors, { hits })
+  revalidatePath('/admin')
+  return { error: null, hits }
+}
+
+// ---------------------------------------------------------------------------
+// UI reader helpers
+// ---------------------------------------------------------------------------
+export interface MovementRow {
+  id: string
+  editor_id: string | null
+  domain_id: string
+  event_type: string
+  detected_at: string
+  source_url: string | null
+  details: Record<string, unknown> | null
+  outlet_name: string
+  editor_name: string | null
+}
+
+export async function getRecentMovements(days = 14): Promise<{ error: string | null; items: MovementRow[] }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error, items: [] }
+  const admin = createAdminClient()
+  const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString()
+  const { data, error } = await admin
+    .from('outreach_editor_movements')
+    .select(`
+      id, editor_id, domain_id, event_type, detected_at, source_url, details,
+      outreach_domains (outlet_name),
+      outreach_editors (first_name, last_name)
+    `)
+    .gte('detected_at', since)
+    .order('detected_at', { ascending: false })
+    .limit(100)
+  if (error) return { error: error.message, items: [] }
+  const items: MovementRow[] = (data ?? []).map((m) => {
+    const d = Array.isArray(m.outreach_domains) ? m.outreach_domains[0] : m.outreach_domains
+    const e = Array.isArray(m.outreach_editors) ? m.outreach_editors[0] : m.outreach_editors
+    return {
+      id: m.id as string,
+      editor_id: m.editor_id as string | null,
+      domain_id: m.domain_id as string,
+      event_type: m.event_type as string,
+      detected_at: m.detected_at as string,
+      source_url: m.source_url as string | null,
+      details: m.details as Record<string, unknown> | null,
+      outlet_name: (d as { outlet_name: string } | null)?.outlet_name ?? '—',
+      editor_name: e
+        ? [(e as { first_name: string | null }).first_name, (e as { last_name: string | null }).last_name]
+          .filter(Boolean).join(' ') || null
+        : null,
+    }
+  })
+  return { error: null, items }
+}
+
+// ---------------------------------------------------------------------------
+// fetchEditorFullArchive — crawl the outlet author page for ALL articles.
+// On-demand button in EditorDetail. Dedupes via UNIQUE(editor_id, url).
+// ---------------------------------------------------------------------------
+export async function fetchEditorFullArchive(
+  editorId: string
+): Promise<{ error: string | null; inserted: number }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error, inserted: 0 }
+  const admin = createAdminClient()
+
+  const { data: editor } = await admin
+    .from('outreach_editors')
+    .select('first_name, last_name, outreach_domains (domain)')
+    .eq('id', editorId)
+    .single()
+  if (!editor || !editor.first_name || !editor.last_name) {
+    return { error: 'Editor not found or missing name', inserted: 0 }
+  }
+  const domainRow = Array.isArray(editor.outreach_domains)
+    ? editor.outreach_domains[0]
+    : editor.outreach_domains
+  if (!domainRow?.domain) return { error: 'Editor has no domain', inserted: 0 }
+
+  if (!(await canUseQuota(admin, 'scrapingbee'))) {
+    return { error: 'ScrapingBee quota exhausted', inserted: 0 }
+  }
+
+  let articles
+  try {
+    articles = await fetchByline(
+      domainRow.domain as string,
+      editor.first_name as string,
+      editor.last_name as string
+    )
+    await incrementUsage(admin, 'scrapingbee')
+  } catch (err) {
+    return {
+      error: err instanceof Error ? err.message : 'Archive fetch failed',
+      inserted: 0,
+    }
+  }
+
+  let inserted = 0
+  const articleScores: number[] = []
+  for (const a of articles) {
+    const { score, matchedKeywords } = analyzeArticleTitle({ title: a.title, snippet: a.snippet })
+    articleScores.push(score)
+    const { error: insErr } = await admin.from('outreach_articles').insert({
+      editor_id: editorId,
+      url: a.url,
+      title: a.title,
+      snippet: a.snippet,
+      published_date: a.publishedDate,
+      topic_match_score: score,
+      topic_keywords: matchedKeywords,
+    })
+    if (!insErr) inserted++
+  }
+
+  // Recompute topical over all articles (not just the newly inserted)
+  const { data: allArticles } = await admin
+    .from('outreach_articles')
+    .select('topic_match_score')
+    .eq('editor_id', editorId)
+  const topical = scoreEditorTopical(
+    (allArticles ?? []).map((a) => a.topic_match_score ?? 0)
+  )
+  await admin
+    .from('outreach_editors')
+    .update({ topical_score: topical, articles_fetched_at: new Date().toISOString() })
+    .eq('id', editorId)
+  await rescoreEditor(editorId, admin)
+
+  revalidatePath('/admin')
+  return { error: null, inserted }
+}
+
+export async function getRecentJobRuns(limit = 10): Promise<{
+  error: string | null
+  items: { id: string; job_name: string; started_at: string; finished_at: string | null; items_processed: number; errors_count: number; summary: Record<string, unknown> | null }[]
+}> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error, items: [] }
+  const admin = createAdminClient()
+  const { data, error } = await admin
+    .from('outreach_job_runs')
+    .select('id, job_name, started_at, finished_at, items_processed, errors_count, summary')
+    .order('started_at', { ascending: false })
+    .limit(limit)
+  if (error) return { error: error.message, items: [] }
+  return { error: null, items: (data ?? []) as {
+    id: string; job_name: string; started_at: string; finished_at: string | null;
+    items_processed: number; errors_count: number; summary: Record<string, unknown> | null
+  }[] }
 }
