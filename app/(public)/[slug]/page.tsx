@@ -457,6 +457,16 @@ export default async function MoneyPage({ params }: PageProps) {
                   >
                     {section.heading}
                   </h2>
+                  {section.image && (
+                    <div className="relative w-full max-w-3xl aspect-[16/9] rounded-xl overflow-hidden">
+                      <img
+                        src={section.image}
+                        alt={section.imageAlt || section.heading}
+                        loading="lazy"
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
                   <div>{renderParagraphs(section.content)}</div>
                   {section.whatsapp && (
                     <div className="pt-2">

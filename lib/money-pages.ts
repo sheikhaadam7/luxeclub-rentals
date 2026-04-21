@@ -6,6 +6,9 @@ export interface MoneyPageSection {
   /** If true, this section is treated as a single FAQ question/answer
    *  and contributes to the FAQPage JSON-LD on the rendered page. */
   isFaq?: boolean
+  /** Optional hero image rendered below the H2, above the content */
+  image?: string
+  imageAlt?: string
   /** Optional CTA rendered as a WhatsApp-styled button below the content */
   whatsapp?: { label: string; href: string }
 }
@@ -1463,13 +1466,84 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'rent-luxury-car-in-dubai',
     title: 'Luxury Car Rental Dubai',
-    metaTitle: 'Luxury Car Rental Dubai — Hire from AED 800/day',
+    metaTitle: 'Luxury Car Rental Dubai — Rolls-Royce, Bentley, Ferrari & More',
     metaDescription:
-      'Rent luxury cars in Dubai. Ferrari, Lamborghini, Rolls Royce, Bentley, Range Rover and more. Insurance included, delivery across Dubai. Book online.',
+      'Luxury car rental in Dubai — Rolls-Royce, Bentley, Ferrari, Lamborghini, Range Rover, Porsche, and more. Insurance included, delivery across Dubai, AED 495 reservation fee. Book online.',
     heading: 'Luxury Car Rental Dubai',
     subheading: 'The finest cars in Dubai, delivered to your door.',
     content:
-      'LuxeClub Rentals offers a curated fleet of luxury and sports cars for rent in Dubai. Every car comes with comprehensive insurance, delivery across Dubai anywhere in Dubai, and a full handover walkthrough. Daily, weekend, and weekly rentals available. Browse the fleet below and book online.',
+      "Luxury car rental in Dubai is the reason a lot of people visit the city in the first place. The roads are built for it, the weather is right for it 10 months a year, and the valet culture at the top hotels rewards every arrival. LuxeClub runs a curated luxury fleet — Rolls-Royce, Bentley, Ferrari, Lamborghini, Porsche, Aston Martin, Mercedes, BMW, Audi, Range Rover and more — with transparent published pricing, comprehensive insurance included, and the AED 495 reservation-fee model that removes the thousands-of-dirhams pre-authorisation hold that most rental companies still rely on. Browse the full fleet below, or use the sections below to narrow by brand, category, or rental length.",
+    sections: [
+      {
+        heading: 'The Luxury Car Rental Fleet in Dubai',
+        image: 'https://oezwrobajotfxzmqabvp.supabase.co/storage/v1/object/public/vehicle-images/rolls-royce-culli-mansory/0.jpg',
+        imageAlt: 'Luxury car rental Dubai — Rolls-Royce Cullinan Mansory at the top of the LuxeClub fleet',
+        content:
+          "LuxeClub's luxury fleet splits into four clear tiers. Here's how to think about it.\n\n**Tier 1 — Halo and hypercars.** The cars that anchor the top of the fleet: Lamborghini Revuelto (1,001bhp V12 plug-in hybrid), Ferrari SF90 Stradale, Ferrari Purosangue, Rolls-Royce Cullinan Mansory, Rolls-Royce Ghost, Rolls-Royce Dawn. These are the cars people rent for specific events — weddings, milestone birthdays, music-video shoots, week-long family visits where the car is part of the experience. Daily rates run AED 5,000–12,000 and availability is tight on weekends, so book at least two weeks out during peak season (November to March).\n\n**Tier 2 — Core supercars and luxury SUVs.** Lamborghini Huracán EVO and STO, Lamborghini Urus, Ferrari Roma, Ferrari 488, Ferrari F8 Tributo, McLaren 720S, Bentley Continental GT and GTC, Bentley Bentayga, Porsche 911 Turbo S, Aston Martin DBX 707, Mercedes-AMG G63. Daily rates AED 2,200–5,000. This is the sweet spot for most Dubai visitor rentals — serious presence, serious performance, realistic pricing for multi-day trips. See our [Lamborghini rental Dubai](/rent-lamborghini-in-dubai), [Ferrari rental Dubai](/rent-ferrari-in-dubai), [Rolls-Royce rental Dubai](/rent-rolls-royce-in-dubai), and [Bentley rental Dubai](/rent-bentley-in-dubai) pages for brand-specific breakdowns.\n\n**Tier 3 — Premium daily-driver luxury.** The [Audi RSQ8](/catalogue/audi-rsq8) (our value-pick performance SUV), Audi R8 Spyder, Range Rover Vogue, Porsche Cayenne, Mercedes GLE and GLS, BMW X5 X6 X7, Maserati Levante, Cadillac Escalade, Aston Martin Vantage. AED 1,200–2,200 daily. The category most residents and longer-stay visitors actually spend the most time in — proper luxury cars at prices that make weekly and monthly rentals genuinely economical.\n\n**Tier 4 — Accessible luxury.** Audi A3, Audi Q3, Audi RS3, Porsche Macan entry trim, Mercedes C-Class and E-Class, BMW 5-Series. AED 350–1,500 daily. The entry point to the luxury fleet — proper premium cars for business trips, work weeks, and visitors who want comfort without the supercar daily cost.\n\nThe fleet below shows live availability and current daily rates across every tier — scroll down to see what we have on the ground for your dates.",
+      },
+      {
+        heading: 'Why Dubai Is the Best City in the World to Rent a Luxury Car',
+        image: 'https://oezwrobajotfxzmqabvp.supabase.co/storage/v1/object/public/vehicle-images/lamborghini-revuelto/0.jpg',
+        imageAlt: 'Lamborghini Revuelto rental Dubai — the 1,001bhp plug-in hybrid V12 flagship of the LuxeClub luxury fleet',
+        content:
+          "Dubai stands out among global luxury rental markets for four specific reasons.\n\n**The roads.** Dubai's highways are wide, smooth, and well-maintained. Sheikh Zayed Road (E11) is 12 lanes at its widest, gradient-controlled, and built for sustained high-speed cruising in a way no European highway is. Jumeirah Beach Road (D94) is the most scenic coast-hugging urban drive in the Middle East. And within 90 minutes of Dubai Marina you have three of the best driving roads on the planet — Jebel Jais, Hatta mountain, and the Al Qudra desert stretch. If you have any interest in actually driving your luxury rental, Dubai rewards it more than any other market.\n\n**The weather.** From October to April, Dubai has driving weather that rivals the south of France — warm days, cool evenings, and clear skies you can count on. A convertible like the Rolls-Royce Dawn or Ferrari Portofino delivers an experience you simply can't get in London, Paris, or New York for most of the year.\n\n**The valet culture.** Dubai is one of the most valet-dependent cities in the world. Every five-star hotel, every upscale restaurant, every luxury mall, every DIFC office tower has a staffed valet line. The car you pull up in is genuinely part of your arrival. A Bentley at Atlantis The Royal, a Rolls-Royce at Burj Al Arab, a Lamborghini at Billionaire Mansion — these aren't hypothetical scenes, they're the Friday-night experience of the city.\n\n**The economics.** Luxury car rental in Dubai is meaningfully cheaper than the equivalent rental in London, Paris, New York, or Los Angeles. A Bentley Continental GT at AED 2,200 a day (roughly £470) is less than half what the equivalent rental costs in the UK. A Ferrari F8 Tributo at AED 3,500 a day (£750) is a third of the price you'd pay in central London, where the same car is AED 10,000+ per day. Dubai's rental market is competitive, mature, and priced for a market where visitors actually rent luxury cars as part of their trip — not just oligarchs on their tenth visit.",
+      },
+      {
+        heading: 'Luxury Car Rental Prices in Dubai — Daily, Weekly, Monthly',
+        content:
+          "Luxury car rental rates in Dubai span from AED 350 per day for an entry-level premium SUV (Audi Q3) up to AED 12,000 per day for a Lamborghini Revuelto. The pricing structure is consistent across every car on the fleet.\n\n**Daily rates** suit 1–3 day rentals where you want maximum flexibility. Daily is the headline number on each vehicle card.\n\n**Weekly rates** save roughly 30–35% per day versus the daily rate. If you're in Dubai for five days or more, always ask for the weekly rate — the extra days often cost less than the daily penalty on a short rental.\n\n**Monthly rates** save roughly 45–55% per day versus the daily headline. This is where residents, relocated professionals, and long-stay visitors typically land.\n\nIndicative daily rates across the luxury fleet:\n\n**Entry luxury (Audi A3, Q3, Porsche Macan entry):** AED 350–900/day\n**Mid-tier luxury (Audi RS3, BMW 5/7, Mercedes C/E-Class):** AED 700–1,500/day\n**Core luxury SUV and GT (Bentley Continental, Range Rover Vogue, Audi RSQ8, Bentley Bentayga):** AED 1,400–2,500/day\n**Supercar and halo SUV (Lamborghini Urus, Mercedes G63, Huracán EVO, 911 Turbo S):** AED 2,500–4,000/day\n**Halo (Lamborghini Revuelto, Ferrari SF90 / Purosangue, Rolls-Royce Cullinan Mansory / Ghost / Dawn):** AED 5,000–12,000/day\n\nAll rates include comprehensive insurance, 24/7 WhatsApp support, and a full handover walkthrough. Exact current rates for your chosen dates are shown on each vehicle card below.",
+      },
+      {
+        heading: "What's Included in Every Luxury Car Rental",
+        image: 'https://oezwrobajotfxzmqabvp.supabase.co/storage/v1/object/public/vehicle-images/ferrari-sf90-stradale/0.webp',
+        imageAlt: 'Ferrari SF90 Stradale rental Dubai — insurance, delivery, and 24/7 support included on every LuxeClub luxury rental',
+        content:
+          "Every luxury rental from LuxeClub ships with the same core inclusions regardless of which car you choose.\n\n**Comprehensive insurance** is bundled into the daily rate on every car. No 'basic cover' trap, no tiered pricing, no pressure to buy upgraded protection at pickup. Coverage extends across all seven emirates (Dubai, Abu Dhabi, Sharjah, Ajman, Fujairah, Umm Al Quwain, Ras Al Khaimah).\n\n**The reservation fee model** — AED 495 at booking secures the specific car on your specific dates. The balance is paid in person on pickup day, and the AED 495 is deducted from your total. No thousands-of-dirhams pre-authorisation tying up your card.\n\n**Refundable damage deposit at pickup** — AED 1,000–3,000 held on your credit card depending on vehicle type, released within 10 working days of return subject to no damage or fines. For eligible drivers (aged 23+ with a clean driving history), a no-deposit pickup option is available case-by-case — see our [no-deposit luxury car rental page](/luxury-car-rental-no-deposit-dubai) for full details.\n\n**Delivery across Dubai.** Free on monthly rentals. Daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge. Outside-Dubai delivery (Abu Dhabi, Sharjah, Ras Al Khaimah) is available for a larger fee based on distance.\n\n**Generous mileage.** 250 km per day on daily rentals, 1,500 km per week on weekly rentals, 4,500 km per month on monthly rentals. Unlimited-mileage upgrades are available on request and are recommended if you're planning day trips to Jebel Jais, Hatta, or Abu Dhabi.\n\n**24/7 WhatsApp support** for the duration of your rental. Flat tyre, Salik query, route help, return-time change — one number handles it.\n\n**Pickup walkthrough** — every car is delivered with a hands-on walkthrough covering driving modes, climate system, infotainment, and any car-specific quirks. Luxury cars reward knowing their settings, and the walkthrough is worth taking seriously.\n\n**Payment methods accepted at pickup:** card, bank transfer, cash, and crypto (USDT, Bitcoin, Ethereum). Crypto payment is particularly popular with long-stay visitors and relocated professionals.",
+      },
+      {
+        heading: 'How to Choose the Right Luxury Car for Your Dubai Trip',
+        image: 'https://oezwrobajotfxzmqabvp.supabase.co/storage/v1/object/public/vehicle-images/bentley-bentayga/0.jpg',
+        imageAlt: 'Bentley Bentayga rental Dubai — the family-ready luxury SUV in the LuxeClub fleet',
+        content:
+          "A short guide to picking the right luxury rental based on what your trip actually involves.\n\n**For a short visitor trip (2–3 days) where you want one signature drive:** Lamborghini Huracán EVO, Ferrari Roma, or Aston Martin Vantage for 24 hours. AED 2,500–3,500/day for a supercar day delivered to your hotel is the sweet spot for a memorable experience that doesn't dominate the trip budget.\n\n**For a couples trip or roof-down weekend:** Convertible spec — Rolls-Royce Dawn, Bentley Continental GTC, Ferrari Portofino, Lamborghini Huracán Spyder, Porsche 911 Cabriolet, or Audi R8 Spyder. Dubai's evening weather October to April is genuinely perfect for a roof-down drive along Jumeirah Beach Road at sunset.\n\n**For a family of four on a week-long visit:** Luxury SUV — Bentley Bentayga, Audi RSQ8, Range Rover Vogue, or Mercedes-AMG G63. See our [luxury SUV rental Dubai](/rent-luxury-suv-in-dubai) page for the full SUV lineup, or read our platform-comparison guide, [Lamborghini Urus vs Audi RSQ8](/guides/lamborghini-urus-vs-audi-rsq8-dubai), to understand where the best value sits.\n\n**For a family of five to seven:** Three-row SUV — Mercedes GLS, BMW X7, Audi SQ7, or Cadillac Escalade. All have proper third-row seating (not 5+2 kids-only rows), full luggage capacity, and the kind of presence that works for both leisure and business visits.\n\n**For a week or more as a visiting professional:** Premium daily-driver — Porsche Macan, Audi RS5, Audi RS6 Avant, Mercedes E-Class or BMW 5-Series. The sweet spot at AED 900–1,800 per day for a proper premium car without the supercar running cost.\n\n**For a month-plus rental (expat relocation, long Dubai visit):** Check the monthly rate rather than the daily. Typical savings are 45–55% per day. A Bentley Bentayga at AED 33,000/month is effective AED 1,100/day — less than many premium mainstream rentals.\n\n**For weddings, events, photo shoots, or high-presence arrivals:** Halo cars only. Rolls-Royce Cullinan Mansory, Rolls-Royce Dawn, Lamborghini Revuelto, Ferrari SF90. Book at least three weeks in advance during peak season — availability is tight on Fridays and Saturdays.",
+      },
+      {
+        heading: 'Do I need a credit card to rent a luxury car in Dubai?',
+        isFaq: true,
+        content:
+          "Yes — a credit card in your own name is required for the damage deposit hold at pickup (typically AED 1,000–3,000 depending on vehicle type). The reservation fee of AED 495 paid online can be on a debit card or through crypto, but the deposit hold itself requires credit. If you would prefer to avoid a hold on your card entirely, the no-deposit pickup option is available case-by-case for eligible drivers (aged 23+, clean driving history) — see our [no-deposit rental page](/luxury-car-rental-no-deposit-dubai) for full eligibility details.",
+      },
+      {
+        heading: 'What documents do I need to rent a luxury car in Dubai?',
+        isFaq: true,
+        content:
+          "**Tourists need:** passport, home-country driving licence (valid and issued at least 12 months ago), International Driving Permit (mandatory on all performance cars), and a credit card in your own name. **UAE residents need:** Emirates ID, UAE driving licence, and a credit card in your own name. The IDP is the single most-forgotten document for tourists — it's cheap and usually same-day via your home country's automobile association. If you arrive without one, we can point you to the RTA-approved service in Dubai, but this typically means a 1-day delay.",
+      },
+      {
+        heading: 'Can I rent a luxury car in Dubai if I am under 25?',
+        isFaq: true,
+        content:
+          "Yes, but the options depend on your age. Minimum age is 21 for most of the mainstream luxury fleet (Audi A3/Q3, Mercedes C-Class, BMW 5-Series, Porsche Macan). 23 for most mid-tier luxury (Audi RS3/RS5/RSQ8, BMW X5/X6, Range Rover, Bentley Continental). 25 for performance SUVs and supercars (Lamborghini Urus / Huracán, Ferrari Roma/488/F8, McLaren, G63, most Aston Martins). 27 for halo cars (Revuelto, SF90, Purosangue, Cullinan Mansory, Dawn, Ghost). These are insurance-driven limits, not house rules — the liability cover becomes prohibitive below those ages on the higher-tier cars.",
+      },
+      {
+        heading: 'What is the cheapest luxury car rental in Dubai?',
+        isFaq: true,
+        content:
+          "The entry point to our luxury fleet is the Audi Q3 at around AED 350 per day — a proper luxury-badge SUV at the cheapest rate in the category. Just above that sits the Audi A3 at AED 400–500 per day, the Audi RS3 at AED 1,000 per day (which is the best-value genuine performance car in the whole Dubai market), the Porsche Macan at around AED 900/day, and the Mercedes C-Class at around AED 800/day. For a more comprehensive breakdown of the value end of the fleet, see our [affordable luxury car rental Dubai page](/rent-cheap-car-in-dubai).",
+      },
+      {
+        heading: 'Can I rent a luxury car with a no-deposit option in Dubai?',
+        isFaq: true,
+        content:
+          "Yes — a no-deposit pickup option is available case-by-case for eligible drivers (aged 23 or over, with a clean driving history, renting on their own credit card). Instead of holding a refundable AED 1,000–3,000 damage deposit on your card, we add a flat surcharge to the rental total. Eligibility is confirmed at booking rather than at pickup, so you always know where you stand before collection. See our dedicated [no-deposit luxury car rental page](/luxury-car-rental-no-deposit-dubai) for the full eligibility breakdown, required documents, and how the surcharge is calculated.",
+      },
+      {
+        heading: 'Is insurance included in the luxury car rental price?',
+        isFaq: true,
+        content:
+          "Yes — comprehensive insurance is bundled into every daily, weekly, and monthly rate across the luxury fleet. No 'basic cover' trap, no tiered coverage, no pressure to buy upgraded protection at pickup. Coverage extends across all seven emirates. The first-loss excess varies by car value — typically one day's rental on mainstream luxury and higher on halo cars. An excess-waiver package is available for a small additional daily fee on most cars if you want to reduce the first-loss amount.",
+      },
+    ],
     filter: { type: 'keyword', value: '' },
   },
   {
