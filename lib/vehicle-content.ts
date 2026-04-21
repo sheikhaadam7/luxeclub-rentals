@@ -57,7 +57,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
       },
       {
         question: 'Can I take the M3 Competition on Jebel Jais?',
-        answer: "Yes — Jebel Jais is explicitly allowed under our rental terms. The 22 km of switchbacks are smooth tarmac with no speed cameras on the road itself, and the M3's chassis is in its element on the tight turns. Allow 3–4 hours round-trip from Dubai Marina and take the unlimited-mileage upgrade.",
+        answer: "Yes — Jebel Jais is a memorable scenic destination for a day out in the M3. Smooth tarmac, panoramic viewpoints, and a summit restaurant make it one of the most photogenic drives in the country. Allow 3–4 hours round-trip from Dubai Marina and take the unlimited-mileage upgrade. Please enjoy the drive at a relaxed pace within the posted speed limits.",
       },
       {
         question: 'What is the minimum age to rent a BMW M3 Competition?',
@@ -149,7 +149,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
       },
       {
         question: 'Can I take the GT3 RS on Jebel Jais?',
-        answer: "Yes — and you absolutely should. Jebel Jais is the single best road in the UAE for the GT3 RS. The 22 km of switchbacks reward the naturally-aspirated flat-six's high-rpm power delivery and the active aero keeps the car planted through every corner. Allow 3–4 hours round-trip and take the unlimited-mileage upgrade.",
+        answer: "Yes — Jebel Jais is a beautiful scenic destination for a day out in the GT3 RS. Smooth tarmac, panoramic viewpoints, and a summit restaurant at 1,700 m for lunch or coffee. Get there at sunrise for the best light and the quietest roads. Allow 3–4 hours round-trip and take the unlimited-mileage upgrade. The scenery and the photos are the point — drive at a relaxed pace within the posted limits.",
       },
       {
         question: 'What does the DRS rear wing do?',
