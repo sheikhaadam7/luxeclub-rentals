@@ -80,6 +80,7 @@ const zh: Record<string, string> = {
   'catalogue.perDay': '/天',
   'catalogue.perWeek': '/周',
   'catalogue.perMonth': '/月',
+  'catalogue.contactForPrice': '周租与月租价格请联系',
 
   // Contact
   'contact.heroLine1': '有任何问题？',

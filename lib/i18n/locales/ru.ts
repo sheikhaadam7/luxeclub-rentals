@@ -80,6 +80,7 @@ const ru: Record<string, string> = {
   'catalogue.perDay': '/день',
   'catalogue.perWeek': '/неделя',
   'catalogue.perMonth': '/месяц',
+  'catalogue.contactForPrice': 'Недельные и месячные тарифы — по запросу',
 
   // Contact
   'contact.heroLine1': 'Есть вопросы?',

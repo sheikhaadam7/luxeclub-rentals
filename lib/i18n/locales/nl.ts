@@ -80,6 +80,7 @@ const nl: Record<string, string> = {
   'catalogue.perDay': '/dag',
   'catalogue.perWeek': '/week',
   'catalogue.perMonth': '/maand',
+  'catalogue.contactForPrice': 'Neem contact op voor week- en maandtarieven',
 
   // Contact
   'contact.heroLine1': 'Heeft u vragen?',

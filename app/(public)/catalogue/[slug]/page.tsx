@@ -345,17 +345,11 @@ export default async function VehicleDetailPage({ params }: PageProps) {
                   <PriceDisplay amount={20} className="text-sm font-bold text-white" suffix="/Km" exact />
                 </div>
 
-                {/* Weekly / Monthly rates if available */}
-                {vehicle.weekly_rate && (
+                {/* Weekly / Monthly rates — contact-based */}
+                {(vehicle.weekly_rate || vehicle.monthly_rate) && (
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-white/60"><T k="vehicle.weeklyRate" /></span>
-                    <PriceDisplay amount={vehicle.weekly_rate} className="text-sm font-bold text-white" />
-                  </div>
-                )}
-                {vehicle.monthly_rate && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-white/60"><T k="vehicle.monthlyRate" /></span>
-                    <PriceDisplay amount={vehicle.monthly_rate} className="text-sm font-bold text-white" />
+                    <span className="text-sm text-white/60"><T k="vehicle.weeklyRate" /> / <T k="vehicle.monthlyRate" /></span>
+                    <span className="text-sm font-bold text-white"><T k="catalogue.contactForPrice" /></span>
                   </div>
                 )}
               </div>

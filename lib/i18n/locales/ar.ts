@@ -80,6 +80,7 @@ const ar: Record<string, string> = {
   'catalogue.perDay': '/يوم',
   'catalogue.perWeek': '/أسبوع',
   'catalogue.perMonth': '/شهر',
+  'catalogue.contactForPrice': 'تواصل معنا للحصول على الأسعار الأسبوعية والشهرية',
 
   // Contact
   'contact.heroLine1': 'أي أسئلة؟',

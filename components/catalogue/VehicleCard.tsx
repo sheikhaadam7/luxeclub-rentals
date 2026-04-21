@@ -85,26 +85,15 @@ export function VehicleCard({
             {name}
           </h3>
 
-          {(daily_rate || weekly_rate || monthly_rate) && (
-            <div className="flex flex-wrap gap-x-5 gap-y-1 pt-1">
-              {daily_rate && (
-                <span className="text-sm text-white/90 font-medium">
-                  {formatPrice(daily_rate)}
-                  <span className="text-brand-muted text-xs font-normal ml-0.5">{t('catalogue.perDay')}</span>
-                </span>
-              )}
-              {weekly_rate && (
-                <span className="text-sm text-white/90 font-medium">
-                  {formatPrice(weekly_rate)}
-                  <span className="text-brand-muted text-xs font-normal ml-0.5">{t('catalogue.perWeek')}</span>
-                </span>
-              )}
-              {monthly_rate && (
-                <span className="text-sm text-white/90 font-medium">
-                  {formatPrice(monthly_rate)}
-                  <span className="text-brand-muted text-xs font-normal ml-0.5">{t('catalogue.perMonth')}</span>
-                </span>
-              )}
+          {daily_rate && (
+            <div className="flex flex-col gap-1 pt-1">
+              <span className="text-sm text-white/90 font-medium">
+                {formatPrice(daily_rate)}
+                <span className="text-brand-muted text-xs font-normal ml-0.5">{t('catalogue.perDay')}</span>
+              </span>
+              <span className="text-xs text-brand-muted">
+                {t('catalogue.contactForPrice')}
+              </span>
             </div>
           )}
         </div>
