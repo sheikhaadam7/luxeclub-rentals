@@ -210,13 +210,21 @@ export default async function GuidePage({
               )}
               {section.content.split('\n\n').map((paragraph, j) => (
                 <p key={j} className="text-[15px] text-brand-muted leading-relaxed">
-                  {paragraph.split(/(\*\*[^*]+\*\*)/).map((part, k) =>
-                    part.startsWith('**') && part.endsWith('**') ? (
-                      <strong key={k} className="text-white font-medium">{part.slice(2, -2)}</strong>
-                    ) : (
-                      part
-                    )
-                  )}
+                  {paragraph.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\([^)]+\))/).filter(Boolean).map((part, k) => {
+                    if (part.startsWith('**') && part.endsWith('**')) {
+                      return <strong key={k} className="text-white font-medium">{part.slice(2, -2)}</strong>
+                    }
+                    const linkMatch = /^\[([^\]]+)\]\(([^)]+)\)$/.exec(part)
+                    if (linkMatch) {
+                      const [, label, href] = linkMatch
+                      return (
+                        <Link key={k} href={href} className="text-brand-cyan underline underline-offset-4 hover:text-white transition-colors">
+                          {label}
+                        </Link>
+                      )
+                    }
+                    return part
+                  })}
                 </p>
               ))}
             </section>

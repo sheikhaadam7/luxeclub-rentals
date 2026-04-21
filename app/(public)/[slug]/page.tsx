@@ -133,9 +133,13 @@ function slugify(text: string): string {
     .replace(/\s+/g, '-')
 }
 
-/** Render a content string as paragraphs, supporting **bold** markers.
- *  A paragraph that consists solely of a single **...** block is treated as an H3 subheading. */
+/** Render a content string as paragraphs, supporting **bold** markers and
+ *  [text](url) markdown links. A paragraph that consists solely of a single
+ *  **...** block is treated as an H3 subheading. */
 function renderParagraphs(content: string) {
+  const INLINE_PATTERN = /(\*\*[^*]+\*\*|\[[^\]]+\]\([^)]+\))/g
+  const LINK_PATTERN = /^\[([^\]]+)\]\(([^)]+)\)$/
+
   return content.split(/\n\n+/).map((para, i) => {
     const trimmed = para.trim()
     const soloBoldMatch = /^\*\*([^*]+)\*\*$/.exec(trimmed)
@@ -149,21 +153,31 @@ function renderParagraphs(content: string) {
         </h3>
       )
     }
-    const parts = para.split(/(\*\*[^*]+\*\*)/g).filter(Boolean)
+    const parts = para.split(INLINE_PATTERN).filter(Boolean)
     return (
       <p
         key={i}
         className="text-[15px] text-brand-muted leading-relaxed max-w-3xl mb-4 last:mb-0"
       >
-        {parts.map((part, j) =>
-          part.startsWith('**') && part.endsWith('**') ? (
-            <strong key={j} className="text-white font-medium">
-              {part.slice(2, -2)}
-            </strong>
-          ) : (
-            <span key={j}>{part}</span>
-          ),
-        )}
+        {parts.map((part, j) => {
+          if (part.startsWith('**') && part.endsWith('**')) {
+            return (
+              <strong key={j} className="text-white font-medium">
+                {part.slice(2, -2)}
+              </strong>
+            )
+          }
+          const linkMatch = LINK_PATTERN.exec(part)
+          if (linkMatch) {
+            const [, label, href] = linkMatch
+            return (
+              <Link key={j} href={href} className="text-brand-cyan underline underline-offset-4 hover:text-white transition-colors">
+                {label}
+              </Link>
+            )
+          }
+          return <span key={j}>{part}</span>
+        })}
       </p>
     )
   })
