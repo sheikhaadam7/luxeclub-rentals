@@ -92,6 +92,19 @@ export function Footer() {
             </nav>
           </div>
 
+          {/* Popular Searches */}
+          <div className="space-y-3">
+            <h4 className="text-xs text-white/40 uppercase tracking-[0.15em] font-medium">Popular Searches</h4>
+            <nav className="flex flex-col gap-2">
+              <Link href="/car-rental-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Car Rental Dubai</Link>
+              <Link href="/luxury-car-rental-no-deposit-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">No Deposit Rental</Link>
+              <Link href="/rent-luxury-suv-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Luxury SUV Rental</Link>
+              <Link href="/rent-supercar-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Supercar Rental</Link>
+              <Link href="/rent-cheap-car-in-dubai" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Affordable Rental</Link>
+              <Link href="/catalogue" className="text-sm text-white/60 hover:text-white transition-colors duration-300">Monthly Rental</Link>
+            </nav>
+          </div>
+
           {/* Contact Info */}
           <div className="space-y-3">
             <h4 className="text-xs text-white/40 uppercase tracking-[0.15em] font-medium">{t('footer.contact')}</h4>

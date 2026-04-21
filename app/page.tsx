@@ -95,6 +95,16 @@ export default async function HomePage() {
             <p className="animate-fade-in-left text-lg sm:text-xl text-white/40 font-light" style={{ animationDelay: '240ms' }}>
               <T k="home.heroSubtitle" />
             </p>
+            <div className="animate-fade-in-left flex justify-center" style={{ animationDelay: '280ms' }}>
+              <Link
+                href="/luxury-car-rental-no-deposit-dubai"
+                className="inline-flex items-center gap-2 px-4 py-2 text-xs sm:text-sm font-semibold tracking-[0.15em] uppercase text-black bg-brand-cyan hover:bg-white transition-colors duration-300 drop-shadow-[0_0_20px_rgba(201,169,110,0.35)]"
+              >
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-black animate-pulse" />
+                No Deposit Option Available
+                <span aria-hidden>→</span>
+              </Link>
+            </div>
           </div>
 
           {/* Search bar */}
