@@ -17,12 +17,14 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
   const navItems = isAuthenticated
     ? [
         { href: '/catalogue', label: t('nav.cars') },
+        { href: '/faq', label: t('nav.faq') },
         { href: '/bookings', label: t('nav.bookings') },
         { href: '/account', label: t('nav.account') },
         { href: '/contact', label: t('nav.contact') },
       ]
     : [
         { href: '/catalogue', label: t('nav.cars') },
+        { href: '/faq', label: t('nav.faq') },
         { href: '/booking-lookup', label: t('nav.manageBookings') },
         { href: '/contact', label: t('nav.contact') },
       ]

@@ -1,6 +1,7 @@
 const zh: Record<string, string> = {
   // Navbar
   'nav.cars': '车辆',
+  'nav.faq': '常见问题',
   'nav.bookings': '我的预订',
   'nav.manageBookings': '管理预订',
   'nav.account': '账户',

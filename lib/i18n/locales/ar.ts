@@ -1,6 +1,7 @@
 const ar: Record<string, string> = {
   // Navbar
   'nav.cars': 'السيارات',
+  'nav.faq': 'الأسئلة الشائعة',
   'nav.bookings': 'حجوزاتي',
   'nav.manageBookings': 'إدارة الحجوزات',
   'nav.account': 'الحساب',

@@ -149,7 +149,7 @@ export function HeroSearch({ vehicles }: HeroSearchProps) {
       <button
         type="button"
         onClick={openSearch}
-        className="animate-fade-in-left relative z-20 flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 border border-white/[0.12] text-white/50 text-sm sm:text-base transition-all duration-200 hover:border-white/30 hover:text-white/70 active:bg-white/[0.06]"
+        className="animate-fade-in-left relative z-20 flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 bg-black/55 backdrop-blur-md border border-white/25 text-white/85 text-sm sm:text-base transition-all duration-200 hover:bg-black/70 hover:border-white/40 hover:text-white active:bg-black/80"
         style={{ animationDelay: '280ms' }}
       >
         <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
