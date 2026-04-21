@@ -6,6 +6,8 @@ export interface MoneyPageSection {
   /** If true, this section is treated as a single FAQ question/answer
    *  and contributes to the FAQPage JSON-LD on the rendered page. */
   isFaq?: boolean
+  /** Optional CTA rendered as a WhatsApp-styled button below the content */
+  whatsapp?: { label: string; href: string }
 }
 
 export interface MoneyPage {
@@ -35,11 +37,11 @@ export const moneyPages: MoneyPage[] = [
     title: 'Lamborghini Rental Dubai',
     metaTitle: 'Lamborghini Car Rental Dubai — Hire from AED 2,500/day',
     metaDescription:
-      'Lamborghini car rental in Dubai — Urus, Huracan, Revuelto available. Insurance included, free delivery across Dubai. Book online today.',
+      'Lamborghini car rental in Dubai — Urus, Huracan, Revuelto available. Insurance included, delivery across Dubai. Book online today.',
     heading: 'Lamborghini Car Rental Dubai',
     subheading: 'Drive one of the most iconic supercars on the planet. Delivered to your door anywhere in Dubai.',
     content:
-      'Looking for Lamborghini car rental in Dubai? Whether you want the raw power of a Huracan on Sheikh Zayed Road or the luxury SUV experience of a Urus for a weekend trip, we have Lamborghinis ready to go. Every rental includes comprehensive insurance and free delivery across Dubai to your hotel, apartment, or the airport.',
+      'Looking for Lamborghini car rental in Dubai? Whether you want the raw power of a Huracan on Sheikh Zayed Road or the luxury SUV experience of a Urus for a weekend trip, we have Lamborghinis ready to go. Every rental includes comprehensive insurance and delivery across Dubai to your hotel, apartment, or the airport — delivery is free on monthly rentals and a flat surcharge on shorter rentals.',
     sections: [
       {
         heading: 'Available Lamborghini Models at LuxeClub',
@@ -59,7 +61,7 @@ export const moneyPages: MoneyPage[] = [
       {
         heading: "What's Included in Every Rental",
         content:
-          "Every LuxeClub Lamborghini rental comes with the same core inclusions regardless of which model you choose.\n\n**Comprehensive insurance** is bundled in the daily rate — no add-on, no upsell, no \"basic tier\" trap. The first-loss excess is one day's rental on most cars. For the Revuelto specifically, the excess is higher given the value of the car, and we'll walk you through the exact numbers at pickup.\n\n**Free delivery** to any address inside Dubai — your hotel, apartment, office, or Dubai International Airport. No surcharge for DXB pickup at reasonable hours. Outside-Dubai delivery is available for a small additional fee.\n\n**24/7 support** via WhatsApp for the duration of your rental. Flat tyre, question about tolls, anything at all — one number handles it.\n\n**The reservation fee model** means you only pay AED 495 up front to secure the booking. The balance is paid in person on pickup day, deducted from your total. No pre-authorised deposits tying up thousands on your card for weeks.\n\n**A no-deposit option** is available at pickup — a flat 200 AED surcharge in lieu of the damage hold. Most customers take it.\n\n**Mileage** is 250 km per day on daily rentals and 1,500 km on weekly rentals. Unlimited-mileage upgrades are available — recommended if you're planning Jebel Jais, Hatta, or an Abu Dhabi day trip in the Revuelto or STO.",
+          "Every LuxeClub Lamborghini rental comes with the same core inclusions regardless of which model you choose.\n\n**Comprehensive insurance** is bundled in the daily rate — no add-on, no upsell, no \"basic tier\" trap. The first-loss excess is one day's rental on most cars. For the Revuelto specifically, the excess is higher given the value of the car, and we'll walk you through the exact numbers at pickup.\n\n**Delivery** to any address inside Dubai — your hotel, apartment, office, or Dubai International Airport. Free on monthly rentals. Daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge. Outside-Dubai delivery is available for a larger fee.\n\n**24/7 support** via WhatsApp for the duration of your rental. Flat tyre, question about tolls, anything at all — one number handles it.\n\n**The reservation fee model** means you only pay AED 495 up front to secure the booking. The balance is paid in person on pickup day, deducted from your total. No pre-authorised deposits tying up thousands on your card for weeks.\n\n**A no-deposit option** is available at pickup — a flat 200 AED surcharge in lieu of the damage hold. Most customers take it.\n\n**Mileage** is 250 km per day, 1,500 km per week, and 4,500 km per month. Unlimited-mileage upgrades are available — recommended if you're planning Jebel Jais, Hatta, or an Abu Dhabi day trip in the Revuelto or STO.",
       },
       {
         heading: 'Lamborghini Car Rental Prices and Rental Periods',
@@ -75,7 +77,7 @@ export const moneyPages: MoneyPage[] = [
         heading: 'Do I need to leave a large deposit to rent a Lamborghini?',
         isFaq: true,
         content:
-          "Our standard reservation fee is AED 495, paid at booking to secure the vehicle and deducted from your total on pickup day. A damage deposit equal to one day's rental is held on your card at pickup for most of the fleet (AED 2,800–4,000 for Huracán / Urus / STO), or you can opt out of that entirely with our no-deposit surcharge of AED 200. The Revuelto has a higher deposit requirement given the AED 12,000/day value, and we'll walk you through the exact numbers when you book.",
+          "Our standard reservation fee is AED 495, paid at booking to secure the vehicle and deducted from your total on pickup day. A refundable damage deposit (typically AED 1,000–3,000 depending on the vehicle type) is held on your card at pickup for most of the fleet (AED 2,800–4,000 for Huracán / Urus / STO), or you can opt out of that entirely with our no-deposit surcharge of AED 200. The Revuelto has a higher deposit requirement given the AED 12,000/day value, and we'll walk you through the exact numbers when you book.",
       },
       {
         heading: "What's the minimum age to rent a Lamborghini in Dubai?",
@@ -121,7 +123,7 @@ export const moneyPages: MoneyPage[] = [
     title: 'Ferrari Rental Dubai',
     metaTitle: 'Ferrari Car Rental Dubai — Hire from AED 2,500/day',
     metaDescription:
-      'Ferrari car rental in Dubai — Roma, Portofino, 488, F8 Tributo, SF90 available. Insurance included, free delivery across Dubai. Book your Ferrari today.',
+      'Ferrari car rental in Dubai — Roma, Portofino, 488, F8 Tributo, SF90 available. Insurance included, delivery across Dubai. Book your Ferrari today.',
     heading: 'Ferrari Car Rental Dubai',
     subheading: 'Nothing sounds like a Ferrari. Nothing drives like one either.',
     content:
@@ -145,7 +147,7 @@ export const moneyPages: MoneyPage[] = [
       {
         heading: "What's Included in Every Rental",
         content:
-          "Every LuxeClub Ferrari rental includes the same core package.\n\n**Comprehensive insurance** is bundled in the daily rate — no add-on, no upsell. First-loss excess is one day's rental on most cars; higher on the SF90 and Purosangue given their value. We'll walk you through the exact numbers at pickup.\n\n**Free delivery** to any Dubai address — hotel, apartment, office, or DXB airport. No surcharge for airport pickup at reasonable hours. Outside-Dubai delivery available for a small fee.\n\n**24/7 support** via WhatsApp during the rental. One number for anything — flats, accidents, questions, toll queries.\n\n**Reservation fee model**: AED 495 at booking to secure the car, deducted from your total on pickup day. No surprise pre-authorisations, no large holds tying up your card.\n\n**No-deposit option** at pickup: flat AED 200 surcharge in lieu of the damage hold. Most customers take it.\n\n**Mileage**: 250 km/day on daily rentals, 1,500 km/week on weekly. Unlimited-mileage upgrades available — strongly recommended for the F8, 296, or SF90 if you're planning Jebel Jais or Abu Dhabi day trips.",
+          "Every LuxeClub Ferrari rental includes the same core package.\n\n**Comprehensive insurance** is bundled in the daily rate — no add-on, no upsell. First-loss excess is one day's rental on most cars; higher on the SF90 and Purosangue given their value. We'll walk you through the exact numbers at pickup.\n\n**Delivery** to any Dubai address — hotel, apartment, office, or DXB airport. Free on monthly rentals. Daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge. Outside-Dubai delivery available for a larger fee.\n\n**24/7 support** via WhatsApp during the rental. One number for anything — flats, accidents, questions, toll queries.\n\n**Reservation fee model**: AED 495 at booking to secure the car, deducted from your total on pickup day. No surprise pre-authorisations, no large holds tying up your card.\n\n**No-deposit option** at pickup: flat AED 200 surcharge in lieu of the damage hold. Most customers take it.\n\n**Mileage**: 250 km per day, 1,500 km per week, 4,500 km per month. Unlimited-mileage upgrades available — strongly recommended for the F8, 296, or SF90 if you're planning Jebel Jais or Abu Dhabi day trips.",
       },
       {
         heading: 'Ferrari Car Rental Prices and Rental Periods',
@@ -161,7 +163,7 @@ export const moneyPages: MoneyPage[] = [
         heading: 'Do I need to leave a large deposit to rent a Ferrari?',
         isFaq: true,
         content:
-          "Our standard reservation fee is AED 495 at booking, deducted from your total on pickup day. A damage deposit equal to one day's rental is held on your card at pickup for most of the fleet (AED 2,500–4,500), or you can skip the hold entirely with our no-deposit surcharge of AED 200. The SF90 and Purosangue have higher deposit requirements given their values, and we'll walk you through the specifics at booking.",
+          "Our standard reservation fee is AED 495 at booking, deducted from your total on pickup day. A refundable damage deposit (typically AED 1,000–3,000 depending on the vehicle type) is held on your card at pickup for most of the fleet (AED 2,500–4,500), or you can skip the hold entirely with our no-deposit surcharge of AED 200. The SF90 and Purosangue have higher deposit requirements given their values, and we'll walk you through the specifics at booking.",
       },
       {
         heading: "What's the minimum age to rent a Ferrari in Dubai?",
@@ -231,12 +233,12 @@ export const moneyPages: MoneyPage[] = [
       {
         heading: "What's Included in Every Rental",
         content:
-          "Every LuxeClub Rolls-Royce rental comes with the full LuxeClub package plus a few specifics.\n\n**Comprehensive insurance** is bundled into the daily rate. The first-loss excess is higher on the Cullinan than on lower-tier cars given the replacement value — we'll walk you through exact numbers at booking.\n\n**White-glove delivery** to any Dubai address. Our driver arrives in uniform, completes a full walkthrough of the car's starlight headliner modes, massage seat functions, rear entertainment system, and unique Mansory details. The handover takes about 20 minutes instead of the usual 5 for a reason — the Cullinan rewards knowing how to use it.\n\n**24/7 support** via WhatsApp throughout the rental, with a dedicated escalation path for Rolls-Royce rentals if anything needs urgent attention (which is vanishingly rare).\n\n**Chauffeur service** available on request as an add-on — particularly popular for wedding bookings, business events, and nervous first-time luxury SUV drivers. Booked separately and quoted case by case.\n\n**The reservation fee model** — AED 495 at booking secures the car, deducted from your balance on pickup day. The Cullinan Mansory is the single most-booked car for weddings during peak season, so advance booking is strongly recommended.\n\n**Free delivery across Dubai**, no surcharge for airport pickup at reasonable hours. Outside-Dubai delivery available for a fee.\n\n**Mileage** is 250 km/day on daily, 1,500 km/week on weekly. Unlimited-mileage upgrades available.",
+          "Every LuxeClub Rolls-Royce rental comes with the full LuxeClub package plus a few specifics.\n\n**Comprehensive insurance** is bundled into the daily rate. The first-loss excess is higher on the Cullinan than on lower-tier cars given the replacement value — we'll walk you through exact numbers at booking.\n\n**White-glove delivery** to any Dubai address. Our driver arrives in uniform, completes a full walkthrough of the car's starlight headliner modes, massage seat functions, rear entertainment system, and unique Mansory details. The handover takes about 20 minutes instead of the usual 5 for a reason — the Cullinan rewards knowing how to use it.\n\n**24/7 support** via WhatsApp throughout the rental, with a dedicated escalation path for Rolls-Royce rentals if anything needs urgent attention (which is vanishingly rare).\n\n**Chauffeur service** available on request as an add-on — particularly popular for wedding bookings, business events, and nervous first-time luxury SUV drivers. Booked separately and quoted case by case.\n\n**The reservation fee model** — AED 495 at booking secures the car, deducted from your balance on pickup day. The Cullinan Mansory is the single most-booked car for weddings during peak season, so advance booking is strongly recommended.\n\n**Delivery across Dubai** — free on monthly rentals, AED 110 delivery + AED 110 pickup surcharge on daily and weekly rentals. Outside-Dubai delivery available for a larger fee.\n\n**Mileage** is 250 km per day, 1,500 km per week, and 4,500 km per month. Unlimited-mileage upgrades available.",
       },
       {
         heading: 'Rolls-Royce Car Rental Prices and Rental Periods',
         content:
-          "Rolls-Royce car rental Dubai rates for the Cullinan Mansory start at AED 5,000 per day. The pricing structure is the same as the rest of our fleet — longer rentals get progressively cheaper per day.\n\n**Daily rate: AED 5,000** — best for specific events, one-day weddings, photoshoots, or presence-led business bookings.\n\n**Weekly rate: AED 23,750** — works out to AED 3,393 per day, a 32% saving versus the daily rate. This is the most common rental length for family visits, extended business trips, and Russian / Gulf visitors who stay for a full week at a Dubai resort.\n\n**Monthly rate: AED 75,000** — works out to AED 2,500 per day, a 50% saving versus the daily headline. Typically booked by Dubai residents who want a Cullinan for a specific project (film shoots, executive relocation trials) or by UHNW family offices managing a month-long visit.\n\nAll rates include:\n\n- Comprehensive insurance\n- Free delivery across Dubai\n- 24/7 support\n- Full handover walkthrough\n- Starlight headliner and rear entertainment setup\n- No-deposit option available at pickup\n\nFor chauffeur service or bespoke wedding add-ons (champagne cooler preparation, floral arrangement holders, paint protection film coverage for the specific drive route) contact us directly — these are quoted case by case because they involve real coordination.",
+          "Rolls-Royce car rental Dubai rates for the Cullinan Mansory start at AED 5,000 per day. The pricing structure is the same as the rest of our fleet — longer rentals get progressively cheaper per day.\n\n**Daily rate: AED 5,000** — best for specific events, one-day weddings, photoshoots, or presence-led business bookings.\n\n**Weekly rate: AED 23,750** — works out to AED 3,393 per day, a 32% saving versus the daily rate. This is the most common rental length for family visits, extended business trips, and Russian / Gulf visitors who stay for a full week at a Dubai resort.\n\n**Monthly rate: AED 75,000** — works out to AED 2,500 per day, a 50% saving versus the daily headline. Typically booked by Dubai residents who want a Cullinan for a specific project (film shoots, executive relocation trials) or by UHNW family offices managing a month-long visit.\n\nAll rates include:\n\n- Comprehensive insurance\n- Delivery across Dubai (free on monthly; AED 110 + AED 110 on daily/weekly)\n- 24/7 support\n- Full handover walkthrough\n- Starlight headliner and rear entertainment setup\n- No-deposit option available at pickup\n\nFor chauffeur service or bespoke wedding add-ons (champagne cooler preparation, floral arrangement holders, paint protection film coverage for the specific drive route) contact us directly — these are quoted case by case because they involve real coordination.",
       },
       {
         heading: 'Before You Drive: What You Need to Know',
@@ -293,7 +295,7 @@ export const moneyPages: MoneyPage[] = [
     title: 'Bentley Rental Dubai',
     metaTitle: 'Bentley Car Rental Dubai — Hire a Continental GT or Bentayga',
     metaDescription:
-      'Bentley car rental in Dubai — Continental GT, Bentayga, Flying Spur available. Insurance included, free delivery across Dubai.',
+      'Bentley car rental in Dubai — Continental GT, Bentayga, Flying Spur available. Insurance included, delivery across Dubai.',
     heading: 'Bentley Car Rental Dubai',
     subheading: 'British luxury, built for the open road.',
     content:
@@ -317,7 +319,7 @@ export const moneyPages: MoneyPage[] = [
       {
         heading: "What's Included in Every Rental",
         content:
-          "Every LuxeClub Bentley rental comes with the full core package.\n\n**Comprehensive insurance** bundled into the daily rate. First-loss excess is one day's rental — AED 2,200 to 2,500 depending on the specific Bentley.\n\n**Free delivery** to any Dubai address — hotel, apartment, office, or Dubai International Airport. Outside-Dubai delivery available for a small fee.\n\n**24/7 WhatsApp support** for the duration of your rental.\n\n**Reservation fee model**: AED 495 at booking secures the car, deducted from your total on pickup day. No large pre-authorisations.\n\n**No-deposit option** at pickup: flat AED 200 surcharge in lieu of the damage hold. Most customers take it for Bentley rentals given the comfort of knowing the hold is off the card.\n\n**Mileage**: 250 km/day on daily rentals, 1,500 km/week on weekly. Unlimited-mileage upgrades available and frequently used on the Continental GT for long weekend trips.\n\n**Full handover walkthrough** including the Bentley driving modes (Comfort / Sport / Custom), the climate system, the infotainment, and the specific quirks of each car. Bentleys reward knowing how to use them — the walkthrough is worth taking seriously.",
+          "Every LuxeClub Bentley rental comes with the full core package.\n\n**Comprehensive insurance** bundled into the daily rate. First-loss excess is one day's rental — AED 2,200 to 2,500 depending on the specific Bentley.\n\n**Delivery** to any Dubai address — hotel, apartment, office, or Dubai International Airport. Free on monthly rentals. Daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge. Outside-Dubai delivery available for a larger fee.\n\n**24/7 WhatsApp support** for the duration of your rental.\n\n**Reservation fee model**: AED 495 at booking secures the car, deducted from your total on pickup day. No large pre-authorisations.\n\n**No-deposit option** at pickup: flat AED 200 surcharge in lieu of the damage hold. Most customers take it for Bentley rentals given the comfort of knowing the hold is off the card.\n\n**Mileage**: 250 km per day, 1,500 km per week, 4,500 km per month. Unlimited-mileage upgrades available and frequently used on the Continental GT for long weekend trips.\n\n**Full handover walkthrough** including the Bentley driving modes (Comfort / Sport / Custom), the climate system, the infotainment, and the specific quirks of each car. Bentleys reward knowing how to use them — the walkthrough is worth taking seriously.",
       },
       {
         heading: 'Bentley Car Rental Prices and Rental Periods',
@@ -333,7 +335,7 @@ export const moneyPages: MoneyPage[] = [
         heading: 'Do I need to leave a large deposit to rent a Bentley?',
         isFaq: true,
         content:
-          "Our standard reservation fee is AED 495 at booking, deducted from your total on pickup day. A damage deposit equal to one day's rental (AED 2,200–2,500 depending on the Bentley) is held on your card at pickup, or you can skip the hold entirely with our no-deposit surcharge of AED 200. Bentley customers take the no-deposit option more often than average — the simplicity of not having a pre-authorisation on the card is worth the small surcharge.",
+          "Our standard reservation fee is AED 495 at booking, deducted from your total on pickup day. A refundable damage deposit (AED 2,200–2,500 depending on the Bentley) is held on your card at pickup, or you can skip the hold entirely with our no-deposit surcharge of AED 200. Bentley customers take the no-deposit option more often than average — the simplicity of not having a pre-authorisation on the card is worth the small surcharge.",
       },
       {
         heading: "What's the minimum age to rent a Bentley in Dubai?",
@@ -379,7 +381,7 @@ export const moneyPages: MoneyPage[] = [
     title: 'Porsche Rental Dubai',
     metaTitle: 'Porsche Car Rental Dubai — Hire a 911, Cayenne or Macan',
     metaDescription:
-      'Porsche car rental in Dubai — 911 Turbo S, 911 GT3, Cayenne, Macan available. Insurance included, free delivery across Dubai. Book online.',
+      'Porsche car rental in Dubai — 911 Turbo S, 911 GT3, Cayenne, Macan available. Insurance included, delivery across Dubai. Book online.',
     heading: 'Porsche Car Rental Dubai',
     subheading: 'The sports car that does everything. Perfectly.',
     content:
@@ -403,7 +405,7 @@ export const moneyPages: MoneyPage[] = [
       {
         heading: "What's Included in Every Rental",
         content:
-          "Every LuxeClub Porsche rental includes the full core package.\n\n**Comprehensive insurance** bundled into the daily rate. First-loss excess is typically one day's rental (AED 1,300 on a Macan, AED 6,500 on a GT3 RS).\n\n**Free delivery** to any Dubai address — hotel, apartment, office, or Dubai International Airport. Outside-Dubai delivery available for a fee.\n\n**24/7 WhatsApp support** throughout the rental.\n\n**Reservation fee model**: AED 495 at booking secures the car, deducted from your total on pickup day.\n\n**No-deposit option** at pickup: flat AED 200 surcharge in lieu of the damage hold. Most customers take it.\n\n**Mileage**: 250 km/day on daily, 1,500 km/week on weekly. Unlimited-mileage upgrade available and recommended for the GT3 or GT3 RS if you're planning Jebel Jais — the round-trip is close to 350 km and the standard daily allowance won't cover it.\n\n**Full handover walkthrough** covering the driving modes, sport-plus functions, PDK paddles, and (on the GT3 RS specifically) the active aero / DRS rear wing behaviour. Porsche walkthroughs take slightly longer than average because the cars reward knowing their settings.",
+          "Every LuxeClub Porsche rental includes the full core package.\n\n**Comprehensive insurance** bundled into the daily rate. First-loss excess is typically one day's rental (AED 1,300 on a Macan, AED 6,500 on a GT3 RS).\n\n**Delivery** to any Dubai address — hotel, apartment, office, or Dubai International Airport. Free on monthly rentals. Daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge. Outside-Dubai delivery available for a larger fee.\n\n**24/7 WhatsApp support** throughout the rental.\n\n**Reservation fee model**: AED 495 at booking secures the car, deducted from your total on pickup day.\n\n**No-deposit option** at pickup: flat AED 200 surcharge in lieu of the damage hold. Most customers take it.\n\n**Mileage**: 250 km per day, 1,500 km per week, 4,500 km per month. Unlimited-mileage upgrade available and recommended for the GT3 or GT3 RS if you're planning Jebel Jais — the round-trip is close to 350 km and the standard daily allowance won't cover it.\n\n**Full handover walkthrough** covering the driving modes, sport-plus functions, PDK paddles, and (on the GT3 RS specifically) the active aero / DRS rear wing behaviour. Porsche walkthroughs take slightly longer than average because the cars reward knowing their settings.",
       },
       {
         heading: 'Porsche Car Rental Prices and Rental Periods',
@@ -419,7 +421,7 @@ export const moneyPages: MoneyPage[] = [
         heading: 'Do I need to leave a large deposit to rent a Porsche?',
         isFaq: true,
         content:
-          "Our standard reservation fee is AED 495, paid at booking and deducted from your total on pickup day. A damage deposit equal to one day's rental is held on your card at pickup (so AED 1,300 on a Macan, AED 6,500 on a GT3 RS), or you can opt for the no-deposit surcharge of AED 200 in lieu of the hold. The no-deposit option is especially popular on higher-tier 911s where the damage hold would otherwise tie up significant credit.",
+          "Our standard reservation fee is AED 495, paid at booking and deducted from your total on pickup day. A refundable damage deposit (typically AED 1,000–3,000 depending on the vehicle type) is held on your card at pickup (so AED 1,300 on a Macan, AED 6,500 on a GT3 RS), or you can opt for the no-deposit surcharge of AED 200 in lieu of the hold. The no-deposit option is especially popular on higher-tier 911s where the damage hold would otherwise tie up significant credit.",
       },
       {
         heading: "What's the minimum age to rent a Porsche in Dubai?",
@@ -465,7 +467,7 @@ export const moneyPages: MoneyPage[] = [
     title: 'Mercedes Rental Dubai',
     metaTitle: 'Mercedes Car Rental Dubai — Hire a G63 or AMG GT',
     metaDescription:
-      'Mercedes car rental in Dubai — AMG GT, G63, GLE, S-Class available. Insurance included, free delivery across Dubai.',
+      'Mercedes car rental in Dubai — AMG GT, G63, GLE, S-Class available. Insurance included, delivery across Dubai.',
     heading: 'Mercedes Car Rental Dubai',
     subheading: 'From the G63 to the AMG GT. Power meets luxury.',
     content:
@@ -489,12 +491,12 @@ export const moneyPages: MoneyPage[] = [
       {
         heading: "What's Included in Every Rental",
         content:
-          "Every LuxeClub Mercedes rental includes the full core package.\n\n**Comprehensive insurance** bundled into the daily rate. First-loss excess on the G63 is one day's rental — AED 1,800.\n\n**Free delivery** to any Dubai address — hotel, apartment, office, or Dubai International Airport. Outside-Dubai delivery available for a fee.\n\n**24/7 WhatsApp support** throughout the rental.\n\n**Reservation fee model**: AED 495 at booking secures the car, deducted from your total on pickup day. No surprise pre-authorisations.\n\n**No-deposit option** at pickup: flat AED 200 surcharge in lieu of the damage hold. Popular with G63 customers since the damage hold would otherwise be AED 1,800 on the card.\n\n**Mileage**: 250 km/day on daily rentals, 1,500 km/week on weekly. Unlimited-mileage upgrade available.\n\n**Full handover walkthrough** including the G63's driving modes, differential lock controls (which most customers never use but should know how to find), the climate system, and the Burmester audio. The walkthrough takes about 15 minutes because the G63 has more features than people expect.",
+          "Every LuxeClub Mercedes rental includes the full core package.\n\n**Comprehensive insurance** bundled into the daily rate. First-loss excess on the G63 is one day's rental — AED 1,800.\n\n**Delivery** to any Dubai address — hotel, apartment, office, or Dubai International Airport. Free on monthly rentals. Daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge. Outside-Dubai delivery available for a larger fee.\n\n**24/7 WhatsApp support** throughout the rental.\n\n**Reservation fee model**: AED 495 at booking secures the car, deducted from your total on pickup day. No surprise pre-authorisations.\n\n**No-deposit option** at pickup: flat AED 200 surcharge in lieu of the damage hold. Popular with G63 customers since the damage hold would otherwise be AED 1,800 on the card.\n\n**Mileage**: 250 km per day, 1,500 km per week, 4,500 km per month. Unlimited-mileage upgrade available.\n\n**Full handover walkthrough** including the G63's driving modes, differential lock controls (which most customers never use but should know how to find), the climate system, and the Burmester audio. The walkthrough takes about 15 minutes because the G63 has more features than people expect.",
       },
       {
         heading: 'Mercedes Car Rental Prices and Rental Periods',
         content:
-          "Mercedes car rental Dubai rates for the G63 AMG start at AED 1,800 per day. The pricing structure is consistent with the rest of our fleet — longer rentals get progressively cheaper per day.\n\n**Daily rate: AED 1,800** — best for 1–3 day rentals, specific events, weekend trips, or a single weekend where you want the G63 experience without committing to a full week.\n\n**Weekly rate: AED 8,550** — effective AED 1,221 per day, a 32% saving versus the daily rate. This is the most common G63 rental length — seven days covers a full Dubai visit for most customers.\n\n**Monthly rate: AED 27,000** — effective AED 900 per day, a 50% saving versus the daily headline. Long-stay visitors, relocated Europeans, and business trips of a month or longer are the typical monthly G63 customers.\n\nAll rates include:\n\n- Comprehensive insurance\n- Free delivery across Dubai\n- 24/7 support\n- Full handover walkthrough\n- No-deposit option available at pickup\n\n**Mercedes-AMG G63:** AED 1,800/day · AED 8,550/week · AED 27,000/month\n\nThe G63 is one of the most frequently booked cars in our fleet during peak months (November to March). For specific dates we recommend booking at least one week in advance. Contact us directly on WhatsApp for last-minute availability.",
+          "Mercedes car rental Dubai rates for the G63 AMG start at AED 1,800 per day. The pricing structure is consistent with the rest of our fleet — longer rentals get progressively cheaper per day.\n\n**Daily rate: AED 1,800** — best for 1–3 day rentals, specific events, weekend trips, or a single weekend where you want the G63 experience without committing to a full week.\n\n**Weekly rate: AED 8,550** — effective AED 1,221 per day, a 32% saving versus the daily rate. This is the most common G63 rental length — seven days covers a full Dubai visit for most customers.\n\n**Monthly rate: AED 27,000** — effective AED 900 per day, a 50% saving versus the daily headline. Long-stay visitors, relocated Europeans, and business trips of a month or longer are the typical monthly G63 customers.\n\nAll rates include:\n\n- Comprehensive insurance\n- Delivery across Dubai (free on monthly; AED 110 + AED 110 on daily/weekly)\n- 24/7 support\n- Full handover walkthrough\n- No-deposit option available at pickup\n\n**Mercedes-AMG G63:** AED 1,800/day · AED 8,550/week · AED 27,000/month\n\nThe G63 is one of the most frequently booked cars in our fleet during peak months (November to March). For specific dates we recommend booking at least one week in advance. Contact us directly on WhatsApp for last-minute availability.",
       },
       {
         heading: 'Before You Drive: What You Need to Know',
@@ -505,7 +507,7 @@ export const moneyPages: MoneyPage[] = [
         heading: 'Do I need to leave a large deposit to rent a G63?',
         isFaq: true,
         content:
-          "Our standard reservation fee is AED 495 at booking, deducted from your total on pickup day. A damage deposit equal to one day's rental (AED 1,800) is held on your card at pickup, or you can skip the hold entirely with our no-deposit surcharge of AED 200. The no-deposit option is the most popular choice on G63 rentals because the damage hold would otherwise tie up nearly AED 2,000 of your credit limit.",
+          "Our standard reservation fee is AED 495 at booking, deducted from your total on pickup day. A refundable damage deposit (AED 1,800) is held on your card at pickup, or you can skip the hold entirely with our no-deposit surcharge of AED 200. The no-deposit option is the most popular choice on G63 rentals because the damage hold would otherwise tie up nearly AED 2,000 of your credit limit.",
       },
       {
         heading: "What's the minimum age to rent a G63 in Dubai?",
@@ -551,7 +553,7 @@ export const moneyPages: MoneyPage[] = [
     title: 'Range Rover Rental Dubai',
     metaTitle: 'Range Rover Car Rental Dubai — Hire a Vogue or Sport',
     metaDescription:
-      'Range Rover car rental in Dubai — Vogue, Sport, Autobiography available. Insurance included, free delivery across Dubai.',
+      'Range Rover car rental in Dubai — Vogue, Sport, Autobiography available. Insurance included, delivery across Dubai.',
     heading: 'Range Rover Car Rental Dubai',
     subheading: 'The luxury SUV that goes anywhere.',
     content:
@@ -575,7 +577,7 @@ export const moneyPages: MoneyPage[] = [
       {
         heading: "What's Included in Every Rental",
         content:
-          "Every LuxeClub Range Rover rental includes the full core package.\n\n**Comprehensive insurance** bundled into the daily rate. First-loss excess is typically one day's rental.\n\n**Free delivery** to any Dubai address — hotel, apartment, office, or Dubai International Airport. Outside-Dubai delivery available for a fee.\n\n**24/7 WhatsApp support** throughout the rental.\n\n**Reservation fee model**: AED 495 at booking secures the car, deducted from your total on pickup day.\n\n**No-deposit option** at pickup: flat AED 200 surcharge in lieu of the damage hold.\n\n**Mileage**: 250 km/day on daily rentals, 1,500 km/week on weekly. Unlimited-mileage upgrade available and recommended for family visits where Hatta, Abu Dhabi, or Al Ain day trips are on the itinerary.\n\n**Full handover walkthrough** including the Range Rover's driving modes, terrain response system, air suspension settings, and the specific SVR or Mansory-exclusive controls on those variants.",
+          "Every LuxeClub Range Rover rental includes the full core package.\n\n**Comprehensive insurance** bundled into the daily rate. First-loss excess is typically one day's rental.\n\n**Delivery** to any Dubai address — hotel, apartment, office, or Dubai International Airport. Free on monthly rentals. Daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge. Outside-Dubai delivery available for a larger fee.\n\n**24/7 WhatsApp support** throughout the rental.\n\n**Reservation fee model**: AED 495 at booking secures the car, deducted from your total on pickup day.\n\n**No-deposit option** at pickup: flat AED 200 surcharge in lieu of the damage hold.\n\n**Mileage**: 250 km per day, 1,500 km per week, 4,500 km per month. Unlimited-mileage upgrade available and recommended for family visits where Hatta, Abu Dhabi, or Al Ain day trips are on the itinerary.\n\n**Full handover walkthrough** including the Range Rover's driving modes, terrain response system, air suspension settings, and the specific SVR or Mansory-exclusive controls on those variants.",
       },
       {
         heading: 'Range Rover Car Rental Prices and Rental Periods',
@@ -591,7 +593,7 @@ export const moneyPages: MoneyPage[] = [
         heading: 'Do I need to leave a large deposit to rent a Range Rover?',
         isFaq: true,
         content:
-          "Our standard reservation fee is AED 495, paid at booking and deducted from your total on pickup day. A damage deposit equal to one day's rental is held on your card at pickup (so AED 1,400–2,500 depending on the Range Rover variant), or you can skip the hold entirely with our no-deposit surcharge of AED 200.",
+          "Our standard reservation fee is AED 495, paid at booking and deducted from your total on pickup day. A refundable damage deposit (typically AED 1,000–3,000 depending on the vehicle type) is held on your card at pickup (so AED 1,400–2,500 depending on the Range Rover variant), or you can skip the hold entirely with our no-deposit surcharge of AED 200.",
       },
       {
         heading: "What's the minimum age to rent a Range Rover in Dubai?",
@@ -637,7 +639,7 @@ export const moneyPages: MoneyPage[] = [
     title: 'McLaren Rental Dubai',
     metaTitle: 'McLaren Car Rental Dubai — Hire a 720S, 765LT or Artura',
     metaDescription:
-      'McLaren car rental in Dubai — 720S, 765LT, Artura, GT available. Insurance included, free delivery across Dubai. Book online.',
+      'McLaren car rental in Dubai — 720S, 765LT, Artura, GT available. Insurance included, delivery across Dubai. Book online.',
     heading: 'McLaren Car Rental Dubai',
     subheading: 'Formula 1 engineering for the road.',
     content:
@@ -661,7 +663,7 @@ export const moneyPages: MoneyPage[] = [
       {
         heading: "What's Included in Every Rental",
         content:
-          "Every LuxeClub McLaren rental comes with the full core package.\n\n**Comprehensive insurance** bundled into the daily rate. First-loss excess is one day's rental on most cars and higher on the 765LT given its value.\n\n**Free delivery** to any Dubai address — hotel, apartment, office, or DXB airport. Outside-Dubai delivery available for a fee.\n\n**24/7 WhatsApp support** throughout the rental.\n\n**Reservation fee model**: AED 495 at booking secures the car, deducted from your total on pickup day.\n\n**No-deposit option** at pickup: flat AED 200 surcharge in lieu of the damage hold.\n\n**Mileage**: 250 km/day on daily, 1,500 km/week on weekly. Unlimited-mileage upgrade available and strongly recommended for the 720S or 765LT if you're planning a Jebel Jais or Abu Dhabi day trip.\n\n**Full handover walkthrough** including the McLaren driving modes (Normal / Sport / Track), the Active Chassis settings, the Launch Control, and (on the 765LT specifically) the track-mode settings. McLaren walkthroughs take slightly longer than average because the cars reward knowing their settings.",
+          "Every LuxeClub McLaren rental comes with the full core package.\n\n**Comprehensive insurance** bundled into the daily rate. First-loss excess is one day's rental on most cars and higher on the 765LT given its value.\n\n**Delivery** to any Dubai address — hotel, apartment, office, or DXB airport. Free on monthly rentals. Daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge. Outside-Dubai delivery available for a larger fee.\n\n**24/7 WhatsApp support** throughout the rental.\n\n**Reservation fee model**: AED 495 at booking secures the car, deducted from your total on pickup day.\n\n**No-deposit option** at pickup: flat AED 200 surcharge in lieu of the damage hold.\n\n**Mileage**: 250 km per day, 1,500 km per week, 4,500 km per month. Unlimited-mileage upgrade available and strongly recommended for the 720S or 765LT if you're planning a Jebel Jais or Abu Dhabi day trip.\n\n**Full handover walkthrough** including the McLaren driving modes (Normal / Sport / Track), the Active Chassis settings, the Launch Control, and (on the 765LT specifically) the track-mode settings. McLaren walkthroughs take slightly longer than average because the cars reward knowing their settings.",
       },
       {
         heading: 'McLaren Car Rental Prices and Rental Periods',
@@ -677,7 +679,7 @@ export const moneyPages: MoneyPage[] = [
         heading: 'Do I need to leave a large deposit to rent a McLaren?',
         isFaq: true,
         content:
-          "Our standard reservation fee is AED 495 at booking, deducted from your total on pickup day. A damage deposit equal to one day's rental is held on your card at pickup (so AED 2,500 on a 570S, AED 5,000 on a 765LT), or you can skip the hold entirely with our no-deposit surcharge of AED 200. The no-deposit option is particularly popular on the 765LT since the damage hold would otherwise tie up AED 5,000 of your credit limit.",
+          "Our standard reservation fee is AED 495 at booking, deducted from your total on pickup day. A refundable damage deposit (typically AED 1,000–3,000 depending on the vehicle type) is held on your card at pickup (so AED 2,500 on a 570S, AED 5,000 on a 765LT), or you can skip the hold entirely with our no-deposit surcharge of AED 200. The no-deposit option is particularly popular on the 765LT since the damage hold would otherwise tie up AED 5,000 of your credit limit.",
       },
       {
         heading: "What's the minimum age to rent a McLaren in Dubai?",
@@ -723,7 +725,7 @@ export const moneyPages: MoneyPage[] = [
     title: 'Aston Martin Rental Dubai',
     metaTitle: 'Aston Martin Car Rental Dubai — Hire a DBX or Vantage',
     metaDescription:
-      'Aston Martin car rental in Dubai — DB11, Vantage, DBX 707 available. Insurance included, free delivery across Dubai. Book online.',
+      'Aston Martin car rental in Dubai — DB11, Vantage, DBX 707 available. Insurance included, delivery across Dubai. Book online.',
     heading: 'Aston Martin Car Rental Dubai',
     subheading: 'Understated British muscle.',
     content:
@@ -747,7 +749,7 @@ export const moneyPages: MoneyPage[] = [
       {
         heading: "What's Included in Every Rental",
         content:
-          "Every LuxeClub Aston Martin rental includes the full core package.\n\n**Comprehensive insurance** bundled into the daily rate. First-loss excess is one day's rental — AED 1,800 on the Vantage, AED 2,500 on the DBX 707.\n\n**Free delivery** to any Dubai address — hotel, apartment, office, or Dubai International Airport. Outside-Dubai delivery available for a fee.\n\n**24/7 WhatsApp support** throughout the rental.\n\n**Reservation fee model**: AED 495 at booking secures the car, deducted from your total on pickup day.\n\n**No-deposit option** at pickup: flat AED 200 surcharge in lieu of the damage hold.\n\n**Mileage**: 250 km/day on daily rentals, 1,500 km/week on weekly. Unlimited-mileage upgrade available and recommended for Jebel Jais or Abu Dhabi day trips.\n\n**Full handover walkthrough** including the Aston's driving modes (Sport / Sport Plus / Track), the launch control settings, the adaptive suspension, and the infotainment system.",
+          "Every LuxeClub Aston Martin rental includes the full core package.\n\n**Comprehensive insurance** bundled into the daily rate. First-loss excess is one day's rental — AED 1,800 on the Vantage, AED 2,500 on the DBX 707.\n\n**Delivery** to any Dubai address — hotel, apartment, office, or Dubai International Airport. Free on monthly rentals. Daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge. Outside-Dubai delivery available for a larger fee.\n\n**24/7 WhatsApp support** throughout the rental.\n\n**Reservation fee model**: AED 495 at booking secures the car, deducted from your total on pickup day.\n\n**No-deposit option** at pickup: flat AED 200 surcharge in lieu of the damage hold.\n\n**Mileage**: 250 km per day, 1,500 km per week, 4,500 km per month. Unlimited-mileage upgrade available and recommended for Jebel Jais or Abu Dhabi day trips.\n\n**Full handover walkthrough** including the Aston's driving modes (Sport / Sport Plus / Track), the launch control settings, the adaptive suspension, and the infotainment system.",
       },
       {
         heading: 'Aston Martin Car Rental Prices and Rental Periods',
@@ -763,7 +765,7 @@ export const moneyPages: MoneyPage[] = [
         heading: 'Do I need to leave a large deposit to rent an Aston Martin?',
         isFaq: true,
         content:
-          "Our standard reservation fee is AED 495 at booking, deducted from your total on pickup day. A damage deposit equal to one day's rental is held on your card at pickup (AED 1,800 for the Vantage, AED 2,500 for the DBX 707), or you can skip the hold entirely with our no-deposit surcharge of AED 200.",
+          "Our standard reservation fee is AED 495 at booking, deducted from your total on pickup day. A refundable damage deposit (typically AED 1,000–3,000 depending on the vehicle type) is held on your card at pickup (AED 1,800 for the Vantage, AED 2,500 for the DBX 707), or you can skip the hold entirely with our no-deposit surcharge of AED 200.",
       },
       {
         heading: "What's the minimum age to rent an Aston Martin in Dubai?",
@@ -809,7 +811,7 @@ export const moneyPages: MoneyPage[] = [
     title: 'BMW Rental Dubai',
     metaTitle: 'BMW Car Rental Dubai — Hire an M4, M5, X6 or X5',
     metaDescription:
-      'BMW car rental in Dubai — M3, M4, M5 Competition, X5, X6 M available. Insurance included, free delivery across Dubai.',
+      'BMW car rental in Dubai — M3, M4, M5 Competition, X5, X6 M available. Insurance included, delivery across Dubai.',
     heading: 'BMW Car Rental Dubai',
     subheading: 'The ultimate driving machine. In the ultimate driving city.',
     content:
@@ -833,7 +835,7 @@ export const moneyPages: MoneyPage[] = [
       {
         heading: "What's Included in Every Rental",
         content:
-          'Every LuxeClub rental comes with the same core inclusions regardless of which BMW you choose.\n\n**Comprehensive insurance** is bundled in the daily rate — no add-on, no upsell, no "basic tier" trap. The first-loss excess is one day\'s rental on most cars, which is the Dubai market standard.\n\n**Free delivery** to any address inside Dubai — your hotel, apartment, office, or Dubai International Airport. No surcharge for DXB pickup at reasonable hours. Outside-Dubai delivery (Ras Al Khaimah, Abu Dhabi, Sharjah) is available for a small additional fee.\n\n**24/7 support** via WhatsApp for the duration of your rental. If something goes wrong — a flat tyre, a question about tolls, an accident — one number handles it.\n\n**The reservation fee model** means you only pay AED 495 up front to secure the booking. The balance is paid in person on pickup day. The reservation fee is deducted from your total — no surprises, no pre-authorised deposits tying up thousands on your card for weeks.\n\n**A no-deposit option** is available at pickup. If you prefer not to put down a damage hold, there\'s a flat 200 AED surcharge in lieu of the deposit — most customers take it.\n\n**Mileage** is 250 km per day on daily rentals and 1,500 km on weekly rentals. Unlimited mileage upgrades are available if you\'re planning a road trip to Abu Dhabi, Ras Al Khaimah, or the Empty Quarter.',
+          'Every LuxeClub rental comes with the same core inclusions regardless of which BMW you choose.\n\n**Comprehensive insurance** is bundled in the daily rate — no add-on, no upsell, no "basic tier" trap. The first-loss excess is one day\'s rental on most cars, which is the Dubai market standard.\n\n**Delivery** to any address inside Dubai — your hotel, apartment, office, or Dubai International Airport. Free on monthly rentals. Daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge. Outside-Dubai delivery (Ras Al Khaimah, Abu Dhabi, Sharjah) is available for a larger fee.\n\n**24/7 support** via WhatsApp for the duration of your rental. If something goes wrong — a flat tyre, a question about tolls, an accident — one number handles it.\n\n**The reservation fee model** means you only pay AED 495 up front to secure the booking. The balance is paid in person on pickup day. The reservation fee is deducted from your total — no surprises, no pre-authorised deposits tying up thousands on your card for weeks.\n\n**A no-deposit option** is available at pickup. If you prefer not to put down a damage hold, there\'s a flat 200 AED surcharge in lieu of the deposit — most customers take it.\n\n**Mileage** is 250 km per day, 1,500 km per week, and 4,500 km per month. Unlimited mileage upgrades are available if you\'re planning a road trip to Abu Dhabi, Ras Al Khaimah, or the Empty Quarter.',
       },
       {
         heading: 'BMW Car Rental Prices and Rental Periods',
@@ -849,7 +851,7 @@ export const moneyPages: MoneyPage[] = [
         heading: 'Do I need to leave a large deposit to rent a BMW?',
         isFaq: true,
         content:
-          "No — our standard reservation fee is AED 495, paid at booking time to secure the vehicle. That fee is deducted from your total balance on pickup day. A damage deposit equal to one day's rental (AED 1,300–2,000 depending on the model) is held on your card at pickup, but you can opt out of that with our no-deposit option for a flat AED 200 surcharge. No large pre-authorisations tying up your credit limit for weeks.",
+          "No — our standard reservation fee is AED 495, paid at booking time to secure the vehicle. That fee is deducted from your total balance on pickup day. A refundable damage deposit (AED 1,300–2,000 depending on the model) is held on your card at pickup, but you can opt out of that with our no-deposit option for a flat AED 200 surcharge. No large pre-authorisations tying up your credit limit for weeks.",
       },
       {
         heading: "What's the minimum age to rent a BMW in Dubai?",
@@ -879,7 +881,7 @@ export const moneyPages: MoneyPage[] = [
         heading: 'Can you deliver the BMW to my hotel?',
         isFaq: true,
         content:
-          "Yes — free delivery is standard for any address inside Dubai. That includes hotels in Downtown, Marina, Jumeirah, and Business Bay, as well as apartments, offices, and Dubai International Airport (DXB). For outside-Dubai delivery (Ras Al Khaimah, Abu Dhabi, Sharjah), there's a small surcharge depending on distance. We'll confirm the exact delivery time with you the day before pickup.",
+          "Yes — we deliver to any address inside Dubai, including hotels in Downtown, Marina, Jumeirah, and Business Bay, apartments, offices, and Dubai International Airport (DXB). Delivery is free on monthly rentals. For daily and weekly rentals a flat AED 110 delivery + AED 110 pickup surcharge applies. Outside-Dubai delivery (Ras Al Khaimah, Abu Dhabi, Sharjah) carries a larger fee based on distance. We'll confirm the exact delivery time with you the day before pickup.",
       },
       {
         heading: 'Which BMW M-car should I rent for my first time?',
@@ -901,7 +903,7 @@ export const moneyPages: MoneyPage[] = [
     title: 'Audi Rental Dubai',
     metaTitle: 'Audi Car Rental Dubai — Hire an RS7, R8 or RSQ8',
     metaDescription:
-      'Audi car rental in Dubai — RS7, RS6, R8 Spyder, RSQ8 available. Insurance included, free delivery across Dubai. Book online.',
+      'Audi car rental in Dubai — RS7, RS6, R8 Spyder, RSQ8 available. Insurance included, delivery across Dubai. Book online.',
     heading: 'Audi Car Rental Dubai',
     subheading: 'Vorsprung durch Technik. Feel it on every corner.',
     content:
@@ -925,7 +927,7 @@ export const moneyPages: MoneyPage[] = [
       {
         heading: "What's Included in Every Rental",
         content:
-          "Every LuxeClub Audi rental includes the full core package.\n\n**Comprehensive insurance** bundled into the daily rate. First-loss excess is typically one day's rental.\n\n**Free delivery** to any Dubai address — hotel, apartment, office, or Dubai International Airport. Outside-Dubai delivery available for a fee.\n\n**24/7 WhatsApp support** throughout the rental.\n\n**Reservation fee model**: AED 495 at booking secures the car, deducted from your total on pickup day.\n\n**No-deposit option** at pickup: flat AED 200 surcharge in lieu of the damage hold.\n\n**Mileage**: 250 km/day on daily rentals, 1,500 km/week on weekly. Unlimited-mileage upgrade available and strongly recommended if you're planning Jebel Jais, Abu Dhabi, or any extended UAE tour.\n\n**Full handover walkthrough** including the Audi Drive Select modes (Efficiency / Comfort / Auto / Dynamic / Individual), quattro behaviour, launch control, and the specific RS-mode settings where applicable.",
+          "Every LuxeClub Audi rental includes the full core package.\n\n**Comprehensive insurance** bundled into the daily rate. First-loss excess is typically one day's rental.\n\n**Delivery** to any Dubai address — hotel, apartment, office, or Dubai International Airport. Free on monthly rentals. Daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge. Outside-Dubai delivery available for a larger fee.\n\n**24/7 WhatsApp support** throughout the rental.\n\n**Reservation fee model**: AED 495 at booking secures the car, deducted from your total on pickup day.\n\n**No-deposit option** at pickup: flat AED 200 surcharge in lieu of the damage hold.\n\n**Mileage**: 250 km per day, 1,500 km per week, 4,500 km per month. Unlimited-mileage upgrade available and strongly recommended if you're planning Jebel Jais, Abu Dhabi, or any extended UAE tour.\n\n**Full handover walkthrough** including the Audi Drive Select modes (Efficiency / Comfort / Auto / Dynamic / Individual), quattro behaviour, launch control, and the specific RS-mode settings where applicable.",
       },
       {
         heading: 'Audi Car Rental Prices and Rental Periods',
@@ -941,7 +943,7 @@ export const moneyPages: MoneyPage[] = [
         heading: 'Do I need to leave a large deposit to rent an Audi?',
         isFaq: true,
         content:
-          "Our standard reservation fee is AED 495 at booking, deducted from your total on pickup day. A damage deposit equal to one day's rental is held on your card at pickup (so AED 1,000 on an RS3, AED 2,000 on an R8 Spyder), or you can skip the hold entirely with our no-deposit surcharge of AED 200.",
+          "Our standard reservation fee is AED 495 at booking, deducted from your total on pickup day. A refundable damage deposit (typically AED 1,000–3,000 depending on the vehicle type) is held on your card at pickup (so AED 1,000 on an RS3, AED 2,000 on an R8 Spyder), or you can skip the hold entirely with our no-deposit surcharge of AED 200.",
       },
       {
         heading: "What's the minimum age to rent an Audi in Dubai?",
@@ -987,7 +989,7 @@ export const moneyPages: MoneyPage[] = [
     title: 'Maserati Rental Dubai',
     metaTitle: 'Maserati Car Rental Dubai — Hire an MC20',
     metaDescription:
-      'Maserati car rental in Dubai — MC20, Levante, Ghibli available. Insurance included, free delivery across Dubai. Book online.',
+      'Maserati car rental in Dubai — MC20, Levante, Ghibli available. Insurance included, delivery across Dubai. Book online.',
     heading: 'Maserati Car Rental Dubai',
     subheading: 'Italian passion. Unmistakable exhaust note.',
     content:
@@ -1011,12 +1013,12 @@ export const moneyPages: MoneyPage[] = [
       {
         heading: "What's Included in Every Rental",
         content:
-          "Every LuxeClub Maserati rental includes the full core package.\n\n**Comprehensive insurance** bundled into the daily rate. First-loss excess is one day's rental — AED 2,000 on the MC20.\n\n**Free delivery** to any Dubai address — hotel, apartment, office, or Dubai International Airport. Outside-Dubai delivery available for a fee.\n\n**24/7 WhatsApp support** throughout the rental.\n\n**Reservation fee model**: AED 495 at booking secures the car, deducted from your total on pickup day.\n\n**No-deposit option** at pickup: flat AED 200 surcharge in lieu of the damage hold.\n\n**Mileage**: 250 km/day on daily, 1,500 km/week on weekly. Unlimited-mileage upgrade available and recommended for Jebel Jais or Abu Dhabi day trips.\n\n**Full handover walkthrough** including the MC20's drive modes (Wet / GT / Sport / Corsa), launch control, and the hydraulic lift-axle system that raises the front end for speed bumps and steep driveway entries. Most MC20 customers use the lift-axle feature multiple times per day — the ground clearance is low and Dubai has some aggressive parking-entry bumps.",
+          "Every LuxeClub Maserati rental includes the full core package.\n\n**Comprehensive insurance** bundled into the daily rate. First-loss excess is one day's rental — AED 2,000 on the MC20.\n\n**Delivery** to any Dubai address — hotel, apartment, office, or Dubai International Airport. Free on monthly rentals. Daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge. Outside-Dubai delivery available for a larger fee.\n\n**24/7 WhatsApp support** throughout the rental.\n\n**Reservation fee model**: AED 495 at booking secures the car, deducted from your total on pickup day.\n\n**No-deposit option** at pickup: flat AED 200 surcharge in lieu of the damage hold.\n\n**Mileage**: 250 km per day, 1,500 km per week, 4,500 km per month. Unlimited-mileage upgrade available and recommended for Jebel Jais or Abu Dhabi day trips.\n\n**Full handover walkthrough** including the MC20's drive modes (Wet / GT / Sport / Corsa), launch control, and the hydraulic lift-axle system that raises the front end for speed bumps and steep driveway entries. Most MC20 customers use the lift-axle feature multiple times per day — the ground clearance is low and Dubai has some aggressive parking-entry bumps.",
       },
       {
         heading: 'Maserati Car Rental Prices and Rental Periods',
         content:
-          "Maserati car rental Dubai rates for the MC20 start at AED 2,000 per day. The pricing structure rewards longer rentals.\n\n**Daily rate: AED 2,000** — best for 1–2 day rentals where you want maximum flexibility. A weekend MC20 is AED 2,000 × 2 = AED 4,000, which makes it the cheapest twin-turbo mid-engined supercar weekend rental in the whole Dubai market.\n\n**Weekly rate: AED 9,500** — effective AED 1,357 per day, a 32% saving versus the daily rate. The most common Maserati rental length for enthusiasts who are in Dubai for a full week.\n\n**Monthly rate: AED 30,000** — effective AED 1,000 per day, a 50% saving versus the daily headline. Typically booked by long-stay visitors or Dubai residents who want a mid-engined supercar for a full month.\n\nAll rates include:\n\n- Comprehensive insurance\n- Free delivery across Dubai\n- 24/7 support\n- Full handover walkthrough\n- Lift-axle demonstration and training at pickup\n- No-deposit option available at pickup\n\n**Maserati MC20:** AED 2,000/day · AED 9,500/week · AED 30,000/month",
+          "Maserati car rental Dubai rates for the MC20 start at AED 2,000 per day. The pricing structure rewards longer rentals.\n\n**Daily rate: AED 2,000** — best for 1–2 day rentals where you want maximum flexibility. A weekend MC20 is AED 2,000 × 2 = AED 4,000, which makes it the cheapest twin-turbo mid-engined supercar weekend rental in the whole Dubai market.\n\n**Weekly rate: AED 9,500** — effective AED 1,357 per day, a 32% saving versus the daily rate. The most common Maserati rental length for enthusiasts who are in Dubai for a full week.\n\n**Monthly rate: AED 30,000** — effective AED 1,000 per day, a 50% saving versus the daily headline. Typically booked by long-stay visitors or Dubai residents who want a mid-engined supercar for a full month.\n\nAll rates include:\n\n- Comprehensive insurance\n- Delivery across Dubai (free on monthly; AED 110 + AED 110 on daily/weekly)\n- 24/7 support\n- Full handover walkthrough\n- Lift-axle demonstration and training at pickup\n- No-deposit option available at pickup\n\n**Maserati MC20:** AED 2,000/day · AED 9,500/week · AED 30,000/month",
       },
       {
         heading: 'Before You Drive: What You Need to Know',
@@ -1027,7 +1029,7 @@ export const moneyPages: MoneyPage[] = [
         heading: 'Do I need to leave a large deposit to rent a Maserati?',
         isFaq: true,
         content:
-          "Our standard reservation fee is AED 495 at booking, deducted from your total on pickup day. A damage deposit equal to one day's rental (AED 2,000 for the MC20) is held on your card at pickup, or you can skip the hold entirely with our no-deposit surcharge of AED 200.",
+          "Our standard reservation fee is AED 495 at booking, deducted from your total on pickup day. A refundable damage deposit (AED 2,000 for the MC20) is held on your card at pickup, or you can skip the hold entirely with our no-deposit surcharge of AED 200.",
       },
       {
         heading: "What's the minimum age to rent a Maserati in Dubai?",
@@ -1073,7 +1075,7 @@ export const moneyPages: MoneyPage[] = [
     title: 'Cadillac Rental Dubai',
     metaTitle: 'Cadillac Car Rental Dubai — Hire an Escalade',
     metaDescription:
-      'Cadillac car rental in Dubai — Escalade Sports Platinum available. Insurance included, free delivery across Dubai. Book online.',
+      'Cadillac car rental in Dubai — Escalade Sports Platinum available. Insurance included, delivery across Dubai. Book online.',
     heading: 'Cadillac Car Rental Dubai',
     subheading: 'American luxury. Bigger than everything else on the road.',
     content:
@@ -1097,12 +1099,12 @@ export const moneyPages: MoneyPage[] = [
       {
         heading: "What's Included in Every Rental",
         content:
-          "Every LuxeClub Cadillac rental includes the full core package.\n\n**Comprehensive insurance** bundled into the daily rate. First-loss excess is one day's rental — AED 1,500 on the Escalade.\n\n**Free delivery** to any Dubai address — hotel, apartment, office, or Dubai International Airport. Outside-Dubai delivery available for a fee. The Escalade is a common airport-pickup rental because it handles large groups plus luggage in a single vehicle.\n\n**24/7 WhatsApp support** throughout the rental.\n\n**Reservation fee model**: AED 495 at booking secures the car, deducted from your total on pickup day.\n\n**No-deposit option** at pickup: flat AED 200 surcharge in lieu of the damage hold.\n\n**Mileage**: 250 km/day on daily rentals, 1,500 km/week on weekly. Unlimited-mileage upgrade available and strongly recommended for family trips where Abu Dhabi, Al Ain, Hatta, or Ras Al Khaimah day trips are on the itinerary — the Escalade's fuel consumption is not its strong point but the distance capability is.\n\n**Full handover walkthrough** including the Escalade's drive modes, air suspension height adjustment, rear-seat entertainment system, climate controls for all three rows, and the AKG audio setup. The walkthrough takes about 15 minutes because there are more features than most customers expect.",
+          "Every LuxeClub Cadillac rental includes the full core package.\n\n**Comprehensive insurance** bundled into the daily rate. First-loss excess is one day's rental — AED 1,500 on the Escalade.\n\n**Delivery** to any Dubai address — hotel, apartment, office, or Dubai International Airport. Free on monthly rentals. Daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge. Outside-Dubai delivery available for a larger fee. The Escalade is a common airport-pickup rental because it handles large groups plus luggage in a single vehicle.\n\n**24/7 WhatsApp support** throughout the rental.\n\n**Reservation fee model**: AED 495 at booking secures the car, deducted from your total on pickup day.\n\n**No-deposit option** at pickup: flat AED 200 surcharge in lieu of the damage hold.\n\n**Mileage**: 250 km per day, 1,500 km per week, 4,500 km per month. Unlimited-mileage upgrade available and strongly recommended for family trips where Abu Dhabi, Al Ain, Hatta, or Ras Al Khaimah day trips are on the itinerary — the Escalade's fuel consumption is not its strong point but the distance capability is.\n\n**Full handover walkthrough** including the Escalade's drive modes, air suspension height adjustment, rear-seat entertainment system, climate controls for all three rows, and the AKG audio setup. The walkthrough takes about 15 minutes because there are more features than most customers expect.",
       },
       {
         heading: 'Cadillac Car Rental Prices and Rental Periods',
         content:
-          "Cadillac car rental Dubai rates for the Escalade Sports Platinum start at AED 1,500 per day. The pricing structure is consistent with the rest of our fleet — longer rentals get progressively cheaper per day.\n\n**Daily rate: AED 1,500** — best for airport pickups, one-day events, or specific group trips where you only need the extra space for a limited time.\n\n**Weekly rate: AED 7,150** — effective AED 1,021 per day, a 32% saving versus the daily rate. This is the most common Escalade rental length — a week covers a full family visit, and the weekly rate makes the Escalade genuinely affordable per-day compared to renting two smaller SUVs.\n\n**Monthly rate: AED 22,500** — effective AED 750 per day, a 50% saving versus the daily headline. Typically booked by long-stay visitors, relocated expats with large families, or corporate delegations staying in Dubai for extended periods.\n\nAll rates include:\n\n- Comprehensive insurance\n- Free delivery across Dubai (including DXB airport pickup)\n- 24/7 support\n- Full handover walkthrough\n- No-deposit option available at pickup\n\n**Cadillac Escalade Sports Platinum:** AED 1,500/day · AED 7,150/week · AED 22,500/month\n\nFor airport pickups with large groups we can pre-position the Escalade at DXB for your arrival time — let us know your flight details when booking and we'll confirm the handover location.",
+          "Cadillac car rental Dubai rates for the Escalade Sports Platinum start at AED 1,500 per day. The pricing structure is consistent with the rest of our fleet — longer rentals get progressively cheaper per day.\n\n**Daily rate: AED 1,500** — best for airport pickups, one-day events, or specific group trips where you only need the extra space for a limited time.\n\n**Weekly rate: AED 7,150** — effective AED 1,021 per day, a 32% saving versus the daily rate. This is the most common Escalade rental length — a week covers a full family visit, and the weekly rate makes the Escalade genuinely affordable per-day compared to renting two smaller SUVs.\n\n**Monthly rate: AED 22,500** — effective AED 750 per day, a 50% saving versus the daily headline. Typically booked by long-stay visitors, relocated expats with large families, or corporate delegations staying in Dubai for extended periods.\n\nAll rates include:\n\n- Comprehensive insurance\n- Delivery across Dubai (free on monthly; AED 110 + AED 110 on daily/weekly) (including DXB airport pickup)\n- 24/7 support\n- Full handover walkthrough\n- No-deposit option available at pickup\n\n**Cadillac Escalade Sports Platinum:** AED 1,500/day · AED 7,150/week · AED 22,500/month\n\nFor airport pickups with large groups we can pre-position the Escalade at DXB for your arrival time — let us know your flight details when booking and we'll confirm the handover location.",
       },
       {
         heading: 'Before You Drive: What You Need to Know',
@@ -1113,7 +1115,7 @@ export const moneyPages: MoneyPage[] = [
         heading: 'Do I need to leave a large deposit to rent an Escalade?',
         isFaq: true,
         content:
-          "Our standard reservation fee is AED 495 at booking, deducted from your total on pickup day. A damage deposit equal to one day's rental (AED 1,500) is held on your card at pickup, or you can skip the hold entirely with our no-deposit surcharge of AED 200.",
+          "Our standard reservation fee is AED 495 at booking, deducted from your total on pickup day. A refundable damage deposit (AED 1,500) is held on your card at pickup, or you can skip the hold entirely with our no-deposit surcharge of AED 200.",
       },
       {
         heading: "What's the minimum age to rent an Escalade in Dubai?",
@@ -1158,13 +1160,81 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'car-rental-dubai',
     title: 'Car Rental Dubai',
-    metaTitle: 'Car Rental Dubai — Rent a Car from AED 800/day',
+    metaTitle: 'Car Rental Dubai — Luxury, Sports & SUV Hire from AED 350/day',
     metaDescription:
-      'Rent a car in Dubai with LuxeClub Rentals. Luxury, sports, and SUV cars available. Insurance included, free delivery across Dubai. Book online today.',
+      'Car rental in Dubai — luxury, sports, supercars, SUVs, convertibles. Insurance included, delivery across Dubai, no inflated deposits. Book your Dubai rental car online.',
     heading: 'Car Rental Dubai',
     subheading: 'Luxury, sports, and SUV rentals delivered to your door across Dubai.',
     content:
-      'Looking for a car rental in Dubai that actually delivers? LuxeClub Rentals offers a curated fleet of luxury and sports cars with transparent pricing, comprehensive insurance, and free delivery anywhere in Dubai. No hidden fees, no inflated deposits, no chasing for refunds. Whether you need a G63 for the weekend, a Ferrari for a special occasion, or a Range Rover for a family trip, we have you covered. Browse the fleet below and book online in minutes.',
+      'Car rental in Dubai is a crowded market — hundreds of companies, wildly different levels of service, and a well-earned reputation for surprise charges and deposit-return hassles. LuxeClub Rentals exists specifically because that market needed a credible alternative. We run a curated fleet of luxury, sports, and SUV cars, with transparent published pricing, comprehensive insurance included, delivery across Dubai (free on monthly rentals, a small flat surcharge otherwise), and the AED 495 reservation-fee model that removes the thousands-of-dirhams pre-authorisation hold that most rental companies still rely on. Whether you need a G63 for the weekend, a Ferrari for a special occasion, a Range Rover for a family trip, or a Toyota-sized compact premium for a work week, the fleet below is what we have on the ground today.',
+    sections: [
+      {
+        heading: 'Our Dubai Car Rental Fleet at a Glance',
+        content:
+          "LuxeClub's Dubai rental fleet is intentionally curated — 80+ cars rather than 500+, with the focus on vehicles where we know the exact service history, the exact current condition, and we can stand behind the pickup state. The fleet groups into five categories.\n\n**Luxury sedans and grand tourers** — Mercedes S-Class, BMW 7-Series, Bentley Continental GT, Rolls-Royce Ghost, Porsche Panamera, Audi RS6 / RS7. The category to pick when you want presence without the theatre of a supercar.\n\n**Performance and supercars** — Lamborghini Huracán (EVO, STO, Spyder), Lamborghini Revuelto, Ferrari Roma, Ferrari 488, Ferrari F8 Tributo, Ferrari SF90, McLaren 720S, McLaren 765LT, Aston Martin Vantage, Audi R8 Spyder, Porsche 911 Turbo S. The theatrical end of the fleet.\n\n**Luxury SUVs** — Bentley Bentayga, Rolls-Royce Cullinan Mansory, Lamborghini Urus, Ferrari Purosangue, Mercedes-AMG G63, Audi RSQ8, Range Rover Vogue, Porsche Cayenne and Macan, Mercedes GLE/GLS, BMW X5/X6/X7, Aston Martin DBX, Maserati Levante, Cadillac Escalade, Jeep Trackhawk. The single most popular category with visiting families and resident renters alike.\n\n**Convertibles** — Rolls-Royce Dawn, Bentley Continental GTC, Ferrari Portofino, Aston Martin DB11 Volante, Lamborghini Huracán Spyder, Porsche 911 Cabriolet, Audi R8 Spyder. The evening-drive and 'Dubai Marina at sunset' category.\n\n**Daily-driver premium** — Audi A3, Audi Q3, Audi RS3, BMW 5-Series, Mercedes E-Class, Porsche Macan. The category most residents and longer-stay visitors actually spend the most time in — proper premium cars at AED 350–1,500 a day.\n\nAll cars are 2022 or newer, serviced before every rental, and delivered with a full walkthrough of modes, driver-assist features, and fuel/charging instructions. Live availability and current daily rates are shown on the vehicle cards below.",
+      },
+      {
+        heading: 'Why Rent a Car in Dubai Instead of Using Taxis or Careem',
+        content:
+          "Dubai has one of the best taxi and rideshare networks in the world — fares are low, drivers are professional, and availability is near-instant across the city. So why rent a car at all? Three reasons, in order of importance.\n\n**The drive itself.** Dubai is one of the world's great driving cities. The road network is brand new, the surfaces are smooth, the scenery ranges from floor-to-floor glass skyscrapers to open desert within a 20-minute drive, and there are three of the best driving roads on the planet (Jebel Jais, Hatta, and the Al Qudra desert stretch) within 90 minutes of Dubai Marina. If you have any interest in driving, Dubai rewards it more than almost anywhere else on Earth. A rental car is how you get that.\n\n**Cost beyond 2–3 rides per day.** Once you start doing four or more car journeys in a day — which happens naturally if you're visiting Atlantis, Palm Jumeirah, Downtown, and Marina across the same day — rental car economics beat Careem and Uber decisively. The break-even on a Porsche Macan rental day (around AED 900) is roughly six Careem rides across central Dubai. The break-even on a Huracán is higher, but the Huracán isn't really a Careem substitute — it's a different product.\n\n**Salik, parking, and the airport run.** Salik tolls are AED 6 per gate and add up fast on Careem — the driver passes them on, often with a mark-up. DXB airport runs from Marina are AED 120-140 in a taxi each way, on top of luggage-management friction. And Dubai's mall parking is genuinely abundant and cheap or free — parking your own car at Dubai Mall or Mall of the Emirates is simpler than queuing for a valet-held Uber. Rental often wins once you add it all up.\n\nThe argument for Careem and taxis is narrow but real: short night-out trips where you plan to drink, airport arrivals where you're jet-lagged, and anything in central DIFC during weekday rush hour where parking genuinely is a headache. For almost every other use case a Dubai rental car wins.",
+      },
+      {
+        heading: 'Best Cars to Rent in Dubai by Use Case',
+        content:
+          "Dubai car rental searches typically come from people who know the destination but aren't sure which car matches their specific trip. A short map to cut through the decision:\n\n**For a 2–3 day visitor trip where you want one memorable drive**, book a Lamborghini Huracán EVO or a Ferrari Roma for 24 hours. AED 2,500–3,000 delivered to your hotel for one day is the sweet spot for a supercar experience that doesn't eat the trip budget.\n\n**For a weekend with friends or a couple's trip**, an Audi R8 Spyder or Porsche 911 Cabriolet in convertible spec, or a Bentley Continental GTC. The roof-down drive along Jumeirah Beach Road at sunset is one of the signature Dubai experiences and a convertible is the only car that makes it work.\n\n**For a family of four on a 3–7 day trip**, a Bentley Bentayga, Audi RSQ8, or Range Rover Vogue. All three have the presence that most families book luxury in Dubai for, plus the space, ride quality, and luggage capacity to handle DXB arrivals, Palm Jumeirah day trips, and the Hatta or Jebel Jais weekend without compromise.\n\n**For a family of five to seven**, the Mercedes GLS, BMW X7, Audi SQ7, or Cadillac Escalade. All have proper three-row seating rather than the 5+2 kids-only third rows you get in some other SUVs.\n\n**For a week or more as a visiting professional**, a Porsche Macan, Audi RS5, Mercedes C-Class or E-Class. The right bracket for the AED 800–1,800 per day range where you want a proper premium car without the supercar daily cost.\n\n**For a month or longer as a resident**, look at the weekly and monthly rates rather than the daily rates. The monthly savings are typically 45–55% per day versus the daily headline — a Bentley Bentayga at AED 33,000/month is effective AED 1,100/day.\n\n**For a wedding, music video, or event**, the Rolls-Royce Cullinan Mansory, Rolls-Royce Dawn, Rolls-Royce Ghost, Lamborghini Revuelto, or Ferrari SF90. The top of the fleet specifically. Book early — the dramatic cars in this range typically go three to six weeks out on peak Fridays and Saturdays.",
+      },
+      {
+        heading: "What's Included in Every Dubai Car Rental",
+        content:
+          "Every single rental from LuxeClub ships with the same core inclusions regardless of which car you choose.\n\n**Comprehensive insurance** is bundled into the daily rate on every car on the fleet. No 'basic cover' trap, no upsell at pickup. First-loss excess is typically one day's rental on mainstream cars and higher on the supercar and Rolls-Royce end of the fleet.\n\n**Delivery** to any address inside Dubai — your hotel, apartment, office, DXB, or DWC. Free on monthly rentals. Daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge. No surcharge for standard-hour DXB pickup. Delivery to other emirates is available for a small fee.\n\n**Generous mileage** — 250 km per day on daily rentals, 1,500 km per week on weekly rentals, and unlimited on most monthly rentals. Unlimited-mileage upgrades are available on daily and weekly rentals if you plan Jebel Jais, Hatta, or an Abu Dhabi day trip.\n\n**The reservation fee model** — AED 495 at booking to secure the specific car on specific dates. The balance is paid in person on pickup day and the AED 495 deducts from your total. No pre-authorised deposit tying up thousands on your card for weeks.\n\n**Optional no-deposit pickup** — a flat AED 200 surcharge replaces the damage hold entirely. Popular with shorter rentals on mainstream cars.\n\n**24/7 WhatsApp support** for the duration of your rental. Flat tyre, Salik question, route help — one number handles it.\n\n**Pickup walkthrough** — every car is delivered with a hands-on walkthrough covering modes, driver-assist, fuel or charging, and local context relevant to the specific car.\n\n**Add-ons handled up front** — child seats, additional drivers, airport meet-and-greet, and the Oman insurance rider are all booked at the same time as the car and invoiced together, not as surprises at pickup.",
+      },
+      {
+        heading: 'Dubai Car Rental Prices — Daily, Weekly, Monthly',
+        content:
+          "Our Dubai car rental rates span the full market from AED 350 per day for compact premium SUVs to AED 12,000+ per day for the Lamborghini Revuelto and Rolls-Royce Cullinan Mansory. The pricing structure is consistent across the fleet.\n\n**Daily rates** suit 1–3 day rentals where you want maximum flexibility. The daily rate is the headline number shown on each vehicle card.\n\n**Weekly rates** save roughly 30–35% per day versus daily. If you're in Dubai for five days or more, always ask for the weekly rate — the extra days often cost less than the daily penalty would.\n\n**Monthly rates** save roughly 45–55% per day versus the daily headline. This is where residents, relocated professionals, and long-stay visitors typically land.\n\nIndicative daily rates across common categories:\n\n**Compact premium SUVs** (Audi Q3, Porsche Macan entry trim): from AED 350–900/day\n**Mid-tier premium** (Audi RS3, Mercedes C-Class, BMW 5-Series): AED 600–1,500/day\n**Luxury sedans and GT** (Bentley Continental GT, Porsche Panamera, Audi RS7): AED 1,500–2,500/day\n**Luxury SUVs** (Bentayga, RSQ8, Range Rover Vogue, G63): AED 1,400–3,000/day\n**Sports cars and entry supercars** (Porsche 911 Turbo S, Audi R8, Aston Martin Vantage): AED 1,800–3,500/day\n**Supercars** (Lamborghini Huracán, Ferrari 488/F8/Roma, McLaren 720S): AED 2,500–5,000/day\n**Hypercars and Rolls-Royce** (Lamborghini Revuelto, Ferrari SF90, Rolls-Royce Cullinan Mansory, Rolls-Royce Dawn): AED 5,000–12,000/day\n\nAll rates include insurance, delivery across Dubai, and 24/7 support. Exact current rates for your dates are shown on each vehicle's booking page below.",
+      },
+      {
+        heading: 'Before You Rent: What You Need to Know About Driving in Dubai',
+        content:
+          "A short primer for visitors renting a car in Dubai for the first time.\n\n**Licence requirements:** UAE residents need Emirates ID and UAE licence. Tourists need their home-country licence plus an International Driving Permit (IDP). The IDP is non-negotiable on any performance car — we cannot waive it.\n\n**Minimum age** is 21 for most of the mainstream fleet (A3, Q3, 5-Series, Macan, etc.), 23 for most luxury cars, 25 for the performance SUVs and supercars, and 27 for the halo cars (Revuelto, SF90, Cullinan Mansory, Purosangue).\n\n**Salik** is the Dubai toll system — AED 6 per gate crossing, deducted automatically and passed through at cost at the end of the rental. Sheikh Zayed Road has four gates, Al Maktoum Bridge has one, Airport Tunnel has one, and Jebel Ali has one.\n\n**Speed cameras** are extensive and fines are real money. The published limit on Sheikh Zayed Road is 120 km/h with a 20 km/h buffer — cameras start reading at 140. On city streets (Jumeirah Beach Road, Al Wasl Road, etc.) the limit is typically 60–80 km/h with tighter tolerances.\n\n**Parking** is cheap or free across most of Dubai — mall parking in particular is almost always free, except at Dubai Mall during peak hours where there's a time-based charge. Paid parking zones exist in central areas and are managed via RTA app or SMS.\n\n**Fuel** is inexpensive by international standards (around AED 3 per litre for 95 octane). You're expected to return the car with the same fuel level you received it.\n\n**Abu Dhabi, Sharjah, Ras Al Khaimah, Ajman, Fujairah** are all inside the UAE and covered by the insurance. Oman is a different country and requires additional paperwork — we can arrange this at booking.\n\nFor the full driving primer see our [Dubai driving rules guide for tourists](/guides/dubai-driving-rules-for-tourists) and our [guide to Dubai's best driving roads](/guides/best-driving-roads-dubai-uae).",
+      },
+      {
+        heading: 'How much does car rental in Dubai cost?',
+        isFaq: true,
+        content:
+          "Car rental in Dubai spans from around AED 350 per day for a compact premium SUV (Audi Q3, Porsche Macan entry trim) to AED 12,000+ per day for the top of the fleet (Lamborghini Revuelto, Rolls-Royce Cullinan Mansory, Ferrari SF90). Most visitor bookings land in the AED 800–3,000 per day band, which covers Mercedes C-Class / E-Class through to Range Rover Vogue, Bentayga, and the Huracán EVO. Weekly rates save roughly 30–35% per day versus daily, and monthly rates save roughly 45–55%. If you're renting for five days or more, always ask for the weekly rate — the extra days often cost less than the daily penalty.",
+      },
+      {
+        heading: 'Do I need an International Driving Permit to rent a car in Dubai?',
+        isFaq: true,
+        content:
+          "Yes, if you're a tourist. UAE residents drive on their UAE licence with Emirates ID. Tourists need both their home-country driving licence and an International Driving Permit (IDP) — we cannot waive this requirement, particularly on any performance car, because the insurance depends on it. IDPs are cheap and quick to get in most countries (usually issued same-day by the country's automobile association). Some visitors from specific countries (UK, US, EU, and a handful of others) can drive on their home licence alone for short tourist rentals of standard cars, but the IDP is still the safe bet because it removes any ambiguity at pickup and is explicitly required on the supercar and luxury-SUV end of our fleet.",
+      },
+      {
+        heading: 'Is insurance included in the car rental price in Dubai?',
+        isFaq: true,
+        content:
+          "Yes — every LuxeClub rental includes comprehensive insurance bundled into the daily, weekly, and monthly rate. No 'basic cover' trap, no tiered coverage, no pressure to buy upgraded protection at pickup. The first-loss excess is typically one day's rental on mainstream cars and higher on the supercar and Rolls-Royce end of the fleet. If you want a lower excess, we offer an excess-waiver add-on for a small additional daily fee on most of the fleet. The insurance covers the entire UAE (all seven emirates). Oman requires a separate 'orange card' rider which we can arrange at booking.",
+      },
+      {
+        heading: 'Do you deliver rental cars to the airport or hotel?',
+        isFaq: true,
+        content:
+          "Yes — we deliver to any address in Dubai: your hotel, apartment, office, Dubai International Airport (DXB), or Al Maktoum International (DWC). Delivery is free on monthly rentals. Daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge, covering the full emirate including DXB and DWC. For very late-night or very early-morning flights we may apply a small unsocial-hours fee which is disclosed at booking. Delivery to Abu Dhabi, Sharjah, or Ras Al Khaimah is available for a larger fee based on distance. We also offer airport meet-and-greet as an add-on — the driver meets you at arrivals with a name sign, walks you to the car, and does the walkthrough before leaving you to drive.",
+      },
+      {
+        heading: 'Can I rent a car in Dubai without a deposit?',
+        isFaq: true,
+        content:
+          "Yes — we offer an explicit no-deposit option at pickup. Our standard model is a reservation fee of AED 495 at booking to secure the car, with a refundable damage deposit of AED 1,000–3,000 (depending on the vehicle type) placed on your credit card at pickup. If you prefer to skip the deposit entirely, a flat AED 200 surcharge replaces the hold. Most visitors on shorter rentals take the no-deposit option. On higher-value cars (Cullinan Mansory, Revuelto, SF90, Purosangue) the no-deposit option works slightly differently and we'll walk you through the specifics when you book. See our [low-deposit luxury car rental page](/luxury-car-rental-no-deposit-dubai) for more detail.",
+      },
+      {
+        heading: 'What happens if I get a traffic fine or Salik charge in the rental?',
+        isFaq: true,
+        content:
+          "Salik tolls (AED 6 per gate) are deducted automatically from our fleet account and passed through at cost at the end of the rental — we don't mark them up. Traffic fines are also billed to the rental company first and then forwarded to the renter at cost plus a small admin fee for processing (this is standard across the Dubai rental market). We send a transparent breakdown of every fine showing the date, location, and camera, so you can verify against your actual driving. Fines for tinting violations, reckless driving, or 60 km/h-over-the-limit speeding are treated more seriously and may affect your deposit — we'll flag these immediately rather than at the end of the rental.",
+      },
+    ],
     filter: { type: 'keyword', value: '' },
   },
   {
@@ -1176,32 +1246,193 @@ export const moneyPages: MoneyPage[] = [
     heading: 'Exotic Car Rental Dubai',
     subheading: 'Drive the cars most people only see in photos.',
     content:
-      'Dubai is one of the few places on Earth where driving an exotic car feels completely natural. The roads are built for it, the weather is perfect for it, and the city itself is the backdrop these cars were designed for. Our exotic fleet includes Lamborghini, Ferrari, McLaren, Aston Martin, and more. Every rental comes with comprehensive insurance and free delivery to your hotel, apartment, or the airport.',
+      'Dubai is one of the few places on Earth where driving an exotic car feels completely natural. The roads are built for it, the weather is perfect for it, and the city itself is the backdrop these cars were designed for. Our exotic fleet includes Lamborghini, Ferrari, McLaren, Aston Martin, and more. Every rental comes with comprehensive insurance and delivery across Dubai — free on monthly rentals, a flat surcharge on shorter rentals.',
     filter: { type: 'keyword', value: '' },
   },
   {
     slug: 'luxury-car-rental-no-deposit-dubai',
-    title: 'Luxury Car Rental Dubai — Low Deposit',
-    metaTitle: 'Luxury Car Rental Dubai No Deposit Hassle — Low Deposit',
+    title: 'Luxury Car Rental Dubai — No Deposit',
+    metaTitle: 'Luxury Car Rental Dubai No Deposit — Book Online from AED 495',
     metaDescription:
-      'Rent luxury cars in Dubai with the lowest deposits in the market. Deposit equals just one day\'s rental. Full refund guaranteed. No hidden deductions.',
-    heading: 'Luxury Car Rental Dubai — Low Deposit, No Hassle',
-    subheading: 'Your deposit equals one day\'s rental. And you actually get it back.',
+      'Rent luxury cars in Dubai with no deposit. AED 495 reservation fee holds your car, balance paid at pickup. Insurance included, delivery free, no hidden deductions.',
+    heading: 'Luxury Car Rental Dubai — No Deposit, No Hassle',
+    subheading: 'A no-deposit option is available for eligible drivers.',
     content:
-      'Tired of rental companies holding your deposit hostage? At LuxeClub, your security deposit is just one day\'s rental rate. Pay by credit card and no money even leaves your account — we place a hold that gets released once you return the car in good condition. No inflated deposits, no phantom deductions, no months of chasing. We document everything with timestamped photos at pickup and return so there are never any surprises. It is how car rental should work.',
+      "Dubai car rental is famous for one particular kind of pain — the deposit. Most companies in the city hold AED 3,000–10,000 on your credit card for the duration of the rental, often for weeks after you return the car, with slow refunds and unexpected deductions. LuxeClub works differently. You pay AED 495 at booking to secure your car on your dates, the balance is paid at pickup, and a standard damage deposit of AED 1,000–3,000 (depending on the vehicle type) is placed on your card at that point as a refundable hold. For eligible drivers (aged 23 or over, with a clean driving history), we may be able to offer a no-deposit pickup in lieu of the hold — this is reviewed per booking based on the car, rental length, and driver profile, and confirmed before pickup rather than promised blindly up front.",
+    sections: [
+      {
+        heading: 'No Deposit Rental — How It Works',
+        content:
+          "Our rental model is designed to remove as much friction as possible from the booking and pickup experience. It runs in three clear stages.\n\n**Stage 1 — Reservation.** You choose a car and dates on the site and pay a flat AED 495 reservation fee by card. That payment secures the vehicle on your specific dates and counts towards your total — if the rental is AED 3,000, you pay AED 2,505 at pickup, not AED 3,000 on top of the AED 495.\n\n**Stage 2 — Pickup day.** You pay the remaining balance of the rental in person on pickup day. Card, bank transfer, cash, and crypto (USDT, BTC, ETH) are all accepted. At this point we place a refundable damage deposit of AED 1,000–3,000 on your credit card — the exact amount depends on the vehicle type. For eligible drivers (aged 23 or over, with documentation in order and a clean driving history), we may be able to offer a no-deposit pickup in lieu of that hold — typically for a flat surcharge added to the rental total. Eligibility is confirmed at booking, not held as a surprise at pickup.\n\n**Stage 3 — Return.** For standard deposits, the hold is released within 10 working days of return, assuming no damage or fines. For no-deposit rentals, there's nothing to release — we walk the car around, confirm there are no issues, and you drive off.\n\nThe reservation fee is the single non-refundable part of the model if you cancel within 24 hours of the rental start. Cancellations more than 24 hours out get a full refund of the AED 495 within 5–10 business days.",
+      },
+      {
+        heading: 'Rent a Car Without Deposit in Dubai',
+        content:
+          "Looking to rent a car without a deposit in Dubai? LuxeClub is one of the few luxury rental companies in the city that handles the deposit question transparently. Rather than promising no-deposit as a universal policy, we treat it as a case-by-case option for eligible drivers — confirmed in advance based on the specific vehicle, rental length, and driver profile, not held as a surprise at pickup.\n\nOur default across the fleet is a refundable damage hold of AED 1,000–3,000 at pickup (depending on the vehicle type), released within 10 working days of return. For drivers aged 23 or over with documentation in order and a clean driving history, we can often replace that hold with a flat surcharge added to your rental total — no pre-authorisation on the card, no weeks of chasing a refund.\n\nThe sections below cover exactly how our no-deposit rental model works, the rental conditions you should know before booking, the documents you need (different for tourists and UAE residents), which cars are typically open to the no-deposit review, and the Dubai pickup locations we cover. If the no-deposit option matters to you, flag it when you book — we'll confirm eligibility before pickup rather than at pickup.",
+      },
+      {
+        heading: 'How Our Deposit Policy Works',
+        content:
+          "Dubai rental companies handle deposits differently and it pays to understand how ours works before you book.\n\n**Standard deposit (default).** At pickup we place a refundable hold on your credit card of AED 1,000–3,000, depending on the vehicle type. The hold is released within 10 working days of return, subject to no damage or fines. The cash-equivalent cost is zero, but you need available credit on your card for the duration. This is our default across the fleet and what most renters use.\n\n**No-deposit pickup (case-by-case for eligible drivers).** For drivers aged 23 or over, with documentation in order and a clean driving history, we may be able to offer a no-deposit pickup — typically via a flat surcharge added to your rental total in lieu of the hold. Eligibility is reviewed per booking rather than promised up front, because the maths depend on the car, the rental length, and the driver profile. If you'd like to be considered for the no-deposit option, tell us at booking and we'll confirm (or decline) before pickup rather than at pickup.\n\n**Halo cars.** For the Lamborghini Revuelto, Rolls-Royce Cullinan Mansory, Ferrari SF90, and Ferrari Purosangue specifically, the underlying vehicle value requires a larger damage hold regardless of the deposit option chosen — we walk you through the exact number at booking.\n\nIn every case the AED 495 reservation fee works the same way and counts towards your total. The deposit conversation happens at booking, not as a surprise at pickup — you always know where you stand before you arrive to collect the car.",
+      },
+      {
+        heading: 'Rental Conditions at a Glance',
+        content:
+          "The core conditions that apply across our rentals.\n\n**Reservation fee:** AED 495 at booking, deducted from your total at pickup.\n**Damage deposit:** AED 1,000–3,000 depending on the vehicle type, refundable hold on credit card at pickup.\n**No-deposit option:** case-by-case for eligible drivers aged 23 or over — confirmed at booking.\n**Insurance:** comprehensive, bundled into every daily, weekly, and monthly rate. Covers all seven emirates.\n**Minimum driver age:** 21 for mainstream cars, 23 for most luxury, 25 for performance SUVs and supercars, 27 for halo cars (Revuelto, Cullinan Mansory, SF90, Purosangue).\n**Minimum driving experience:** 1 year on your home-country or UAE licence.\n**Mileage:** 250 km per day, 1,500 km per week, 4,500 km per month. Unlimited upgrades available.\n**Delivery:** free within Dubai on monthly rentals; daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge. Paid delivery to other emirates.\n**Payment methods:** card, bank transfer, cash, crypto (USDT, Bitcoin, Ethereum).\n**Salik tolls:** AED 6 per gate, passed through at cost at end of rental.\n**Traffic fines:** billed at cost plus a small admin fee for processing, with a transparent breakdown.\n**Cancellation:** full refund on reservation fee if cancelled more than 24 hours before rental start.\n**Rental extensions:** supported via WhatsApp at the same daily, weekly, or monthly rate.",
+      },
+      {
+        heading: 'Required Documents — Tourists vs UAE Residents',
+        content:
+          "The paperwork for a Dubai no-deposit luxury car rental splits cleanly by whether you live in the UAE or are visiting.\n\n**If you are a tourist visiting the UAE, bring:**\n\n**Passport** — original, valid for the entire rental period.\n**Home-country driving licence** — valid, not expired, issued at least 12 months ago.\n**International Driving Permit (IDP)** — mandatory on all performance cars and recommended on every rental. IDPs are usually issued same-day by your country's automobile association.\n**Credit card in your own name** — used for the reservation fee online and for any damage deposit at pickup. Debit cards are accepted at pickup for the balance but cannot be used for the deposit hold.\n**Entry stamp or UAE visa** — we verify this at pickup to confirm your tourist status.\n\n**If you are a UAE resident, bring:**\n\n**Emirates ID** — original, valid.\n**UAE driving licence** — valid, not expired.\n**Credit card in your own name** — same rules as above. Resident customers on longer rentals can sometimes substitute bank transfer for the deposit hold; ask at booking.\n**UAE-registered mobile number** — for rental communication, Salik verification, and fine processing.\n\n**For corporate or company rentals** we accept trade licence, company stamp, and authorisation letter from an empowered signatory. Let us know at booking if you need an invoice made out to a company name rather than an individual.",
+      },
+      {
+        heading: 'Which Cars and Drivers Are Eligible for the No-Deposit Option?',
+        content:
+          "The no-deposit option is reviewed per booking rather than guaranteed on any specific car or to any specific customer. Two filters apply.\n\n**Driver eligibility.** You must be aged 23 or over, hold a valid licence of at least 12 months, be renting on your own credit card, and either be a returning LuxeClub customer or pass our standard rental-history check. Drivers under 23 are not eligible for the no-deposit option on any car — they can still rent from us under the standard deposit model, which is how most first-time rentals begin.\n\n**Car-specific review.** Most mainstream luxury cars in our fleet (Audi, BMW, Mercedes, Porsche, Range Rover, Bentley Continental and Bentayga, mid-range Ferrari and Lamborghini, and similar) are open to the no-deposit review for eligible drivers. The halo cars — Lamborghini Revuelto, Ferrari SF90, Ferrari Purosangue, Rolls-Royce Cullinan Mansory, Rolls-Royce Ghost, Rolls-Royce Dawn — have a higher underlying value and are reviewed more tightly; a larger refundable deposit is usually the practical path on these cars, even for fully eligible drivers.\n\nIf the no-deposit option matters to you, tell us at booking. We'll review your profile against the specific car and rental length, and confirm (or decline) before pickup rather than at pickup — there are no surprises on the day. The scroll below shows live availability across the fleet sorted by daily rate.",
+      },
+      {
+        heading: 'Popular Dubai Locations for No-Deposit Rental Pickup',
+        content:
+          "We deliver to every address in Dubai. Monthly rentals include delivery and pickup at no charge; daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge (outside Dubai is priced separately). The most common pickup locations we handle on a weekly basis:\n\n**Dubai Marina and JBR** — the single highest-volume delivery area for luxury car rental in Dubai. Covers the Marina Walk towers, the JBR strip, and Bluewaters Island. Typically a 30-minute delivery window from our dispatch.\n\n**Downtown Dubai and DIFC** — including Burj Khalifa residences, the Address Downtown, ICD Brookfield Place, Gate Village, and the Emirates Towers strip.\n\n**Palm Jumeirah and Atlantis** — the full trunk, frond residences, Atlantis The Royal, Atlantis The Palm, FIVE Palm, One&Only. Popular for Cullinan, Bentayga, and Huracán Spyder bookings specifically.\n\n**Business Bay** — covering Damac Paramount Tower, the Business Bay bridge residential strip, and the Executive Towers. Our base of operations is nearby at Binary Tower, 32 Marasi Drive, so Business Bay deliveries are the fastest in the city.\n\n**Jumeirah and Al Wasl** — covering Jumeirah 1, 2, 3 villas, Madinat Jumeirah, Burj Al Arab residences, and Umm Suqeim. Common pickup area for longer-stay visitors on villa rentals.\n\n**Dubai International Airport (DXB)** — we meet you at arrivals for Terminal 1 and Terminal 3 with a named driver. Covered by the standard delivery arrangement (free on monthly rentals, AED 110 + AED 110 on daily/weekly). Small unsocial-hours fee may apply for very early or very late flights.\n\n**Al Maktoum International (DWC)** — both the private-jet terminal and the main passenger terminal are covered by the standard delivery arrangement. Most DWC rentals are private-aviation customers who book the larger SUVs (Cullinan, Bentayga, Purosangue) for group transfers.\n\n**Emirates Hills, Arabian Ranches, Dubai Hills, and the Meadows** — handled daily on weekly and monthly rentals.\n\n**DIFC, Burj Khalifa, ICD Brookfield** — business-focused rentals with weekday pickup windows.\n\nOutside Dubai — Abu Dhabi, Sharjah, Ras Al Khaimah — we deliver for a paid fee and can arrange airport pickup at Zayed International (AUH) and Sharjah International (SHJ) with advance notice.",
+      },
+      {
+        heading: 'Why Customers Choose LuxeClub for No-Deposit Rental',
+        content:
+          "Dubai customers choose the LuxeClub no-deposit model over the traditional deposit-heavy rental model for four reasons.\n\n**No money tied up for weeks.** The single biggest complaint about Dubai car rental is deposit-return friction — holds that don't release, phantom deductions, and the admin overhead of chasing money back. The AED 200 surcharge option removes that entirely. For a 7-day rental on a Porsche Macan, the alternative to our model is typically AED 5,000–8,000 held for 3+ weeks elsewhere.\n\n**Transparent pricing from the start.** Every price shown on our site is the price you pay. Salik is passed through at cost. Fines are passed through at cost plus a transparent admin fee. There are no 'cleaning charges,' no 'airport surcharges,' and no 'fuel handling fees.' If you see AED 2,500/day on a car's page, your rental maths are AED 2,500 × days + AED 200 no-deposit surcharge (if chosen) + Salik at cost.\n\n**Review-led service.** We run on Google Reviews and WhatsApp feedback — our returning customers and referral rate are the single biggest driver of new bookings. Every rental ends with a WhatsApp follow-up asking for honest feedback, and that feedback loop is the main reason our service standards compound rather than decay over time.\n\n**Direct contact with a real team.** WhatsApp, phone, email — every message gets answered by a human from our team, usually within minutes during business hours. For a no-deposit rental in particular this matters because the pickup and return conversations are simple and personal rather than bureaucratic.",
+      },
+      {
+        heading: 'Ready to Book a No-Deposit Luxury Rental',
+        content:
+          "Browse the fleet below — every car on the list is available under the no-deposit model. Pick your dates, pay the AED 495 reservation fee, and choose the deposit option (or not) at pickup.\n\nFor direct help, call or WhatsApp **+971 58 808 6137** or email **bookings@luxeclubrentals.com**. The team operates 24/7 for active rentals and until late evening for new bookings.\n\nOffice: Binary Tower, 32 Marasi Drive, Business Bay, Dubai.",
+        whatsapp: {
+          label: 'Chat on WhatsApp',
+          href: 'https://wa.me/971588086137?text=Hi%2C%20I%27d%20like%20to%20book%20a%20luxury%20rental%20with%20the%20no-deposit%20option.',
+        },
+      },
+      {
+        heading: 'How does the AED 495 reservation fee work?',
+        isFaq: true,
+        content:
+          "The AED 495 reservation fee is paid online at the time of booking to secure the specific car on your specific dates. It counts towards your total — if the rental is AED 3,000, you pay AED 2,505 at pickup, not AED 3,000 on top. Full refund if you cancel more than 24 hours before rental start; non-refundable if cancelled within 24 hours or on no-show. The fee is what lets us commit the car to your dates without asking for thousands up front.",
+      },
+      {
+        heading: 'Who is eligible for the no-deposit option?',
+        isFaq: true,
+        content:
+          "The no-deposit option is reviewed per booking and is available to drivers aged 23 or over who hold a valid licence of at least 12 months, are renting on their own credit card, and either are returning LuxeClub customers or pass our standard rental-history check. Drivers under 23 are not eligible for the no-deposit option on any car — the standard refundable deposit model is the path for first-time and younger renters. If you'd like to be considered, flag it at the time of booking and we'll confirm before pickup. We prefer to confirm or decline in advance rather than make the decision at pickup, so you always know where you stand before you collect the car.",
+      },
+      {
+        heading: 'How does the no-deposit option actually work?',
+        isFaq: true,
+        content:
+          "For approved drivers, we add a fixed surcharge to your rental total in lieu of placing a refundable damage hold on your credit card. The surcharge amount depends on the car value and the rental length — we confirm it at booking so there are no surprises at pickup. On halo cars (Revuelto, SF90, Purosangue, Cullinan Mansory, Dawn, Ghost) the surcharge maths are different because of the underlying vehicle value, and the standard deposit route is often the more practical choice even for eligible drivers.",
+      },
+      {
+        heading: 'What documents do I need for a no-deposit rental as a tourist?',
+        isFaq: true,
+        content:
+          "Tourists need: passport (valid for the rental period), home-country driving licence (issued at least 12 months ago), International Driving Permit (mandatory on all performance cars, recommended on every rental), credit card in your own name, and your UAE entry stamp or visa. The IDP is the single most-forgotten document — it's cheap and usually same-day in your home country via the local automobile association. If you arrive without one, we can point you to the RTA-approved expedited service in Dubai, but the extra step typically means a 1-day delay on the rental start. Residents just need Emirates ID and UAE licence.",
+      },
+      {
+        heading: 'Can I pay the balance in crypto at pickup?',
+        isFaq: true,
+        content:
+          "Yes — USDT (TRC-20 or ERC-20), Bitcoin, Ethereum, and a handful of other major tokens are accepted for the balance at pickup. The rate is set at the time of payment against a live exchange feed. The AED 495 reservation fee is paid online and can also be paid in crypto via our NowPayments integration. Crypto is particularly common for longer-stay visitors and relocated residents who prefer to keep USD-pegged liquidity rather than exchange into dirhams at a bank. See our [Bitcoin rental guide](/guides/rent-car-dubai-cryptocurrency-bitcoin) for the full detail.",
+      },
+      {
+        heading: 'Is insurance included on a no-deposit rental?',
+        isFaq: true,
+        content:
+          "Yes — comprehensive insurance is bundled into every rental on the fleet, including every no-deposit rental. Coverage extends across all seven emirates (Dubai, Abu Dhabi, Sharjah, Ajman, Fujairah, Umm Al Quwain, Ras Al Khaimah). The first-loss excess varies by car value — typically one day's rental on mainstream cars and higher on halo cars. An excess-waiver add-on is available for a small additional daily fee. The no-deposit option does not change the insurance position at all — you get the same cover either way.",
+      },
+      {
+        heading: 'Can I extend my no-deposit rental in Dubai?',
+        isFaq: true,
+        content:
+          "Yes — rental extensions are straightforward and handled via WhatsApp. Message us at +971 58 808 6137 at least 24 hours before your original return date and we confirm the extension at the same daily, weekly, or monthly rate. Extensions don't trigger a new reservation fee or a new no-deposit surcharge — the original ones remain in place. The only situation where we can't extend is if the car is already booked for the following day by another customer, in which case we'll swap you onto an equivalent car if one is available.",
+      },
+    ],
     filter: { type: 'keyword', value: '' },
   },
   // ── Type pages ───────────────────────────────────────────
   {
     slug: 'rent-luxury-suv-in-dubai',
     title: 'Luxury SUV Rental Dubai',
-    metaTitle: 'Luxury SUV Rental Dubai — Hire an SUV',
+    metaTitle: 'Luxury SUV Rental Dubai — Bentayga, Cullinan, Urus, G63',
     metaDescription:
-      'Rent a luxury SUV in Dubai. Range Rover, G63, Bentayga, Cullinan, Urus and more. Insurance included, delivery across Dubai.',
+      'Luxury SUV rental in Dubai — Bentley Bentayga, Rolls-Royce Cullinan, Lamborghini Urus, Mercedes G63, Audi RSQ8 and more. Insurance and delivery included.',
     heading: 'Luxury SUV Rental Dubai',
     subheading: 'Space, comfort, and presence. The SUVs that turn heads in Dubai.',
     content:
-      'Dubai was made for luxury SUVs. Wide highways, desert roads, and enough valet lines to appreciate the size and presence of a proper SUV. From the Rolls Royce Cullinan to the Lamborghini Urus, our SUV fleet covers the full spectrum. Insurance and delivery included on every rental.',
+      'Dubai was designed around the luxury SUV. Wide highways, the valet culture at Atlantis, Palm Jumeirah and DIFC, weekend trips to Hatta or the Oman border, family airport runs from DXB — the luxury SUV is the most useful performance car you can rent in Dubai, and it is also the one that tends to carry the most presence in the city. Our SUV fleet spans the full market, from the Audi Q3 at under AED 400 a day to the Rolls-Royce Cullinan Mansory and Ferrari Purosangue at the top of the range. Every SUV is delivered to your door with comprehensive insurance included.',
+    sections: [
+      {
+        heading: 'Available Luxury SUVs at LuxeClub',
+        content:
+          "Our luxury SUV fleet in Dubai is one of the deepest in the city, covering the full spectrum from entry-level compact premium SUVs to full-Mansory Rolls-Royces. The short list of what's usually on the fleet:\n\n**Bentley Bentayga** — our most-rented luxury SUV and one we own directly rather than source from partners. Two colours (black and brown) in the standard 550bhp W12 spec, plus the more aggressive **Bentayga S** with sharper dynamics. From AED 2,200 a day. Best-in-class cabin quietness and the most usable luxury SUV for families.\n\n**Rolls-Royce Cullinan Mansory** — the single most dramatic SUV in the Dubai rental market. Full Mansory body kit, bespoke leather, and the 563bhp twin-turbo V12 underneath. This is the SUV for weddings, music-video shoots, and any occasion where the car itself is part of the event.\n\n**Lamborghini Urus** — the fastest production SUV on sale (0-100 in 3.6s, 305 km/h top speed). Available in black and yellow. From AED 3,000 a day. Best combination of supercar performance and SUV practicality in the entire fleet.\n\n**Mercedes-AMG G63** — the most iconic luxury SUV in Dubai, full stop. 577bhp V8, 0-100 in 4.5 seconds, and the only SUV in the fleet where 'it looks like a Lego brick' is part of the appeal. Also available in **G63 6x6** spec on select dates.\n\n**Audi RSQ8** — we own this one outright. 591bhp twin-turbo V8, 0-100 in 3.8 seconds (quicker than the Urus), Bang & Olufsen audio, and the best-value 500+bhp luxury SUV rental in Dubai at AED 1,400 a day.\n\n**Ferrari Purosangue** — Ferrari's first SUV, 715bhp naturally-aspirated V12, and one of the rarest SUVs on the Dubai rental market. We have one on the fleet and it typically books out weeks in advance.\n\n**Range Rover Vogue** — the classic British luxury SUV, still the benchmark for ride quality, still the car most in-demand for hotel transfers and long drives to Fujairah or RAK.\n\n**Porsche Cayenne** and **Porsche Macan** — the two Porsche SUVs, sitting in the sports-SUV bracket for drivers who want handling over outright presence.\n\n**BMW X5, X6, X7** — the full BMW X-range for customers who want the specific BMW driving character in SUV form.\n\n**Mercedes GLE and GLS** — the practical three-row mainstream-luxury SUV options.\n\n**Maserati Levante, Aston Martin DBX, Cadillac Escalade, Jeep Grand Cherokee Trackhawk** — the rest of the fleet, covering the more specialised SUV niches.\n\n**Audi SQ7** — the seven-seat performance SUV for families who need three rows.\n\n**Audi Q3** — we own this one. The entry point to the luxury SUV fleet and one of the cheapest proper luxury-badge SUV rentals in Dubai.\n\nAll of our SUVs are 2022 or newer, serviced before every rental, and delivered with a full walkthrough at pickup.",
+      },
+      {
+        heading: 'Why Rent a Luxury SUV in Dubai',
+        content:
+          "The luxury SUV is the most practical way to experience Dubai as a visitor and the most popular residential rental category year-round. Three things drive this.\n\n**The roads.** Dubai's highways were built for SUVs — wide lanes, smooth surfaces, gentle grades. The ride height works for you rather than against you, and the size that makes SUVs cumbersome in European cities makes them perfectly matched to the scale of Sheikh Zayed Road, Jumeirah Beach Road, and Emirates Road. You also get real use out of the all-wheel-drive and increased ground clearance on day trips to Hatta, Jebel Jais, Al Qudra, or the dune roads on the way to Oman.\n\n**The valet culture.** Dubai is one of the most valet-dependent cities in the world. Every mall, every hotel, every upscale restaurant has a valet line, and the car you pull up in is genuinely part of the arrival. A Bentayga, a Cullinan, or a G63 makes a different statement from a sedan in that specific context, and most Dubai luxury SUV rental bookings are driven by this use case more than by the drive itself.\n\n**The group size.** Most luxury car rental customers in Dubai are travelling with family, friends, or colleagues. A two-seat supercar doesn't work for a family of four going to Atlantis. A convertible is impractical for a work week in July heat. A full-size luxury SUV solves both — you get the presence and the driving experience, plus the five to seven seats and the luggage space. The Bentayga, GLS, X7, and SQ7 are all set up explicitly for this use case.\n\nBeyond the visitor market, luxury SUV rental in Dubai is increasingly popular with UAE residents. The maths have shifted — a Bentayga at AED 33,000 a month is comparable to the monthly finance payment on a new Range Rover Sport without the depreciation, the registration hassle, or the commitment. Long-term SUV rental is our fastest-growing single category.",
+      },
+      {
+        heading: 'Best Places to Drive a Luxury SUV in Dubai',
+        content:
+          "Luxury SUVs in Dubai split their time between the city and the weekend drives that make a proper SUV worth renting in the first place. The city use-cases come first because that's where most rental hours actually happen.\n\n**Palm Jumeirah and Atlantis.** The valet line at Atlantis The Royal, at Nobu Dubai, and at Billionaire Mansion sees more Cullinans, Bentaygas, and G63s on a Friday night than any other stretch in the city. If your rental is partially about arrivals, this is where it shows up.\n\n**Dubai Mall and DIFC.** Business-focused SUV rentals — the Bentayga S, the RSQ8, and the Range Rover Vogue in particular — live here during the week. The valet at ICD Brookfield, at the Address Downtown, and at the DIFC Gate Village is set up for exactly these cars.\n\n**Jebel Jais in the Bentayga or Urus.** The 22 km climb from the Ras Al Khaimah side is the single best driving road in the country, and it works better in a performance SUV than you'd expect. The Urus genuinely hustles up it; the Bentayga is the most relaxing way to see the mountain. Allow four hours round-trip from Dubai Marina.\n\n**Hatta in the G63.** Hatta is the closest proper mountain destination to Dubai — 140 km to the east, through Oman border-touching territory, with the Hatta Dam as the usual turnaround point. This is G-Wagen territory. Ground clearance, all-wheel drive, and the sort of 80s-military-vehicle aesthetic that makes G63 rental in Dubai one of the most persistent single-car categories on the entire market.\n\n**Al Qudra Lakes and the desert roads.** The 90 km stretch south of Dubai Sports City is where Range Rover, Bentayga, and DBX rentals tend to drift on weekends. Minimal traffic, lunar scenery, and the rare chance to use an SUV's cruising credentials without a speed camera every two kilometres.\n\nFor the full UAE road primer see our [guide to Dubai's best driving roads](/guides/best-driving-roads-dubai-uae).",
+      },
+      {
+        heading: "What's Included in Every Luxury SUV Rental",
+        content:
+          "Every luxury SUV rental from LuxeClub ships with the same inclusions regardless of which model you choose.\n\n**Comprehensive insurance** is bundled in the daily rate — no 'basic cover' trap, no upsell at pickup. First-loss excess is one day's rental on most of the fleet.\n\n**Delivery** anywhere in Dubai — your hotel, apartment, office, DXB or DWC airport. Free on monthly rentals. Daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge. No surcharge for DXB delivery at reasonable hours. Delivery to Abu Dhabi, Sharjah, or Ras Al Khaimah is available for a small fee.\n\n**Generous mileage** — 250 km per day on daily rentals and 1,500 km on weekly rentals. Unlimited-mileage upgrades are available and recommended if you're planning Hatta, Jebel Jais, or any Abu Dhabi trip in the same rental.\n\n**The reservation fee model** — you pay AED 495 at booking to secure the vehicle, and the balance is paid in person on pickup day and deducted from your total. No thousands of AED tied up on your card for weeks via pre-authorisation.\n\n**Optional no-deposit pickup** — a flat AED 200 surcharge replaces the damage hold entirely. Most SUV customers take it because the deposit on cars like the Cullinan or Purosangue is substantial.\n\n**24/7 WhatsApp support** for the duration of your rental — flat tyre, Salik question, anything at all, one number handles it.\n\n**Child seats, additional drivers, and airport meet-and-greet** are available on request at booking and are handled as add-ons rather than buried fees.",
+      },
+      {
+        heading: 'Luxury SUV Rental Prices and Rental Periods',
+        content:
+          "Our luxury SUV rental Dubai rates start at under AED 400 per day for the Audi Q3 and go up to AED 10,000+ for the Rolls-Royce Cullinan Mansory and Ferrari Purosangue. Pricing rewards longer rentals.\n\n**Daily rates** suit 1–3 day rentals where you want full flexibility.\n\n**Weekly rates** typically save 30–35% per day versus the daily rate. If you're in Dubai for five days or more, always ask for the weekly rate — the dead-day cost is almost always less than the daily penalty.\n\n**Monthly rates** save roughly 50% per day versus the daily headline. This is where long-term residents, relocated professionals, and rotating-fleet customers typically land.\n\nIndicative SUV pricing across the fleet:\n\n**Audi Q3:** from AED 350/day · owned by LuxeClub\n**Audi RSQ8:** AED 1,400/day · AED 6,650/week · AED 21,000/month · owned\n**Bentley Bentayga:** AED 2,200/day · AED 10,450/week · AED 33,000/month\n**Bentley Bentayga S:** AED 2,500/day · AED 14,000/week · AED 40,000/month\n**Lamborghini Urus:** AED 3,000/day · AED 14,250/week · AED 45,000/month\n**Mercedes-AMG G63:** from AED 2,500/day\n**Range Rover Vogue:** from AED 1,500/day\n**Porsche Cayenne / Macan:** from AED 900/day\n**Rolls-Royce Cullinan Mansory:** price on request — typically AED 10,000+/day\n**Ferrari Purosangue:** price on request — typically AED 8,000+/day\n\nAll rates include insurance, delivery across Dubai, 24/7 support, and walkthrough at pickup. Exact current rates for your chosen dates are shown on each vehicle's booking page below.",
+      },
+      {
+        heading: 'Before You Drive: Practical Notes for Luxury SUV Rentals',
+        content:
+          "A few practical notes before you pick up any luxury SUV in Dubai.\n\n**Licence requirements:** UAE residents need Emirates ID and UAE licence. Tourists need their home-country licence plus an International Driving Permit. There is no wiggle room on the IDP requirement for performance SUVs like the Urus, RSQ8, G63, DBX, or Purosangue.\n\n**Minimum age** is 23 for most of the SUV fleet, rising to 25 for the Urus, G63, RSQ8, and DBX, and 27 for the Cullinan and Purosangue. These are insurance-driven limits.\n\n**Size and parking.** Dubai's mall parking structures are built for large SUVs — you will not have trouble parking a Cullinan in the Dubai Mall car park. Residential valet outside the major hotels occasionally struggles with the Bentayga's length if the valet is unused to full-size luxury SUVs; tipping at the start of the stay solves this.\n\n**Salik** (the Dubai toll system) is AED 6 per gate, charged through at cost at the end of the rental. SUVs tend to accumulate more Salik than supercars simply because they get used for more of the day-to-day moving around.\n\n**Off-roading.** The G63 and G63 6x6 are the only vehicles in the fleet insured for genuine off-road use (soft-sand desert driving, wadi tracks, etc.). Every other SUV in the fleet is insured for paved roads only — compact, graded gravel (like the approach to the Hatta Dam car park) is fine, but proper off-road is not. If you plan to go deep desert or to cross wadis, book the G63 specifically.\n\n**Abu Dhabi, Sharjah, and RAK** are all covered by the insurance. Oman requires additional paperwork and we can arrange the Oman insurance rider at booking.\n\nFor the full driving primer see our [guide to Dubai driving rules for tourists](/guides/dubai-driving-rules-for-tourists).",
+      },
+      {
+        heading: 'Which luxury SUV should I rent for a family trip in Dubai?',
+        isFaq: true,
+        content:
+          "For a family of four with luggage, the Bentley Bentayga is the best all-round choice — it has the cabin quietness and ride quality to make airport runs and long drives comfortable, plenty of boot space, and it carries the presence that most families renting a luxury car in Dubai are actually looking for. For a family of five to seven the Mercedes GLS, the BMW X7, or the Audi SQ7 move into the top of the list because of the proper third row. For maximum presence on a short family trip the Rolls-Royce Cullinan Mansory or the Ferrari Purosangue are what people book, though they sit at the top of the pricing range. For a family that wants mountain access and genuine off-road capability, the Mercedes-AMG G63 is the correct answer — it handles Hatta, Jebel Jais, and Al Qudra without breaking stride.",
+      },
+      {
+        heading: "What's the difference between renting the Urus and the RSQ8?",
+        isFaq: true,
+        content:
+          "The Lamborghini Urus and Audi RSQ8 share a platform, a drivetrain, and a chassis — they're engineered on the same architecture by the same VW Group teams. The RSQ8's 591bhp twin-turbo V8 is identical to the Urus's in power output, and 0-100 is actually a tenth quicker in the RSQ8 (3.8s vs 3.6s for the Urus — the Urus wins on launch because of tuning). What you're paying for in the Urus is the badge, the more theatrical styling, and the more aggressive chassis tune. At AED 1,400/day for the RSQ8 versus AED 3,000/day for the Urus, the RSQ8 is the value-pick if the performance is what you're after. The Urus is the pick if the badge is what you're after. We own the RSQ8 outright and it's one of our most-booked SUVs for exactly this reason.",
+      },
+      {
+        heading: 'Can I take the luxury SUV off-road or into the desert?',
+        isFaq: true,
+        content:
+          "Only the Mercedes-AMG G63 (and G63 6x6 when available) are insured for genuine off-road driving — soft-sand desert excursions, wadi crossings, and the more aggressive 4x4 tracks around the UAE. Every other SUV in our fleet is insured for paved roads only, which in practice means city streets, highways, resort access roads, and compact graded gravel (like the car park approach at Hatta Dam). If you plan to cross into soft sand, book the G63 specifically and let us know your route at pickup so we can confirm the insurance position. Hatta mountain roads, Jebel Jais, and Al Qudra are all on paved roads and are fine in any of our SUVs.",
+      },
+      {
+        heading: 'Can I drive the SUV to Abu Dhabi or Oman?',
+        isFaq: true,
+        content:
+          "Abu Dhabi, Sharjah, Ras Al Khaimah, Ajman, and Fujairah are all inside the UAE and covered by our standard insurance — you can drive any of our SUVs there without additional paperwork. Budget for Salik at the Dubai gates and watch the Ghantoot cameras just before the Abu Dhabi border. Oman is a different country and requires additional Oman-specific insurance (an 'orange card') and a border crossing document. We can arrange both at booking for a small additional fee — let us know at the time of booking so we have the paperwork ready for pickup.",
+      },
+      {
+        heading: 'Which SUVs are available for weddings in Dubai?',
+        isFaq: true,
+        content:
+          "The Rolls-Royce Cullinan Mansory is the single most-requested wedding SUV in our fleet, and it's one of the reasons we keep a specific Mansory-spec car rather than a standard Cullinan. The Bentley Bentayga is the second-most-common wedding choice because the cabin handles bridal gowns well and the black/brown colour options match most wedding schemes. The Mercedes-AMG G63 and G63 6x6 are popular for Gulf-style and Arab weddings specifically. For Asian weddings the Bentayga and Cullinan typically lead. Book at least four weeks in advance during peak wedding season (October to April) — the Cullinan Mansory specifically books out months ahead on Friday and Saturday dates.",
+      },
+      {
+        heading: 'Is insurance included in the luxury SUV rental price?',
+        isFaq: true,
+        content:
+          "Yes — comprehensive insurance is bundled into every daily, weekly, and monthly rate for every SUV on the fleet. No add-ons, no tiered coverage, no pressure to buy upgraded protection at pickup. The first-loss excess is typically one day's rental on mainstream SUVs (Bentayga, RSQ8, G63, etc.) and higher on the Cullinan Mansory and Purosangue given their underlying value. If you want a lower excess, we offer an excess-waiver add-on for a small additional daily fee on most SUVs.",
+      },
+    ],
     filter: { type: 'type', value: 'SUV' },
   },
   {

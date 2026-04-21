@@ -22,11 +22,11 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
   'aston-martin-dbx-707': {
     metaTitle: 'Rent Aston Martin DBX 707 in Dubai — Hire from AED 2,500/day | LuxeClub',
     description:
-      "The Aston Martin DBX 707 is the most powerful luxury SUV Aston Martin has ever built — a 4.0-litre twin-turbo V8 producing 697bhp, 0-100 in 3.3 seconds, and a surprisingly driver-focused chassis for a 2.2-tonne SUV. It's one of the best-kept secrets in the Dubai luxury rental market: comparable performance to a Lamborghini Urus at a lower daily rate, with a cabin that most customers find more refined than any German competitor.\n\nAston Martin DBX 707 car rental in Dubai starts at AED 2,500 per day, AED 11,900 per week (a 32% saving), or AED 37,500 per month. Every rental includes comprehensive insurance, free delivery across Dubai, 24/7 WhatsApp support, and a full handover walkthrough of the driving modes and air suspension settings. The reservation fee is AED 495, deducted from your total on pickup day.\n\nThe DBX 707 is particularly popular with business travellers who want presence at valet without the attention of a G63, and with families visiting Dubai who need genuine rear-seat space and luggage capacity. It handles the Sheikh Zayed Road run to Abu Dhabi as well as anything in the fleet, and the air suspension makes Dubai's speed bumps and parking-entry ramps genuinely comfortable.",
+      "The Aston Martin DBX 707 is the most powerful luxury SUV Aston Martin has ever built — a 4.0-litre twin-turbo V8 producing 697bhp, 0-100 in 3.3 seconds, and a surprisingly driver-focused chassis for a 2.2-tonne SUV. It's one of the best-kept secrets in the Dubai luxury rental market: comparable performance to a Lamborghini Urus at a lower daily rate, with a cabin that most customers find more refined than any German competitor.\n\nAston Martin DBX 707 car rental in Dubai starts at AED 2,500 per day, AED 11,900 per week (a 32% saving), or AED 37,500 per month. Every rental includes comprehensive insurance, delivery across Dubai (free on monthly rentals, a flat surcharge on shorter rentals), 24/7 WhatsApp support, and a full handover walkthrough of the driving modes and air suspension settings. The reservation fee is AED 495, deducted from your total on pickup day.\n\nThe DBX 707 is particularly popular with business travellers who want presence at valet without the attention of a G63, and with families visiting Dubai who need genuine rear-seat space and luggage capacity. It handles the Sheikh Zayed Road run to Abu Dhabi as well as anything in the fleet, and the air suspension makes Dubai's speed bumps and parking-entry ramps genuinely comfortable.",
     faqs: [
       {
         question: 'How much does it cost to rent an Aston Martin DBX 707 in Dubai?',
-        answer: 'The Aston Martin DBX 707 rents for AED 2,500 per day, AED 11,900 per week, or AED 37,500 per month. All rates include comprehensive insurance, free delivery across Dubai, and 24/7 support. Weekly rates save roughly 32% per day versus the daily rate.',
+        answer: 'The Aston Martin DBX 707 rents for AED 2,500 per day, AED 11,900 per week, or AED 37,500 per month. All rates include comprehensive insurance and 24/7 support. Delivery across Dubai is free on monthly rentals; daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge. Weekly rates save roughly 32% per day versus the daily rate.',
       },
       {
         question: 'What is the minimum age to rent a DBX 707?',
@@ -45,11 +45,11 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
   'bmw-m3-competition': {
     metaTitle: 'Rent BMW M3 Competition in Dubai — Hire from AED 1,300/day | LuxeClub',
     description:
-      "The BMW M3 Competition is the sharpest M-car in our fleet — a twin-turbo straight-six producing 503bhp, rear-wheel drive, 0-100 in 3.9 seconds, and the mid-corner precision that made M-cars the benchmark for performance saloons. At AED 1,300 per day it's also one of the best-value genuine performance car rentals in Dubai.\n\nBMW M3 Competition car rental in Dubai starts at AED 1,300 per day, AED 6,200 per week, or AED 19,500 per month. Every rental includes comprehensive insurance, free delivery across Dubai, 24/7 WhatsApp support, and a full handover walkthrough. The weekly rate saves roughly 32% per day.\n\nThe M3 Competition is ideal for enthusiast drivers who want to experience proper rear-wheel-drive dynamics on Jebel Jais, Hatta, or Sheikh Zayed Road without the supercar price tag. It's the car we recommend for first-time M-division customers — approachable enough to daily drive, rewarding enough to justify a dedicated mountain-road trip.",
+      "The BMW M3 Competition is the sharpest M-car in our fleet — a twin-turbo straight-six producing 503bhp, rear-wheel drive, 0-100 in 3.9 seconds, and the mid-corner precision that made M-cars the benchmark for performance saloons. At AED 1,300 per day it's also one of the best-value genuine performance car rentals in Dubai.\n\nBMW M3 Competition car rental in Dubai starts at AED 1,300 per day, AED 6,200 per week, or AED 19,500 per month. Every rental includes comprehensive insurance, delivery across Dubai (free on monthly rentals, a flat surcharge on shorter rentals), 24/7 WhatsApp support, and a full handover walkthrough. The weekly rate saves roughly 32% per day.\n\nThe M3 Competition is ideal for enthusiast drivers who want to experience proper rear-wheel-drive dynamics on Jebel Jais, Hatta, or Sheikh Zayed Road without the supercar price tag. It's the car we recommend for first-time M-division customers — approachable enough to daily drive, rewarding enough to justify a dedicated mountain-road trip.",
     faqs: [
       {
         question: 'How much does it cost to rent a BMW M3 Competition in Dubai?',
-        answer: 'The BMW M3 Competition rents for AED 1,300 per day, AED 6,200 per week, or AED 19,500 per month. All rates include comprehensive insurance, free delivery across Dubai, and 24/7 support.',
+        answer: 'The BMW M3 Competition rents for AED 1,300 per day, AED 6,200 per week, or AED 19,500 per month. All rates include comprehensive insurance and 24/7 support. Delivery across Dubai is free on monthly rentals; daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge.',
       },
       {
         question: 'Is the M3 Competition rear-wheel drive or all-wheel drive?',
@@ -72,7 +72,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
     faqs: [
       {
         question: 'How much does it cost to rent an Audi RS6 in Dubai?',
-        answer: 'The Audi RS6 Avant rents for AED 1,800 per day, AED 8,550 per week, or AED 27,000 per month. All rates include comprehensive insurance, free delivery across Dubai, and 24/7 support.',
+        answer: 'The Audi RS6 Avant rents for AED 1,800 per day, AED 8,550 per week, or AED 27,000 per month. All rates include comprehensive insurance and 24/7 support. Delivery across Dubai is free on monthly rentals; daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge.',
       },
       {
         question: 'Is the RS6 good for a family trip in Dubai?',
@@ -114,11 +114,11 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
   'lamborghini-revuelto': {
     metaTitle: 'Rent Lamborghini Revuelto in Dubai — Hire from AED 12,000/day | LuxeClub',
     description:
-      "The Lamborghini Revuelto is the flagship of the entire Dubai luxury rental market — a plug-in hybrid V12 hypercar producing 1,001bhp, 0-100 in 2.5 seconds, and a top speed over 350 km/h. It's one of maybe a dozen Revueltos available for rent anywhere in the world, and it is the single most requested car in our fleet.\n\nLamborghini Revuelto car rental in Dubai starts at AED 12,000 per day, AED 57,000 per week, or AED 180,000 per month. Every rental includes comprehensive insurance, free delivery across Dubai, 24/7 support, and an extended handover walkthrough covering the hybrid V12 drivetrain, the three electric motors, and the regeneration modes.\n\nThe Revuelto is the car for customers who want the absolute pinnacle of what's available in the Dubai market. It's louder, faster, and more theatrical than anything else you can rent — and the hybrid V12 sounds different from any Lamborghini that came before it. We recommend booking at least two weeks in advance for specific dates, particularly on weekends and during peak season (November to March).",
+      "The Lamborghini Revuelto is the flagship of the entire Dubai luxury rental market — a plug-in hybrid V12 hypercar producing 1,001bhp, 0-100 in 2.5 seconds, and a top speed over 350 km/h. It's one of maybe a dozen Revueltos available for rent anywhere in the world, and it is the single most requested car in our fleet.\n\nLamborghini Revuelto car rental in Dubai starts at AED 12,000 per day, AED 57,000 per week, or AED 180,000 per month. Every rental includes comprehensive insurance, delivery across Dubai (free on monthly rentals, a flat surcharge on shorter rentals), 24/7 support, and an extended handover walkthrough covering the hybrid V12 drivetrain, the three electric motors, and the regeneration modes.\n\nThe Revuelto is the car for customers who want the absolute pinnacle of what's available in the Dubai market. It's louder, faster, and more theatrical than anything else you can rent — and the hybrid V12 sounds different from any Lamborghini that came before it. We recommend booking at least two weeks in advance for specific dates, particularly on weekends and during peak season (November to March).",
     faqs: [
       {
         question: 'How much does it cost to rent a Lamborghini Revuelto in Dubai?',
-        answer: 'The Lamborghini Revuelto rents for AED 12,000 per day, AED 57,000 per week (a 32% per-day saving), or AED 180,000 per month. All rates include comprehensive insurance, free delivery, and 24/7 support.',
+        answer: 'The Lamborghini Revuelto rents for AED 12,000 per day, AED 57,000 per week (a 32% per-day saving), or AED 180,000 per month. All rates include comprehensive insurance and 24/7 support. Delivery across Dubai is free on monthly rentals; daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge.',
       },
       {
         question: 'What is the minimum age to rent a Revuelto?',
@@ -141,7 +141,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
     faqs: [
       {
         question: 'How much does it cost to rent a Porsche 911 GT3 RS in Dubai?',
-        answer: 'The Porsche 911 GT3 RS rents for AED 6,500 per day, AED 30,900 per week, or AED 97,500 per month. All rates include comprehensive insurance, free delivery, and 24/7 support.',
+        answer: 'The Porsche 911 GT3 RS rents for AED 6,500 per day, AED 30,900 per week, or AED 97,500 per month. All rates include comprehensive insurance and 24/7 support. Delivery across Dubai is free on monthly rentals; daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge.',
       },
       {
         question: 'Is the GT3 RS comfortable for daily driving?',
@@ -164,7 +164,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
     faqs: [
       {
         question: 'How much does it cost to rent a Ferrari SF90 Stradale in Dubai?',
-        answer: 'The Ferrari SF90 Stradale rents for AED 7,500 per day, AED 35,650 per week, or AED 112,500 per month. All rates include comprehensive insurance, free delivery, and 24/7 support.',
+        answer: 'The Ferrari SF90 Stradale rents for AED 7,500 per day, AED 35,650 per week, or AED 112,500 per month. All rates include comprehensive insurance and 24/7 support. Delivery across Dubai is free on monthly rentals; daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge.',
       },
       {
         question: 'Can the SF90 drive in electric-only mode?',
@@ -210,7 +210,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
     faqs: [
       {
         question: 'How much does it cost to rent a Range Rover Vogue HSE in Dubai?',
-        answer: 'The Range Rover Vogue HSE rents for AED 1,800 per day, AED 8,550 per week, or AED 27,000 per month. All rates include comprehensive insurance, free delivery across Dubai, and 24/7 support.',
+        answer: 'The Range Rover Vogue HSE rents for AED 1,800 per day, AED 8,550 per week, or AED 27,000 per month. All rates include comprehensive insurance and 24/7 support. Delivery across Dubai is free on monthly rentals; daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge.',
       },
       {
         question: 'Is the Vogue HSE good for families?',
@@ -233,7 +233,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
     faqs: [
       {
         question: 'How much does it cost to rent an Audi RSQ8 in Dubai?',
-        answer: 'The Audi RSQ8 rents for AED 1,400 per day, AED 6,650 per week, or AED 21,000 per month. All rates include comprehensive insurance, free delivery across Dubai, and 24/7 support.',
+        answer: 'The Audi RSQ8 rents for AED 1,400 per day, AED 6,650 per week, or AED 21,000 per month. All rates include comprehensive insurance and 24/7 support. Delivery across Dubai is free on monthly rentals; daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge.',
       },
       {
         question: 'How does the RSQ8 compare to the Lamborghini Urus?',
@@ -256,7 +256,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
     faqs: [
       {
         question: 'How much does it cost to rent a Ferrari Purosangue in Dubai?',
-        answer: 'The Ferrari Purosangue rents for AED 11,000 per day, AED 52,250 per week, or AED 165,000 per month. All rates include comprehensive insurance, free delivery, and 24/7 support.',
+        answer: 'The Ferrari Purosangue rents for AED 11,000 per day, AED 52,250 per week, or AED 165,000 per month. All rates include comprehensive insurance and 24/7 support. Delivery across Dubai is free on monthly rentals; daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge.',
       },
       {
         question: 'Can the Purosangue seat a family of four?',
