@@ -29,8 +29,9 @@ const nl: Record<string, string> = {
   // Home page
   'home.heroTitle1': 'Luxe Autoverhuur',
   'home.heroTitle2': 'in Dubai',
-  'home.heroSubtitle': 'Lamborghini, Ferrari, Rolls-Royce, Bentley & meer — bij u aan de deur bezorgd.',
-  'home.exploreFleet': 'Ontdek Onze Vloot',
+  'home.heroSubtitle': 'Rijd een Lamborghini door Dubai Marina. Een Ferrari over Sheikh Zayed Road. Wij leveren. U rijdt.',
+  'home.exploreFleet': 'Bekijk Beschikbare Auto\'s',
+  'home.bookToday': 'Boek Uw Auto — Vandaag Bezorgd',
   'home.fleetSize': '50+',
   'home.fleetLabel': 'Supercars & Luxe Auto\'s',
   'home.dubaiDelivery': 'Dubai',

@@ -29,8 +29,9 @@ const ar: Record<string, string> = {
   // Home page
   'home.heroTitle1': 'تأجير سيارات فاخرة',
   'home.heroTitle2': 'في دبي',
-  'home.heroSubtitle': 'لامبورغيني، فيراري، رولز رويس، بنتلي والمزيد — توصيل حتى باب منزلك.',
-  'home.exploreFleet': 'استكشف أسطولنا',
+  'home.heroSubtitle': 'قُد لامبورغيني عبر مارينا دبي. وفيراري على شارع الشيخ زايد. نحن نوصّل — وأنت تقود.',
+  'home.exploreFleet': 'شاهد السيارات المتاحة الآن',
+  'home.bookToday': 'احجز سيارتك — التوصيل اليوم',
   'home.fleetSize': '50+',
   'home.fleetLabel': 'سيارات خارقة وفاخرة',
   'home.dubaiDelivery': 'دبي',

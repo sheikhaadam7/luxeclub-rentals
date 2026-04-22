@@ -5,6 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { AvailabilityCalendar } from '@/components/ui/AvailabilityCalendar'
 import { ImageGallery } from '@/components/catalogue/ImageGallery'
 import { PriceDisplay } from '@/components/catalogue/PriceDisplay'
+import { NoDepositBadge } from '@/components/catalogue/NoDepositBadge'
 import { FaqAccordion } from '@/components/ui/FaqAccordion'
 import { T } from '@/components/ui/T'
 import { vehicleContentMap } from '@/lib/vehicle-content'
@@ -310,6 +311,9 @@ export default async function VehicleDetailPage({ params }: PageProps) {
                   <span className="text-white/50 text-base ml-1.5"><T k="vehicle.daily" /></span>
                 </p>
               )}
+
+              {/* No-deposit badge */}
+              <NoDepositBadge />
 
               {/* Info badges */}
               <div className="space-y-1.5">

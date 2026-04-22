@@ -29,8 +29,9 @@ const es: Record<string, string> = {
   // Home page
   'home.heroTitle1': 'Alquiler de Coches de Lujo',
   'home.heroTitle2': 'en Dubái',
-  'home.heroSubtitle': 'Lamborghini, Ferrari, Rolls-Royce, Bentley y más — entrega a domicilio.',
-  'home.exploreFleet': 'Explorar Nuestra Flota',
+  'home.heroSubtitle': 'Conduce un Lamborghini por Dubai Marina. Un Ferrari por Sheikh Zayed Road. Nosotros entregamos. Tú conduces.',
+  'home.exploreFleet': 'Ver Coches Disponibles',
+  'home.bookToday': 'Reserva Tu Coche — Entrega Hoy',
   'home.fleetSize': '50+',
   'home.fleetLabel': 'Superdeportivos y Coches de Lujo',
   'home.dubaiDelivery': 'Dubái',

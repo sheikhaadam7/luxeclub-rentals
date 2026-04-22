@@ -29,8 +29,9 @@ const zh: Record<string, string> = {
   // Home page
   'home.heroTitle1': '豪华车租赁',
   'home.heroTitle2': '在迪拜',
-  'home.heroSubtitle': '兰博基尼、法拉利、劳斯莱斯、宾利等——送车上门。',
-  'home.exploreFleet': '探索我们的车队',
+  'home.heroSubtitle': '驾驶兰博基尼穿越迪拜码头。驾驶法拉利驰骋谢赫扎耶德大道。我们送车——您负责驾驶。',
+  'home.exploreFleet': '查看现有车辆',
+  'home.bookToday': '立即预订 — 今日送达',
   'home.fleetSize': '50+',
   'home.fleetLabel': '超跑及豪华车',
   'home.googleRating': 'Google 评分',
