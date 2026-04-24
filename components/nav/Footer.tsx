@@ -176,9 +176,10 @@ export function Footer() {
           <p className="text-xs text-white/25">
             &copy; {new Date().getFullYear()} LuxeClub Rentals. {t('footer.rights')}
           </p>
-          <p className="text-xs text-white/25">
-            {t('footer.location')}
-          </p>
+          <div className="flex items-center gap-4 text-xs text-white/25">
+            <Link href="/privacy" className="hover:text-white/60 transition-colors duration-300">Privacy Policy</Link>
+            <span>{t('footer.location')}</span>
+          </div>
         </div>
       </div>
     </footer>
