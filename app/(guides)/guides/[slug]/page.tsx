@@ -60,11 +60,24 @@ export default async function GuidePage({
     headline: guide.title,
     description: guide.metaDescription,
     datePublished: guide.publishedDate,
+    dateModified: guide.updatedDate ?? guide.publishedDate,
     url: `${SITE_URL}/guides/${guide.slug}`,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE_URL}/guides/${guide.slug}` },
+    image: guide.image
+      ? [`${SITE_URL}${guide.image}`]
+      : [`${SITE_URL}/opengraph-image`],
+    author: {
+      '@type': 'Organization',
+      name: 'LuxeClub Editorial',
+      url: `${SITE_URL}/about`,
+      description:
+        'The LuxeClub Editorial team — Dubai-based luxury and sports car rental specialists writing from first-hand fleet and concierge experience.',
+    },
     publisher: {
       '@type': 'Organization',
       name: 'LuxeClub Rentals',
       url: SITE_URL,
+      logo: { '@type': 'ImageObject', url: `${SITE_URL}/apple-icon.png` },
     },
   }
 
@@ -130,14 +143,36 @@ export default async function GuidePage({
           <h1 className="font-display text-3xl sm:text-4xl font-semibold text-white tracking-tight">
             {guide.title}
           </h1>
-          <p className="text-sm text-brand-muted">
-            Published{' '}
-            {new Date(guide.publishedDate).toLocaleDateString('en-GB', {
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric',
-            })}
-          </p>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-brand-muted">
+            <span>
+              By{' '}
+              <Link href="/about" className="text-white/80 hover:text-white underline underline-offset-4">
+                LuxeClub Editorial
+              </Link>
+            </span>
+            <span className="text-white/20">·</span>
+            <span>
+              Published{' '}
+              {new Date(guide.publishedDate).toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+              })}
+            </span>
+            {guide.updatedDate && guide.updatedDate !== guide.publishedDate && (
+              <>
+                <span className="text-white/20">·</span>
+                <span>
+                  Updated{' '}
+                  {new Date(guide.updatedDate).toLocaleDateString('en-GB', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                  })}
+                </span>
+              </>
+            )}
+          </div>
         </header>
 
         {/* Hero image */}
@@ -230,6 +265,23 @@ export default async function GuidePage({
             </section>
           ))}
         </div>
+
+        {/* About the author */}
+        <aside className="border-t border-brand-border pt-8">
+          <div className="flex items-start gap-4 bg-brand-surface border border-brand-border rounded-2xl p-5">
+            <div className="w-12 h-12 rounded-full bg-white/[0.06] border border-white/[0.1] flex items-center justify-center shrink-0 text-white/70">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+              </svg>
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-white">LuxeClub Editorial</p>
+              <p className="text-sm text-brand-muted leading-relaxed">
+                The LuxeClub Editorial team — Dubai-based luxury and sports car rental specialists writing from first-hand fleet and concierge experience. Every guide is reviewed by our team before publishing. <Link href="/about" className="text-brand-cyan hover:text-brand-cyan-hover underline underline-offset-4">Learn more about us.</Link>
+              </p>
+            </div>
+          </div>
+        </aside>
 
         {/* More Guides */}
         {relatedGuides.length > 0 && (

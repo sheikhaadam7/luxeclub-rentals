@@ -22,6 +22,7 @@ export interface Guide {
   metaTitle: string
   metaDescription: string
   publishedDate: string
+  updatedDate?: string
   category?: GuideCategory
   image?: string
   imageAlt?: string

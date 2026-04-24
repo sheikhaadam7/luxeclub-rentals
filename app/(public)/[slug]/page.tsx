@@ -252,6 +252,11 @@ export default async function MoneyPage({ params }: PageProps) {
       name: page.metaTitle,
       description: page.metaDescription,
       url: `${SITE_URL}/${page.slug}`,
+      author: {
+        '@type': 'Organization',
+        name: 'LuxeClub Editorial',
+        url: `${SITE_URL}/about`,
+      },
       provider: {
         '@type': 'LocalBusiness',
         name: 'LuxeClub Rentals',
