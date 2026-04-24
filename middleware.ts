@@ -52,7 +52,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Public routes — accessible without auth
-  const publicPaths = ['/', '/sign-in', '/about', '/contact', '/faq', '/catalogue', '/guides', '/reset-password', '/booking-lookup']
+  const publicPaths = ['/', '/sign-in', '/about', '/contact', '/faq', '/catalogue', '/guides', '/reset-password', '/booking-lookup', '/privacy']
   const isPublicRoute =
     publicPaths.includes(pathname) ||
     MONEY_PAGE_PATHS.has(pathname) ||
