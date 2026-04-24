@@ -32,7 +32,7 @@ const zh: Record<string, string> = {
   'home.heroSubtitle': '驾驶兰博基尼穿越迪拜码头。驾驶法拉利驰骋谢赫扎耶德大道。我们送车——您负责驾驶。',
   'home.exploreFleet': '查看现有车辆',
   'home.bookToday': '立即预订 — 今日送达',
-  'home.fleetSize': '50+',
+  'home.fleetSize': '47',
   'home.fleetLabel': '超跑及豪华车',
   'home.googleRating': 'Google 评分',
   'home.dubaiDelivery': '迪拜',

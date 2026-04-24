@@ -32,7 +32,7 @@ const nl: Record<string, string> = {
   'home.heroSubtitle': 'Rijd een Lamborghini door Dubai Marina. Een Ferrari over Sheikh Zayed Road. Wij leveren. U rijdt.',
   'home.exploreFleet': 'Bekijk Beschikbare Auto\'s',
   'home.bookToday': 'Boek Uw Auto — Vandaag Bezorgd',
-  'home.fleetSize': '50+',
+  'home.fleetSize': '47',
   'home.fleetLabel': 'Supercars & Luxe Auto\'s',
   'home.dubaiDelivery': 'Dubai',
   'home.dubaiDeliveryLabel': 'Bezorging door heel Dubai',

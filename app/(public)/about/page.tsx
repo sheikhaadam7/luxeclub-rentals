@@ -4,7 +4,7 @@ import { T } from '@/components/ui/T'
 export const metadata: Metadata = {
   title: 'About Us',
   description:
-    'LuxeClub Rentals — Dubai\'s premium luxury car rental service. 500+ happy clients, curated fleet of 29 luxury vehicles with 24/7 concierge.',
+    'LuxeClub Rentals — Dubai\'s premium luxury car rental service. 500+ happy clients, curated fleet of 47 luxury vehicles with 24/7 concierge.',
   openGraph: {
     title: 'About LuxeClub Rentals — Dubai Luxury Car Hire',
     description:
@@ -104,7 +104,7 @@ export default function AboutPage() {
               <p className="text-sm text-white/40"><T k="about.happyClients" /></p>
             </div>
             <div className="space-y-1">
-              <p className="font-display text-3xl sm:text-4xl font-semibold text-white">29</p>
+              <p className="font-display text-3xl sm:text-4xl font-semibold text-white">47</p>
               <p className="text-sm text-white/40"><T k="about.luxuryVehicles" /></p>
             </div>
             <div className="space-y-1">

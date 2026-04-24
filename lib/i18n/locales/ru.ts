@@ -32,7 +32,7 @@ const ru: Record<string, string> = {
   'home.heroSubtitle': 'За рулём Lamborghini по Dubai Marina. Ferrari по Sheikh Zayed Road. Мы доставляем — вы едете.',
   'home.exploreFleet': 'Смотреть Доступные Авто',
   'home.bookToday': 'Забронировать — Доставка Сегодня',
-  'home.fleetSize': '50+',
+  'home.fleetSize': '47',
   'home.fleetLabel': 'Суперкаров и Люксовых Авто',
   'home.dubaiDelivery': 'Дубай',
   'home.dubaiDeliveryLabel': 'Доставка по всему Дубаю',

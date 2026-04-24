@@ -32,7 +32,7 @@ const fr: Record<string, string> = {
   'home.heroSubtitle': 'Conduisez une Lamborghini à travers Dubai Marina. Une Ferrari sur Sheikh Zayed Road. Nous livrons. Vous conduisez.',
   'home.exploreFleet': 'Voir les Voitures Disponibles',
   'home.bookToday': 'Réservez Votre Voiture — Livraison Aujourd\'hui',
-  'home.fleetSize': '50+',
+  'home.fleetSize': '47',
   'home.fleetLabel': 'Supercars et Voitures de Luxe',
   'home.dubaiDelivery': 'Dubaï',
   'home.dubaiDeliveryLabel': 'Livraison dans tout Dubaï',

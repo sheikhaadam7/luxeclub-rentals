@@ -32,7 +32,7 @@ const ar: Record<string, string> = {
   'home.heroSubtitle': 'قُد لامبورغيني عبر مارينا دبي. وفيراري على شارع الشيخ زايد. نحن نوصّل — وأنت تقود.',
   'home.exploreFleet': 'شاهد السيارات المتاحة الآن',
   'home.bookToday': 'احجز سيارتك — التوصيل اليوم',
-  'home.fleetSize': '50+',
+  'home.fleetSize': '47',
   'home.fleetLabel': 'سيارات خارقة وفاخرة',
   'home.dubaiDelivery': 'دبي',
   'home.dubaiDeliveryLabel': 'توصيل في جميع أنحاء دبي',

@@ -32,7 +32,7 @@ const en: Record<string, string> = {
   'home.heroSubtitle': 'Drive a Lamborghini through Dubai Marina. A Ferrari along Sheikh Zayed Road. We deliver. You drive.',
   'home.exploreFleet': 'See Available Cars Now',
   'home.bookToday': 'Book Your Car — Delivery Today',
-  'home.fleetSize': '50+',
+  'home.fleetSize': '47',
   'home.fleetLabel': 'Supercars & Luxury Cars',
   'home.googleRating': 'Google Rating',
   'home.dubaiDelivery': 'Dubai',
