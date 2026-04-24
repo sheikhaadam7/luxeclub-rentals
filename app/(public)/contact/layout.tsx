@@ -28,7 +28,7 @@ const jsonLd = {
     email: 'bookings@luxeclubrentals.com',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'Binary Tower, 32 Marasi Drive Street',
+      streetAddress: 'Binary Tower, 32 Marasi Drive',
       addressLocality: 'Business Bay',
       addressRegion: 'Dubai',
       addressCountry: 'AE',

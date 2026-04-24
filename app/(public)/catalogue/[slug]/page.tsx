@@ -240,6 +240,8 @@ export default async function VehicleDetailPage({ params }: PageProps) {
     description: `Rent a ${vehicle.name} in Dubai with LuxeClub Rentals. Insurance included, delivery across Dubai.`,
     image: allImages[0],
     url: `https://luxeclubrentals.com/catalogue/${slug}`,
+    sku: slug,
+    productID: slug,
     brand: { '@type': 'Brand', name: brandName },
     offers: {
       '@type': 'Offer',

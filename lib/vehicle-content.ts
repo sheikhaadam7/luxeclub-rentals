@@ -20,7 +20,7 @@ export interface VehicleContent {
 
 export const vehicleContentMap: Record<string, VehicleContent> = {
   'aston-martin-dbx-707': {
-    metaTitle: 'Rent Aston Martin DBX 707 in Dubai — Hire from AED 2,500/day | LuxeClub',
+    metaTitle: 'Rent Aston Martin DBX 707 in Dubai — Hire from AED 2,500/day',
     description:
       "The Aston Martin DBX 707 is the most powerful luxury SUV Aston Martin has ever built — a 4.0-litre twin-turbo V8 producing 697bhp, 0-100 in 3.3 seconds, and a surprisingly driver-focused chassis for a 2.2-tonne SUV. It's one of the best-kept secrets in the Dubai luxury rental market: comparable performance to a Lamborghini Urus at a lower daily rate, with a cabin that most customers find more refined than any German competitor.\n\nAston Martin DBX 707 car rental in Dubai is AED 2,500 per day. Weekly and monthly rentals are priced case by case — message us on WhatsApp (+971 58 808 6137) for a personalised quote based on your exact dates. Every rental includes comprehensive insurance, delivery across Dubai (free on monthly rentals, a flat surcharge on shorter rentals), 24/7 WhatsApp support, and a full handover walkthrough of the driving modes and air suspension settings. The reservation fee is AED 495, deducted from your total on pickup day.\n\nThe DBX 707 is particularly popular with business travellers who want presence at valet without the attention of a G63, and with families visiting Dubai who need genuine rear-seat space and luggage capacity. It handles the Sheikh Zayed Road run to Abu Dhabi as well as anything in the fleet, and the air suspension makes Dubai's speed bumps and parking-entry ramps genuinely comfortable.",
     faqs: [
@@ -43,7 +43,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
     ],
   },
   'bmw-m3-competition': {
-    metaTitle: 'Rent BMW M3 Competition in Dubai — Hire from AED 899/day | LuxeClub',
+    metaTitle: 'Rent BMW M3 Competition in Dubai — Hire from AED 899/day',
     description:
       "The BMW M3 Competition is the sharpest M-car in our fleet — a twin-turbo straight-six producing 503bhp, rear-wheel drive, 0-100 in 3.9 seconds, and the mid-corner precision that made M-cars the benchmark for performance saloons. At AED 899 per day it's also one of the best-value genuine performance car rentals in Dubai.\n\nBMW M3 Competition car rental in Dubai is AED 899 per day. Weekly and monthly rentals are priced case by case — message us on WhatsApp (+971 58 808 6137) for a personalised quote. Every rental includes comprehensive insurance, delivery across Dubai (free on monthly rentals, a flat surcharge on shorter rentals), 24/7 WhatsApp support, and a full handover walkthrough.\n\nThe M3 Competition is ideal for enthusiast drivers who want to experience proper rear-wheel-drive dynamics on relaxed Jebel Jais, Hatta, or Sheikh Zayed Road drives without the supercar price tag. It's the car we recommend for first-time M-division customers — approachable enough to daily drive, rewarding enough to justify a dedicated scenic-day-trip rental.",
     faqs: [
@@ -66,7 +66,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
     ],
   },
   'audi-rs6': {
-    metaTitle: 'Rent Audi RS6 Avant in Dubai — Hire from AED 1,200/day | LuxeClub',
+    metaTitle: 'Rent Audi RS6 Avant in Dubai — Hire from AED 1,200/day',
     description:
       "The Audi RS6 Avant is the estate car everyone secretly wants — a 4.0-litre twin-turbo V8 producing 591bhp, quattro all-wheel drive, 0-100 in 3.4 seconds, and the practical wagon body that makes it the perfect combination of supercar performance and family-car usability. It's the fastest estate car in our entire fleet.\n\nAudi RS6 car rental in Dubai is AED 1,200 per day. Weekly and monthly rentals are priced case by case — message us on WhatsApp (+971 58 808 6137) for a personalised quote. Insurance, delivery, and 24/7 support are all included.\n\nThe RS6 is the car of choice for relocated European professionals and visiting German customers who already own an RS6 at home and want the same car in Dubai. It seats five adults plus luggage comfortably, handles Sheikh Zayed Road at 120 km/h without using half its capability, and still turns heads at valet stops. For customers who want genuine 591bhp performance without sacrificing an ounce of practicality, the RS6 has no real competitor in the fleet.",
     faqs: [
@@ -89,7 +89,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
     ],
   },
   'audi-rs3': {
-    metaTitle: 'Rent Audi RS3 in Dubai — Hire from AED 699/day | LuxeClub',
+    metaTitle: 'Rent Audi RS3 in Dubai — Hire from AED 699/day',
     description:
       "The Audi RS3 is the most affordable genuine performance car in our entire fleet — a 2.5-litre five-cylinder turbo producing 401bhp, quattro all-wheel drive, 0-100 in 3.8 seconds, and the distinctive five-cylinder engine note that has become an Audi RS signature. At AED 699 per day it's the entry point to proper performance car rental in Dubai.\n\nAudi RS3 car rental in Dubai is AED 699 per day. Weekly and monthly rentals are priced case by case — message us on WhatsApp (+971 58 808 6137) for a personalised quote. Insurance, delivery, and 24/7 support are included.\n\nThe RS3 is ideal for budget-conscious drivers who want genuine 400+bhp performance without the AED 2,000+ daily rates that supercars command. It's compact enough to park anywhere, easy to drive daily, and handles Hatta's mountain scenery as well as any larger RS model. The minimum age is 23 — lower than any other performance car in the fleet.",
     faqs: [
@@ -112,7 +112,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
     ],
   },
   'lamborghini-revuelto': {
-    metaTitle: 'Rent Lamborghini Revuelto in Dubai — Hire from AED 8,999/day | LuxeClub',
+    metaTitle: 'Rent Lamborghini Revuelto in Dubai — Hire from AED 8,999/day',
     description:
       "The Lamborghini Revuelto is the flagship of the entire Dubai luxury rental market — a plug-in hybrid V12 hypercar producing 1,001bhp, 0-100 in 2.5 seconds, and a top speed over 350 km/h. It's one of maybe a dozen Revueltos available for rent anywhere in the world, and it is the single most requested car in our fleet.\n\nLamborghini Revuelto car rental in Dubai is AED 8,999 per day. Weekly and monthly rentals are priced case by case — message us on WhatsApp (+971 58 808 6137) for a personalised quote. Every rental includes comprehensive insurance, delivery across Dubai (free on monthly rentals, a flat surcharge on shorter rentals), 24/7 support, and an extended handover walkthrough covering the hybrid V12 drivetrain, the three electric motors, and the regeneration modes.\n\nThe Revuelto is the car for customers who want the absolute pinnacle of what's available in the Dubai market. It's the most theatrical car you can rent — and the hybrid V12 sounds different from any Lamborghini that came before it. We recommend booking at least two weeks in advance for specific dates, particularly on weekends and during peak season (November to March).",
     faqs: [
@@ -135,7 +135,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
     ],
   },
   'porsche-911-gt3-rs': {
-    metaTitle: 'Rent Porsche 911 GT3 RS in Dubai — Hire from AED 1,999/day | LuxeClub',
+    metaTitle: 'Rent Porsche 911 GT3 RS in Dubai — Hire from AED 1,999/day',
     description:
       "The Porsche 911 GT3 RS is the most extreme road-legal 911 ever built — a 518bhp naturally-aspirated flat-six that revs to 9,000 rpm, active DRS-style rear wing, race-derived suspension, and the most distinctive aero ever fitted to a 911. It is, by any objective measure, one of the best driver's cars in the world.\n\nPorsche 911 GT3 RS car rental in Dubai is AED 1,999 per day. Weekly and monthly rentals are priced case by case — message us on WhatsApp (+971 58 808 6137) for a personalised quote. Insurance, delivery, and 24/7 support are included. The handover walkthrough covers the active aero system, the DRS rear wing, the chassis settings, and the launch control.\n\nThe GT3 RS is the car for experienced drivers who appreciate Porsche's most focused engineering. It is not a comfortable cruiser — the ride is firm, the cabin is loud, and the car demands your attention. In return it delivers a driving feel that nothing else in the fleet can match. Take it to Jebel Jais at sunrise for the views and photos with the unlimited-mileage upgrade.",
     faqs: [
@@ -158,7 +158,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
     ],
   },
   'ferrari-sf90-stradale': {
-    metaTitle: 'Rent Ferrari SF90 Stradale in Dubai — Hire from AED 3,999/day | LuxeClub',
+    metaTitle: 'Rent Ferrari SF90 in Dubai — Hire from AED 3,999/day',
     description:
       "The Ferrari SF90 Stradale is the fastest production Ferrari ever built — a plug-in hybrid V8 producing 986bhp combined from a twin-turbo V8 and three electric motors, 0-100 in 2.5 seconds, and the most technologically advanced car in the Ferrari lineup. It bridges the gap between supercar and hypercar.\n\nFerrari SF90 Stradale car rental in Dubai is AED 3,999 per day. Weekly and monthly rentals are priced case by case — message us on WhatsApp (+971 58 808 6137) for a personalised quote. Insurance, delivery, and 24/7 support are included. The handover walkthrough covers the hybrid drivetrain modes (eDrive for electric-only, Hybrid for combined, Performance and Qualify for maximum power).\n\nThe SF90 is for customers who want Ferrari's absolute best — the technology, the badge presence, and the most advanced car in the Prancing Horse stable. At AED 3,999/day it sits between the mainstream Ferrari range and the Lamborghini Revuelto, making it the value choice for customers who want near-hypercar presence without the AED 8,999/day Revuelto price.",
     faqs: [
@@ -181,7 +181,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
     ],
   },
   'rolls-royce-culli-mansory': {
-    metaTitle: 'Rent Rolls-Royce Cullinan Mansory in Dubai — Hire from AED 2,499/day | LuxeClub',
+    metaTitle: 'Rent Cullinan Mansory Dubai — From AED 2,499/day',
     description:
       "The Rolls-Royce Cullinan Mansory is the most presence-heavy car in our entire fleet — a 6.75-litre twin-turbo V12 wrapped in a Mansory carbon-fibre aero kit, finished inside with lambswool rugs, a starlight headliner, and a rear cabin that rivals the best first-class airline seats. It doesn't just arrive — it changes the atmosphere of wherever you pull up.\n\nRolls-Royce Cullinan Mansory car rental in Dubai is AED 2,499 per day. Weekly and monthly rentals — and bespoke wedding/event packages — are priced case by case. Message us on WhatsApp (+971 58 808 6137) for a personalised quote. Insurance, white-glove delivery, and 24/7 support are included. Chauffeur service is available as an add-on, particularly popular for wedding bookings and business events.\n\nThe Cullinan Mansory is the car for occasions where the arrival matters as much as the destination — weddings, business signings, family visits where you want something exceptional, and any event where you want the most impressive car available in the Dubai rental market. We recommend booking at least two weeks in advance during peak season (November to March).",
     faqs: [
@@ -204,7 +204,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
     ],
   },
   'range-rover-vogue-hse': {
-    metaTitle: 'Rent Range Rover Vogue HSE in Dubai — Hire from AED 899/day | LuxeClub',
+    metaTitle: 'Rent Range Rover Vogue HSE in Dubai — Hire from AED 899/day',
     description:
       "The Range Rover Vogue HSE is the definitive luxury SUV for Dubai — a comfortable long-distance cruiser with exceptional ride quality, genuine off-road capability, and enough rear legroom to work as a business saloon replacement. It's the car Dubai residents choose for their own daily driving, which tells you everything about how well it suits the city.\n\nRange Rover Vogue HSE car rental in Dubai is AED 899 per day. Weekly and monthly rentals are priced case by case — message us on WhatsApp (+971 58 808 6137) for a personalised quote. Insurance, delivery, and 24/7 support are included.\n\nThe Vogue HSE is the most popular family SUV in our fleet. It handles airport pickups, school runs, Hatta day trips, and DIFC business dinners without compromising on any of them. The air suspension flattens Dubai's speed bumps and the cabin is quiet enough for rear passengers to sleep on the Abu Dhabi run.",
     faqs: [
@@ -227,7 +227,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
     ],
   },
   'audi-rsq8': {
-    metaTitle: 'Rent Audi RSQ8 in Dubai — Hire from AED 899/day | LuxeClub',
+    metaTitle: 'Rent Audi RSQ8 in Dubai — Hire from AED 899/day',
     description:
       "The Audi RSQ8 is a 4.0-litre twin-turbo V8 performance SUV producing 591bhp — making it as quick as a Lamborghini Urus in most real-world driving scenarios despite the lower headline power figure, because of the chassis tuning and quattro all-wheel-drive system. 0-100 in 3.8 seconds, a top speed of 305 km/h, and a cabin that feels like a luxury saloon rather than an SUV.\n\nAudi RSQ8 car rental in Dubai is AED 899 per day. Weekly and monthly rentals are priced case by case — message us on WhatsApp (+971 58 808 6137) for a personalised quote. Insurance, delivery, and 24/7 support are included.\n\nThe RSQ8 is the performance SUV for customers who want serious presence without sacrificing practicality. It seats five adults comfortably, has a proper boot, and handles Dubai traffic with the kind of effortless torque that makes rush-hour driving feel safe rather than dramatic. At AED 899/day it's also one of the best-value performance SUVs in the whole Dubai rental market — substantially cheaper than the Urus (AED 2,499) while offering comparable on-road feel.",
     faqs: [
@@ -250,7 +250,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
     ],
   },
   'ferrari-purosangue': {
-    metaTitle: 'Rent Ferrari Purosangue in Dubai — Hire from AED 8,999/day | LuxeClub',
+    metaTitle: 'Rent Ferrari Purosangue in Dubai — Hire from AED 8,999/day',
     description:
       "The Ferrari Purosangue is Ferrari's first four-door, four-seat car — and arguably the most controversial vehicle in the company's history. A naturally-aspirated 6.5-litre V12 producing 715bhp, 0-100 in 3.3 seconds, rear suicide doors, and a chassis that somehow feels like a Ferrari despite weighing over 2 tonnes. It is the only car in our fleet where a family of four can travel together in a genuine Ferrari.\n\nFerrari Purosangue car rental in Dubai is AED 8,999 per day. Weekly and monthly rentals are priced case by case — message us on WhatsApp (+971 58 808 6137) for a personalised quote. Insurance, delivery, and 24/7 support are included.\n\nThe Purosangue is for customers who want the Ferrari experience — the V12 soundtrack, the chassis feel, the badge — but need four doors and four seats. It's popular with families, business delegations, and anyone who wants to prove that Ferrari's first SUV was worth the controversy. The naturally-aspirated V12 is the same engine family that powered the 812 Superfast, and it sounds extraordinary even at city speeds.",
     faqs: [

@@ -1163,9 +1163,9 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'car-rental-dubai',
     title: 'Car Rental Dubai',
-    metaTitle: 'Car Rental Dubai — Luxury, Sports & SUV Hire from AED 350/day',
+    metaTitle: 'Car Rental Dubai — Luxury & Sports Hire from AED 350/day',
     metaDescription:
-      'Car rental in Dubai — luxury, sports, supercars, SUVs, convertibles. Insurance included, delivery across Dubai, no inflated deposits. Book your Dubai rental car online.',
+      'Car rental in Dubai — luxury, sports, SUVs, convertibles. Insurance included, delivery across Dubai, no inflated deposits. Book online.',
     heading: 'Car Rental Dubai',
     subheading: 'Luxury, sports, and SUV rentals delivered to your door across Dubai.',
     content:
@@ -1243,9 +1243,9 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'rent-exotic-car-in-dubai',
     title: 'Exotic Car Rental Dubai',
-    metaTitle: 'Exotic Car Rental Dubai — Revuelto, SF90, Cullinan Mansory & More',
+    metaTitle: 'Exotic Car Rental Dubai — Revuelto, SF90, Cullinan & More',
     metaDescription:
-      'Rent exotic cars in Dubai — Lamborghini Revuelto, Ferrari SF90, Ferrari Purosangue, Rolls-Royce Cullinan Mansory, and the rarest cars on the Dubai rental market. Insurance included, delivered to your hotel.',
+      'Exotic car rental Dubai — Lamborghini Revuelto, Ferrari SF90 & Purosangue, Rolls-Royce Cullinan Mansory. Insurance included, delivered to your hotel.',
     heading: 'Exotic Car Rental Dubai',
     subheading: 'The rarest cars on the Dubai rental market — delivered to your door for a day that feels like the event itself.',
     content:
@@ -1337,9 +1337,9 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'luxury-car-rental-no-deposit-dubai',
     title: 'Luxury Car Rental Dubai — No Deposit',
-    metaTitle: 'Luxury Car Rental Dubai No Deposit — Book Online from AED 495',
+    metaTitle: 'Luxury Car Rental Dubai No Deposit — From AED 495',
     metaDescription:
-      'Rent luxury cars in Dubai with no deposit. AED 495 reservation fee holds your car, balance paid at pickup. Insurance included, delivery free, no hidden deductions.',
+      'Rent luxury cars in Dubai with no deposit. AED 495 secures your booking, balance paid at pickup. Insurance included, no hidden fees.',
     heading: 'Luxury Car Rental Dubai — No Deposit, No Hassle',
     subheading: 'A no-deposit option is available for eligible drivers.',
     content:
@@ -1548,9 +1548,9 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'rent-luxury-car-in-dubai',
     title: 'Luxury Car Rental Dubai',
-    metaTitle: 'Luxury Car Rental Dubai — Rolls-Royce, Bentley, Ferrari & More',
+    metaTitle: 'Luxury Car Rental Dubai — Rolls-Royce, Ferrari, Bentley',
     metaDescription:
-      'Luxury car rental in Dubai — Rolls-Royce, Bentley, Ferrari, Lamborghini, Range Rover, Porsche, and more. Insurance included, delivery across Dubai, AED 495 reservation fee. Book online.',
+      'Luxury car rental Dubai — Rolls-Royce, Bentley, Ferrari, Lamborghini, Range Rover, Porsche. Insurance included, delivery across Dubai. Book online.',
     heading: 'Luxury Car Rental Dubai',
     subheading: 'The finest cars in Dubai, delivered to your door.',
     content:
@@ -1631,9 +1631,9 @@ export const moneyPages: MoneyPage[] = [
   {
     slug: 'rent-supercar-in-dubai',
     title: 'Supercar Rental Dubai',
-    metaTitle: 'Supercar Rental Dubai — Lamborghini, Ferrari, McLaren, Porsche',
+    metaTitle: 'Supercar Rental Dubai — Lamborghini, Ferrari, McLaren',
     metaDescription:
-      'Supercar rental in Dubai — Lamborghini Huracán, Ferrari F8 and SF90, McLaren 720S and 765LT, Porsche 911 Turbo S and GT3 RS. Insurance included, delivered to your hotel. Book online.',
+      'Supercar rental Dubai — Lamborghini Huracán, Ferrari F8 & SF90, McLaren 720S, Porsche 911 Turbo S. Insurance included, delivered to your hotel.',
     heading: 'Supercar Rental Dubai',
     subheading: 'Supercars are not just for looking at. Drive one.',
     content:

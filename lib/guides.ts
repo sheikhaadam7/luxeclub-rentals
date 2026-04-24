@@ -32,7 +32,7 @@ export const guides: Guide[] = [
   {
     slug: 'dubai-driving-rules-for-tourists',
     title: 'Dubai Driving Rules for Tourists (2026)',
-    metaTitle: 'Dubai Driving Rules for Tourists (2026) — What You Need to Know',
+    metaTitle: 'Dubai Driving Rules for Tourists 2026 — The Full Guide',
     metaDescription:
       'Complete guide to driving in Dubai as a tourist. Licence requirements, speed limits, Salik tolls, parking, fuel prices, and tips to avoid fines.',
     publishedDate: '2026-01-15',
@@ -73,9 +73,9 @@ export const guides: Guide[] = [
   {
     slug: 'best-driving-roads-dubai-uae',
     title: 'The 7 Best Scenic Drives in Dubai & the UAE',
-    metaTitle: 'The 7 Best Scenic Drives in Dubai & the UAE — Photo Routes for 2026',
+    metaTitle: 'The 7 Best Scenic Drives in Dubai & the UAE (2026)',
     metaDescription:
-      'The best scenic drives in the UAE, from the Jebel Jais mountain road to the Al Qudra desert stretch. Seven routes worth taking for photos, views, and a relaxed day out with your rental car.',
+      'The 7 best scenic drives in the UAE — Jebel Jais, Hatta, Al Qudra, Jebel Hafeet and more. Worth taking for photos, views and a relaxed day out.',
     publishedDate: '2026-02-01',
     category: 'driving',
     sections: [
@@ -190,7 +190,7 @@ export const guides: Guide[] = [
   {
     slug: 'why-dubai-is-supercar-capital-of-the-world',
     title: 'Why Dubai Is the Supercar Capital of the World',
-    metaTitle: 'Why Dubai Is the Supercar Capital of the World — LuxeClub Guides',
+    metaTitle: 'Why Dubai Is the Supercar Capital of the World',
     metaDescription:
       'Dubai has more supercars per capita than anywhere on Earth. Here is why, from the tax setup to the roads to the culture around cars.',
     publishedDate: '2026-02-22',
@@ -228,7 +228,7 @@ export const guides: Guide[] = [
   {
     slug: 'car-rental-deposits-dubai-how-to-protect-yourself',
     title: 'How I Was Almost Scammed Out of My Deposit — And How to Protect Yourself',
-    metaTitle: 'How I Was Almost Scammed Out of My Car Rental Deposit in Dubai',
+    metaTitle: 'How I Almost Lost My Car Rental Deposit in Dubai',
     metaDescription:
       'I chased a Dubai car rental company for 3 months to get my deposit back. Here is what happened, the WhatsApp receipts to prove it, and how to protect yourself.',
     publishedDate: '2026-03-07',
@@ -323,7 +323,7 @@ export const guides: Guide[] = [
   {
     slug: 'dubai-traffic-fines-complete-guide',
     title: 'Dubai Traffic Fines: The Complete Guide for Drivers (2026)',
-    metaTitle: 'Dubai Traffic Fines 2026 — Complete List, Amounts & How to Pay',
+    metaTitle: 'Dubai Traffic Fines 2026 — Full List & How to Pay',
     metaDescription:
       'Every traffic fine in Dubai explained. Speeding, red lights, phone use, parking, Salik tolls and more. How to check, pay, and dispute fines in the UAE.',
     publishedDate: '2026-03-14',
@@ -409,7 +409,7 @@ export const guides: Guide[] = [
   {
     slug: 'uae-roundabout-rules-guide',
     title: 'UAE Roundabout Rules: How to Drive Them Without Getting Fined',
-    metaTitle: 'UAE Roundabout Rules 2026 — Lane Selection, Right of Way & Fines',
+    metaTitle: 'UAE Roundabout Rules 2026 — Lanes, Right of Way & Fines',
     metaDescription:
       'Complete guide to roundabout rules in the UAE. Lane selection for 2 and 3-lane roundabouts, right of way, signalling rules, common mistakes, and fines to avoid.',
     publishedDate: '2026-03-09',
@@ -462,7 +462,7 @@ export const guides: Guide[] = [
   {
     slug: 'dubai-speed-cameras-locations-guide',
     title: 'Dubai Speed Cameras: Locations, Types & How to Avoid Fines',
-    metaTitle: 'Dubai Speed Cameras 2026 — Locations, Types, Radar Map & Fine Guide',
+    metaTitle: 'Dubai Speed Cameras 2026 — Locations, Radar Map & Fines',
     metaDescription:
       'Where are the speed cameras in Dubai? Complete guide to fixed radars, mobile cameras, AI traffic systems, and how to avoid speeding fines on every major road.',
     publishedDate: '2026-03-11',
@@ -510,7 +510,7 @@ export const guides: Guide[] = [
   {
     slug: 'dubai-to-hatta-road-trip-guide',
     title: 'Dubai to Hatta Road Trip: Route, Stops & Driving Tips',
-    metaTitle: 'Dubai to Hatta Road Trip 2026 — Route, Attractions & Driving Guide',
+    metaTitle: 'Dubai to Hatta Road Trip 2026 — Route & Attractions',
     metaDescription:
       'Plan your Dubai to Hatta road trip. Best route, drive time, what to see, where to stop, and tips for driving through the Hajar Mountains.',
     publishedDate: '2026-03-13',
@@ -558,7 +558,7 @@ export const guides: Guide[] = [
   {
     slug: 'rental-car-fines-dubai-what-happens',
     title: 'What Happens If You Get a Traffic Fine in a Rental Car in Dubai?',
-    metaTitle: 'Traffic Fine in a Rental Car Dubai — What Happens & How to Handle It',
+    metaTitle: 'Traffic Fine in a Rental Car Dubai — How to Handle It',
     metaDescription:
       'Got a traffic fine in a rental car in Dubai? What happens next, how rental companies charge you, and how to dispute unfair charges.',
     publishedDate: '2026-03-16',
@@ -606,7 +606,7 @@ export const guides: Guide[] = [
   {
     slug: 'rent-car-dubai-cryptocurrency-bitcoin',
     title: 'Renting a Car in Dubai with Cryptocurrency: How It Works',
-    metaTitle: 'Rent a Car in Dubai with Bitcoin & Crypto — How It Works (2026)',
+    metaTitle: 'Rent a Car in Dubai with Bitcoin & Crypto (2026)',
     metaDescription:
       'How to rent a luxury car in Dubai with Bitcoin, Ethereum, or USDT. Step-by-step process, which coins are accepted, and what to expect.',
     publishedDate: '2026-04-07',
@@ -652,7 +652,7 @@ export const guides: Guide[] = [
   {
     slug: 'best-cars-rent-dubai-wedding',
     title: 'Best Cars to Rent for a Dubai Wedding (2026)',
-    metaTitle: 'Best Cars to Rent for a Dubai Wedding — Luxury Wedding Car Hire',
+    metaTitle: 'Best Cars to Rent for a Dubai Wedding — Luxury Hire',
     metaDescription:
       'The best luxury cars to rent for a Dubai wedding. Rolls-Royce, Bentley, Mercedes G63 and more. Pricing, chauffeur options, and booking tips.',
     publishedDate: '2026-04-12',
@@ -744,7 +744,7 @@ export const guides: Guide[] = [
   {
     slug: 'dubai-mall-guide-parking-access',
     title: 'The Ultimate Dubai Mall Guide: Every Major Mall, How to Get There & Where to Park',
-    metaTitle: 'Dubai Mall Guide 2026 — Parking, Access & Tips for Every Major Mall',
+    metaTitle: 'Dubai Mall Guide 2026 — Parking, Access & Tips',
     metaDescription:
       'Complete guide to Dubai malls for visitors. Parking fees, access routes, opening hours, and tips for Dubai Mall, Mall of the Emirates, Ibn Battuta, and more.',
     publishedDate: '2026-03-31',
@@ -790,7 +790,7 @@ export const guides: Guide[] = [
   {
     slug: 'lamborghini-urus-vs-audi-rsq8-dubai',
     title: 'Lamborghini Urus vs Audi RSQ8: The Same Car, Half the Price',
-    metaTitle: 'Lamborghini Urus vs Audi RSQ8 Dubai — Same Car, Half the Price?',
+    metaTitle: 'Urus vs Audi RSQ8 Dubai — Same Car, Half the Price?',
     metaDescription:
       'Most people renting a Lamborghini Urus in Dubai don\'t know the Audi RSQ8 is the same car underneath. Same engine, same chassis, same platform — at half the daily rate. Here\'s the honest comparison.',
     publishedDate: '2026-04-21',
@@ -843,9 +843,9 @@ export const guides: Guide[] = [
   {
     slug: 'lamborghini-urus-vs-bentley-bentayga-dubai',
     title: 'Lamborghini Urus vs Bentley Bentayga: Same Platform, Different Personality',
-    metaTitle: 'Lamborghini Urus vs Bentley Bentayga Dubai — Which Should You Rent?',
+    metaTitle: 'Urus vs Bentley Bentayga Dubai — Which to Rent?',
     metaDescription:
-      'Thinking of renting a Bentley Bentayga in Dubai instead of a Lamborghini Urus? Both share the same VW Group platform — but tune for very different personalities. Honest comparison with pricing, interior, and Dubai use-case breakdown.',
+      'Bentayga vs Urus in Dubai — same VW Group platform, very different personalities. Honest comparison with pricing, interior and use-case breakdown.',
     publishedDate: '2026-04-21',
     category: 'cars',
     image: 'https://oezwrobajotfxzmqabvp.supabase.co/storage/v1/object/public/vehicle-images/bentley-bentayga/0.jpg',

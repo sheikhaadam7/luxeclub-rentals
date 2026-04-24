@@ -273,6 +273,8 @@ export default async function MoneyPage({ params }: PageProps) {
       description: `Rent a ${v.name} in Dubai with LuxeClub Rentals. Insurance included, delivery across Dubai.`,
       image: v.primary_image_url,
       url: `${SITE_URL}/catalogue/${v.slug}`,
+      sku: v.slug,
+      productID: v.slug,
       brand: { '@type': 'Brand', name: extractBrand(v.name) },
       offers: v.daily_rate
         ? {
@@ -281,6 +283,7 @@ export default async function MoneyPage({ params }: PageProps) {
             price: v.daily_rate,
             url: `${SITE_URL}/catalogue/${v.slug}`,
             availability: 'https://schema.org/InStock',
+            seller: { '@type': 'Organization', name: 'LuxeClub Rentals' },
           }
         : undefined,
     })),

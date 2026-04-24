@@ -100,11 +100,13 @@ const jsonLd = {
   description:
     'Premium luxury and sports car rental service in Dubai, UAE. Featuring Lamborghini, Ferrari, Rolls-Royce, Bentley and more.',
   url: SITE_URL,
+  image: `${SITE_URL}/opengraph-image`,
+  logo: `${SITE_URL}/apple-icon.png`,
   telephone: '+971588086137',
   email: 'bookings@luxeclubrentals.com',
   address: {
     '@type': 'PostalAddress',
-    streetAddress: 'Binary Tower, 32 Marasi Drive Street',
+    streetAddress: 'Binary Tower, 32 Marasi Drive',
     addressLocality: 'Business Bay',
     addressRegion: 'Dubai',
     addressCountry: 'AE',
@@ -120,13 +122,9 @@ const jsonLd = {
     opens: '00:00',
     closes: '23:59',
   },
-  priceRange: 'AED 800 — AED 15 000 / day',
-  aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: '4.9',
-    reviewCount: '500',
-    bestRating: '5',
-  },
+  priceRange: '$$$',
+  // aggregateRating intentionally omitted until verifiable via Google Reviews API.
+  // Google Rich Results flags fabricated review counts as deceptive structured data.
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
