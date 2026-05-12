@@ -34,7 +34,7 @@ const faqsForSchema = [
   },
   {
     q: 'What is the security deposit?',
-    a: 'A refundable hold placed on your card to cover potential damages. The amount varies by vehicle. You can opt out for a small surcharge.',
+    a: "A refundable security deposit of AED 2,500 is held on your card at the time of collection to cover any potential fines or damages. Drivers under 23 are required to place a deposit of AED 5,000. Once the vehicle is returned and inspected, the deposit is released back to your card.\n\nA no-deposit option is available to drivers who have held a full driving licence for more than 5 years — just speak with our team and we'll arrange it for you.",
   },
   {
     q: 'What is the cancellation policy?',

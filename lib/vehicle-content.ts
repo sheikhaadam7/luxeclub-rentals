@@ -38,7 +38,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
       },
       {
         question: 'Can I drive the DBX 707 to Abu Dhabi?',
-        answer: 'Yes — our insurance covers the entire UAE. Abu Dhabi is 1.5 hours each way from Dubai Marina. We recommend the unlimited-mileage upgrade for the round-trip since the standard 250 km/day allowance may not cover it.',
+        answer: 'Yes — our insurance covers the entire UAE. Abu Dhabi is 1.5 hours each way from Dubai Marina.',
       },
     ],
   },
@@ -57,7 +57,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
       },
       {
         question: 'Can I take the M3 Competition on Jebel Jais?',
-        answer: "Yes — Jebel Jais is a memorable scenic destination for a day out in the M3. Smooth tarmac, panoramic viewpoints, and a summit restaurant make it one of the most photogenic drives in the country. Allow 3–4 hours round-trip from Dubai Marina and take the unlimited-mileage upgrade. Please enjoy the drive at a relaxed pace within the posted speed limits.",
+        answer: "Yes — Jebel Jais is a memorable scenic destination for a day out in the M3. Smooth tarmac, panoramic viewpoints, and a summit restaurant make it one of the most photogenic drives in the country. Allow 3–4 hours round-trip from Dubai Marina. Please enjoy the drive at a relaxed pace within the posted speed limits.",
       },
       {
         question: 'What is the minimum age to rent a BMW M3 Competition?',
@@ -80,7 +80,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
       },
       {
         question: 'Can I drive the RS6 to Abu Dhabi?',
-        answer: 'Yes — our insurance covers the entire UAE. The RS6 is one of the best cars in the fleet for the Abu Dhabi run — the V8 is relaxed at highway speeds, the cabin is quiet, and the quattro system provides excellent stability. Take the unlimited-mileage upgrade for the round-trip.',
+        answer: 'Yes — our insurance covers the entire UAE. The RS6 is one of the best cars in the fleet for the Abu Dhabi run — the V8 is relaxed at highway speeds, the cabin is quiet, and the quattro system provides excellent stability.',
       },
       {
         question: 'Why is the RS6 so popular in Dubai?',
@@ -107,7 +107,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
       },
       {
         question: 'Can I take the RS3 on Jebel Jais or Hatta?',
-        answer: "Yes — both are allowed under our rental terms. The RS3's compact size and quattro grip make it particularly enjoyable on Hatta's tight mountain roads. Take the unlimited-mileage upgrade for either trip.",
+        answer: "Yes — both are allowed under our rental terms. The RS3's compact size and quattro grip make it particularly enjoyable on Hatta's tight mountain roads.",
       },
     ],
   },
@@ -137,7 +137,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
   'porsche-911-gt3-rs': {
     metaTitle: 'Rent Porsche 911 GT3 RS in Dubai — Hire from AED 1,999/day',
     description:
-      "The Porsche 911 GT3 RS is the most extreme road-legal 911 ever built — a 518bhp naturally-aspirated flat-six that revs to 9,000 rpm, active DRS-style rear wing, race-derived suspension, and the most distinctive aero ever fitted to a 911. It is, by any objective measure, one of the best driver's cars in the world.\n\nPorsche 911 GT3 RS car rental in Dubai is AED 1,999 per day. Weekly and monthly rentals are priced case by case — message us on WhatsApp (+971 58 808 6137) for a personalised quote. Insurance, delivery, and 24/7 support are included. The handover walkthrough covers the active aero system, the DRS rear wing, the chassis settings, and the launch control.\n\nThe GT3 RS is the car for experienced drivers who appreciate Porsche's most focused engineering. It is not a comfortable cruiser — the ride is firm, the cabin is loud, and the car demands your attention. In return it delivers a driving feel that nothing else in the fleet can match. Take it to Jebel Jais at sunrise for the views and photos with the unlimited-mileage upgrade.",
+      "The Porsche 911 GT3 RS is the most extreme road-legal 911 ever built — a 518bhp naturally-aspirated flat-six that revs to 9,000 rpm, active DRS-style rear wing, race-derived suspension, and the most distinctive aero ever fitted to a 911. It is, by any objective measure, one of the best driver's cars in the world.\n\nPorsche 911 GT3 RS car rental in Dubai is AED 1,999 per day. Weekly and monthly rentals are priced case by case — message us on WhatsApp (+971 58 808 6137) for a personalised quote. Insurance, delivery, and 24/7 support are included. The handover walkthrough covers the active aero system, the DRS rear wing, the chassis settings, and the launch control.\n\nThe GT3 RS is the car for experienced drivers who appreciate Porsche's most focused engineering. It is not a comfortable cruiser — the ride is firm, the cabin is loud, and the car demands your attention. In return it delivers a driving feel that nothing else in the fleet can match. Take it to Jebel Jais at sunrise for the views and photos.",
     faqs: [
       {
         question: 'How much does it cost to rent a Porsche 911 GT3 RS in Dubai?',
@@ -149,7 +149,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
       },
       {
         question: 'Can I take the GT3 RS on Jebel Jais?',
-        answer: "Yes — Jebel Jais is a beautiful scenic destination for a day out in the GT3 RS. Smooth tarmac, panoramic viewpoints, and a summit restaurant at 1,700 m for lunch or coffee. Get there at sunrise for the best light and the quietest roads. Allow 3–4 hours round-trip and take the unlimited-mileage upgrade. The scenery and the photos are the point — drive at a relaxed pace within the posted limits.",
+        answer: "Yes — Jebel Jais is a beautiful scenic destination for a day out in the GT3 RS. Smooth tarmac, panoramic viewpoints, and a summit restaurant at 1,700 m for lunch or coffee. Get there at sunrise for the best light and the quietest roads. Allow 3–4 hours round-trip. The scenery and the photos are the point — drive at a relaxed pace within the posted limits.",
       },
       {
         question: 'What does the DRS rear wing do?',
