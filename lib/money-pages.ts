@@ -29,6 +29,9 @@ export interface MoneyPage {
   /** When true, render `sections` between the hero and the brand nav /
    *  vehicle grid, and add a "Skip to fleet" anchor in the hero. */
   sectionsBeforeGrid?: boolean
+  /** Index of the body section (FAQs excluded) after which the
+   *  "Take a Look at Our Guides" block renders. Defaults to 0. */
+  guidesAfterSectionIndex?: number
   filter: {
     type: 'brand' | 'type' | 'keyword'
     value: string
@@ -336,7 +339,7 @@ export const moneyPages: MoneyPage[] = [
       {
         heading: 'Before You Drive: What You Need to Know',
         content:
-          "Practical notes for renting a Bentley in Dubai.\n\n**Licence requirements:** UAE residents need Emirates ID and UAE licence. Tourists need their home-country licence plus an International Driving Permit.\n\n**Minimum age** is 25 for all Bentleys in the fleet. The Continental GT, GTC, and Bentayga variants all share this minimum.\n\n**Salik** is the Dubai toll system. AED 6 per gate, billed to the rental and passed through at cost at the end of the rental.\n\n**Speed cameras** are extensive. The 120 km/h highway limit has a +20 buffer — 140 is the practical ceiling. Bentleys will pull past 180 without drama, so watch the speedometer actively.\n\n**Abu Dhabi day trips** are fine. Bring your IDP, budget for Salik.\n\n**Parking** — the Bentayga is large but not unusually so by Dubai SUV standards. Most hotel valets and underground car parks accommodate it without issue.\n\nFor the full driving primer see our [guide to Dubai driving rules for tourists](/guides/dubai-driving-rules-for-tourists).",
+          "Practical notes for renting a Bentley in Dubai.\n\n**Licence requirements:** UAE residents need Emirates ID and UAE licence. Tourists need their home-country licence plus an International Driving Permit.\n\n**Minimum age** is 24 for all Bentleys in the fleet. The Continental GT, GTC, and Bentayga variants all share this minimum.\n\n**Salik** is the Dubai toll system. AED 6 per gate, billed to the rental and passed through at cost at the end of the rental.\n\n**Speed cameras** are extensive. The 120 km/h highway limit has a +20 buffer — 140 is the practical ceiling. Bentleys will pull past 180 without drama, so watch the speedometer actively.\n\n**Abu Dhabi day trips** are fine. Bring your IDP, budget for Salik.\n\n**Parking** — the Bentayga is large but not unusually so by Dubai SUV standards. Most hotel valets and underground car parks accommodate it without issue.\n\nFor the full driving primer see our [guide to Dubai driving rules for tourists](/guides/dubai-driving-rules-for-tourists).",
       },
       {
         heading: 'Do I need to leave a large deposit to rent a Bentley?',
@@ -348,7 +351,7 @@ export const moneyPages: MoneyPage[] = [
         heading: "What's the minimum age to rent a Bentley in Dubai?",
         isFaq: true,
         content:
-          'The minimum age is 25 for all Bentleys in our fleet — Continental GT, Continental GTC, Bentayga (Black, Brown), and Bentayga S. Tourists additionally need a valid International Driving Permit alongside their home-country licence.',
+          'The minimum age is 24 for all Bentleys in our fleet — Continental GT, Continental GTC, Bentayga (Black, Brown), and Bentayga S. Tourists additionally need a valid International Driving Permit alongside their home-country licence.',
       },
       {
         heading: 'Can I drive the Bentley to Abu Dhabi?',
@@ -382,6 +385,7 @@ export const moneyPages: MoneyPage[] = [
       },
     ],
     filter: { type: 'brand', value: 'Bentley' },
+    guidesAfterSectionIndex: 2,
   },
   {
     slug: 'rent-porsche-in-dubai',

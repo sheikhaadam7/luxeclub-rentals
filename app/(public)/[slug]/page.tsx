@@ -372,7 +372,12 @@ export default async function MoneyPage({ params }: PageProps) {
                 </p>
               </div>
 
-              {bodySections.map((section, i) => (
+              {(() => {
+                const guidesIndex = Math.min(
+                  page.guidesAfterSectionIndex ?? 0,
+                  Math.max(bodySections.length - 1, 0),
+                )
+                return bodySections.map((section, i) => (
                 <div key={section.heading}>
                   <div className="space-y-3">
                     <h2
@@ -408,9 +413,10 @@ export default async function MoneyPage({ params }: PageProps) {
                       </div>
                     )}
                   </div>
-                  {i === 0 && guidesBlock}
+                  {i === guidesIndex && guidesBlock}
                 </div>
-              ))}
+                ))
+              })()}
 
               {faqSections.length > 0 && (
                 <div className="space-y-4 pt-4">
