@@ -118,6 +118,10 @@ function filterVehicles(vehicles: Vehicle[], filter: { type: string; value: stri
   if (filter.type === 'type') {
     return vehicles.filter((v) => extractCarType(v.name) === filter.value)
   }
+  if (filter.type === 'model') {
+    const needle = filter.value.toLowerCase()
+    return vehicles.filter((v) => v.name.toLowerCase().includes(needle))
+  }
   // keyword — show all vehicles
   return vehicles
 }
@@ -176,16 +180,23 @@ function renderInline(text: string, keyPrefix: string | number): React.ReactNode
   })
 }
 
-function renderParagraphs(content: string) {
+function renderParagraphs(content: string, centered = false) {
+  const pClass = centered
+    ? 'text-[15px] text-brand-muted leading-relaxed max-w-3xl mx-auto text-center mb-4 last:mb-0'
+    : 'text-[15px] text-brand-muted leading-relaxed max-w-3xl mb-4 last:mb-0'
+  const ulClass = centered
+    ? 'list-none space-y-2 text-[15px] text-brand-muted leading-relaxed max-w-3xl mx-auto text-center mb-4 last:mb-0'
+    : 'list-disc pl-6 space-y-2 text-[15px] text-brand-muted leading-relaxed max-w-3xl mb-4 last:mb-0 marker:text-brand-cyan'
+  const h3Class = centered
+    ? 'font-display text-lg sm:text-xl font-semibold text-white text-center mt-6 mb-3 first:mt-0'
+    : 'font-display text-lg sm:text-xl font-semibold text-white mt-6 mb-3 first:mt-0'
+
   return content.split(/\n\n+/).map((para, i) => {
     const trimmed = para.trim()
     const soloBoldMatch = /^\*\*([^*]+)\*\*$/.exec(trimmed)
     if (soloBoldMatch) {
       return (
-        <h3
-          key={i}
-          className="font-display text-lg sm:text-xl font-semibold text-white mt-6 mb-3 first:mt-0"
-        >
+        <h3 key={i} className={h3Class}>
           {soloBoldMatch[1]}
         </h3>
       )
@@ -194,10 +205,7 @@ function renderParagraphs(content: string) {
     const lines = trimmed.split('\n')
     if (lines.length > 1 && lines.every((line) => line.startsWith('- '))) {
       return (
-        <ul
-          key={i}
-          className="list-disc pl-6 space-y-2 text-[15px] text-brand-muted leading-relaxed max-w-3xl mb-4 last:mb-0 marker:text-brand-cyan"
-        >
+        <ul key={i} className={ulClass}>
           {lines.map((line, k) => (
             <li key={k}>{renderInline(line.slice(2), `${i}-${k}`)}</li>
           ))}
@@ -205,10 +213,7 @@ function renderParagraphs(content: string) {
       )
     }
     return (
-      <p
-        key={i}
-        className="text-[15px] text-brand-muted leading-relaxed max-w-3xl mb-4 last:mb-0"
-      >
+      <p key={i} className={pClass}>
         {renderInline(para, i)}
       </p>
     )
@@ -365,7 +370,7 @@ export default async function MoneyPage({ params }: PageProps) {
             </section>
           )
           return (
-            <section id="about" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 space-y-8">
+            <section id="about" className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 space-y-8 ${page.centered ? 'text-center' : ''}`}>
               <div className="border-t border-brand-border pt-8">
                 <p className="text-xs uppercase tracking-wider text-brand-muted mb-6">
                   About {page.heading}
@@ -387,7 +392,7 @@ export default async function MoneyPage({ params }: PageProps) {
                       {section.heading}
                     </h2>
                     {section.image && (
-                      <div className="relative w-full max-w-3xl aspect-[16/9] rounded-xl overflow-hidden">
+                      <div className={`relative w-full max-w-3xl aspect-[16/9] rounded-xl overflow-hidden ${page.centered ? 'mx-auto' : ''}`}>
                         <img
                           src={section.image}
                           alt={section.imageAlt || section.heading}
@@ -396,7 +401,7 @@ export default async function MoneyPage({ params }: PageProps) {
                         />
                       </div>
                     )}
-                    <div>{renderParagraphs(section.content)}</div>
+                    <div>{renderParagraphs(section.content, page.centered)}</div>
                     {section.whatsapp && (
                       <div className="pt-2">
                         <a
@@ -429,7 +434,7 @@ export default async function MoneyPage({ params }: PageProps) {
                   <FaqAccordion
                     items={faqSections.map((s) => ({
                       question: s.heading,
-                      answer: <div>{renderParagraphs(s.content)}</div>,
+                      answer: <div>{renderParagraphs(s.content, page.centered)}</div>,
                     }))}
                   />
                 </div>
@@ -511,7 +516,7 @@ export default async function MoneyPage({ params }: PageProps) {
       ))}
 
       {/* Hero section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 space-y-4">
+      <section className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 space-y-4 ${page.centered ? 'text-center' : ''}`}>
         <nav className="text-sm text-brand-muted">
           <Link href="/" className="hover:text-white transition-colors">Home</Link>
           <span className="mx-2">/</span>
@@ -521,10 +526,20 @@ export default async function MoneyPage({ params }: PageProps) {
         <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold text-white tracking-tight">
           {page.heading}
         </h1>
-        <p className="text-lg sm:text-xl text-brand-muted max-w-2xl">
+        {page.heroImage && (
+          <div className={`relative w-full max-w-5xl aspect-[16/9] rounded-xl overflow-hidden ${page.centered ? 'mx-auto' : ''}`}>
+            <img
+              src={page.heroImage}
+              alt={page.heroImageAlt || page.heading}
+              loading="eager"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          </div>
+        )}
+        <p className={`text-lg sm:text-xl text-brand-muted max-w-2xl ${page.centered ? 'mx-auto' : ''}`}>
           {page.subheading}
         </p>
-        <div className="text-base text-white/70 max-w-3xl leading-relaxed space-y-4">
+        <div className={`text-base text-white/70 max-w-3xl leading-relaxed space-y-4 ${page.centered ? 'mx-auto' : ''}`}>
           {page.content.split('\n\n').map((para, i) => (
             <p key={i}>{para}</p>
           ))}
