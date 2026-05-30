@@ -7,6 +7,9 @@ import { ScreenshotGallery } from '@/components/guides/ScreenshotGallery'
 
 const SITE_URL = 'https://luxeclubrentals.com'
 
+const absoluteUrl = (path: string) =>
+  path.startsWith('http://') || path.startsWith('https://') ? path : `${SITE_URL}${path}`
+
 export function generateStaticParams() {
   return guides.map((g) => ({ slug: g.slug }))
 }
@@ -31,7 +34,7 @@ export async function generateMetadata({
       siteName: 'LuxeClub Rentals',
       publishedTime: guide.publishedDate,
       images: guide.image
-        ? [{ url: `${SITE_URL}${guide.image}`, width: 1200, height: 630, alt: guide.imageAlt || guide.title }]
+        ? [{ url: absoluteUrl(guide.image), width: 1200, height: 630, alt: guide.imageAlt || guide.title }]
         : [{ url: `${SITE_URL}/opengraph-image`, width: 1200, height: 630, alt: guide.title }],
     },
     alternates: { canonical: `${SITE_URL}/guides/${guide.slug}` },
@@ -64,7 +67,7 @@ export default async function GuidePage({
     url: `${SITE_URL}/guides/${guide.slug}`,
     mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE_URL}/guides/${guide.slug}` },
     image: guide.image
-      ? [`${SITE_URL}${guide.image}`]
+      ? [absoluteUrl(guide.image)]
       : [`${SITE_URL}/opengraph-image`],
     author: {
       '@type': 'Organization',

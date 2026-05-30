@@ -264,3 +264,28 @@ iframe[src*="js.stripe.com/v3/controller-"] {
   background: rgba(139, 126, 200, 0.3);
   color: white;
 }
+
+/* Holographic shimmer — used by BrandGrid's HoloCard and HoloIconCard.
+   Defined here so both can share the keyframes. */
+.holo-shimmer {
+  background: linear-gradient(
+    125deg,
+    transparent 0%,
+    rgba(201, 169, 110, 0.08) 20%,
+    rgba(255, 255, 255, 0.12) 35%,
+    rgba(120, 180, 255, 0.08) 50%,
+    rgba(201, 169, 110, 0.08) 65%,
+    rgba(255, 255, 255, 0.12) 80%,
+    transparent 100%
+  );
+  background-size: 200% 200%;
+}
+.group:hover .holo-shimmer {
+  opacity: 1;
+  animation: holo-shift 3s ease infinite;
+}
+@keyframes holo-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
