@@ -272,4 +272,39 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
       },
     ],
   },
+  'audi-q3': {
+    metaTitle: 'Rent Audi Q3 S Line in Dubai — Hire from AED 400/day',
+    description:
+      "The Q3 S Line is the most versatile car on our fleet, and the one we rent to the widest range of customers. Tourists who want premium without stepping up to supercar prices. Business visitors who need a car that arrives at a meeting looking right. Residents whose own car is in for service. Younger drivers — twenty-one and up — who can't yet rent the Lamborghini but don't want to drive an economy hatchback for a week in Dubai. The Q3 quietly suits all of them.\n\nWhat makes this particular car worth choosing is the combination. It's a 2025 model, less than a year old. The Quattro all-wheel drive is genuine — useful in heavier rain through November and February, confident on the unpaved sections of the Hatta and Jebel Jais routes if you head out of the city. The S Line styling gives it the visual presence of a sportier car than its size suggests. And the 2.0-litre turbocharged petrol engine with the 8-speed automatic delivers properly when you ask for it — this is not a sluggish small SUV.\n\nThe detail every customer mentions, without fail, is the panoramic sunroof. It's the moment people notice when they collect the car. In a city where the skyline does a lot of the work, having the whole roof open above you changes the drive completely.",
+    faqs: [
+      {
+        question: 'Is the Audi Q3 S Line a good choice for first-time visitors to Dubai?',
+        answer: "Yes. It's one of the easier cars in our fleet to drive in Dubai conditions — compact enough for the older parts of the city, large enough to feel substantial on Sheikh Zayed Road, and the all-wheel drive removes any concern in heavier weather. The 360-degree camera makes valet returns and tight parking straightforward.",
+      },
+      {
+        question: 'Can a 21-year-old rent this car?',
+        answer: 'Yes. The Q3 is available from age 21, which makes it one of the more accessible premium cars in our fleet. Many of our supercars start at 25.',
+      },
+      {
+        question: "What's the difference between the Premium Plus trim and S Line?",
+        answer: 'Our car is the Premium Plus trim with the S Line styling package. That means it has the higher equipment level of the Premium Plus — including the panoramic sunroof, power tailgate, 360-degree camera, and adaptive cruise control — combined with the sportier visual treatment of S Line on the exterior.',
+      },
+      {
+        question: 'Does the Q3 have a sunroof?',
+        answer: "Yes. Our Q3 has the full panoramic sunroof — the large factory roof system that extends across the cabin, not a small front-only sunroof. It's the feature customers comment on most.",
+      },
+      {
+        question: 'Can I take this car to Hatta or Jebel Jais?',
+        answer: 'Yes. The Quattro all-wheel drive and the suspension setup are both suited to the Hatta and Jebel Jais routes. We do ask that you avoid unmade off-road sections, but the standard paved mountain roads are exactly where this car is at its best.',
+      },
+      {
+        question: 'What does the No Deposit option cost?',
+        answer: "We offer the No Deposit option for an additional fee at the time of booking — contact us for the current rate. Most customers find that the No Deposit option is worth it for the cleaner card experience during their stay.",
+      },
+      {
+        question: 'How quickly can I have the car delivered?',
+        answer: 'We deliver across Dubai at no additional cost. Same-day delivery is generally available depending on time of booking and the current location of the car.',
+      },
+    ],
+  },
 }
