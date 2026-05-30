@@ -31,7 +31,7 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <MusicContext.Provider value={{ playing, toggle }}>
-      <audio ref={audioRef} src="/audio/bg-music.mp3" loop preload="auto" />
+      <audio ref={audioRef} src="/audio/bg-music.mp3" loop preload="none" />
       {children}
     </MusicContext.Provider>
   )

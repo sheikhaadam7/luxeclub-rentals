@@ -1,6 +1,7 @@
 const fr: Record<string, string> = {
   // Navbar
   'nav.cars': 'Voitures',
+  'nav.guides': 'Guides',
   'nav.faq': 'FAQ',
   'nav.bookings': 'Mes Reservations',
   'nav.manageBookings': 'Gerer les Reservations',

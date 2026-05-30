@@ -114,8 +114,16 @@ export default async function GuidePage({
       }
     : null
 
-  // Related guides (exclude current, show up to 3)
-  const relatedGuides = guides.filter((g) => g.slug !== guide.slug).slice(0, 3)
+  // Related guides — prefer same category, fall back to newest across all categories.
+  // Newest = highest publishedDate string (ISO format sorts correctly).
+  const otherGuides = guides.filter((g) => g.slug !== guide.slug)
+  const sameCategory = otherGuides
+    .filter((g) => g.category === guide.category)
+    .sort((a, b) => b.publishedDate.localeCompare(a.publishedDate))
+  const otherCategory = otherGuides
+    .filter((g) => g.category !== guide.category)
+    .sort((a, b) => b.publishedDate.localeCompare(a.publishedDate))
+  const relatedGuides = [...sameCategory, ...otherCategory].slice(0, 3)
 
   return (
     <main className="min-h-screen bg-luxury">
