@@ -9,6 +9,25 @@ import { NoDepositBadge } from '@/components/catalogue/NoDepositBadge'
 import { FaqAccordion } from '@/components/ui/FaqAccordion'
 import { T } from '@/components/ui/T'
 import { vehicleContentMap } from '@/lib/vehicle-content'
+import { guides } from '@/lib/guides'
+
+// Map vehicle slug -> related guide slugs (priority vehicles only).
+// Keep concise: 1-2 highly relevant guides per vehicle so the block stays scannable.
+const CATALOGUE_GUIDE_LINKS: Record<string, string[]> = {
+  'audi-rsq8': ['lamborghini-urus-vs-audi-rsq8-dubai'],
+  'lamborghini-urus-black': [
+    'lamborghini-urus-vs-audi-rsq8-dubai',
+    'lamborghini-urus-vs-bentley-bentayga-dubai',
+  ],
+  'lamborghini-urus-yellow': [
+    'lamborghini-urus-vs-audi-rsq8-dubai',
+    'lamborghini-urus-vs-bentley-bentayga-dubai',
+  ],
+  'bentley-bentayga': ['lamborghini-urus-vs-bentley-bentayga-dubai'],
+  'bentley-bentayga-brown': ['lamborghini-urus-vs-bentley-bentayga-dubai'],
+  'bentley-bentayga-s': ['lamborghini-urus-vs-bentley-bentayga-dubai'],
+  'porsche-911-turbo-s': ['porsche-911-turbo-s-why-its-the-ultimate-rental'],
+}
 
 /** Map a free-form DB spec key to a translation key (spec.*) */
 const SPEC_KEY_MAP: Record<string, string> = {
@@ -137,7 +156,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const seoContent = vehicleContentMap[slug]
   const title = seoContent?.metaTitle ?? `Rent ${vehicle.name} in Dubai`
-  const description = `Rent a ${vehicle.name} in Dubai from AED ${vehicle.daily_rate?.toLocaleString('en-US') ?? ''}/day. Insurance included, delivery all over Dubai. Book online with LuxeClub Rentals.`
+  // Prefer the first paragraph of the curated description for priority vehicles;
+  // otherwise fall back to the formulaic template so we never ship an empty description.
+  const fallbackDescription = `Rent a ${vehicle.name} in Dubai from AED ${vehicle.daily_rate?.toLocaleString('en-US') ?? ''}/day. Insurance included, delivery all over Dubai. Book online with LuxeClub Rentals.`
+  const description = seoContent?.description
+    ? (() => {
+        const firstPara = seoContent.description.split(/\n\n+/)[0] ?? ''
+        return firstPara.length > 160 ? `${firstPara.slice(0, 157).trimEnd()}…` : firstPara
+      })()
+    : fallbackDescription
   const url = `https://luxeclubrentals.com/catalogue/${slug}`
 
   return {
@@ -524,6 +551,32 @@ export default async function VehicleDetailPage({ params }: PageProps) {
             )}
           </div>
         )}
+
+        {/* Related guides — internal links from catalogue → guides for priority vehicles */}
+        {(() => {
+          const relatedSlugs = CATALOGUE_GUIDE_LINKS[slug] ?? []
+          const related = relatedSlugs
+            .map((s) => guides.find((g) => g.slug === s))
+            .filter((g): g is NonNullable<typeof g> => Boolean(g))
+          if (related.length === 0) return null
+          return (
+            <div className="mt-12 space-y-4">
+              <h2 className="font-display text-xl font-medium text-white">Related guides</h2>
+              <ul className="space-y-2">
+                {related.map((g) => (
+                  <li key={g.slug}>
+                    <Link
+                      href={`/guides/${g.slug}`}
+                      className="text-sm text-brand-cyan hover:text-white underline underline-offset-4 transition-colors"
+                    >
+                      {g.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        })()}
 
       </div>
     </main>

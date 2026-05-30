@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { unstable_cache } from 'next/cache'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -17,6 +18,17 @@ import { TestimonialCarousel } from '@/components/ui/TestimonialCarousel'
 import { HeroSearch } from '@/components/ui/HeroSearch'
 import { BrandGrid } from '@/components/ui/BrandGrid'
 import { getGoogleReviews } from '@/lib/google/reviews'
+
+// ---------------------------------------------------------------------------
+// Metadata — homepage-specific override (do not inherit root description)
+// ---------------------------------------------------------------------------
+
+export const metadata: Metadata = {
+  title: 'LuxeClub Rentals — Luxury Car Rental in Dubai',
+  description:
+    "Rent a Lamborghini, Ferrari, Rolls-Royce, Bentley or Range Rover in Dubai from AED 350/day. 47-car fleet, insurance included, delivery across Dubai. Booked entirely on WhatsApp.",
+  alternates: { canonical: 'https://luxeclubrentals.com' },
+}
 
 // ---------------------------------------------------------------------------
 // Page
