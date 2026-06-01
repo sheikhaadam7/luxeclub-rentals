@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { guides, GUIDE_CATEGORIES, type GuideCategory } from '@/lib/guides'
 
@@ -57,7 +58,7 @@ export default function GuidesPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 space-y-10">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12 space-y-10">
         {/* Header */}
         <div className="space-y-2">
           <h1 className="font-display text-3xl sm:text-4xl font-semibold text-white tracking-tight">
@@ -86,55 +87,78 @@ export default function GuidesPage() {
           })}
         </nav>
 
-        {/* Guides grouped by category, newest first within each */}
-        {(Object.keys(GUIDE_CATEGORIES) as GuideCategory[]).map((cat) => {
-          const catGuides = guides
-            .filter((g) => g.category === cat)
-            .sort((a, b) => b.publishedDate.localeCompare(a.publishedDate))
-          if (catGuides.length === 0) return null
-          return (
-            <div key={cat} id={cat} className="space-y-5 scroll-mt-24">
-              <h2 className="font-display text-xl font-medium text-white border-b border-brand-border pb-3">
-                {GUIDE_CATEGORIES[cat]}
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {catGuides.map((guide) => (
-                  <Link
-                    key={guide.slug}
-                    href={`/guides/${guide.slug}`}
-                    className="group bg-brand-surface border border-brand-border rounded-2xl p-6 space-y-3 hover:border-brand-border-hover transition-all duration-300"
-                  >
-                    <p className="text-xs text-brand-muted">
-                      {new Date(guide.publishedDate).toLocaleDateString('en-GB', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric',
-                      })}
-                    </p>
-                    <h2 className="font-display text-lg font-medium text-white group-hover:text-brand-cyan transition-colors duration-300">
-                      {guide.title}
-                    </h2>
-                    <p className="text-sm text-brand-muted leading-relaxed line-clamp-3">
-                      {guide.metaDescription}
-                    </p>
-                    <span className="inline-flex items-center gap-1 text-sm text-brand-cyan font-medium">
-                      Read guide
-                      <svg
-                        className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
+        {/* Guides grouped by category, newest first within each.
+            First two cards on the page use priority for LCP; rest lazy-load. */}
+        {(() => {
+          let cardIndex = 0
+          return (Object.keys(GUIDE_CATEGORIES) as GuideCategory[]).map((cat) => {
+            const catGuides = guides
+              .filter((g) => g.category === cat)
+              .sort((a, b) => b.publishedDate.localeCompare(a.publishedDate))
+            if (catGuides.length === 0) return null
+            return (
+              <div key={cat} id={cat} className="space-y-5 scroll-mt-24">
+                <h2 className="font-display text-xl font-medium text-white border-b border-brand-border pb-3">
+                  {GUIDE_CATEGORIES[cat]}
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {catGuides.map((guide) => {
+                    const isAboveFold = cardIndex < 2
+                    cardIndex += 1
+                    return (
+                      <Link
+                        key={guide.slug}
+                        href={`/guides/${guide.slug}`}
+                        className="group bg-brand-surface border-2 border-white/15 rounded-2xl overflow-hidden hover:border-white/30 transition-all duration-300 flex flex-col"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                      </svg>
-                    </span>
-                  </Link>
-                ))}
+                        <div className="relative w-full aspect-[16/9] bg-white/[0.03] overflow-hidden">
+                          {guide.image ? (
+                            <Image
+                              src={guide.image}
+                              alt={guide.imageAlt || guide.title}
+                              fill
+                              className="object-cover transition-transform duration-500 group-[:hover]:scale-[1.03]"
+                              priority={isAboveFold}
+                              loading={isAboveFold ? undefined : 'lazy'}
+                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 480px"
+                            />
+                          ) : null}
+                        </div>
+                        <div className="p-6 space-y-3 flex flex-col flex-1">
+                          <p className="text-xs text-brand-muted">
+                            {new Date(guide.publishedDate).toLocaleDateString('en-GB', {
+                              day: 'numeric',
+                              month: 'long',
+                              year: 'numeric',
+                            })}
+                          </p>
+                          <h2 className="font-display text-lg font-medium text-white group-hover:text-brand-cyan transition-colors duration-300">
+                            {guide.title}
+                          </h2>
+                          <p className="text-sm text-brand-muted leading-relaxed line-clamp-3">
+                            {guide.metaDescription}
+                          </p>
+                          <span className="inline-flex items-center gap-1 text-sm text-brand-cyan font-medium mt-auto">
+                            Read guide
+                            <svg
+                              className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              strokeWidth={2}
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                            </svg>
+                          </span>
+                        </div>
+                      </Link>
+                    )
+                  })}
+                </div>
               </div>
-            </div>
-          )
-        })}
+            )
+          })
+        })()}
       </div>
     </main>
   )
