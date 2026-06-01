@@ -14,7 +14,7 @@
 | 4. Per-vehicle meta descriptions from `vehicleContentMap` | ⏳ | 🟡 | S | — |
 | 5. `Organization` schema + `sameAs` social links | ⏳ | 🔵 | S | — (needs social URLs) |
 | 6. `dateModified` / `datePublished` on money-page JSON-LD | ⏳ | 🔵 | S | — |
-| Weekly guide cadence — next due **2026-05-19** | ⏳ | 🟡 | M | — (ongoing) |
+| Weekly guide cadence — next due **2026-06-08** | ⏳ | 🟡 | M | — (ongoing; topics in queue below) |
 | Standardize 4 no-deposit-themed FAQs with bespoke wording | ✅ | 🟡 | S | — (uncommitted) |
 | Sweep "24/7" claims sitewide — replace with plain "WhatsApp Support" / "support" | ⏳ | 🟡 | S | — (user will pick up later) |
 | Sweep "case by case" / "case-by-case" sitewide (~30 mentions, mostly pricing) — replace with softer phrasings | ⏳ | 🔵 | S | — (user dislikes phrasing; no-deposit page fixed; rest pending) |
@@ -34,8 +34,33 @@
 - **4. Per-vehicle meta descriptions from `vehicleContentMap`** — current `generateMetadata` falls back to one generic template for ~40 vehicles. Use `vehicleContentMap[slug].metaDescription` when present; only fall back if missing.
 - **5. Add `Organization` schema + `sameAs` social links** to root layout. Entity signal for E-E-A-T. Needs Instagram/TikTok/YouTube/X profile URLs from user.
 - **6. Add `dateModified` / `datePublished` to money-page JSON-LD** — guides got this in commit 4da091e; money pages didn't. Needs `updatedDate` field added to `MoneyPage` interface.
-- **Weekly guide cadence** — publish one new guide every 7 days to keep `/guides` fresh. Latest guide is 2026-04-21 (Urus vs Bentayga) — 21-day gap. **Next due: 2026-05-19.** Topic queue maintained ad-hoc; pick from gaps in current 18-guide coverage (insurance, payment methods, specific routes, model comparisons, seasonal Dubai-driving topics).
+- **Weekly guide cadence** — publish 1–2 new guides every 7 days to keep `/guides` fresh and build topical authority for AI/search retrieval. Latest batch is 2026-06-01 (IDP, Abu Dhabi road trip, SUV family/honeymoon). **Next due: 2026-06-08.** Pick the next topic from the queue below; mark it ✅ when shipped. Quarterly refresh of the 6 oldest guides also belongs to this cadence — next quarterly refresh due 2026-09-01.
 - **Standardize remaining no-deposit-themed FAQs with bespoke wording** — the canonical 4-paragraph block (memory: `feedback_deposit_canonical_copy.md`) doesn't fit these four because they're specifically about no-deposit, not general deposit info. Need a separate canonical block. Pending FAQs: (1) `car-rental-dubai` → "Can I rent a car in Dubai without a deposit?", (2) `rent-exotic-car-in-dubai` → "Can I get the no-deposit option on an exotic rental?", (3) `rent-luxury-car-in-dubai` → "Can I rent a luxury car with a no-deposit option in Dubai?", (4) `rent-supercar-in-dubai` → "Can I rent a supercar in Dubai with no deposit?".
+
+### Guide topic queue (next 20)
+
+Ordered by SEO value and commercial alignment with the owned fleet (Q3 S Line, RSQ8, Bentayga, A3). Mark ✅ when shipped, ⏳ when in progress. Pull the next ⏳ topic each Monday.
+
+1. ⏳ **Salik tags explained for Dubai tourists** — answers the most common toll-related question, links to traffic-fines + Abu Dhabi road-trip guides.
+2. ⏳ **Renting a car in Dubai during Ramadan (2027)** — seasonal, high-intent. Should publish ~6 weeks before Ramadan 2027.
+3. ⏳ **Dubai child car seat law for tourists** — addresses gap in family-oriented coverage. Links cleanly to SUV family/honeymoon guide.
+4. ⏳ **Renting at DXB airport vs hotel delivery — which is better?** — answers concrete decision question. Links to airport-parking + first-time-rental.
+5. ⏳ **Audi RSQ8 vs BMW X5 M Competition: Dubai SUV comparison** — owned-fleet anchor + competitive comparison. RSQ8 wins on value.
+6. ⏳ **Bentley Bentayga long weekend in Oman: route, paperwork, fuel** — owned-fleet anchor + adventure content. Honeymoon-extension play.
+7. ⏳ **Dubai to Ras Al Khaimah road trip: Jebel Jais and the desert hotels** — fills the RAK gap. Links to scenic-drives + Abu Dhabi guides.
+8. ⏳ **Female solo drivers in Dubai: what to actually expect** — answers a real concern, broadens audience.
+9. ⏳ **Luxury convertible rentals in Dubai winter: the 5 best months** — Continental GTC, R8 Spyder, F1 Cabriolet. Seasonal SEO.
+10. ⏳ **What it costs to live with a luxury car for a month in Dubai** — month-long rental angle for residents/relocators. RSQ8/Bentayga primary anchors.
+11. ⏳ **Ferrari Portofino vs Aston Martin DB12: Dubai grand-tourer comparison** — competitive comparison in the GT category.
+12. ⏳ **How to spec a luxury rental for a Dubai photoshoot** — niche but high-conversion. Bentayga Black Line + Cullinan + Urus primary.
+13. ⏳ **Insurance in luxury rentals: what's covered, what isn't** — addresses anxiety question. Links to deposits + rental-fines guides.
+14. ⏳ **Rolls-Royce vs Bentley for a Dubai chauffeur day** — high-intent decision content. Cullinan vs Bentayga + Continental GT.
+15. ⏳ **Best valet experiences in Dubai by car category** — practical and shareable. Links to mall guide + SUV guide.
+16. ⏳ **Renting in Dubai with a Schengen-only driving licence** — covers EU-resident edge case not addressed by IDP guide.
+17. ⏳ **Renting between Dubai and Sharjah: what changes** — addresses cross-emirate confusion. Links to Salik + driving rules.
+18. ⏳ **How LuxeClub handovers actually work (with photos)** — trust-building, owned content. Links to deposits + first-time guides.
+19. ⏳ **The honest cost of a 7-day Dubai luxury rental: full breakdown** — transparency content. Salik + fuel + valet + dinners.
+20. ⏳ **Audi Q3 S Line vs Porsche Macan: which entry luxury SUV in Dubai?** — owned-fleet anchor (Q3) + competitive comparison.
 
 ### Blocked / Parked
 

@@ -104,6 +104,9 @@ export default async function GuidePage({
     'dubai-speed-cameras-locations-guide',
     'dubai-to-hatta-road-trip-guide',
     'rental-car-fines-dubai-what-happens',
+    'do-i-need-international-driving-permit-dubai',
+    'dubai-to-abu-dhabi-road-trip-guide',
+    'luxury-suv-dubai-family-honeymoon',
   ]
   const faqJsonLd = FAQ_ELIGIBLE_SLUGS.includes(guide.slug)
     ? {
