@@ -59,10 +59,30 @@ export default async function HomePage() {
   ])
 
   const all = featuredVehicles ?? []
-  const dayOffset = Math.floor(Date.now() / 86_400_000) % Math.max(all.length, 1)
-  const shuffled = all.length <= 3
-    ? all
-    : Array.from({ length: 3 }, (_, i) => all[(dayOffset + i * 7) % all.length])
+
+  // Featured = LuxeClub-owned fleet first. We own these directly rather than
+  // sourcing from B2B partners, so promoting them on the homepage drives
+  // higher-margin bookings and tighter handover quality. Order = SEO/commercial
+  // priority. Bentayga Black Line Edition leads (honeymoon hero shot),
+  // RSQ8 second (power SUV at value daily rate), Q3 S Line third (entry).
+  const OWNED_SLUGS_PRIORITY = [
+    'bentley-bentayga-s',     // Black Line Edition (white + gloss black)
+    'audi-rsq8',
+    'audi-q3',
+    'bentley-bentayga',       // standard black
+    'bentley-bentayga-brown',
+    'audi-a3',
+    'audi-rs3',
+  ]
+  const ownedAvailable = OWNED_SLUGS_PRIORITY
+    .map((slug) => all.find((v) => v.slug === slug))
+    .filter((v): v is NonNullable<typeof v> => Boolean(v))
+  // Take up to 3 from the priority list; if fewer than 3 owned cars are
+  // currently available, fill remaining slots with other available vehicles.
+  const fillers = all
+    .filter((v) => !OWNED_SLUGS_PRIORITY.includes(v.slug))
+    .slice(0, Math.max(0, 3 - ownedAvailable.length))
+  const shuffled = [...ownedAvailable.slice(0, 3), ...fillers]
 
   return (
     <LanguageProvider>

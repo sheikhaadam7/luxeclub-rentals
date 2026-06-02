@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useCurrency } from '@/lib/currency/context'
 import { useTranslation } from '@/lib/i18n/context'
+import { MinimumRentalBadge } from './MinimumRentalBadge'
 
 interface VehicleCardProps {
   slug: string
@@ -48,6 +49,7 @@ export function VehicleCard({
       <Link href={`/catalogue/${slug}`} className="block flex-1 flex flex-col min-h-0">
         {/* Image area */}
         <div className="relative flex-1 min-h-0 w-full overflow-hidden">
+          <MinimumRentalBadge />
           {primary_image_url ? (
             <>
               <Image
