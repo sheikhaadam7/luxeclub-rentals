@@ -156,7 +156,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     .eq('slug', slug)
     .single()
 
-  if (!vehicle) return { title: 'Vehicle Not Found' }
+  if (!vehicle) notFound()
 
   const seoContent = vehicleContentMap[slug]
   const title = seoContent?.metaTitle ?? `Rent ${vehicle.name} in Dubai`
