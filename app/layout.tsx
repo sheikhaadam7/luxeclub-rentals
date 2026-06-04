@@ -123,6 +123,9 @@ const jsonLd = {
     closes: '23:59',
   },
   priceRange: '$$$',
+  sameAs: [
+    'https://www.instagram.com/luxeclubrentals/',
+  ],
   // aggregateRating intentionally omitted until verifiable via Google Reviews API.
   // Google Rich Results flags fabricated review counts as deceptive structured data.
 }
