@@ -81,10 +81,10 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
                 key={href}
                 href={href}
                 className={[
-                  'relative px-4 py-2 rounded-lg text-[15px] font-medium tracking-wide transition-all duration-200',
+                  'relative px-4 py-2 rounded-lg text-[16px] font-semibold tracking-wide transition-all duration-200',
                   isActive(href)
-                    ? 'text-white bg-white/[0.08]'
-                    : 'text-brand-muted hover:text-white hover:bg-white/[0.04]',
+                    ? 'text-white bg-white/[0.10] drop-shadow-[0_0_8px_rgba(201,169,110,0.35)]'
+                    : 'text-white/85 hover:text-white hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.25)] hover:bg-white/[0.05]',
                 ].join(' ')}
               >
                 {label}
