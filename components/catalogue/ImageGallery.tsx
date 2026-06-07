@@ -49,6 +49,46 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
     window.scrollTo(0, scrollYRef.current)
   }, [])
 
+  // Touch swipe — horizontal drag > 50px navigates; below threshold falls
+  // through to the existing onClick so taps still open the lightbox.
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null)
+  const swipedRef = useRef(false)
+  const SWIPE_THRESHOLD = 50
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    const t = e.touches[0]
+    touchStartRef.current = { x: t.clientX, y: t.clientY }
+    swipedRef.current = false
+  }, [])
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (!touchStartRef.current || images.length <= 1) {
+      touchStartRef.current = null
+      return
+    }
+    const t = e.changedTouches[0]
+    const dx = t.clientX - touchStartRef.current.x
+    const dy = t.clientY - touchStartRef.current.y
+    if (Math.abs(dx) > SWIPE_THRESHOLD && Math.abs(dx) > Math.abs(dy)) {
+      swipedRef.current = true
+      if (dx < 0) {
+        setActiveIndex((i) => (i === images.length - 1 ? 0 : i + 1))
+      } else {
+        setActiveIndex((i) => (i === 0 ? images.length - 1 : i - 1))
+      }
+    }
+    touchStartRef.current = null
+  }, [images.length])
+
+  // Inline main image: open lightbox on tap, but skip if the gesture was a swipe.
+  const handleMainImageClick = () => {
+    if (swipedRef.current) {
+      swipedRef.current = false
+      return
+    }
+    openLightbox()
+  }
+
   // Keyboard navigation in lightbox
   useEffect(() => {
     if (!lightboxOpen) return
@@ -77,7 +117,12 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
   return (
     <div className="space-y-3">
       {/* Main image */}
-      <div className="group relative aspect-[16/10] w-full overflow-hidden cursor-pointer" onClick={openLightbox}>
+      <div
+        className="group relative aspect-[16/10] w-full overflow-hidden cursor-pointer touch-pan-y select-none"
+        onClick={handleMainImageClick}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         {images.map((src, i) => (
           <Image
             key={src}
@@ -207,9 +252,11 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
           {/* Main image */}
           <div
             className={[
-              'absolute inset-0 flex items-center justify-center px-4 sm:px-16 pt-16 pb-28 sm:pb-32 transition-all duration-300',
+              'absolute inset-0 flex items-center justify-center px-4 sm:px-16 pt-16 pb-28 sm:pb-32 transition-all duration-300 touch-pan-y select-none',
               lightboxOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0',
             ].join(' ')}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
           >
             <div className="relative w-full h-full max-w-6xl max-h-[80vh]">
               {images.map((src, i) => (
