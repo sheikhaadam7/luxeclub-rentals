@@ -34,7 +34,7 @@ const faqsForSchema = [
   },
   {
     q: 'What is the security deposit?',
-    a: "A refundable security deposit of AED 2,500 is held on your card at the time of collection to cover any potential fines or damages. Drivers under 23 are required to place a deposit of AED 5,000. Once the vehicle is returned and inspected, the deposit is released back to your card.\n\nA no-deposit option is available to drivers who have held a full driving licence for more than 5 years — just speak with our team and we'll arrange it for you.",
+    a: "A refundable security deposit is held on your card at collection — the amount depends on the car. AED 2,500 on most vehicles, AED 4,500 on Lamborghini, Ferrari, and McLaren models (the Urus and Portofino stay at AED 2,500), and AED 5,000 on our top-tier cars (Revuelto, Purosangue, SF90, GT3 RS, Cullinan Mansory). The exact deposit is shown on each vehicle's page. Drivers under 23 always pay AED 5,000 regardless of the car. Once the vehicle is returned and inspected, the deposit is released back to your card.\n\nA no-deposit option is available to drivers who have held a full driving licence for more than 5 years — just speak with our team and we'll arrange it for you.",
   },
   {
     q: 'What is the cancellation policy?',
