@@ -134,11 +134,13 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
 
   const handleLightboxTouchMove = (e: React.TouchEvent) => {
     if (e.touches.length === 2 && pinchRef.current) {
+      const pinch = pinchRef.current
       const dx = e.touches[1].clientX - e.touches[0].clientX
       const dy = e.touches[1].clientY - e.touches[0].clientY
       const newDist = Math.hypot(dx, dy)
-      const ratio = newDist / pinchRef.current.startDist
-      const newScale = Math.min(4, Math.max(1, pinchRef.current.startScale * ratio))
+      if (!Number.isFinite(newDist) || pinch.startDist === 0) return
+      const ratio = newDist / pinch.startDist
+      const newScale = Math.min(4, Math.max(1, pinch.startScale * ratio))
       setTransform((t) => ({
         scale: newScale,
         x: newScale === 1 ? 0 : t.x,
@@ -147,16 +149,36 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
       e.preventDefault()
       return
     }
-    if (e.touches.length === 1 && panRef.current) {
-      const dx = e.touches[0].clientX - panRef.current.startX
-      const dy = e.touches[0].clientY - panRef.current.startY
+    // Pan when zoomed. If the user pinched then released one finger and kept
+    // the other touching (so no fresh touchstart fired for the survivor), we
+    // initialise pan lazily on the first move while still zoomed.
+    if (e.touches.length === 1 && transformRef.current.scale > 1) {
+      if (!panRef.current) {
+        panRef.current = {
+          startX: e.touches[0].clientX,
+          startY: e.touches[0].clientY,
+          startTx: transformRef.current.x,
+          startTy: transformRef.current.y,
+        }
+        e.preventDefault()
+        return
+      }
+      const pan = panRef.current
+      const dx = e.touches[0].clientX - pan.startX
+      const dy = e.touches[0].clientY - pan.startY
       setTransform((t) => ({
         scale: t.scale,
-        x: panRef.current!.startTx + dx,
-        y: panRef.current!.startTy + dy,
+        x: pan.startTx + dx,
+        y: pan.startTy + dy,
       }))
       e.preventDefault()
     }
+  }
+
+  const handleLightboxTouchCancel = () => {
+    pinchRef.current = null
+    panRef.current = null
+    lastTapRef.current = null
   }
 
   const handleLightboxTouchEnd = (e: React.TouchEvent) => {
@@ -356,6 +378,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
             onTouchStart={handleLightboxTouchStart}
             onTouchMove={handleLightboxTouchMove}
             onTouchEnd={handleLightboxTouchEnd}
+            onTouchCancel={handleLightboxTouchCancel}
           >
             <div
               className="relative w-full h-full max-w-6xl max-h-[80vh]"
