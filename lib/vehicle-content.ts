@@ -273,7 +273,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
     ],
   },
   'audi-q3': {
-    metaTitle: 'Rent Audi Q3 S Line in Dubai — Hire from AED 400/day',
+    metaTitle: 'Rent Audi Q3 S Line in Dubai — Hire from AED 299/day',
     description:
       "The Q3 S Line is the most versatile car on our fleet, and the one we rent to the widest range of customers. Tourists who want premium without stepping up to supercar prices. Business visitors who need a car that arrives at a meeting looking right. Residents whose own car is in for service. Younger drivers — twenty-one and up — who can't yet rent the Lamborghini but don't want to drive an economy hatchback for a week in Dubai. The Q3 quietly suits all of them.\n\nWhat makes this particular car worth choosing is the combination. It's a 2025 model, less than a year old. The Quattro all-wheel drive is genuine — useful in heavier rain through November and February, confident on the unpaved sections of the Hatta and Jebel Jais routes if you head out of the city. The S Line styling gives it the visual presence of a sportier car than its size suggests. And the 2.0-litre turbocharged petrol engine with the 8-speed automatic delivers properly when you ask for it — this is not a sluggish small SUV.\n\nThe detail every customer mentions, without fail, is the panoramic sunroof. It's the moment people notice when they collect the car. In a city where the skyline does a lot of the work, having the whole roof open above you changes the drive completely.",
     faqs: [

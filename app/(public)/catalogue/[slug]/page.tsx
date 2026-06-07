@@ -363,10 +363,10 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
               {/* Detail rows */}
               <div className="space-y-4">
-                {vehicle.daily_rate && (
+                {vehicle.deposit_amount && (
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-white/60"><T k="vehicle.deposit" /></span>
-                    <PriceDisplay amount={vehicle.daily_rate} className="text-sm font-bold text-green-400" />
+                    <PriceDisplay amount={vehicle.deposit_amount} className="text-sm font-bold text-green-400" />
                   </div>
                 )}
 
@@ -489,10 +489,10 @@ export default async function VehicleDetailPage({ params }: PageProps) {
             <T k="vehicle.rentalTerms" />
           </h2>
           <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-6 space-y-4">
-            {vehicle.daily_rate && (
+            {vehicle.deposit_amount && (
               <div className="flex items-center justify-between">
                 <span className="text-sm text-white/60"><T k="vehicle.securityDeposit" /></span>
-                <PriceDisplay amount={vehicle.daily_rate} className="text-sm font-bold text-green-400" />
+                <PriceDisplay amount={vehicle.deposit_amount} className="text-sm font-bold text-green-400" />
               </div>
             )}
             <div className="flex items-center justify-between">
