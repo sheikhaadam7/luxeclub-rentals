@@ -245,7 +245,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
       },
       {
         question: 'What is the minimum age to rent an RSQ8?',
-        answer: 'The minimum age is 25. Tourists also need a valid International Driving Permit alongside their home-country licence.',
+        answer: 'The minimum age is 23. Tourists also need a valid International Driving Permit alongside their home-country licence.',
       },
     ],
   },
