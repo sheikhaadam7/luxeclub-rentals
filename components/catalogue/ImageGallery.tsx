@@ -90,22 +90,37 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
   }
 
   // ── Lightbox pinch / pan / double-tap zoom ──────────────────────────────
-  const [transform, setTransform] = useState({ scale: 1, x: 0, y: 0 })
-  const transformRef = useRef(transform)
-  transformRef.current = transform
+  // Imperative DOM updates on every gesture event — no React state in the
+  // touchmove path, so no batched/deferred state updaters can throw if a ref
+  // gets cleared by an interleaving touchcancel/touchend.
+  const lightboxInnerRef = useRef<HTMLDivElement>(null)
+  const transformRef = useRef({ scale: 1, x: 0, y: 0 })
 
   const pinchRef = useRef<{ startDist: number; startScale: number } | null>(null)
   const panRef = useRef<{ startX: number; startY: number; startTx: number; startTy: number } | null>(null)
   const lastTapRef = useRef<{ t: number; x: number; y: number } | null>(null)
 
+  const syncTransform = (animate = false) => {
+    const el = lightboxInnerRef.current
+    if (!el) return
+    const t = transformRef.current
+    el.style.transform = `translate(${t.x}px, ${t.y}px) scale(${t.scale})`
+    el.style.transition = animate ? 'transform 0.2s ease-out' : 'none'
+  }
+
   // Reset zoom whenever the active image changes or the lightbox opens/closes
   useEffect(() => {
-    setTransform({ scale: 1, x: 0, y: 0 })
+    transformRef.current = { scale: 1, x: 0, y: 0 }
     pinchRef.current = null
     panRef.current = null
+    syncTransform(false)
   }, [activeIndex, lightboxOpen])
 
-  const handleLightboxTouchStart = (e: React.TouchEvent) => {
+  const safe = (fn: () => void) => {
+    try { fn() } catch (err) { console.error('lightbox gesture error:', err) }
+  }
+
+  const handleLightboxTouchStart = (e: React.TouchEvent) => safe(() => {
     if (e.touches.length === 2) {
       const dx = e.touches[1].clientX - e.touches[0].clientX
       const dy = e.touches[1].clientY - e.touches[0].clientY
@@ -130,9 +145,9 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
         handleTouchStart(e)
       }
     }
-  }
+  })
 
-  const handleLightboxTouchMove = (e: React.TouchEvent) => {
+  const handleLightboxTouchMove = (e: React.TouchEvent) => safe(() => {
     if (e.touches.length === 2 && pinchRef.current) {
       const pinch = pinchRef.current
       const dx = e.touches[1].clientX - e.touches[0].clientX
@@ -141,17 +156,16 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
       if (!Number.isFinite(newDist) || pinch.startDist === 0) return
       const ratio = newDist / pinch.startDist
       const newScale = Math.min(4, Math.max(1, pinch.startScale * ratio))
-      setTransform((t) => ({
+      transformRef.current = {
         scale: newScale,
-        x: newScale === 1 ? 0 : t.x,
-        y: newScale === 1 ? 0 : t.y,
-      }))
+        x: newScale === 1 ? 0 : transformRef.current.x,
+        y: newScale === 1 ? 0 : transformRef.current.y,
+      }
+      syncTransform(false)
       e.preventDefault()
       return
     }
-    // Pan when zoomed. If the user pinched then released one finger and kept
-    // the other touching (so no fresh touchstart fired for the survivor), we
-    // initialise pan lazily on the first move while still zoomed.
+    // Pan when zoomed — lazy-init if needed
     if (e.touches.length === 1 && transformRef.current.scale > 1) {
       if (!panRef.current) {
         panRef.current = {
@@ -166,22 +180,23 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
       const pan = panRef.current
       const dx = e.touches[0].clientX - pan.startX
       const dy = e.touches[0].clientY - pan.startY
-      setTransform((t) => ({
-        scale: t.scale,
+      transformRef.current = {
+        scale: transformRef.current.scale,
         x: pan.startTx + dx,
         y: pan.startTy + dy,
-      }))
+      }
+      syncTransform(false)
       e.preventDefault()
     }
-  }
+  })
 
-  const handleLightboxTouchCancel = () => {
+  const handleLightboxTouchCancel = () => safe(() => {
     pinchRef.current = null
     panRef.current = null
     lastTapRef.current = null
-  }
+  })
 
-  const handleLightboxTouchEnd = (e: React.TouchEvent) => {
+  const handleLightboxTouchEnd = (e: React.TouchEvent) => safe(() => {
     const wasPinch = pinchRef.current !== null
     const wasPan = panRef.current !== null
 
@@ -194,9 +209,10 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
       const now = Date.now()
       const last = lastTapRef.current
       if (last && now - last.t < 300 && Math.hypot(t.clientX - last.x, t.clientY - last.y) < 30) {
-        setTransform((curr) =>
-          curr.scale > 1 ? { scale: 1, x: 0, y: 0 } : { scale: 2, x: 0, y: 0 }
-        )
+        transformRef.current = transformRef.current.scale > 1
+          ? { scale: 1, x: 0, y: 0 }
+          : { scale: 2, x: 0, y: 0 }
+        syncTransform(true)
         lastTapRef.current = null
         return
       }
@@ -207,7 +223,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
     if (e.touches.length === 0 && transformRef.current.scale === 1 && !wasPinch && !wasPan) {
       handleTouchEnd(e)
     }
-  }
+  })
 
   // Keyboard navigation in lightbox
   useEffect(() => {
@@ -381,13 +397,9 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
             onTouchCancel={handleLightboxTouchCancel}
           >
             <div
+              ref={lightboxInnerRef}
               className="relative w-full h-full max-w-6xl max-h-[80vh]"
-              style={{
-                transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})`,
-                transformOrigin: 'center center',
-                transition:
-                  pinchRef.current || panRef.current ? 'none' : 'transform 0.2s ease-out',
-              }}
+              style={{ transformOrigin: 'center center', willChange: 'transform' }}
             >
               {images.map((src, i) => (
                 <Image
