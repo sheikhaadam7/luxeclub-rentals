@@ -89,6 +89,104 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
     openLightbox()
   }
 
+  // ── Lightbox pinch / pan / double-tap zoom ──────────────────────────────
+  const [transform, setTransform] = useState({ scale: 1, x: 0, y: 0 })
+  const transformRef = useRef(transform)
+  transformRef.current = transform
+
+  const pinchRef = useRef<{ startDist: number; startScale: number } | null>(null)
+  const panRef = useRef<{ startX: number; startY: number; startTx: number; startTy: number } | null>(null)
+  const lastTapRef = useRef<{ t: number; x: number; y: number } | null>(null)
+
+  // Reset zoom whenever the active image changes or the lightbox opens/closes
+  useEffect(() => {
+    setTransform({ scale: 1, x: 0, y: 0 })
+    pinchRef.current = null
+    panRef.current = null
+  }, [activeIndex, lightboxOpen])
+
+  const handleLightboxTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      const dx = e.touches[1].clientX - e.touches[0].clientX
+      const dy = e.touches[1].clientY - e.touches[0].clientY
+      pinchRef.current = {
+        startDist: Math.hypot(dx, dy),
+        startScale: transformRef.current.scale,
+      }
+      panRef.current = null
+      touchStartRef.current = null
+      return
+    }
+    if (e.touches.length === 1) {
+      if (transformRef.current.scale > 1) {
+        panRef.current = {
+          startX: e.touches[0].clientX,
+          startY: e.touches[0].clientY,
+          startTx: transformRef.current.x,
+          startTy: transformRef.current.y,
+        }
+        touchStartRef.current = null
+      } else {
+        handleTouchStart(e)
+      }
+    }
+  }
+
+  const handleLightboxTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 2 && pinchRef.current) {
+      const dx = e.touches[1].clientX - e.touches[0].clientX
+      const dy = e.touches[1].clientY - e.touches[0].clientY
+      const newDist = Math.hypot(dx, dy)
+      const ratio = newDist / pinchRef.current.startDist
+      const newScale = Math.min(4, Math.max(1, pinchRef.current.startScale * ratio))
+      setTransform((t) => ({
+        scale: newScale,
+        x: newScale === 1 ? 0 : t.x,
+        y: newScale === 1 ? 0 : t.y,
+      }))
+      e.preventDefault()
+      return
+    }
+    if (e.touches.length === 1 && panRef.current) {
+      const dx = e.touches[0].clientX - panRef.current.startX
+      const dy = e.touches[0].clientY - panRef.current.startY
+      setTransform((t) => ({
+        scale: t.scale,
+        x: panRef.current!.startTx + dx,
+        y: panRef.current!.startTy + dy,
+      }))
+      e.preventDefault()
+    }
+  }
+
+  const handleLightboxTouchEnd = (e: React.TouchEvent) => {
+    const wasPinch = pinchRef.current !== null
+    const wasPan = panRef.current !== null
+
+    if (e.touches.length < 2) pinchRef.current = null
+    if (e.touches.length === 0) panRef.current = null
+
+    // Double-tap toggles zoom 1x ↔ 2x — only on a clean single-finger tap
+    if (e.touches.length === 0 && e.changedTouches.length === 1 && !wasPinch && !wasPan) {
+      const t = e.changedTouches[0]
+      const now = Date.now()
+      const last = lastTapRef.current
+      if (last && now - last.t < 300 && Math.hypot(t.clientX - last.x, t.clientY - last.y) < 30) {
+        setTransform((curr) =>
+          curr.scale > 1 ? { scale: 1, x: 0, y: 0 } : { scale: 2, x: 0, y: 0 }
+        )
+        lastTapRef.current = null
+        return
+      }
+      lastTapRef.current = { t: now, x: t.clientX, y: t.clientY }
+    }
+
+    // If not pinching/panning and scale is 1, fall through to the swipe handler
+    if (e.touches.length === 0 && transformRef.current.scale === 1 && !wasPinch && !wasPan) {
+      handleTouchEnd(e)
+    }
+  }
+
   // Keyboard navigation in lightbox
   useEffect(() => {
     if (!lightboxOpen) return
@@ -252,13 +350,22 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
           {/* Main image */}
           <div
             className={[
-              'absolute inset-0 flex items-center justify-center px-4 sm:px-16 pt-16 pb-28 sm:pb-32 transition-all duration-300 touch-pan-y select-none',
+              'absolute inset-0 flex items-center justify-center px-4 sm:px-16 pt-16 pb-28 sm:pb-32 transition-all duration-300 touch-none select-none overflow-hidden',
               lightboxOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0',
             ].join(' ')}
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
+            onTouchStart={handleLightboxTouchStart}
+            onTouchMove={handleLightboxTouchMove}
+            onTouchEnd={handleLightboxTouchEnd}
           >
-            <div className="relative w-full h-full max-w-6xl max-h-[80vh]">
+            <div
+              className="relative w-full h-full max-w-6xl max-h-[80vh]"
+              style={{
+                transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})`,
+                transformOrigin: 'center center',
+                transition:
+                  pinchRef.current || panRef.current ? 'none' : 'transform 0.2s ease-out',
+              }}
+            >
               {images.map((src, i) => (
                 <Image
                   key={src}
