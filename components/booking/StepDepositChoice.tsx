@@ -15,7 +15,16 @@ export function StepDepositChoice({ form, vehicle }: StepDepositChoiceProps) {
   const { formatPrice } = useCurrency()
   const { t } = useTranslation()
   const depositChoice = form.watch('depositChoice')
+  const driverAge = form.watch('driverAge')
   const depositAmount = vehicle.daily_rate ?? 0
+  // Drivers under 24 cannot pick the no-deposit option.
+  const noDepositEligible = !['21', '22', '23'].includes(driverAge ?? '')
+
+  // If they previously chose no-deposit but later changed driver age to 21-23,
+  // snap the selection back to 'deposit'.
+  if (!noDepositEligible && depositChoice === 'no_deposit') {
+    form.setValue('depositChoice', 'deposit', { shouldValidate: true })
+  }
 
   return (
     <div className="space-y-6">
@@ -69,12 +78,19 @@ export function StepDepositChoice({ form, vehicle }: StepDepositChoiceProps) {
         {/* No Deposit card */}
         <button
           type="button"
-          onClick={() => form.setValue('depositChoice', 'no_deposit', { shouldValidate: true })}
+          onClick={() => {
+            if (!noDepositEligible) return
+            form.setValue('depositChoice', 'no_deposit', { shouldValidate: true })
+          }}
+          disabled={!noDepositEligible}
+          aria-disabled={!noDepositEligible}
           className={[
             'w-full p-5 rounded-[var(--radius-card)] border text-left transition-all',
             depositChoice === 'no_deposit'
               ? 'border-brand-cyan bg-brand-cyan/10'
-              : 'border-brand-border hover:border-white/30',
+              : noDepositEligible
+              ? 'border-brand-border hover:border-white/30'
+              : 'border-brand-border opacity-50 cursor-not-allowed',
           ].join(' ')}
         >
           <div className="flex items-start gap-4">
@@ -100,6 +116,11 @@ export function StepDepositChoice({ form, vehicle }: StepDepositChoiceProps) {
               <p className="text-xs text-brand-muted mt-1.5 leading-relaxed">
                 {t('booking.noDepositDesc').replace('{amount}', formatPrice(200))}
               </p>
+              {!noDepositEligible && (
+                <p className="text-xs text-amber-300/90 mt-2 leading-relaxed">
+                  {t('booking.noDepositAgeRestriction')}
+                </p>
+              )}
             </div>
           </div>
         </button>

@@ -18,6 +18,8 @@ export const durationStepSchema = z
       .string()
       .regex(/^\d{2}:\d{2}$/, 'Time must be in HH:MM format')
       .optional(),
+    /** Driver age bucket. Minimum 21 (under 24 cannot pick no-deposit option). */
+    driverAge: z.enum(['21', '22', '23', '24', '25', '26', '27', '28', '29', '30+']),
   })
   .refine((data) => data.endDate >= data.startDate, {
     message: 'End date must be on or after start date',
@@ -66,7 +68,14 @@ export const deliveryStepSchema = z
   )
 
 /**
- * Step 3: Deposit — whether customer pays deposit or chooses no-deposit surcharge
+ * Step 2 (new): Protection package — Basic or All Inclusive
+ */
+export const protectionStepSchema = z.object({
+  protectionPackage: z.enum(['basic', 'inclusive']),
+})
+
+/**
+ * Step 4 (was 3): Deposit — whether customer pays deposit or chooses no-deposit surcharge
  */
 export const depositStepSchema = z.object({
   depositChoice: z.enum(['deposit', 'no_deposit']),
@@ -106,6 +115,7 @@ export const bookingSchema = z
       .string()
       .regex(/^\d{2}:\d{2}$/, 'Time must be in HH:MM format')
       .optional(),
+    driverAge: z.enum(['21', '22', '23', '24', '25', '26', '27', '28', '29', '30+']),
     // Delivery step
     pickupMethod: z.enum(['delivery', 'self_pickup']),
     deliveryAddress: z.string().optional(),
@@ -115,7 +125,16 @@ export const bookingSchema = z
     collectionAddress: z.string().optional(),
     collectionLat: z.number().optional(),
     collectionLng: z.number().optional(),
-    // Deposit step
+    // Protection step (new — step 2)
+    protectionPackage: z.enum(['basic', 'inclusive']),
+    // Add-ons step (new — step 3)
+    addons: z.object({
+      additionalDriver: z.boolean(),
+      personalDriver: z.boolean(),
+      babySeat: z.boolean(),
+      childSeat: z.boolean(),
+    }),
+    // Deposit choice — set via the No Deposit Option toggle on Add-ons step
     depositChoice: z.enum(['deposit', 'no_deposit']),
     // Guest contact step (optional — only present for guest checkout)
     guestName: z.string().optional(),

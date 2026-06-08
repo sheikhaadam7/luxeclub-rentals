@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition, useMemo, useCallback } from 'react'
+import { useState, useTransition, useMemo, useCallback, useEffect } from 'react'
 import { useTranslation } from '@/lib/i18n/context'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -8,26 +8,36 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import dynamic from 'next/dynamic'
 import { bookingSchema, type BookingFormValues } from '@/lib/validations/booking'
 import { StepDuration } from '@/components/booking/StepDuration'
-import { StepDepositChoice } from '@/components/booking/StepDepositChoice'
+import { StepProtection } from '@/components/booking/StepProtection'
+import { StepAddons } from '@/components/booking/StepAddons'
+import { BookingTotalHeader } from '@/components/booking/BookingTotalHeader'
 import { StepPaymentMethod } from '@/components/booking/StepPaymentMethod'
 import { StepAuth } from '@/components/booking/StepAuth'
 import { StepGuestContact } from '@/components/booking/StepGuestContact'
-import { PriceSummary } from '@/components/booking/PriceSummary'
 import { createBooking, updateBookingPaymentMethod } from '@/app/actions/bookings'
 
 const StepDelivery = dynamic(() => import('./StepDelivery').then(m => ({ default: m.StepDelivery })), { ssr: false })
 const StepPayment = dynamic(() => import('./StepPayment').then(m => ({ default: m.StepPayment })), { ssr: false })
 
-const AUTHED_STEPS = ['duration', 'delivery', 'deposit', 'paymentMethod', 'payment'] as const
-const UNAUTHED_STEPS = ['duration', 'delivery', 'deposit', 'paymentMethod', 'contact', 'payment'] as const
+const AUTHED_STEPS = ['duration', 'protection', 'addons', 'delivery', 'paymentMethod', 'payment'] as const
+const UNAUTHED_STEPS = ['duration', 'protection', 'addons', 'delivery', 'paymentMethod', 'contact', 'payment'] as const
 
-type Step = 'duration' | 'delivery' | 'deposit' | 'paymentMethod' | 'account' | 'contact' | 'payment'
+type Step =
+  | 'duration'
+  | 'protection'
+  | 'addons'
+  | 'delivery'
+  | 'paymentMethod'
+  | 'account'
+  | 'contact'
+  | 'payment'
 
 // Fields to validate per step name before advancing
 const STEP_FIELDS: Partial<Record<Step, (keyof BookingFormValues)[]>> = {
-  duration: ['durationType', 'startDate', 'endDate'],
+  duration: ['durationType', 'startDate', 'endDate', 'driverAge'],
+  protection: ['protectionPackage'],
+  addons: ['depositChoice'],
   delivery: ['pickupMethod', 'deliveryAddress', 'returnMethod', 'collectionAddress'],
-  deposit: ['depositChoice'],
   contact: ['guestName', 'guestEmail', 'guestPhone'],
   paymentMethod: ['paymentMethod'],
   payment: [],
@@ -35,8 +45,9 @@ const STEP_FIELDS: Partial<Record<Step, (keyof BookingFormValues)[]>> = {
 
 const STEP_LABEL_KEYS: Record<Step, string> = {
   duration: 'booking.stepDuration',
+  protection: 'booking.stepProtection',
+  addons: 'booking.stepAddons',
   delivery: 'booking.stepDelivery',
-  deposit: 'booking.stepDeposit',
   paymentMethod: 'booking.stepPayMethod',
   account: 'booking.stepAccount',
   contact: 'booking.stepContact',
@@ -94,12 +105,55 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
     resolver: zodResolver(bookingSchema),
     defaultValues: {
       durationType: 'daily',
+      driverAge: '30+',
+      protectionPackage: 'basic',
+      addons: {
+        additionalDriver: false,
+        personalDriver: false,
+        babySeat: false,
+        childSeat: false,
+      },
       depositChoice: 'deposit',
       pickupMethod: 'self_pickup',
       returnMethod: 'self_dropoff',
       paymentMethod: 'card',
     },
   })
+
+  // Save / resume booking via sessionStorage, scoped per vehicle slug
+  const storageKey = `luxeclub-booking-${vehicle.slug}`
+  // Restore on mount
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    try {
+      const raw = window.sessionStorage.getItem(storageKey)
+      if (!raw) return
+      const saved = JSON.parse(raw) as { values?: Partial<BookingFormValues>; step?: number }
+      if (saved.values) {
+        // Re-hydrate Date objects
+        const v = { ...saved.values }
+        if (typeof v.startDate === 'string') v.startDate = new Date(v.startDate)
+        if (typeof v.endDate === 'string') v.endDate = new Date(v.endDate)
+        form.reset({ ...form.getValues(), ...v })
+      }
+      if (typeof saved.step === 'number') setStep(saved.step)
+    } catch {
+      // ignore corrupted storage
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storageKey])
+  // Persist on every change
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const sub = form.watch((values) => {
+      try {
+        window.sessionStorage.setItem(storageKey, JSON.stringify({ values, step }))
+      } catch {
+        // ignore quota errors
+      }
+    })
+    return () => sub.unsubscribe()
+  }, [form, step, storageKey])
 
   /**
    * Creates the booking server-side with revalidated pricing before showing payment.
@@ -252,9 +306,12 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
   }
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 items-start">
-      {/* Left column: step content */}
-      <div className="flex-1 min-w-0 overflow-hidden space-y-6">
+    <div className="w-full space-y-6">
+      {/* Running total — visible across all steps */}
+      <BookingTotalHeader form={form} vehicle={vehicle} />
+
+      {/* Step content full-width — price summary removed from this page */}
+      <div className="min-w-0 overflow-visible space-y-6">
         {/* Step indicator */}
         <nav aria-label="Booking steps">
           <ol className="flex">
@@ -308,60 +365,91 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
           </ol>
         </nav>
 
-        {/* Step content */}
-        <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-4 sm:p-6">
-          {currentStep === 'duration' && (
-            <StepDuration form={form} vehicle={vehicle} bookedRanges={bookedRanges} />
-          )}
-          {currentStep === 'delivery' && (
-            <StepDelivery form={form} />
-          )}
-          {currentStep === 'deposit' && (
-            <>
-              {/* Notice when booking already created and user went back */}
-              {bookingId && (
-                <div className="mb-4 rounded-lg border border-amber-700/40 bg-amber-950/30 p-4 text-sm text-amber-200">
-                  {t('booking.alreadyCreatedNotice')}
+        {/* Step content — Duration, Protection and Add-ons manage their own white card;
+            the others keep the dark surface wrapper until restyled. */}
+        {(currentStep === 'duration' || currentStep === 'protection' || currentStep === 'addons') ? (
+          <>
+            {(() => {
+              const lightNavButtons = (
+                <div className="flex items-center justify-between gap-4 sticky bottom-0 sm:static -mx-6 sm:mx-0 -mb-6 sm:mb-0 px-6 sm:px-0 py-4 sm:py-0 bg-white/95 sm:bg-transparent backdrop-blur sm:backdrop-blur-none border-t border-zinc-200 sm:border-0">
+                  <button
+                    type="button"
+                    onClick={back}
+                    disabled={step === 0}
+                    className="px-4 sm:px-6 py-3 rounded-[var(--radius-card)] border border-zinc-300 text-sm font-medium text-zinc-700 hover:border-zinc-500 hover:text-zinc-900 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    {t('booking.back')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={advance}
+                    disabled={isPending || isCreatingBooking}
+                    className="px-6 sm:px-8 py-3 rounded-[var(--radius-card)] bg-brand-cyan text-black text-sm font-semibold hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isPending || isCreatingBooking ? t('booking.pleaseWait') : t('booking.continue')}
+                  </button>
                 </div>
-              )}
-
-              <StepDepositChoice form={form} vehicle={vehicle} />
-            </>
-          )}
-          {currentStep === 'paymentMethod' && (
-            <>
-              {bookingId && (
-                <div className="mb-4 rounded-lg border border-amber-700/40 bg-amber-950/30 p-4 text-sm text-amber-200">
-                  {t('booking.alreadyCreatedNotice')}
-                </div>
-              )}
-              <StepPaymentMethod form={form} />
-            </>
-          )}
-          {currentStep === 'account' && (
-            <StepAuth onAuthenticated={handleAuthenticated} />
-          )}
-          {currentStep === 'contact' && (
-            <StepGuestContact form={form} />
-          )}
-          {currentStep === 'payment' && (
-            <StepPayment
-              clientSecret={rentalClientSecret}
-              setupClientSecret={setupClientSecret}
-              cashSelected={form.getValues('paymentMethod') === 'cash'}
-              cryptoSelected={form.getValues('paymentMethod') === 'crypto'}
-              applePaySelected={form.getValues('paymentMethod') === 'apple_pay'}
-              onSuccess={handlePaymentSuccess}
-              bookingId={bookingId ?? ''}
-              totalDue={bookingTotalDue}
-              reservationFee={bookingReservationFee}
-              balanceDueOnPickup={bookingBalanceDueOnPickup}
-              depositAmount={bookingDepositAmount}
-              isGuest={!isAuthed}
-              guestEmail={!isAuthed ? form.getValues('guestEmail') : undefined}
-            />
-          )}
-        </div>
+              )
+              if (currentStep === 'duration') {
+                return (
+                  <StepDuration
+                    form={form}
+                    vehicle={vehicle}
+                    bookedRanges={bookedRanges}
+                    navButtons={lightNavButtons}
+                  />
+                )
+              }
+              if (currentStep === 'protection') {
+                return (
+                  <StepProtection form={form} vehicle={vehicle} navButtons={lightNavButtons} />
+                )
+              }
+              return (
+                <StepAddons form={form} vehicle={vehicle} navButtons={lightNavButtons} />
+              )
+            })()}
+          </>
+        ) : (
+          <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-4 sm:p-6">
+            {currentStep === 'delivery' && (
+              <StepDelivery form={form} />
+            )}
+            {currentStep === 'paymentMethod' && (
+              <>
+                {bookingId && (
+                  <div className="mb-4 rounded-lg border border-amber-700/40 bg-amber-950/30 p-4 text-sm text-amber-200">
+                    {t('booking.alreadyCreatedNotice')}
+                  </div>
+                )}
+                <StepPaymentMethod form={form} />
+              </>
+            )}
+            {currentStep === 'account' && (
+              <StepAuth onAuthenticated={handleAuthenticated} />
+            )}
+            {currentStep === 'contact' && (
+              <StepGuestContact form={form} />
+            )}
+            {currentStep === 'payment' && (
+              <StepPayment
+                clientSecret={rentalClientSecret}
+                setupClientSecret={setupClientSecret}
+                cashSelected={form.getValues('paymentMethod') === 'cash'}
+                cryptoSelected={form.getValues('paymentMethod') === 'crypto'}
+                applePaySelected={form.getValues('paymentMethod') === 'apple_pay'}
+                onSuccess={handlePaymentSuccess}
+                bookingId={bookingId ?? ''}
+                totalDue={bookingTotalDue}
+                reservationFee={bookingReservationFee}
+                balanceDueOnPickup={bookingBalanceDueOnPickup}
+                depositAmount={bookingDepositAmount}
+                isGuest={!isAuthed}
+                guestEmail={!isAuthed ? form.getValues('guestEmail') : undefined}
+              />
+            )}
+          </div>
+        )}
 
         {/* Booking creation error */}
         {bookingError && (
@@ -370,34 +458,31 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
           </div>
         )}
 
-        {/* Navigation buttons */}
-        <div className="flex items-center justify-between gap-4">
-          <button
-            type="button"
-            onClick={back}
-            disabled={step === 0}
-            className="px-4 sm:px-6 py-2.5 rounded-[var(--radius-card)] border border-brand-border text-sm font-medium text-brand-muted hover:text-white hover:border-white/40 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-          >
-            {t('booking.back')}
-          </button>
-
-          {/* On the payment step and account step, their own components handle submission */}
-          {currentStep !== 'payment' && currentStep !== 'account' && (
+        {/* Navigation buttons — rendered outside the step content for non-light-card steps */}
+        {currentStep !== 'duration' && currentStep !== 'protection' && currentStep !== 'addons' && (
+          <div className="flex items-center justify-between gap-4">
             <button
               type="button"
-              onClick={advance}
-              disabled={isPending || isCreatingBooking}
-              className="px-6 sm:px-8 py-2.5 rounded-[var(--radius-card)] bg-brand-cyan text-black text-sm font-semibold hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={back}
+              disabled={step === 0}
+              className="px-4 sm:px-6 py-2.5 rounded-[var(--radius-card)] border border-brand-border text-sm font-medium text-brand-muted hover:text-white hover:border-white/40 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             >
-              {isPending || isCreatingBooking ? t('booking.pleaseWait') : t('booking.continue')}
+              {t('booking.back')}
             </button>
-          )}
-        </div>
-      </div>
 
-      {/* Right column: price summary (desktop sticky sidebar) */}
-      <div className="w-full lg:w-80 lg:sticky lg:top-8">
-        <PriceSummary vehicle={vehicle} form={form} />
+            {/* On the payment step and account step, their own components handle submission */}
+            {currentStep !== 'payment' && currentStep !== 'account' && (
+              <button
+                type="button"
+                onClick={advance}
+                disabled={isPending || isCreatingBooking}
+                className="px-6 sm:px-8 py-2.5 rounded-[var(--radius-card)] bg-brand-cyan text-black text-sm font-semibold hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isPending || isCreatingBooking ? t('booking.pleaseWait') : t('booking.continue')}
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   )
