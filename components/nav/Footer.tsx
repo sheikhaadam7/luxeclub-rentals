@@ -1,10 +1,16 @@
 'use client'
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useTranslation } from '@/lib/i18n/context'
 
 export function Footer() {
   const { t } = useTranslation()
+  const pathname = usePathname()
+
+  // Hide the footer on booking pages — it scrolls past the booking card
+  // and distracts from the flow.
+  if (pathname?.startsWith('/book/')) return null
 
   return (
     <footer className="border-t border-white/[0.06] bg-black/40">

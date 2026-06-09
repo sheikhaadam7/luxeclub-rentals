@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition, useMemo, useCallback, useEffect } from 'react'
+import { useState, useTransition, useMemo, useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from '@/lib/i18n/context'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -10,7 +10,8 @@ import { bookingSchema, type BookingFormValues } from '@/lib/validations/booking
 import { StepDuration } from '@/components/booking/StepDuration'
 import { StepProtection } from '@/components/booking/StepProtection'
 import { StepAddons } from '@/components/booking/StepAddons'
-import { BookingTotalHeader } from '@/components/booking/BookingTotalHeader'
+import { BookingTotalHeader, useBookingBreakdown, formatAED } from '@/components/booking/BookingTotalHeader'
+import { PriceDetailsModal } from '@/components/booking/PriceDetailsModal'
 import { StepPaymentMethod } from '@/components/booking/StepPaymentMethod'
 import { StepAuth } from '@/components/booking/StepAuth'
 import { StepGuestContact } from '@/components/booking/StepGuestContact'
@@ -89,6 +90,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
   const [bookingDepositAmount, setBookingDepositAmount] = useState<number>(0)
   const [bookingError, setBookingError] = useState<string | null>(null)
   const [isCreatingBooking, setIsCreatingBooking] = useState(false)
+  const [mobilePriceOpen, setMobilePriceOpen] = useState(false)
 
   const steps = useMemo<readonly Step[]>(
     () => (isAuthed ? AUTHED_STEPS : UNAUTHED_STEPS),
@@ -97,8 +99,12 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
 
   const currentStep = steps[step]
 
+  const wizardRef = useRef<HTMLDivElement>(null)
+
   const scrollToTop = () => {
-    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50)
+    setTimeout(() => {
+      wizardRef.current?.scrollIntoView({ block: 'start', behavior: 'smooth' })
+    }, 50)
   }
 
   const form = useForm<BookingFormValues>({
@@ -119,6 +125,8 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
       paymentMethod: 'card',
     },
   })
+
+  const breakdown = useBookingBreakdown(form, vehicle)
 
   // Save / resume booking via sessionStorage, scoped per vehicle slug
   const storageKey = `luxeclub-booking-${vehicle.slug}`
@@ -306,7 +314,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
   }
 
   return (
-    <div className="w-full space-y-6">
+    <div ref={wizardRef} className="w-full space-y-6 scroll-mt-20">
       {/* Running total — visible across all steps */}
       <BookingTotalHeader form={form} vehicle={vehicle} />
 
@@ -371,7 +379,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
           <>
             {(() => {
               const lightNavButtons = (
-                <div className="flex items-center justify-between gap-4 sticky bottom-0 sm:static -mx-6 sm:mx-0 -mb-6 sm:mb-0 px-6 sm:px-0 py-4 sm:py-0 bg-white/95 sm:bg-transparent backdrop-blur sm:backdrop-blur-none border-t border-zinc-200 sm:border-0">
+                <div className="hidden sm:flex items-center justify-between gap-4">
                   <button
                     type="button"
                     onClick={back}
@@ -397,6 +405,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
                     vehicle={vehicle}
                     bookedRanges={bookedRanges}
                     navButtons={lightNavButtons}
+                    onAdvance={advance}
                   />
                 )
               }
@@ -460,7 +469,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
 
         {/* Navigation buttons — rendered outside the step content for non-light-card steps */}
         {currentStep !== 'duration' && currentStep !== 'protection' && currentStep !== 'addons' && (
-          <div className="flex items-center justify-between gap-4">
+          <div className="hidden sm:flex items-center justify-between gap-4">
             <button
               type="button"
               onClick={back}
@@ -476,7 +485,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
                 type="button"
                 onClick={advance}
                 disabled={isPending || isCreatingBooking}
-                className="px-6 sm:px-8 py-2.5 rounded-[var(--radius-card)] bg-brand-cyan text-black text-sm font-semibold hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="hidden sm:inline-flex px-6 sm:px-8 py-2.5 rounded-[var(--radius-card)] bg-brand-cyan text-black text-sm font-semibold hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isPending || isCreatingBooking ? t('booking.pleaseWait') : t('booking.continue')}
               </button>
@@ -484,6 +493,55 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
           </div>
         )}
       </div>
+
+      {/* Mobile-only fixed bottom bar: running total + price details + Continue */}
+      <div
+        className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-brand-surface/95 backdrop-blur border-t border-brand-border"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+      >
+        <div className="flex items-center gap-3 px-4 py-3.5 min-h-[88px]">
+          <button
+            type="button"
+            onClick={back}
+            disabled={step === 0}
+            aria-label={t('booking.back')}
+            className="shrink-0 flex items-center justify-center w-10 h-10 rounded-full border border-brand-border text-brand-muted disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <div className="flex flex-col min-w-0 flex-1">
+            <span className="text-[11px] uppercase tracking-wider text-brand-muted">Total</span>
+            <span className="text-2xl font-bold text-white tabular-nums leading-tight">
+              AED {formatAED(breakdown.totalDue)}
+            </span>
+            <button
+              type="button"
+              onClick={() => setMobilePriceOpen(true)}
+              className="text-xs text-brand-cyan underline underline-offset-4 mt-0.5 self-start"
+            >
+              Price details
+            </button>
+          </div>
+          {currentStep !== 'payment' && currentStep !== 'account' && (
+            <button
+              type="button"
+              onClick={advance}
+              disabled={isPending || isCreatingBooking}
+              className="shrink-0 px-6 py-3 rounded-[var(--radius-card)] bg-brand-cyan text-black text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isPending || isCreatingBooking ? t('booking.pleaseWait') : t('booking.continue')}
+            </button>
+          )}
+        </div>
+      </div>
+
+      <PriceDetailsModal
+        open={mobilePriceOpen}
+        onClose={() => setMobilePriceOpen(false)}
+        breakdown={breakdown}
+      />
     </div>
   )
 }

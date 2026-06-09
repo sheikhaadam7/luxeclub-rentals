@@ -9,6 +9,12 @@ import { BookingFormValues } from '@/lib/validations/booking'
 import { Vehicle } from '@/components/booking/BookingWizard'
 import { useTranslation, useLanguage } from '@/lib/i18n/context'
 import { getDateLocale } from '@/lib/i18n/date-locale'
+import { useSearchParams } from 'next/navigation'
+import { useIsMobile } from '@/lib/hooks/use-is-mobile'
+import { useOverlayBackButton } from '@/lib/hooks/use-overlay-back-button'
+import { MobileDateRangeOverlay } from '@/components/booking/MobileDateRangeOverlay'
+import { MobileTimePickerOverlay } from '@/components/booking/MobileTimePickerOverlay'
+import { MobileTimePickerStackedOverlay } from '@/components/booking/MobileTimePickerStackedOverlay'
 
 interface StepDurationProps {
   form: UseFormReturn<BookingFormValues>
@@ -16,6 +22,8 @@ interface StepDurationProps {
   bookedRanges: Array<{ from: Date; to: Date }>
   /** Navigation buttons (Back / Continue) rendered inside the white card */
   navButtons?: React.ReactNode
+  /** Called by the mobile flow's final Continue to advance the wizard to step 2 */
+  onAdvance?: () => void
 }
 
 function getDurationType(days: number): 'daily' | 'weekly' | 'monthly' {
@@ -24,9 +32,9 @@ function getDurationType(days: number): 'daily' | 'weekly' | 'monthly' {
   return 'daily'
 }
 
-// 24-hour time slots, half-hour granularity, 08:00–20:00
-const TIME_SLOTS = Array.from({ length: 25 }, (_, i) => {
-  const totalMinutes = 8 * 60 + i * 30
+// 24-hour time slots, half-hour granularity, 06:00–23:30 (36 slots)
+export const TIME_SLOTS = Array.from({ length: 36 }, (_, i) => {
+  const totalMinutes = 6 * 60 + i * 30
   const h = Math.floor(totalMinutes / 60)
   const m = totalMinutes % 60
   const value = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
@@ -35,17 +43,31 @@ const TIME_SLOTS = Array.from({ length: 25 }, (_, i) => {
 
 type OpenPopover = 'date' | 'pickupTime' | 'returnTime' | null
 
-export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons }: StepDurationProps) {
+export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons, onAdvance }: StepDurationProps) {
   const { t } = useTranslation()
   const { language } = useLanguage()
   const dateLocale = getDateLocale(language)
+  const isMobile = useIsMobile()
   const startDate = form.watch('startDate')
   const endDate = form.watch('endDate')
   const startTime = form.watch('startTime') || '10:00'
   const endTime = form.watch('endTime') || '10:00'
 
   const [openPopover, setOpenPopover] = useState<OpenPopover>(null)
+  const [mobileOverlay, setMobileOverlay] = useState<'date' | 'time' | null>(null)
   const popoverRef = useRef<HTMLDivElement>(null)
+
+  // Single Android Back-button sentinel for the entire mobile overlay flow.
+  // Lifted here (not per-overlay) so calendar→time transitions don't pop+push
+  // history mid-switch and accidentally close the new overlay.
+  useOverlayBackButton(mobileOverlay !== null, () => setMobileOverlay(null))
+
+  // ?layout=stacked switches the time picker to the no-toggle preview variant.
+  const searchParams = useSearchParams()
+  const TimePicker =
+    searchParams?.get('layout') === 'stacked'
+      ? MobileTimePickerStackedOverlay
+      : MobileTimePickerOverlay
   // Number of day-clicks within the current open of the calendar popover.
   // The popover should only close after the SECOND selection (pickup + return).
   const calendarSelectionCount = useRef(0)
@@ -155,7 +177,7 @@ export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons
   return (
     <div className="bg-white rounded-[var(--radius-card)] shadow-xl border-2 border-brand-cyan p-6 sm:p-8 space-y-6">
       <div>
-        <h2 className="font-display text-xl font-medium text-zinc-900 mb-1">
+        <h2 className="font-display text-xl font-semibold text-zinc-900 mb-1">
           {t('booking.rentalDuration')}
         </h2>
         <p className="text-sm text-zinc-500">{t('booking.rentalDurationDesc')}</p>
@@ -222,6 +244,7 @@ export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons
                 {...form.register('driverAge')}
                 aria-label={t('booking.driverAge')}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                suppressHydrationWarning
               >
                 {['21', '22', '23', '24', '25', '26', '27', '28', '29', '30+'].map((age) => (
                   <option key={age} value={age}>{age}</option>
@@ -239,7 +262,7 @@ export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons
               <button
                 type="button"
                 aria-label={t('booking.pickupDate')}
-                onClick={() => setOpenPopover((p) => (p === 'date' ? null : 'date'))}
+                onClick={() => isMobile ? setMobileOverlay('date') : setOpenPopover((p) => (p === 'date' ? null : 'date'))}
                 className={[boxBase, openPopover === 'date' ? boxActive : ''].join(' ')}
               >
                 <svg className="w-5 h-5 text-zinc-700 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -253,7 +276,7 @@ export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons
               <button
                 type="button"
                 aria-label={t('booking.pickupTime')}
-                onClick={() => setOpenPopover((p) => (p === 'pickupTime' ? null : 'pickupTime'))}
+                onClick={() => isMobile ? setMobileOverlay('time') : setOpenPopover((p) => (p === 'pickupTime' ? null : 'pickupTime'))}
                 className={[boxBase, openPopover === 'pickupTime' ? boxActive : ''].join(' ')}
               >
                 <span className="text-base font-semibold text-zinc-900">{startTime}</span>
@@ -270,7 +293,7 @@ export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons
               <button
                 type="button"
                 aria-label={t('booking.returnDate')}
-                onClick={() => setOpenPopover((p) => (p === 'date' ? null : 'date'))}
+                onClick={() => isMobile ? setMobileOverlay('date') : setOpenPopover((p) => (p === 'date' ? null : 'date'))}
                 className={[boxBase, openPopover === 'date' ? boxActive : ''].join(' ')}
               >
                 <svg className="w-5 h-5 text-zinc-700 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -284,7 +307,7 @@ export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons
               <button
                 type="button"
                 aria-label={t('booking.dropoffTime')}
-                onClick={() => setOpenPopover((p) => (p === 'returnTime' ? null : 'returnTime'))}
+                onClick={() => isMobile ? setMobileOverlay('time') : setOpenPopover((p) => (p === 'returnTime' ? null : 'returnTime'))}
                 className={[boxBase, openPopover === 'returnTime' ? boxActive : ''].join(' ')}
               >
                 <span className="text-base font-semibold text-zinc-900">{endTime}</span>
@@ -410,6 +433,33 @@ export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons
 
       {/* Navigation buttons inside the white card */}
       {navButtons && <div className="pt-4 border-t border-zinc-200">{navButtons}</div>}
+
+      {/* Mobile full-screen overlays */}
+      <MobileDateRangeOverlay
+        open={mobileOverlay === 'date'}
+        initialRange={selectedRange}
+        disabledMatchers={disabledMatchers}
+        onClose={() => setMobileOverlay(null)}
+        onContinue={(range) => {
+          form.setValue('startDate', range.from, { shouldValidate: true })
+          form.setValue('endDate', range.to, { shouldValidate: true })
+          setMobileOverlay('time')
+        }}
+      />
+      <TimePicker
+        open={mobileOverlay === 'time'}
+        startDate={startDate}
+        endDate={endDate}
+        initialStartTime={startTime}
+        initialEndTime={endTime}
+        onBack={() => setMobileOverlay(null)}
+        onContinue={({ startTime: s, endTime: e }) => {
+          form.setValue('startTime', s, { shouldValidate: true })
+          form.setValue('endTime', e, { shouldValidate: true })
+          setMobileOverlay(null)
+          onAdvance?.()
+        }}
+      />
     </div>
   )
 }
