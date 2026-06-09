@@ -12,6 +12,8 @@ interface StepAddonsProps {
   vehicle: Vehicle
   /** Navigation buttons (Back / Continue) rendered inside the white card */
   navButtons?: React.ReactNode
+  /** Called when the user taps the back chevron on the card (mobile) */
+  onBack?: () => void
 }
 
 type AddonId = 'noDeposit' | 'additionalDriver' | 'personalDriver' | 'babySeat' | 'childSeat'
@@ -114,7 +116,7 @@ const ADDONS: AddonRow[] = [
   },
 ]
 
-export function StepAddons({ form, vehicle: _vehicle, navButtons }: StepAddonsProps) {
+export function StepAddons({ form, vehicle: _vehicle, navButtons, onBack }: StepAddonsProps) {
   const driverAge = form.watch('driverAge') ?? '30+'
   const underTwentyFour = ['21', '22', '23'].includes(driverAge)
 
@@ -166,9 +168,23 @@ export function StepAddons({ form, vehicle: _vehicle, navButtons }: StepAddonsPr
       ref={cardRef}
       className="bg-white rounded-[var(--radius-card)] shadow-xl border-2 border-brand-cyan p-6 sm:p-8 space-y-6"
     >
-      <h2 className="font-display text-xl sm:text-2xl font-bold uppercase tracking-tight text-zinc-900">
-        Which add-ons do you need?
-      </h2>
+      <div>
+        {onBack && (
+          <button
+            type="button"
+            onClick={onBack}
+            aria-label="Back to previous step"
+            className="sm:hidden -mt-2 -ml-2 mb-1 inline-flex items-center justify-center w-10 h-10 text-zinc-700 active:bg-zinc-100 rounded-full"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+        )}
+        <h2 className="font-display text-xl sm:text-2xl font-bold uppercase tracking-tight text-zinc-900">
+          Which add-ons do you need?
+        </h2>
+      </div>
 
       <div className="space-y-3">
         {ADDONS.map((addon) => {

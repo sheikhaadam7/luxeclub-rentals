@@ -107,6 +107,15 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
     }, 50)
   }
 
+  // On initial mount, scroll the wizard into view so the user lands on the step
+  // indicator + first card, not above the page-level "Back to X / BOOKING / car name" block.
+  useEffect(() => {
+    setTimeout(() => {
+      wizardRef.current?.scrollIntoView({ block: 'start', behavior: 'instant' as ScrollBehavior })
+    }, 50)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
@@ -411,11 +420,11 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
               }
               if (currentStep === 'protection') {
                 return (
-                  <StepProtection form={form} vehicle={vehicle} navButtons={lightNavButtons} />
+                  <StepProtection form={form} vehicle={vehicle} navButtons={lightNavButtons} onBack={back} />
                 )
               }
               return (
-                <StepAddons form={form} vehicle={vehicle} navButtons={lightNavButtons} />
+                <StepAddons form={form} vehicle={vehicle} navButtons={lightNavButtons} onBack={back} />
               )
             })()}
           </>
