@@ -15,19 +15,35 @@ type SignUpFormData = z.infer<typeof signUpSchema>
 
 interface StepAuthProps {
   onAuthenticated: () => void
+  /** Navigation buttons (Back / Continue) rendered inside the white card */
+  navButtons?: React.ReactNode
+  /** Called when the user taps the back chevron on the card (mobile) */
+  onBack?: () => void
 }
 
-export function StepAuth({ onAuthenticated }: StepAuthProps) {
+export function StepAuth({ onAuthenticated, navButtons, onBack }: StepAuthProps) {
   const { t } = useTranslation()
   const [mode, setMode] = useState<'login' | 'signup'>('login')
 
   return (
-    <div className="space-y-6">
+    <div className="bg-white rounded-[var(--radius-card)] shadow-xl border-2 border-brand-cyan p-6 sm:p-8 space-y-6">
       <div className="space-y-2">
-        <h2 className="font-display text-xl font-semibold text-white">
+        {onBack && (
+          <button
+            type="button"
+            onClick={onBack}
+            aria-label="Back to previous step"
+            className="sm:hidden -mt-2 -ml-2 mb-1 inline-flex items-center justify-center w-10 h-10 text-zinc-700 active:bg-zinc-100 rounded-full"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+        )}
+        <h2 className="font-display text-xl sm:text-2xl font-bold uppercase tracking-tight text-zinc-900">
           {mode === 'login' ? t('booking.signInContinue') : t('booking.createAccount')}
         </h2>
-        <p className="text-sm text-brand-muted">
+        <p className="text-sm text-zinc-500">
           {mode === 'login'
             ? t('booking.signInDesc')
             : t('booking.createAccountDesc')}
@@ -39,6 +55,8 @@ export function StepAuth({ onAuthenticated }: StepAuthProps) {
       ) : (
         <InlineSignupForm onSwitch={() => setMode('login')} onAuthenticated={onAuthenticated} />
       )}
+
+      {navButtons && <div className="pt-4 border-t border-zinc-200">{navButtons}</div>}
     </div>
   )
 }
@@ -83,6 +101,7 @@ function InlineLoginForm({
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
       <Input
         {...register('email')}
+        variant="light"
         label={t('booking.email')}
         type="email"
         placeholder="your@email.com"
@@ -91,6 +110,7 @@ function InlineLoginForm({
       />
       <Input
         {...register('password')}
+        variant="light"
         label={t('booking.password')}
         type="password"
         placeholder="••••••••"
@@ -99,7 +119,7 @@ function InlineLoginForm({
       />
 
       {errors.root && (
-        <p className="text-sm text-red-400">{errors.root.message}</p>
+        <p className="text-sm text-red-600">{errors.root.message}</p>
       )}
 
       <Button type="submit" loading={isPending}>
@@ -109,7 +129,7 @@ function InlineLoginForm({
       <button
         type="button"
         onClick={onSwitch}
-        className="text-xs text-white/40 hover:text-white/70 transition-colors text-center"
+        className="text-xs text-zinc-500 hover:text-zinc-700 transition-colors text-center"
       >
         {t('booking.noAccount')}
       </button>
@@ -157,6 +177,7 @@ function InlineSignupForm({
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
       <Input
         {...register('email')}
+        variant="light"
         label={t('booking.email')}
         type="email"
         placeholder="your@email.com"
@@ -165,6 +186,7 @@ function InlineSignupForm({
       />
       <Input
         {...register('password')}
+        variant="light"
         label={t('booking.password')}
         type="password"
         placeholder={t('booking.minChars')}
@@ -173,7 +195,7 @@ function InlineSignupForm({
       />
 
       {errors.root && (
-        <p className="text-sm text-red-400">{errors.root.message}</p>
+        <p className="text-sm text-red-600">{errors.root.message}</p>
       )}
 
       <Button type="submit" loading={isPending}>
@@ -183,7 +205,7 @@ function InlineSignupForm({
       <button
         type="button"
         onClick={onSwitch}
-        className="text-xs text-white/40 hover:text-white/70 transition-colors text-center"
+        className="text-xs text-zinc-500 hover:text-zinc-700 transition-colors text-center"
       >
         {t('booking.hasAccount')}
       </button>

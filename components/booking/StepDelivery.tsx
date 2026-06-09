@@ -8,21 +8,15 @@ import { useTranslation } from '@/lib/i18n/context'
 
 const LIBRARIES: ('places')[] = ['places']
 
-const DARK_MAP_STYLES: google.maps.MapTypeStyle[] = [
-  { elementType: 'geometry', stylers: [{ color: '#1a1a2e' }] },
-  { elementType: 'labels.text.stroke', stylers: [{ color: '#1a1a2e' }] },
-  { elementType: 'labels.text.fill', stylers: [{ color: '#8a8a9a' }] },
-  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#2a2a3e' }] },
-  { featureType: 'road', elementType: 'labels.text.fill', stylers: [{ color: '#6a6a7a' }] },
-  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0e0e1a' }] },
-  { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] },
-]
-
 interface StepDeliveryProps {
   form: UseFormReturn<BookingFormValues>
+  /** Navigation buttons (Back / Continue) rendered inside the white card */
+  navButtons?: React.ReactNode
+  /** Called when the user taps the back chevron on the card (mobile) */
+  onBack?: () => void
 }
 
-export function StepDelivery({ form }: StepDeliveryProps) {
+export function StepDelivery({ form, navButtons, onBack }: StepDeliveryProps) {
   const pickupMethod = form.watch('pickupMethod')
   const returnMethod = form.watch('returnMethod')
   const deliveryAddress = form.watch('deliveryAddress')
@@ -154,15 +148,27 @@ export function StepDelivery({ form }: StepDeliveryProps) {
   const canShowSameAsDelivery = pickupMethod === 'delivery' && !!deliveryAddress
 
   return (
-    <div className="space-y-6">
+    <div className="bg-white rounded-[var(--radius-card)] shadow-xl border-2 border-brand-cyan p-6 sm:p-8 space-y-6">
       <div>
-        <h2 className="font-display text-xl font-medium text-white mb-1">{t('booking.deliveryReturn')}</h2>
-        <p className="text-sm text-brand-muted">{t('booking.deliveryReturnDesc')}</p>
+        {onBack && (
+          <button
+            type="button"
+            onClick={onBack}
+            aria-label="Back to previous step"
+            className="sm:hidden -mt-2 -ml-2 mb-1 inline-flex items-center justify-center w-10 h-10 text-zinc-700 active:bg-zinc-100 rounded-full"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+        )}
+        <h2 className="font-display text-xl sm:text-2xl font-bold uppercase tracking-tight text-zinc-900 mb-1">{t('booking.deliveryReturn')}</h2>
+        <p className="text-sm text-zinc-500">{t('booking.deliveryReturnDesc')}</p>
       </div>
 
       {/* Pickup method */}
       <div>
-        <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">{t('booking.pickupMethod')}</p>
+        <p className="text-xs text-zinc-600 uppercase tracking-wider mb-3">{t('booking.pickupMethod')}</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {/* Delivery card */}
           <button
@@ -171,13 +177,13 @@ export function StepDelivery({ form }: StepDeliveryProps) {
             className={[
               'p-4 rounded-[var(--radius-card)] border text-left transition-all',
               pickupMethod === 'delivery'
-                ? 'border-brand-cyan bg-brand-cyan/10'
-                : 'border-brand-border hover:border-white/30',
+                ? 'border-brand-cyan bg-brand-cyan/5'
+                : 'border-zinc-200 hover:border-zinc-400',
             ].join(' ')}
           >
             <div className="flex items-start gap-3">
               <svg
-                className={['w-5 h-5 mt-0.5 shrink-0', pickupMethod === 'delivery' ? 'text-brand-cyan' : 'text-brand-muted'].join(' ')}
+                className={['w-5 h-5 mt-0.5 shrink-0', pickupMethod === 'delivery' ? 'text-brand-cyan' : 'text-zinc-600'].join(' ')}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -186,10 +192,10 @@ export function StepDelivery({ form }: StepDeliveryProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
               </svg>
               <div>
-                <p className={['text-sm font-semibold', pickupMethod === 'delivery' ? 'text-brand-cyan' : 'text-white'].join(' ')}>
+                <p className={['text-sm font-semibold', pickupMethod === 'delivery' ? 'text-brand-cyan' : 'text-zinc-900'].join(' ')}>
                   {t('booking.delivery')}
                 </p>
-                <p className="text-xs text-brand-muted mt-0.5">{t('booking.deliveryDesc')}</p>
+                <p className="text-xs text-zinc-600 mt-0.5">{t('booking.deliveryDesc')}</p>
               </div>
             </div>
           </button>
@@ -207,13 +213,13 @@ export function StepDelivery({ form }: StepDeliveryProps) {
             className={[
               'p-4 rounded-[var(--radius-card)] border text-left transition-all',
               pickupMethod === 'self_pickup'
-                ? 'border-brand-cyan bg-brand-cyan/10'
-                : 'border-brand-border hover:border-white/30',
+                ? 'border-brand-cyan bg-brand-cyan/5'
+                : 'border-zinc-200 hover:border-zinc-400',
             ].join(' ')}
           >
             <div className="flex items-start gap-3">
               <svg
-                className={['w-5 h-5 mt-0.5 shrink-0', pickupMethod === 'self_pickup' ? 'text-brand-cyan' : 'text-brand-muted'].join(' ')}
+                className={['w-5 h-5 mt-0.5 shrink-0', pickupMethod === 'self_pickup' ? 'text-brand-cyan' : 'text-zinc-600'].join(' ')}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -223,10 +229,10 @@ export function StepDelivery({ form }: StepDeliveryProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
               </svg>
               <div>
-                <p className={['text-sm font-semibold', pickupMethod === 'self_pickup' ? 'text-brand-cyan' : 'text-white'].join(' ')}>
+                <p className={['text-sm font-semibold', pickupMethod === 'self_pickup' ? 'text-brand-cyan' : 'text-zinc-900'].join(' ')}>
                   {t('booking.selfPickup')}
                 </p>
-                <p className="text-xs text-brand-muted mt-0.5">{t('booking.selfPickupDesc')}</p>
+                <p className="text-xs text-zinc-600 mt-0.5">{t('booking.selfPickupDesc')}</p>
               </div>
             </div>
           </button>
@@ -236,7 +242,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
       {/* Delivery address (conditional) */}
       {pickupMethod === 'delivery' && (
         <div className="space-y-3">
-          <p className="text-xs text-brand-muted uppercase tracking-wider">{t('booking.deliveryAddress')}</p>
+          <p className="text-xs text-zinc-600 uppercase tracking-wider">{t('booking.deliveryAddress')}</p>
 
           {googleApiKey && isLoaded ? (
             <>
@@ -255,18 +261,18 @@ export function StepDelivery({ form }: StepDeliveryProps) {
                   defaultValue={deliveryAddress ?? ''}
                   onChange={(e) => form.setValue('deliveryAddress', e.target.value)}
                   className={[
-                    'w-full bg-black/30 border rounded-[var(--radius-card)] px-4 py-3 text-sm text-white placeholder:text-brand-muted focus:outline-none focus:border-brand-cyan input-focus-glow transition-colors',
-                    addressError ? 'border-red-500' : 'border-brand-border',
+                    'w-full bg-white border rounded-[var(--radius-card)] px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-brand-cyan input-focus-glow transition-colors',
+                    addressError ? 'border-red-500' : 'border-zinc-200',
                   ].join(' ')}
                 />
               </Autocomplete>
 
               {addressError && (
-                <p className="text-xs text-red-400">{addressError.message}</p>
+                <p className="text-xs text-red-600">{addressError.message}</p>
               )}
 
               {mapCenter && (
-                <div className="mt-3 rounded-[var(--radius-card)] overflow-hidden border border-brand-border" style={{ height: 200 }}>
+                <div className="mt-3 rounded-[var(--radius-card)] overflow-hidden border border-zinc-200" style={{ height: 200 }}>
                   <GoogleMap
                     mapContainerStyle={{ width: '100%', height: '100%' }}
                     center={mapCenter}
@@ -274,7 +280,6 @@ export function StepDelivery({ form }: StepDeliveryProps) {
                     options={{
                       disableDefaultUI: true,
                       zoomControl: true,
-                      styles: DARK_MAP_STYLES,
                     }}
                   >
                     <MarkerF
@@ -286,7 +291,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
                 </div>
               )}
 
-              <p className="text-xs text-brand-muted">
+              <p className="text-xs text-zinc-600">
                 {t('booking.pinLocationDelivery')}
               </p>
             </>
@@ -297,12 +302,12 @@ export function StepDelivery({ form }: StepDeliveryProps) {
                 placeholder={t('booking.enterDeliveryAddress')}
                 {...form.register('deliveryAddress')}
                 className={[
-                  'w-full bg-black/30 border rounded-[var(--radius-card)] px-4 py-3 text-sm text-white placeholder:text-brand-muted focus:outline-none focus:border-brand-cyan input-focus-glow transition-colors',
-                  addressError ? 'border-red-500' : 'border-brand-border',
+                  'w-full bg-white border rounded-[var(--radius-card)] px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-brand-cyan input-focus-glow transition-colors',
+                  addressError ? 'border-red-500' : 'border-zinc-200',
                 ].join(' ')}
               />
               {addressError && (
-                <p className="text-xs text-red-400">{addressError.message}</p>
+                <p className="text-xs text-red-600">{addressError.message}</p>
               )}
               <p className="text-xs text-amber-500/80">
                 Map address lookup requires NEXT_PUBLIC_GOOGLE_MAPS_API_KEY to be configured.
@@ -314,7 +319,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
 
       {/* Return method */}
       <div>
-        <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">{t('booking.returnMethod')}</p>
+        <p className="text-xs text-zinc-600 uppercase tracking-wider mb-3">{t('booking.returnMethod')}</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {/* Self drop-off card */}
           <button
@@ -327,13 +332,13 @@ export function StepDelivery({ form }: StepDeliveryProps) {
             className={[
               'p-4 rounded-[var(--radius-card)] border text-left transition-all',
               returnMethod === 'self_dropoff'
-                ? 'border-brand-cyan bg-brand-cyan/10'
-                : 'border-brand-border hover:border-white/30',
+                ? 'border-brand-cyan bg-brand-cyan/5'
+                : 'border-zinc-200 hover:border-zinc-400',
             ].join(' ')}
           >
             <div className="flex items-start gap-3">
               <svg
-                className={['w-5 h-5 mt-0.5 shrink-0', returnMethod === 'self_dropoff' ? 'text-brand-cyan' : 'text-brand-muted'].join(' ')}
+                className={['w-5 h-5 mt-0.5 shrink-0', returnMethod === 'self_dropoff' ? 'text-brand-cyan' : 'text-zinc-600'].join(' ')}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -342,10 +347,10 @@ export function StepDelivery({ form }: StepDeliveryProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
               </svg>
               <div>
-                <p className={['text-sm font-semibold', returnMethod === 'self_dropoff' ? 'text-brand-cyan' : 'text-white'].join(' ')}>
+                <p className={['text-sm font-semibold', returnMethod === 'self_dropoff' ? 'text-brand-cyan' : 'text-zinc-900'].join(' ')}>
                   {t('booking.selfDropOff')}
                 </p>
-                <p className="text-xs text-brand-muted mt-0.5">{t('booking.selfDropOffDesc')}</p>
+                <p className="text-xs text-zinc-600 mt-0.5">{t('booking.selfDropOffDesc')}</p>
               </div>
             </div>
           </button>
@@ -357,13 +362,13 @@ export function StepDelivery({ form }: StepDeliveryProps) {
             className={[
               'p-4 rounded-[var(--radius-card)] border text-left transition-all',
               returnMethod === 'collection'
-                ? 'border-brand-cyan bg-brand-cyan/10'
-                : 'border-brand-border hover:border-white/30',
+                ? 'border-brand-cyan bg-brand-cyan/5'
+                : 'border-zinc-200 hover:border-zinc-400',
             ].join(' ')}
           >
             <div className="flex items-start gap-3">
               <svg
-                className={['w-5 h-5 mt-0.5 shrink-0', returnMethod === 'collection' ? 'text-brand-cyan' : 'text-brand-muted'].join(' ')}
+                className={['w-5 h-5 mt-0.5 shrink-0', returnMethod === 'collection' ? 'text-brand-cyan' : 'text-zinc-600'].join(' ')}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -372,10 +377,10 @@ export function StepDelivery({ form }: StepDeliveryProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
               </svg>
               <div>
-                <p className={['text-sm font-semibold', returnMethod === 'collection' ? 'text-brand-cyan' : 'text-white'].join(' ')}>
+                <p className={['text-sm font-semibold', returnMethod === 'collection' ? 'text-brand-cyan' : 'text-zinc-900'].join(' ')}>
                   {t('booking.collection')}
                 </p>
-                <p className="text-xs text-brand-muted mt-0.5">{t('booking.collectionDesc')}</p>
+                <p className="text-xs text-zinc-600 mt-0.5">{t('booking.collectionDesc')}</p>
               </div>
             </div>
           </button>
@@ -385,7 +390,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
       {/* Collection address (conditional) */}
       {returnMethod === 'collection' && (
         <div className="space-y-3">
-          <p className="text-xs text-brand-muted uppercase tracking-wider">{t('booking.collectionAddress')}</p>
+          <p className="text-xs text-zinc-600 uppercase tracking-wider">{t('booking.collectionAddress')}</p>
 
           {/* Same as delivery checkbox */}
           {canShowSameAsDelivery && (
@@ -394,9 +399,9 @@ export function StepDelivery({ form }: StepDeliveryProps) {
                 type="checkbox"
                 checked={sameAsDelivery}
                 onChange={(e) => handleSameAsDeliveryChange(e.target.checked)}
-                className="w-4 h-4 rounded border-brand-border bg-black/30 text-brand-cyan focus:ring-brand-cyan focus:ring-offset-0 accent-[var(--color-brand-cyan)]"
+                className="w-4 h-4 rounded border-zinc-200 bg-white text-brand-cyan focus:ring-brand-cyan focus:ring-offset-0 accent-[var(--color-brand-cyan)]"
               />
-              <span className="text-sm text-brand-muted group-hover:text-white transition-colors">
+              <span className="text-sm text-zinc-600 group-hover:text-zinc-900 transition-colors">
                 {t('booking.sameAsDelivery')}
               </span>
             </label>
@@ -422,18 +427,18 @@ export function StepDelivery({ form }: StepDeliveryProps) {
                       defaultValue={collectionAddress ?? ''}
                       onChange={(e) => form.setValue('collectionAddress', e.target.value)}
                       className={[
-                        'w-full bg-black/30 border rounded-[var(--radius-card)] px-4 py-3 text-sm text-white placeholder:text-brand-muted focus:outline-none focus:border-brand-cyan input-focus-glow transition-colors',
-                        collectionAddressError ? 'border-red-500' : 'border-brand-border',
+                        'w-full bg-white border rounded-[var(--radius-card)] px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-brand-cyan input-focus-glow transition-colors',
+                        collectionAddressError ? 'border-red-500' : 'border-zinc-200',
                       ].join(' ')}
                     />
                   </Autocomplete>
 
                   {collectionAddressError && (
-                    <p className="text-xs text-red-400">{collectionAddressError.message}</p>
+                    <p className="text-xs text-red-600">{collectionAddressError.message}</p>
                   )}
 
                   {collectionMapCenter && (
-                    <div className="mt-3 rounded-[var(--radius-card)] overflow-hidden border border-brand-border" style={{ height: 200 }}>
+                    <div className="mt-3 rounded-[var(--radius-card)] overflow-hidden border border-zinc-200" style={{ height: 200 }}>
                       <GoogleMap
                         mapContainerStyle={{ width: '100%', height: '100%' }}
                         center={collectionMapCenter}
@@ -441,7 +446,6 @@ export function StepDelivery({ form }: StepDeliveryProps) {
                         options={{
                           disableDefaultUI: true,
                           zoomControl: true,
-                          styles: DARK_MAP_STYLES,
                         }}
                       >
                         <MarkerF
@@ -453,7 +457,7 @@ export function StepDelivery({ form }: StepDeliveryProps) {
                     </div>
                   )}
 
-                  <p className="text-xs text-brand-muted">
+                  <p className="text-xs text-zinc-600">
                     {t('booking.pinLocationCollection')}
                   </p>
                 </>
@@ -464,12 +468,12 @@ export function StepDelivery({ form }: StepDeliveryProps) {
                     placeholder={t('booking.enterCollectionAddress')}
                     {...form.register('collectionAddress')}
                     className={[
-                      'w-full bg-black/30 border rounded-[var(--radius-card)] px-4 py-3 text-sm text-white placeholder:text-brand-muted focus:outline-none focus:border-brand-cyan input-focus-glow transition-colors',
-                      collectionAddressError ? 'border-red-500' : 'border-brand-border',
+                      'w-full bg-white border rounded-[var(--radius-card)] px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-brand-cyan input-focus-glow transition-colors',
+                      collectionAddressError ? 'border-red-500' : 'border-zinc-200',
                     ].join(' ')}
                   />
                   {collectionAddressError && (
-                    <p className="text-xs text-red-400">{collectionAddressError.message}</p>
+                    <p className="text-xs text-red-600">{collectionAddressError.message}</p>
                   )}
                   <p className="text-xs text-amber-500/80">
                     Map address lookup requires NEXT_PUBLIC_GOOGLE_MAPS_API_KEY to be configured.
@@ -483,34 +487,36 @@ export function StepDelivery({ form }: StepDeliveryProps) {
 
       {/* Summary */}
       {(deliveryAddress || pickupMethod === 'self_pickup') && (
-        <div className="bg-black/20 border border-brand-border rounded-[var(--radius-card)] p-4 text-sm space-y-1">
-          <p className="text-brand-muted text-xs uppercase tracking-wider mb-2">{t('booking.selectedOptions')}</p>
+        <div className="bg-zinc-50 border border-zinc-200 rounded-[var(--radius-card)] p-4 text-sm space-y-1">
+          <p className="text-zinc-600 text-xs uppercase tracking-wider mb-2">{t('booking.selectedOptions')}</p>
           <div className="flex justify-between">
-            <span className="text-brand-muted">{t('booking.pickupLabel')}</span>
-            <span className="text-white">
+            <span className="text-zinc-600">{t('booking.pickupLabel')}</span>
+            <span className="text-zinc-900">
               {pickupMethod === 'delivery' ? t('booking.deliveryAed50') : t('booking.selfPickupFree')}
             </span>
           </div>
           {pickupMethod === 'delivery' && deliveryAddress && (
             <div className="flex justify-between gap-4">
-              <span className="text-brand-muted shrink-0">{t('booking.addressLabel')}</span>
-              <span className="text-white text-right text-xs">{deliveryAddress}</span>
+              <span className="text-zinc-600 shrink-0">{t('booking.addressLabel')}</span>
+              <span className="text-zinc-900 text-right text-xs">{deliveryAddress}</span>
             </div>
           )}
           <div className="flex justify-between">
-            <span className="text-brand-muted">{t('booking.returnLabel')}</span>
-            <span className="text-white">
+            <span className="text-zinc-600">{t('booking.returnLabel')}</span>
+            <span className="text-zinc-900">
               {returnMethod === 'collection' ? t('booking.collectionAed50') : t('booking.selfDropOffFree')}
             </span>
           </div>
           {returnMethod === 'collection' && collectionAddress && (
             <div className="flex justify-between gap-4">
-              <span className="text-brand-muted shrink-0">{t('booking.collectionAddressLabel')}</span>
-              <span className="text-white text-right text-xs">{collectionAddress}</span>
+              <span className="text-zinc-600 shrink-0">{t('booking.collectionAddressLabel')}</span>
+              <span className="text-zinc-900 text-right text-xs">{collectionAddress}</span>
             </div>
           )}
         </div>
       )}
+
+      {navButtons && <div className="pt-4 border-t border-zinc-200">{navButtons}</div>}
     </div>
   )
 }

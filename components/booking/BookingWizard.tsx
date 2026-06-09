@@ -382,9 +382,9 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
           </ol>
         </nav>
 
-        {/* Step content — Duration, Protection and Add-ons manage their own white card;
-            the others keep the dark surface wrapper until restyled. */}
-        {(currentStep === 'duration' || currentStep === 'protection' || currentStep === 'addons') ? (
+        {/* Step content — all non-payment steps manage their own white card;
+            only the final payment step keeps the dark surface wrapper. */}
+        {currentStep !== 'payment' ? (
           <>
             {(() => {
               const lightNavButtons = (
@@ -397,14 +397,16 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
                   >
                     {t('booking.back')}
                   </button>
-                  <button
-                    type="button"
-                    onClick={advance}
-                    disabled={isPending || isCreatingBooking}
-                    className="px-6 sm:px-8 py-3 rounded-[var(--radius-card)] bg-brand-cyan text-black text-sm font-semibold hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isPending || isCreatingBooking ? t('booking.pleaseWait') : t('booking.continue')}
-                  </button>
+                  {currentStep !== 'account' && (
+                    <button
+                      type="button"
+                      onClick={advance}
+                      disabled={isPending || isCreatingBooking}
+                      className="px-6 sm:px-8 py-3 rounded-[var(--radius-card)] bg-brand-cyan text-black text-sm font-semibold hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isPending || isCreatingBooking ? t('booking.pleaseWait') : t('booking.continue')}
+                    </button>
+                  )}
                 </div>
               )
               if (currentStep === 'duration') {
@@ -423,49 +425,58 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
                   <StepProtection form={form} vehicle={vehicle} navButtons={lightNavButtons} onBack={back} />
                 )
               }
-              return (
-                <StepAddons form={form} vehicle={vehicle} navButtons={lightNavButtons} onBack={back} />
-              )
+              if (currentStep === 'addons') {
+                return (
+                  <StepAddons form={form} vehicle={vehicle} navButtons={lightNavButtons} onBack={back} />
+                )
+              }
+              if (currentStep === 'delivery') {
+                return (
+                  <StepDelivery form={form} navButtons={lightNavButtons} onBack={back} />
+                )
+              }
+              if (currentStep === 'paymentMethod') {
+                return (
+                  <>
+                    {bookingId && (
+                      <div className="mb-4 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-800">
+                        {t('booking.alreadyCreatedNotice')}
+                      </div>
+                    )}
+                    <StepPaymentMethod form={form} navButtons={lightNavButtons} onBack={back} />
+                  </>
+                )
+              }
+              if (currentStep === 'account') {
+                return (
+                  <StepAuth onAuthenticated={handleAuthenticated} navButtons={lightNavButtons} onBack={back} />
+                )
+              }
+              if (currentStep === 'contact') {
+                return (
+                  <StepGuestContact form={form} navButtons={lightNavButtons} onBack={back} />
+                )
+              }
+              return null
             })()}
           </>
         ) : (
           <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-4 sm:p-6">
-            {currentStep === 'delivery' && (
-              <StepDelivery form={form} />
-            )}
-            {currentStep === 'paymentMethod' && (
-              <>
-                {bookingId && (
-                  <div className="mb-4 rounded-lg border border-amber-700/40 bg-amber-950/30 p-4 text-sm text-amber-200">
-                    {t('booking.alreadyCreatedNotice')}
-                  </div>
-                )}
-                <StepPaymentMethod form={form} />
-              </>
-            )}
-            {currentStep === 'account' && (
-              <StepAuth onAuthenticated={handleAuthenticated} />
-            )}
-            {currentStep === 'contact' && (
-              <StepGuestContact form={form} />
-            )}
-            {currentStep === 'payment' && (
-              <StepPayment
-                clientSecret={rentalClientSecret}
-                setupClientSecret={setupClientSecret}
-                cashSelected={form.getValues('paymentMethod') === 'cash'}
-                cryptoSelected={form.getValues('paymentMethod') === 'crypto'}
-                applePaySelected={form.getValues('paymentMethod') === 'apple_pay'}
-                onSuccess={handlePaymentSuccess}
-                bookingId={bookingId ?? ''}
-                totalDue={bookingTotalDue}
-                reservationFee={bookingReservationFee}
-                balanceDueOnPickup={bookingBalanceDueOnPickup}
-                depositAmount={bookingDepositAmount}
-                isGuest={!isAuthed}
-                guestEmail={!isAuthed ? form.getValues('guestEmail') : undefined}
-              />
-            )}
+            <StepPayment
+              clientSecret={rentalClientSecret}
+              setupClientSecret={setupClientSecret}
+              cashSelected={form.getValues('paymentMethod') === 'cash'}
+              cryptoSelected={form.getValues('paymentMethod') === 'crypto'}
+              applePaySelected={form.getValues('paymentMethod') === 'apple_pay'}
+              onSuccess={handlePaymentSuccess}
+              bookingId={bookingId ?? ''}
+              totalDue={bookingTotalDue}
+              reservationFee={bookingReservationFee}
+              balanceDueOnPickup={bookingBalanceDueOnPickup}
+              depositAmount={bookingDepositAmount}
+              isGuest={!isAuthed}
+              guestEmail={!isAuthed ? form.getValues('guestEmail') : undefined}
+            />
           </div>
         )}
 
@@ -476,8 +487,10 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
           </div>
         )}
 
-        {/* Navigation buttons — rendered outside the step content for non-light-card steps */}
-        {currentStep !== 'duration' && currentStep !== 'protection' && currentStep !== 'addons' && (
+        {/* Navigation buttons — only rendered outside the step content for the
+            payment step (dark surface). Light-card steps render their own
+            nav inside the card via lightNavButtons. */}
+        {currentStep === 'payment' && (
           <div className="hidden sm:flex items-center justify-between gap-4">
             <button
               type="button"
@@ -487,18 +500,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
             >
               {t('booking.back')}
             </button>
-
-            {/* On the payment step and account step, their own components handle submission */}
-            {currentStep !== 'payment' && currentStep !== 'account' && (
-              <button
-                type="button"
-                onClick={advance}
-                disabled={isPending || isCreatingBooking}
-                className="hidden sm:inline-flex px-6 sm:px-8 py-2.5 rounded-[var(--radius-card)] bg-brand-cyan text-black text-sm font-semibold hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isPending || isCreatingBooking ? t('booking.pleaseWait') : t('booking.continue')}
-              </button>
-            )}
+            {/* The payment step handles its own submission via the Stripe form, so no Continue here. */}
           </div>
         )}
       </div>
