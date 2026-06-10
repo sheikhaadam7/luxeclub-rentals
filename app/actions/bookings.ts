@@ -412,6 +412,40 @@ export async function getUserBookings(): Promise<UserBooking[] | { error: string
 }
 
 // ---------------------------------------------------------------------------
+// getLatestBookingForUser — used by the Step 4 sign-in modal to auto-fill
+// the "Who will drive?" form with the customer's saved contact details.
+// ---------------------------------------------------------------------------
+
+export interface LatestBookingGuestInfo {
+  guestName: string | null
+  guestEmail: string | null
+  guestPhone: string | null
+}
+
+export async function getLatestBookingForUser(): Promise<LatestBookingGuestInfo | null> {
+  const supabase = await createClient()
+  const { data: claimsData } = await supabase.auth.getClaims()
+  const userId = claimsData?.claims?.sub
+  if (!userId) return null
+
+  const { data, error } = await supabase
+    .from('bookings')
+    .select('guest_name, guest_email, guest_phone')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  if (error || !data) return null
+
+  return {
+    guestName: data.guest_name ?? null,
+    guestEmail: data.guest_email ?? null,
+    guestPhone: data.guest_phone ?? null,
+  }
+}
+
+// ---------------------------------------------------------------------------
 // getBookingDetail
 // ---------------------------------------------------------------------------
 

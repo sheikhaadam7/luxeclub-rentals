@@ -62,7 +62,7 @@ export function StepAuth({ onAuthenticated, navButtons, onBack }: StepAuthProps)
   )
 }
 
-function InlineLoginForm({
+export function InlineLoginForm({
   onSwitch,
   onAuthenticated,
 }: {
@@ -138,7 +138,7 @@ function InlineLoginForm({
   )
 }
 
-function InlineSignupForm({
+export function InlineSignupForm({
   onSwitch,
   onAuthenticated,
 }: {

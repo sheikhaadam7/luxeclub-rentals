@@ -2,10 +2,13 @@
 
 import { UseFormReturn } from 'react-hook-form'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { BookingFormValues } from '@/lib/validations/booking'
 import { Input } from '@/components/ui/Input'
 import { CountryCodePickerOverlay } from '@/components/booking/CountryCodePickerOverlay'
 import { DeliveryZonePickerOverlay } from '@/components/booking/DeliveryZonePickerOverlay'
+import { SignInModal } from '@/components/booking/SignInModal'
+import { getLatestBookingForUser } from '@/app/actions/bookings'
 
 // Delivery zones — label + AED fee. Fee covers both delivery and collection.
 type ZoneKey =
@@ -150,14 +153,20 @@ interface StepDeliveryProps {
   navButtons?: React.ReactNode
   /** Called when the user taps the back chevron on the card (mobile) */
   onBack?: () => void
+  /** Auth state — controls whether the "Who will drive?" section + sign-in link render */
+  isAuthed?: boolean
+  /** Called after a successful sign-in via the modal. Should set isAuthed = true. */
+  onAuthenticated?: () => void
 }
 
-export function StepDelivery({ form, navButtons, onBack }: StepDeliveryProps) {
+export function StepDelivery({ form, navButtons, onBack, isAuthed = false, onAuthenticated }: StepDeliveryProps) {
+  const router = useRouter()
   const pickupMethod = form.watch('pickupMethod')
   const guestPhoneCountry = form.watch('guestPhoneCountry')
   const needsInvoiceAddress = form.watch('needsInvoiceAddress') ?? false
   const [countryPickerOpen, setCountryPickerOpen] = useState(false)
   const [zonePickerOpen, setZonePickerOpen] = useState(false)
+  const [signInOpen, setSignInOpen] = useState(false)
   const deliveryLocation = form.watch('deliveryLocation')
   const deliveryNotes = form.watch('deliveryNotes')
 
@@ -175,14 +184,47 @@ export function StepDelivery({ form, navButtons, onBack }: StepDeliveryProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Keep guestName synced from first + surname so Step 6 (and the booking row)
-  // see the combined name without the guest having to re-type it.
+  // Keep guestName synced from first + surname so the booking row sees the
+  // combined name without the guest having to type a separate "full name" field.
   const guestFirstName = form.watch('guestFirstName')
   const guestSurname = form.watch('guestSurname')
   useEffect(() => {
     const combined = [guestFirstName, guestSurname].filter(Boolean).join(' ').trim()
     if (combined) form.setValue('guestName', combined, { shouldValidate: false })
   }, [guestFirstName, guestSurname, form])
+
+  // When the user signs in via the modal, fetch their latest booking and
+  // pre-fill the "Who will drive?" fields so they don't re-type details.
+  useEffect(() => {
+    if (!isAuthed) return
+    let cancelled = false
+    void (async () => {
+      try {
+        const latest = await getLatestBookingForUser()
+        if (cancelled || !latest) return
+        // Email — only fill if empty so we don't overwrite something the user just typed.
+        if (latest.guestEmail && !form.getValues('guestEmail')) {
+          form.setValue('guestEmail', latest.guestEmail, { shouldValidate: false })
+        }
+        // Name — split saved "First Last" into first + surname.
+        if (latest.guestName && !form.getValues('guestFirstName') && !form.getValues('guestSurname')) {
+          const parts = latest.guestName.trim().split(/\s+/)
+          const first = parts.shift() ?? ''
+          const surname = parts.join(' ')
+          if (first) form.setValue('guestFirstName', first, { shouldValidate: false })
+          if (surname) form.setValue('guestSurname', surname, { shouldValidate: false })
+        }
+        if (latest.guestPhone && !form.getValues('guestPhone')) {
+          form.setValue('guestPhone', latest.guestPhone, { shouldValidate: false })
+        }
+      } catch {
+        // Best-effort — silently fall through if the fetch fails.
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [isAuthed, form])
 
   return (
     <div className="bg-white rounded-[var(--radius-card)] shadow-xl border-2 border-brand-cyan p-6 sm:p-8 space-y-6">
@@ -339,7 +381,18 @@ export function StepDelivery({ form, navButtons, onBack }: StepDeliveryProps) {
 
       {/* ---------------- Who will drive? ---------------- */}
       <div className="pt-6 border-t border-zinc-200 space-y-4">
-        <h3 className="text-base font-bold text-zinc-900">Who will drive?</h3>
+        <div className="flex items-baseline justify-between gap-3 flex-wrap">
+          <h3 className="text-base font-bold text-zinc-900">Who will drive?</h3>
+          {!isAuthed && (
+            <button
+              type="button"
+              onClick={() => setSignInOpen(true)}
+              className="text-sm font-semibold text-brand-cyan hover:text-brand-cyan-hover underline underline-offset-4 cursor-pointer"
+            >
+              Returning customer? Sign in
+            </button>
+          )}
+        </div>
 
         <Input
           {...form.register('guestEmail')}
@@ -504,6 +557,19 @@ export function StepDelivery({ form, navButtons, onBack }: StepDeliveryProps) {
         initialValue={deliveryLocation}
         onClose={() => setZonePickerOpen(false)}
         onSelect={(value) => form.setValue('deliveryLocation', value as ZoneKey, { shouldValidate: true })}
+      />
+
+      {/* Sign-in modal — reuses StepAuth's Supabase-wired forms inside a centered card */}
+      <SignInModal
+        open={signInOpen}
+        onClose={() => setSignInOpen(false)}
+        onAuthenticated={() => {
+          // Flip isAuthed (stays on Step 4 — does NOT advance) and refresh
+          // server components so the navbar reflects the new auth state.
+          onAuthenticated?.()
+          setSignInOpen(false)
+          router.refresh()
+        }}
       />
     </div>
   )

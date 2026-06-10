@@ -15,14 +15,13 @@ import { BookingOverview } from '@/components/booking/BookingOverview'
 import { PriceDetailsModal } from '@/components/booking/PriceDetailsModal'
 import { StepPaymentMethod } from '@/components/booking/StepPaymentMethod'
 import { StepAuth } from '@/components/booking/StepAuth'
-import { StepGuestContact } from '@/components/booking/StepGuestContact'
 import { createBooking, updateBookingPaymentMethod } from '@/app/actions/bookings'
 
 const StepDelivery = dynamic(() => import('./StepDelivery').then(m => ({ default: m.StepDelivery })), { ssr: false })
 const StepPayment = dynamic(() => import('./StepPayment').then(m => ({ default: m.StepPayment })), { ssr: false })
 
 const AUTHED_STEPS = ['duration', 'protection', 'addons', 'delivery', 'paymentMethod', 'payment'] as const
-const UNAUTHED_STEPS = ['duration', 'protection', 'addons', 'delivery', 'paymentMethod', 'contact', 'payment'] as const
+const UNAUTHED_STEPS = ['duration', 'protection', 'addons', 'delivery', 'paymentMethod', 'payment'] as const
 
 type Step =
   | 'duration'
@@ -156,7 +155,18 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
         if (typeof v.endDate === 'string') v.endDate = new Date(v.endDate)
         form.reset({ ...form.getValues(), ...v })
       }
-      if (typeof saved.step === 'number') setStep(saved.step)
+      // Bounds-check the saved step against the current steps array length.
+      // Without this, a session saved with step=5 from a previous version
+      // (when UNAUTHED_STEPS still had 'contact') could land the customer on
+      // the payment screen with no booking ID.
+      if (typeof saved.step === 'number') {
+        const stepCount = (isAuthed ? AUTHED_STEPS.length : UNAUTHED_STEPS.length)
+        if (saved.step >= 0 && saved.step < stepCount) {
+          setStep(saved.step)
+        } else {
+          setStep(0)
+        }
+      }
     } catch {
       // ignore corrupted storage
     }
@@ -242,14 +252,34 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
       const valid = await form.trigger(fields)
       if (!valid) return
 
-      // The step before payment triggers booking creation
-      if (currentStep === 'paymentMethod' && isAuthed) {
-        await advanceToPayment()
-        return
+      // Step 4: enforce the "Who will drive?" contact fields for guests.
+      // Step 6 ('contact') is gone, so Step 4 is the last place to validate.
+      if (currentStep === 'delivery' && !isAuthed) {
+        const v = form.getValues()
+        let missing = false
+        if (!v.guestEmail || v.guestEmail.trim() === '') {
+          form.setError('guestEmail', { type: 'required', message: 'Email is required' })
+          missing = true
+        }
+        if (!v.guestFirstName || v.guestFirstName.trim() === '') {
+          form.setError('guestFirstName', { type: 'required', message: 'First name is required' })
+          missing = true
+        }
+        if (!v.guestSurname || v.guestSurname.trim() === '') {
+          form.setError('guestSurname', { type: 'required', message: 'Surname is required' })
+          missing = true
+        }
+        if (!v.guestPhone || v.guestPhone.trim() === '') {
+          form.setError('guestPhone', { type: 'required', message: 'Phone number is required' })
+          missing = true
+        }
+        if (missing) return
       }
 
-      // Guest contact step → create booking then advance to payment
-      if (currentStep === 'contact') {
+      // The step before payment triggers booking creation.
+      // Used to be authed-only because guests had a 'contact' step that did it.
+      // After removing 'contact', both authed and guest users create the booking here.
+      if (currentStep === 'paymentMethod') {
         await advanceToPayment()
         return
       }
@@ -273,13 +303,22 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
   }
 
   /**
-   * Called by StepAuth when the user successfully authenticates.
-   * Updates auth state and auto-advances to payment.
+   * Called by StepAuth (the legacy 'account' step path) when the user
+   * authenticates. Updates auth state and auto-advances to payment.
    */
   function handleAuthenticated() {
     setIsAuthed(true)
     // After auth, advance to payment (creates booking)
     advanceToPayment()
+  }
+
+  /**
+   * Called by the Step 4 SignInModal. Flips isAuthed without advancing —
+   * the customer signed in to skip re-typing their details, not to skip ahead.
+   * Step 4 stays on screen so the auto-fill effect can pre-populate fields.
+   */
+  function handleAuthenticatedStay() {
+    setIsAuthed(true)
   }
 
   // Inline confirmation state for guest bookings
@@ -454,7 +493,13 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
               }
               if (currentStep === 'delivery') {
                 return (
-                  <StepDelivery form={form} navButtons={lightNavButtons} onBack={back} />
+                  <StepDelivery
+                    form={form}
+                    navButtons={lightNavButtons}
+                    onBack={back}
+                    isAuthed={isAuthed}
+                    onAuthenticated={handleAuthenticatedStay}
+                  />
                 )
               }
               if (currentStep === 'paymentMethod') {
@@ -472,11 +517,6 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
               if (currentStep === 'account') {
                 return (
                   <StepAuth onAuthenticated={handleAuthenticated} navButtons={lightNavButtons} onBack={back} />
-                )
-              }
-              if (currentStep === 'contact') {
-                return (
-                  <StepGuestContact form={form} navButtons={lightNavButtons} onBack={back} />
                 )
               }
               return null
