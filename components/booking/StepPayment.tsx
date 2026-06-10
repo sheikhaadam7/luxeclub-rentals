@@ -378,111 +378,81 @@ export function StepPayment({
   // Cash on delivery path
   if (cashSelected) {
     return (
-      <div className="space-y-6">
-        <div className="rounded-[var(--radius-card)] border border-brand-cyan/30 bg-brand-cyan/5 p-6 space-y-3">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-cyan/10 border border-brand-cyan/30">
-              <svg
-                className="h-5 w-5 text-brand-cyan"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
-                />
-              </svg>
-            </div>
-            <h3 className="text-sm font-semibold text-white">
-              {t('booking.cashOnDeliverySelected')}
-            </h3>
-          </div>
-          <p className="text-sm text-brand-muted leading-relaxed">
-            {t('booking.cashReservationFeeDesc').replace('{amount}', formatPrice(reservationFee))}
+      <div className="space-y-5">
+        {/* Box 1 — Your Payment, Explained */}
+        <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-5 text-sm text-brand-muted">
+          <p className="font-semibold text-white/70 mb-2 text-xs uppercase tracking-wider">
+            Your Payment, Explained
           </p>
-          <p className="text-sm text-brand-muted leading-relaxed">
-            {t('booking.pleaseHave')}{' '}
-            <span className="text-white font-semibold">
-              {formatPrice(balanceDueOnPickup)}
-            </span>{' '}
-            {t('booking.cashReadyText')}
+          <p className="leading-relaxed">
+            You&apos;ve chosen to pay in cash on delivery — here&apos;s exactly how it works.
+            To lock in your booking, we take a small AED 495 holding deposit today, on a card
+            in the renter&apos;s name. That&apos;s the only payment you make now. The rest of
+            your total is paid in cash when we deliver your car. The AED 495 isn&apos;t an
+            extra fee — it comes straight off your balance, so on the day you only pay the
+            remaining amount, and nothing more. As soon as your deposit comes through, our
+            team confirms everything and will send you an email to confirm your booking
+            details.
           </p>
         </div>
 
-        {/* Forfeit policy — cash path */}
-        <div className="rounded-[var(--radius-card)] border border-red-500/30 bg-red-500/5 p-4 text-sm">
-          <p className="font-semibold text-red-300 mb-1.5 text-xs uppercase tracking-wider">
-            {t('booking.forfeitPolicyTitle')}
+        {/* Box 2 — Refunds & Cancellation */}
+        <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-5 text-sm text-brand-muted">
+          <p className="font-semibold text-white/70 mb-2 text-xs uppercase tracking-wider">
+            Refunds &amp; Cancellation
           </p>
-          <p className="text-red-200/80 leading-relaxed">
-            {t('booking.forfeitPolicyBody')}
+          <p className="leading-relaxed">
+            Plans change, and we keep this simple. Cancel more than 24 hours before your
+            booking starts, and we refund your AED 495 holding deposit in full. Cancel within
+            24 hours of the start time, or don&apos;t show up, and the deposit is non-refundable.
+            And if your booking goes ahead as planned, the deposit simply comes off your
+            balance on the day.
+          </p>
+        </div>
+
+        {/* Box 3 — Security Deposit (Fully Refundable) */}
+        <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-5 text-sm text-brand-muted">
+          <p className="font-semibold text-white/70 mb-2 text-xs uppercase tracking-wider">
+            Security Deposit (Fully Refundable)
+          </p>
+          <p className="leading-relaxed">
+            One last thing, and it&apos;s fully refundable. At handover, we place a refundable
+            security deposit as a hold on your card — not an actual charge — to cover any
+            damage, fines or traffic violations. If the car comes back as it left, the hold is
+            released in full within 7 business days. The amount depends on the car you&apos;ve
+            chosen and is always shown before you confirm. Prefer not to leave a hold at all?
+            Simply choose our no-deposit option when you book.
           </p>
         </div>
 
         {/* Card-on-file collection */}
         {setupClientSecret && stripePromise ? (
-          <div className="space-y-4">
-            <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
-              <p className="font-semibold text-white/70 mb-1.5 text-xs uppercase tracking-wider">
-                {t('booking.cardRequiredSecurity')}
-              </p>
-              <p>
-                {t('booking.cardRequiredDesc')}
-              </p>
-            </div>
-
-            {/* Cancellation policy */}
-            <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
-              <p className="font-semibold text-white/70 mb-1.5 text-xs uppercase tracking-wider">
-                {t('booking.cancellationPolicy')}
-              </p>
-              <p>
-                {t('booking.cancellationPolicyText')}
-              </p>
-            </div>
-
-            <Elements
-              stripe={stripePromise}
-              options={{
-                clientSecret: setupClientSecret,
-                appearance: {
-                  theme: 'night',
-                  variables: {
-                    colorPrimary: '#C9A96E',
-                    colorBackground: '#0a0a0a',
-                    colorText: '#ffffff',
-                    borderRadius: '0.75rem',
-                  },
+          <Elements
+            stripe={stripePromise}
+            options={{
+              clientSecret: setupClientSecret,
+              appearance: {
+                theme: 'night',
+                variables: {
+                  colorPrimary: '#C9A96E',
+                  colorBackground: '#0a0a0a',
+                  colorText: '#ffffff',
+                  borderRadius: '0.75rem',
                 },
-              }}
-            >
-              <CashCardForm onSuccess={onSuccess} bookingId={bookingId} />
-            </Elements>
-          </div>
+              },
+            }}
+          >
+            <CashCardForm onSuccess={onSuccess} bookingId={bookingId} />
+          </Elements>
         ) : (
           /* Test mode fallback — no Stripe publishable key configured */
-          <>
-            {/* Cancellation policy */}
-            <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
-              <p className="font-semibold text-white/70 mb-1.5 text-xs uppercase tracking-wider">
-                {t('booking.cancellationPolicy')}
-              </p>
-              <p>
-                {t('booking.cancellationPolicyText')}
-              </p>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => onSuccess(bookingId)}
-              className="w-full rounded-[var(--radius-card)] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors"
-            >
-              {t('booking.confirmBooking')}
-            </button>
-          </>
+          <button
+            type="button"
+            onClick={() => onSuccess(bookingId)}
+            className="w-full rounded-[var(--radius-card)] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors"
+          >
+            {t('booking.confirmBooking')}
+          </button>
         )}
       </div>
     )

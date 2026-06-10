@@ -37,6 +37,7 @@ export function useBookingBreakdown(form: UseFormReturn<BookingFormValues>, vehi
         durationType: values.durationType ?? 'daily',
         pickupMethod: values.pickupMethod ?? 'self_pickup',
         returnMethod: values.returnMethod ?? 'self_dropoff',
+        deliveryLocation: values.deliveryLocation,
         depositChoice: values.depositChoice ?? 'deposit',
         paymentMethod: values.paymentMethod ?? 'card',
         protectionPackage: values.protectionPackage ?? 'basic',
@@ -57,7 +58,7 @@ export function BookingTotalHeader({ form, vehicle }: BookingTotalHeaderProps) {
 
   return (
     <>
-      <div className="hidden sm:flex items-start justify-end">
+      <div className="hidden sm:flex lg:hidden items-start justify-end">
         <div className="text-right">
           <p className="text-xs sm:text-sm text-brand-muted uppercase tracking-wider">Total</p>
           <p className="font-display text-2xl sm:text-3xl font-bold text-white tabular-nums">

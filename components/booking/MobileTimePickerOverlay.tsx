@@ -42,8 +42,8 @@ export function MobileTimePickerOverlay({
 }: MobileTimePickerOverlayProps) {
   const [mounted, setMounted] = useState(false)
   const [activeMode, setActiveMode] = useState<'pickup' | 'return'>('pickup')
-  const [startTime, setStartTime] = useState(initialStartTime || '10:00')
-  const [endTime, setEndTime] = useState(initialEndTime || '10:00')
+  const [startTime, setStartTime] = useState(initialStartTime || '09:30')
+  const [endTime, setEndTime] = useState(initialEndTime || '09:30')
   const [returnTouched, setReturnTouched] = useState(false)
   const selectedRef = useRef<HTMLButtonElement>(null)
 
@@ -52,8 +52,8 @@ export function MobileTimePickerOverlay({
   // Seed local state when opening; reset touched flag.
   useEffect(() => {
     if (open) {
-      setStartTime(initialStartTime || '10:00')
-      setEndTime(initialEndTime || '10:00')
+      setStartTime(initialStartTime || '09:30')
+      setEndTime(initialEndTime || '09:30')
       setReturnTouched(false)
       setActiveMode('pickup')
     }
@@ -130,13 +130,34 @@ export function MobileTimePickerOverlay({
       role="dialog"
       aria-modal="true"
       aria-label={title}
-      className={`fixed inset-0 z-[110] bg-white flex flex-col transition-transform duration-200 ${
-        open ? 'translate-y-0' : 'translate-y-full pointer-events-none'
-      }`}
-      style={{ height: '100dvh' }}
+      className={`fixed inset-0 z-[110] ${open ? '' : 'pointer-events-none'}`}
     >
+      {/* Desktop backdrop — click to close */}
+      <div
+        onClick={onBack}
+        aria-hidden
+        className={`absolute inset-0 hidden sm:block bg-black/60 transition-opacity duration-150 ${
+          open ? 'opacity-100' : 'opacity-0'
+        }`}
+      />
+
+      {/* Sheet — full-screen on mobile (slide up), centered modal on desktop (fade) */}
+      <div className="absolute inset-0 sm:flex sm:items-center sm:justify-center sm:p-6 pointer-events-none">
+        <div
+          className={`bg-white flex flex-col
+            h-[100dvh] w-full
+            sm:h-auto sm:max-h-[88vh] sm:w-full sm:max-w-[720px] sm:rounded-2xl sm:shadow-2xl sm:border sm:border-zinc-200
+            transition-transform duration-200
+            sm:transition-[opacity,transform] sm:duration-150 sm:will-change-[opacity,transform]
+            ${open ? 'pointer-events-auto' : 'pointer-events-none'}
+            ${
+              open
+                ? 'translate-y-0 sm:opacity-100 sm:scale-100'
+                : 'translate-y-full sm:translate-y-0 sm:opacity-0 sm:scale-[0.98]'
+            }`}
+        >
       {/* Header */}
-      <div className="sticky top-0 bg-white border-b border-zinc-200 px-4 py-3 grid grid-cols-[auto_1fr_auto] items-center gap-2 z-10">
+      <div className="sticky top-0 bg-white border-b border-zinc-200 px-4 py-3 grid grid-cols-[auto_1fr_auto] items-center gap-2 z-10 sm:rounded-t-2xl">
         <button
           type="button"
           onClick={onBack}
@@ -209,7 +230,7 @@ export function MobileTimePickerOverlay({
       {/* Body */}
       <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-4">
         <h3 className="text-base font-bold text-zinc-900 mb-3">Morning – afternoon</h3>
-        <div className="grid grid-cols-2 gap-2.5 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-6">
           {morning.map((slot) => {
             const disabled = isDisabledForActive(slot.value)
             const isSelected = activeValue === slot.value
@@ -233,7 +254,7 @@ export function MobileTimePickerOverlay({
         </div>
 
         <h3 className="text-base font-bold text-zinc-900 mb-3">Evening – night</h3>
-        <div className="grid grid-cols-2 gap-2.5">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
           {evening.map((slot) => {
             const disabled = isDisabledForActive(slot.value)
             const isSelected = activeValue === slot.value
@@ -259,7 +280,7 @@ export function MobileTimePickerOverlay({
 
       {/* Footer */}
       <div
-        className="border-t border-zinc-200 px-4 pt-3 bg-white"
+        className="border-t border-zinc-200 px-4 pt-3 bg-white sm:px-6 sm:py-4 sm:rounded-b-2xl"
         style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 12px)' }}
       >
         <button
@@ -270,6 +291,8 @@ export function MobileTimePickerOverlay({
         >
           Continue
         </button>
+      </div>
+        </div>
       </div>
     </div>,
     document.body,

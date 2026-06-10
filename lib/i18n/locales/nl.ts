@@ -219,6 +219,7 @@ const nl: Record<string, string> = {
   'booking.backTo': 'Terug naar',
   'booking.stepDuration': 'Duur',
   'booking.stepDelivery': 'Bezorging',
+  'booking.stepReview': 'Overzicht',
   'booking.stepDeposit': 'Borg',
   'booking.stepPayMethod': 'Betaling',
   'booking.stepAccount': 'Account',

@@ -219,6 +219,7 @@ const ru: Record<string, string> = {
   'booking.backTo': 'Назад к',
   'booking.stepDuration': 'Срок',
   'booking.stepDelivery': 'Доставка',
+  'booking.stepReview': 'Обзор',
   'booking.stepDeposit': 'Залог',
   'booking.stepPayMethod': 'Оплата',
   'booking.stepAccount': 'Аккаунт',

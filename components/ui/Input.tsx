@@ -1,8 +1,8 @@
 import { clsx } from 'clsx'
-import { InputHTMLAttributes, forwardRef } from 'react'
+import { InputHTMLAttributes, ReactNode, forwardRef } from 'react'
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  label?: string
+  label?: ReactNode
   error?: string
   /** Visual theme. Defaults to 'dark' for backwards compatibility. */
   variant?: 'dark' | 'light'
@@ -16,8 +16,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             className={clsx(
-              'text-[11px] font-medium uppercase tracking-[0.12em]',
-              isLight ? 'text-zinc-500' : 'text-white/40',
+              isLight
+                ? 'text-sm font-bold text-zinc-900'
+                : 'text-[11px] font-medium uppercase tracking-[0.12em] text-white/40',
             )}
           >
             {label}

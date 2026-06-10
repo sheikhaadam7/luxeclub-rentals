@@ -222,6 +222,7 @@ const en: Record<string, string> = {
   'booking.stepProtection': 'Protection',
   'booking.stepAddons': 'Add-ons',
   'booking.stepDelivery': 'Delivery',
+  'booking.stepReview': 'Review',
   'booking.stepDeposit': 'Deposit',
   'booking.stepPayMethod': 'Pay Method',
   'booking.stepAccount': 'Account',

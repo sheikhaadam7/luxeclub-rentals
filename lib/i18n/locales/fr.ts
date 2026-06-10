@@ -220,6 +220,7 @@ const fr: Record<string, string> = {
   // Booking wizard — step labels
   'booking.stepDuration': 'Durée',
   'booking.stepDelivery': 'Livraison',
+  'booking.stepReview': 'Révision',
   'booking.stepDeposit': 'Caution',
   'booking.stepPayMethod': 'Paiement',
   'booking.stepAccount': 'Compte',

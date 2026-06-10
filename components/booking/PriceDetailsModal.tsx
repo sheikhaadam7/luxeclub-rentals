@@ -100,10 +100,10 @@ export function PriceDetailsModal({ open, onClose, breakdown }: PriceDetailsModa
         role="dialog"
         aria-modal="true"
         aria-labelledby="price-details-title"
-        className="relative w-full sm:w-[480px] sm:max-w-[calc(100%-2rem)] bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl border-2 border-brand-cyan mt-auto sm:mt-0 max-h-[90vh] flex flex-col overflow-hidden"
+        className="relative w-full sm:w-[680px] sm:max-w-[calc(100%-2rem)] bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl border-2 border-brand-cyan mt-auto sm:mt-0 max-h-[90vh] flex flex-col overflow-hidden"
       >
-        <div className="flex items-center justify-between p-5 border-b border-zinc-200">
-          <h3 id="price-details-title" className="font-display text-lg font-bold text-zinc-900">
+        <div className="flex items-center justify-between p-5 sm:px-8 sm:pt-7 sm:pb-5 border-b border-zinc-200">
+          <h3 id="price-details-title" className="font-display text-2xl sm:text-3xl font-bold uppercase tracking-tight text-zinc-900">
             Price details
           </h3>
           <button
@@ -118,7 +118,7 @@ export function PriceDetailsModal({ open, onClose, breakdown }: PriceDetailsModa
           </button>
         </div>
 
-        <div className="p-5 space-y-5 overflow-y-auto">
+        <div className="p-5 sm:p-8 space-y-5 sm:space-y-6 overflow-y-auto">
           {/* Rental charges */}
           <section className="space-y-2">
             <Line label="Rental charges" amount={rentalChargesTotal} bold />
@@ -168,7 +168,9 @@ export function PriceDetailsModal({ open, onClose, breakdown }: PriceDetailsModa
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
               </span>
-              <span className="tabular-nums">AED {formatAED(taxesAndFeesTotal)}</span>
+              {taxesOpen && (
+                <span className="tabular-nums">AED {formatAED(taxesAndFeesTotal)}</span>
+              )}
             </button>
             {taxesOpen && (
               <div className="pl-3 border-l-2 border-zinc-100 space-y-1.5">
@@ -184,7 +186,14 @@ export function PriceDetailsModal({ open, onClose, breakdown }: PriceDetailsModa
 
           {/* Total */}
           <section className="pt-4 border-t-2 border-zinc-200">
-            <Line label="Total" amount={totalDue} bold />
+            <div className="flex items-baseline justify-between gap-4">
+              <span className="text-base sm:text-lg font-bold text-zinc-900">
+                Total <span className="font-normal">(incl. tax)</span>
+              </span>
+              <span className="font-display text-3xl sm:text-4xl font-bold text-zinc-900 tabular-nums">
+                AED {formatAED(totalDue)}
+              </span>
+            </div>
           </section>
         </div>
       </div>

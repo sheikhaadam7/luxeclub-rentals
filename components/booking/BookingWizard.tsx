@@ -11,6 +11,7 @@ import { StepDuration } from '@/components/booking/StepDuration'
 import { StepProtection } from '@/components/booking/StepProtection'
 import { StepAddons } from '@/components/booking/StepAddons'
 import { BookingTotalHeader, useBookingBreakdown, formatAED } from '@/components/booking/BookingTotalHeader'
+import { BookingOverview } from '@/components/booking/BookingOverview'
 import { PriceDetailsModal } from '@/components/booking/PriceDetailsModal'
 import { StepPaymentMethod } from '@/components/booking/StepPaymentMethod'
 import { StepAuth } from '@/components/booking/StepAuth'
@@ -38,7 +39,7 @@ const STEP_FIELDS: Partial<Record<Step, (keyof BookingFormValues)[]>> = {
   duration: ['durationType', 'startDate', 'endDate', 'driverAge'],
   protection: ['protectionPackage'],
   addons: ['depositChoice'],
-  delivery: ['pickupMethod', 'deliveryAddress', 'returnMethod', 'collectionAddress'],
+  delivery: ['pickupMethod', 'deliveryLocation'],
   contact: ['guestName', 'guestEmail', 'guestPhone'],
   paymentMethod: ['paymentMethod'],
   payment: [],
@@ -48,7 +49,7 @@ const STEP_LABEL_KEYS: Record<Step, string> = {
   duration: 'booking.stepDuration',
   protection: 'booking.stepProtection',
   addons: 'booking.stepAddons',
-  delivery: 'booking.stepDelivery',
+  delivery: 'booking.stepReview',
   paymentMethod: 'booking.stepPayMethod',
   account: 'booking.stepAccount',
   contact: 'booking.stepContact',
@@ -121,6 +122,8 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
     defaultValues: {
       durationType: 'daily',
       driverAge: '30+',
+      startTime: '09:30',
+      endTime: '09:30',
       protectionPackage: 'basic',
       addons: {
         additionalDriver: false,
@@ -324,10 +327,29 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
 
   return (
     <div ref={wizardRef} className="w-full space-y-6 scroll-mt-20">
-      {/* Running total — visible across all steps */}
+      {/* Driver license history notice — only on Protection / Add-ons / Delivery steps */}
+      {(currentStep === 'protection' || currentStep === 'addons' || currentStep === 'delivery') && (
+        <div className="flex items-center gap-3 rounded-md bg-zinc-100 border border-zinc-200 px-4 py-3">
+          <span
+            aria-hidden
+            className="shrink-0 w-6 h-6 rounded-full bg-zinc-900 text-white flex items-center justify-center"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 16v-4m0-4h.01" />
+              <circle cx="12" cy="12" r="9" />
+            </svg>
+          </span>
+          <p className="text-sm text-zinc-800">
+            Drivers must have held their driver&apos;s license for at least 1 year(s) for this vehicle
+          </p>
+        </div>
+      )}
+
+      {/* Running total — visible on sm/md; hidden on lg+ where the sticky sidebar shows it */}
       <BookingTotalHeader form={form} vehicle={vehicle} />
 
-      {/* Step content full-width — price summary removed from this page */}
+      {/* Desktop (lg+) two-column layout: step content left, sticky summary right */}
+      <div className="lg:grid lg:grid-cols-[1fr_340px] lg:gap-8 lg:items-start">
       <div className="min-w-0 overflow-visible space-y-6">
         {/* Step indicator */}
         <nav aria-label="Booking steps">
@@ -393,7 +415,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
                     type="button"
                     onClick={back}
                     disabled={step === 0}
-                    className="px-4 sm:px-6 py-3 rounded-[var(--radius-card)] border border-zinc-300 text-sm font-medium text-zinc-700 hover:border-zinc-500 hover:text-zinc-900 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="px-4 sm:px-6 py-3 rounded-[var(--radius-card)] border border-black text-[15px] font-bold text-black cursor-pointer hover:bg-black/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     {t('booking.back')}
                   </button>
@@ -402,7 +424,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
                       type="button"
                       onClick={advance}
                       disabled={isPending || isCreatingBooking}
-                      className="px-6 sm:px-8 py-3 rounded-[var(--radius-card)] bg-brand-cyan text-black text-sm font-semibold hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-6 sm:px-8 py-3 rounded-[var(--radius-card)] bg-brand-cyan text-black text-sm font-semibold cursor-pointer hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isPending || isCreatingBooking ? t('booking.pleaseWait') : t('booking.continue')}
                     </button>
@@ -459,6 +481,14 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
               }
               return null
             })()}
+
+            {/* Mobile / tablet booking overview — appears below the step card.
+                Hidden on lg+ where the sticky sidebar shows the same content. */}
+            {currentStep !== 'duration' && (
+              <div className="lg:hidden">
+                <BookingOverview form={form} vehicle={vehicle} rentalDays={breakdown.rentalDays} />
+              </div>
+            )}
           </>
         ) : (
           <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-4 sm:p-6">
@@ -496,13 +526,38 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
               type="button"
               onClick={back}
               disabled={step === 0}
-              className="px-4 sm:px-6 py-2.5 rounded-[var(--radius-card)] border border-brand-border text-sm font-medium text-brand-muted hover:text-white hover:border-white/40 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              className="px-4 sm:px-6 py-2.5 rounded-[var(--radius-card)] border border-black text-[15px] font-bold text-black cursor-pointer hover:bg-black/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             >
               {t('booking.back')}
             </button>
             {/* The payment step handles its own submission via the Stripe form, so no Continue here. */}
           </div>
         )}
+      </div>
+
+      {/* Desktop (lg+) sticky summary — pushed down to sit roughly inline with
+          the pickup/return inputs in Step 1 so it sits in the user's eye-line. */}
+      <aside className="hidden lg:block">
+        <div className="sticky top-24 mt-20 pl-2 space-y-6">
+          <div>
+            <p className="text-xs uppercase tracking-wider text-brand-muted">Total</p>
+            <p className="font-display text-4xl font-bold text-white tabular-nums leading-tight">
+              AED {formatAED(breakdown.totalDue)}
+            </p>
+            <button
+              type="button"
+              onClick={() => setMobilePriceOpen(true)}
+              className="text-sm text-brand-cyan underline underline-offset-4 hover:text-brand-cyan-hover transition-colors mt-1 cursor-pointer"
+            >
+              Price details
+            </button>
+          </div>
+
+          {currentStep !== 'duration' && (
+            <BookingOverview form={form} vehicle={vehicle} rentalDays={breakdown.rentalDays} />
+          )}
+        </div>
+      </aside>
       </div>
 
       {/* Mobile-only fixed bottom bar: running total + price details + Continue */}
@@ -516,7 +571,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
             onClick={back}
             disabled={step === 0}
             aria-label={t('booking.back')}
-            className="shrink-0 flex items-center justify-center w-10 h-10 rounded-full border border-brand-border text-brand-muted disabled:opacity-30 disabled:cursor-not-allowed"
+            className="shrink-0 flex items-center justify-center w-10 h-10 rounded-full border border-black text-black disabled:opacity-30 disabled:cursor-not-allowed"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />

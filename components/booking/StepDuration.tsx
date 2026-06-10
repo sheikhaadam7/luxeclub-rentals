@@ -1,16 +1,14 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { UseFormReturn } from 'react-hook-form'
-import { DayPicker, type DateRange } from 'react-day-picker'
+import { type DateRange } from 'react-day-picker'
 import { differenceInDays, format } from 'date-fns'
 import 'react-day-picker/style.css'
 import { BookingFormValues } from '@/lib/validations/booking'
 import { Vehicle } from '@/components/booking/BookingWizard'
-import { useTranslation, useLanguage } from '@/lib/i18n/context'
-import { getDateLocale } from '@/lib/i18n/date-locale'
+import { useTranslation } from '@/lib/i18n/context'
 import { useSearchParams } from 'next/navigation'
-import { useIsMobile } from '@/lib/hooks/use-is-mobile'
 import { useOverlayBackButton } from '@/lib/hooks/use-overlay-back-button'
 import { MobileDateRangeOverlay } from '@/components/booking/MobileDateRangeOverlay'
 import { MobileTimePickerOverlay } from '@/components/booking/MobileTimePickerOverlay'
@@ -41,26 +39,20 @@ export const TIME_SLOTS = Array.from({ length: 36 }, (_, i) => {
   return { value, label: value }
 })
 
-type OpenPopover = 'date' | 'pickupTime' | 'returnTime' | null
-
 export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons, onAdvance }: StepDurationProps) {
   const { t } = useTranslation()
-  const { language } = useLanguage()
-  const dateLocale = getDateLocale(language)
-  const isMobile = useIsMobile()
   const startDate = form.watch('startDate')
   const endDate = form.watch('endDate')
-  const startTime = form.watch('startTime') || '10:00'
-  const endTime = form.watch('endTime') || '10:00'
+  const startTime = form.watch('startTime') || '09:30'
+  const endTime = form.watch('endTime') || '09:30'
 
-  const [openPopover, setOpenPopover] = useState<OpenPopover>(null)
-  const [mobileOverlay, setMobileOverlay] = useState<'date' | 'time' | null>(null)
-  const popoverRef = useRef<HTMLDivElement>(null)
+  // Picker overlay state — full-screen sheet on mobile, centered modal on desktop.
+  const [pickerOverlay, setPickerOverlay] = useState<'date' | 'time' | null>(null)
 
   // Single Android Back-button sentinel for the entire mobile overlay flow.
   // Lifted here (not per-overlay) so calendar→time transitions don't pop+push
   // history mid-switch and accidentally close the new overlay.
-  useOverlayBackButton(mobileOverlay !== null, () => setMobileOverlay(null))
+  useOverlayBackButton(pickerOverlay !== null, () => setPickerOverlay(null))
 
   // ?layout=stacked switches the time picker to the no-toggle preview variant.
   const searchParams = useSearchParams()
@@ -68,52 +60,6 @@ export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons
     searchParams?.get('layout') === 'stacked'
       ? MobileTimePickerStackedOverlay
       : MobileTimePickerOverlay
-  // Number of day-clicks within the current open of the calendar popover.
-  // The popover should only close after the SECOND selection (pickup + return).
-  const calendarSelectionCount = useRef(0)
-
-  // Responsive month count for the calendar popover
-  const [calMonths, setCalMonths] = useState(1)
-  useEffect(() => {
-    const update = () => {
-      if (window.matchMedia('(min-width: 1024px)').matches) setCalMonths(3)
-      else if (window.matchMedia('(min-width: 640px)').matches) setCalMonths(2)
-      else setCalMonths(1)
-    }
-    update()
-    window.addEventListener('resize', update)
-    return () => window.removeEventListener('resize', update)
-  }, [])
-
-  // Reset the calendar click counter every time the calendar popover opens fresh
-  useEffect(() => {
-    if (openPopover === 'date') {
-      calendarSelectionCount.current = 0
-    }
-  }, [openPopover])
-
-  // Close popover on outside click / Escape
-  useEffect(() => {
-    if (!openPopover) return
-    function handleDown(e: MouseEvent) {
-      if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
-        setOpenPopover(null)
-      }
-    }
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') setOpenPopover(null)
-    }
-    // Defer one frame so the click that opened the popover doesn't immediately close it
-    const t = setTimeout(() => {
-      document.addEventListener('mousedown', handleDown)
-      document.addEventListener('keydown', handleKey)
-    }, 0)
-    return () => {
-      clearTimeout(t)
-      document.removeEventListener('mousedown', handleDown)
-      document.removeEventListener('keydown', handleKey)
-    }
-  }, [openPopover])
 
   // Calculate rental days and auto-set durationType
   const rentalDays =
@@ -132,22 +78,10 @@ export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons
 
   const now = new Date()
   const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1)
-  const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1)
   const disabledMatchers = [
     { from: new Date(2020, 0, 1), to: yesterday },
     ...bookedRanges,
   ]
-
-  function handleRangeSelect(range: DateRange | undefined) {
-    form.setValue('startDate', range?.from as Date, { shouldValidate: true })
-    form.setValue('endDate', range?.to as Date, { shouldValidate: true })
-    calendarSelectionCount.current += 1
-    // First click sets pickup (calendar stays open). Second click sets return
-    // and we close once both endpoints are defined.
-    if (calendarSelectionCount.current >= 2 && range?.from && range?.to) {
-      setOpenPopover(null)
-    }
-  }
 
   function applyQuickDuration(days: number) {
     const from = startDate instanceof Date ? startDate : new Date()
@@ -171,8 +105,7 @@ export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons
 
   // Visual styles for the date/time boxes
   const boxBase =
-    'px-4 py-4 flex items-center gap-2 text-left bg-white border border-zinc-300 rounded-[var(--radius-card)] hover:bg-zinc-50 transition-colors focus:outline-none'
-  const boxActive = 'ring-2 ring-brand-cyan ring-inset'
+    'px-4 py-4 flex items-center gap-2 text-left bg-white border border-zinc-300 rounded-[var(--radius-card)] cursor-pointer hover:bg-zinc-50 hover:border-zinc-400 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan focus-visible:ring-inset'
 
   return (
     <div className="bg-white rounded-[var(--radius-card)] shadow-xl border-2 border-brand-cyan p-6 sm:p-8 space-y-6">
@@ -206,7 +139,7 @@ export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons
       </div>
 
       {/* Compact pickup / return inputs */}
-      <div ref={popoverRef} className="relative">
+      <div>
         <div className="grid grid-cols-1 sm:grid-cols-[auto_1fr_1fr] gap-3 items-end">
           {/* Driver age — to the left of pickup */}
           <div>
@@ -262,8 +195,8 @@ export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons
               <button
                 type="button"
                 aria-label={t('booking.pickupDate')}
-                onClick={() => isMobile ? setMobileOverlay('date') : setOpenPopover((p) => (p === 'date' ? null : 'date'))}
-                className={[boxBase, openPopover === 'date' ? boxActive : ''].join(' ')}
+                onClick={() => setPickerOverlay('date')}
+                className={boxBase}
               >
                 <svg className="w-5 h-5 text-zinc-700 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                   <rect x="3" y="5" width="18" height="16" rx="2" />
@@ -276,8 +209,8 @@ export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons
               <button
                 type="button"
                 aria-label={t('booking.pickupTime')}
-                onClick={() => isMobile ? setMobileOverlay('time') : setOpenPopover((p) => (p === 'pickupTime' ? null : 'pickupTime'))}
-                className={[boxBase, openPopover === 'pickupTime' ? boxActive : ''].join(' ')}
+                onClick={() => setPickerOverlay('time')}
+                className={boxBase}
               >
                 <span className="text-base font-semibold text-zinc-900">{startTime}</span>
               </button>
@@ -293,8 +226,8 @@ export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons
               <button
                 type="button"
                 aria-label={t('booking.returnDate')}
-                onClick={() => isMobile ? setMobileOverlay('date') : setOpenPopover((p) => (p === 'date' ? null : 'date'))}
-                className={[boxBase, openPopover === 'date' ? boxActive : ''].join(' ')}
+                onClick={() => setPickerOverlay('date')}
+                className={boxBase}
               >
                 <svg className="w-5 h-5 text-zinc-700 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                   <rect x="3" y="5" width="18" height="16" rx="2" />
@@ -307,98 +240,14 @@ export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons
               <button
                 type="button"
                 aria-label={t('booking.dropoffTime')}
-                onClick={() => isMobile ? setMobileOverlay('time') : setOpenPopover((p) => (p === 'returnTime' ? null : 'returnTime'))}
-                className={[boxBase, openPopover === 'returnTime' ? boxActive : ''].join(' ')}
+                onClick={() => setPickerOverlay('time')}
+                className={boxBase}
               >
                 <span className="text-base font-semibold text-zinc-900">{endTime}</span>
               </button>
             </div>
           </div>
         </div>
-
-        {/* Calendar popover */}
-        {openPopover === 'date' && (
-          <div className="absolute left-0 right-0 sm:right-auto mt-3 bg-white rounded-[var(--radius-card)] shadow-2xl border-2 border-brand-cyan p-4 sm:p-6 z-20 overflow-x-auto">
-            <DayPicker
-              mode="range"
-              selected={selectedRange}
-              onSelect={handleRangeSelect}
-              disabled={disabledMatchers}
-              excludeDisabled
-              startMonth={currentMonthStart}
-              numberOfMonths={calMonths}
-              locale={dateLocale}
-              classNames={{
-                root: 'text-zinc-900 select-none',
-                months: 'relative flex flex-wrap gap-4 sm:gap-5 justify-center',
-                month: 'space-y-3 w-full sm:w-fit',
-                month_caption: 'flex items-center justify-center pb-2',
-                caption_label: 'font-display text-2xl font-bold text-zinc-900',
-                nav: 'absolute top-1 inset-x-0 flex items-center justify-between z-10',
-                button_previous: 'p-1 text-zinc-600 hover:text-zinc-900 transition-colors rounded',
-                button_next: 'p-1 text-zinc-600 hover:text-zinc-900 transition-colors rounded',
-                month_grid: 'w-full border-collapse',
-                weekdays: 'flex',
-                weekday:
-                  'w-9 sm:w-10 h-8 text-xs uppercase text-zinc-500 text-center flex items-center justify-center font-semibold',
-                weeks: 'mt-1',
-                week: 'flex',
-                day: 'w-9 sm:w-10 h-9 sm:h-10 flex items-center justify-center',
-                day_button:
-                  'w-9 sm:w-10 h-9 sm:h-10 text-sm sm:text-base font-bold rounded-full transition-colors text-zinc-900 hover:bg-zinc-100',
-                selected: 'bg-zinc-900 text-white',
-                range_start: 'bg-zinc-900 text-white rounded-full',
-                range_middle: 'bg-zinc-100 text-zinc-900 rounded-none',
-                range_end: 'bg-zinc-900 text-white rounded-full',
-                disabled: 'text-zinc-300 cursor-not-allowed',
-                today: '[&_button]:!text-red-600 [&_button]:!font-bold',
-                outside: 'text-zinc-300',
-                hidden: 'invisible',
-                chevron: 'fill-current w-5 h-5',
-              }}
-            />
-          </div>
-        )}
-
-        {/* Time popover */}
-        {(openPopover === 'pickupTime' || openPopover === 'returnTime') && (
-          <div className="absolute left-0 right-0 sm:left-auto sm:right-auto mt-3 bg-white rounded-[var(--radius-card)] shadow-2xl border-2 border-brand-cyan p-5 z-20 sm:w-96">
-            <p className="text-base font-semibold text-zinc-900 text-center mb-2">
-              {openPopover === 'pickupTime' ? t('booking.selectPickupTime') : t('booking.selectReturnTime')}
-            </p>
-            <p className="text-xs text-zinc-500 flex items-center gap-1 mb-4">
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                <circle cx="12" cy="12" r="9" />
-                <path strokeLinecap="round" d="M12 7v5l3 3" />
-              </svg>
-              24-hour {openPopover === 'pickupTime' ? t('booking.pickup') : t('booking.return')}
-            </p>
-            <div className="grid grid-cols-2 gap-2 max-h-72 overflow-y-auto pr-1">
-              {TIME_SLOTS.map((slot) => {
-                const field = openPopover === 'pickupTime' ? 'startTime' : 'endTime'
-                const isSelected = (form.watch(field) || '10:00') === slot.value
-                return (
-                  <button
-                    key={slot.value}
-                    type="button"
-                    onClick={() => {
-                      form.setValue(field, slot.value, { shouldValidate: true })
-                      setOpenPopover(null)
-                    }}
-                    className={[
-                      'px-4 py-3 rounded-[var(--radius-card)] text-sm font-semibold transition-colors',
-                      isSelected
-                        ? 'bg-zinc-900 text-white'
-                        : 'bg-zinc-50 text-zinc-900 hover:bg-zinc-100',
-                    ].join(' ')}
-                  >
-                    {slot.label}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Rental length summary + tier-discount badge */}
@@ -434,29 +283,29 @@ export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons
       {/* Navigation buttons inside the white card */}
       {navButtons && <div className="pt-4 border-t border-zinc-200">{navButtons}</div>}
 
-      {/* Mobile full-screen overlays */}
+      {/* Picker overlays — full-screen sheet on mobile, centered modal on desktop */}
       <MobileDateRangeOverlay
-        open={mobileOverlay === 'date'}
+        open={pickerOverlay === 'date'}
         initialRange={selectedRange}
         disabledMatchers={disabledMatchers}
-        onClose={() => setMobileOverlay(null)}
+        onClose={() => setPickerOverlay(null)}
         onContinue={(range) => {
           form.setValue('startDate', range.from, { shouldValidate: true })
           form.setValue('endDate', range.to, { shouldValidate: true })
-          setMobileOverlay('time')
+          setPickerOverlay('time')
         }}
       />
       <TimePicker
-        open={mobileOverlay === 'time'}
+        open={pickerOverlay === 'time'}
         startDate={startDate}
         endDate={endDate}
         initialStartTime={startTime}
         initialEndTime={endTime}
-        onBack={() => setMobileOverlay(null)}
+        onBack={() => setPickerOverlay(null)}
         onContinue={({ startTime: s, endTime: e }) => {
           form.setValue('startTime', s, { shouldValidate: true })
           form.setValue('endTime', e, { shouldValidate: true })
-          setMobileOverlay(null)
+          setPickerOverlay(null)
           onAdvance?.()
         }}
       />

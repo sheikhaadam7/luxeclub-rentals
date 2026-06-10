@@ -219,6 +219,7 @@ const ar: Record<string, string> = {
   'booking.backTo': 'العودة إلى',
   'booking.stepDuration': 'المدة',
   'booking.stepDelivery': 'التوصيل',
+  'booking.stepReview': 'المراجعة',
   'booking.stepDeposit': 'التأمين',
   'booking.stepPayMethod': 'طريقة الدفع',
   'booking.stepAccount': 'الحساب',

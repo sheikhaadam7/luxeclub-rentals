@@ -40,8 +40,8 @@ export function MobileTimePickerStackedOverlay({
   onContinue,
 }: MobileTimePickerStackedOverlayProps) {
   const [mounted, setMounted] = useState(false)
-  const [startTime, setStartTime] = useState(initialStartTime || '10:00')
-  const [endTime, setEndTime] = useState(initialEndTime || '10:00')
+  const [startTime, setStartTime] = useState(initialStartTime || '09:30')
+  const [endTime, setEndTime] = useState(initialEndTime || '09:30')
   const [returnTouched, setReturnTouched] = useState(false)
   const pickupSelectedRef = useRef<HTMLButtonElement>(null)
 
@@ -49,8 +49,8 @@ export function MobileTimePickerStackedOverlay({
 
   useEffect(() => {
     if (open) {
-      setStartTime(initialStartTime || '10:00')
-      setEndTime(initialEndTime || '10:00')
+      setStartTime(initialStartTime || '09:30')
+      setEndTime(initialEndTime || '09:30')
       setReturnTouched(false)
     }
   }, [open, initialStartTime, initialEndTime])
