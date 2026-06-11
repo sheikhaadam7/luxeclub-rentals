@@ -457,7 +457,7 @@ function CryptoPayment({ bookingId, reservationFee, balanceDueOnPickup, isGuest,
         type="button"
         onClick={handlePayWithCrypto}
         disabled={isProcessing}
-        className="w-full rounded-[var(--radius-card)] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full rounded-[var(--radius-card)] bg-black py-3 text-sm font-semibold text-white hover:bg-black/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isProcessing ? t('booking.creatingInvoice') : t('booking.payWithCrypto')}
       </button>
@@ -555,7 +555,7 @@ function CashCardForm({
           <button
             type="button"
             onClick={() => onSuccess(bookingId)}
-            className="w-full rounded-[var(--radius-card)] bg-brand-cyan py-3.5 text-base font-bold text-black cursor-pointer hover:bg-brand-cyan-hover transition-colors"
+            className="w-full rounded-[var(--radius-card)] bg-black py-3.5 text-base font-bold text-white cursor-pointer hover:bg-black/80 transition-colors"
           >
             {t('booking.confirmBooking')}
           </button>
@@ -564,7 +564,7 @@ function CashCardForm({
         <button
           type="submit"
           disabled={!stripe || !elements || isProcessing}
-          className="w-full rounded-[var(--radius-card)] bg-brand-cyan py-3.5 text-base font-bold text-black cursor-pointer hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full rounded-[var(--radius-card)] bg-black py-3.5 text-base font-bold text-white cursor-pointer hover:bg-black/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isProcessing
             ? t('booking.savingCard')
@@ -671,7 +671,7 @@ export function StepPayment({
           <button
             type="button"
             onClick={() => onSuccess(bookingId)}
-            className="w-full rounded-[var(--radius-card)] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors"
+            className="w-full rounded-[var(--radius-card)] bg-black py-3 text-sm font-semibold text-white hover:bg-black/80 transition-colors"
           >
             {t('booking.confirmBooking')}
           </button>
@@ -725,7 +725,7 @@ export function StepPayment({
         <button
           type="button"
           onClick={() => onSuccess(bookingId)}
-          className="w-full rounded-[var(--radius-card)] bg-brand-cyan py-3 text-sm font-semibold text-black hover:bg-brand-cyan-hover transition-colors"
+          className="w-full rounded-[var(--radius-card)] bg-black py-3 text-sm font-semibold text-white hover:bg-black/80 transition-colors"
         >
           {t('booking.acceptTestPayment')}
         </button>

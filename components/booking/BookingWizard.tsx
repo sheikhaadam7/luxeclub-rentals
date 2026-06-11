@@ -516,7 +516,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
                     type="button"
                     onClick={back}
                     disabled={step === 0}
-                    className="px-4 sm:px-6 py-3 rounded-[var(--radius-card)] border border-black text-[15px] font-bold text-black cursor-pointer hover:bg-black/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="px-4 sm:px-6 py-3 rounded-[var(--radius-card)] bg-black text-[15px] font-bold text-white cursor-pointer hover:bg-black/80 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     {t('booking.back')}
                   </button>
@@ -525,7 +525,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
                       type="button"
                       onClick={advance}
                       disabled={isPending || isCreatingBooking}
-                      className="px-6 sm:px-8 py-3 rounded-[var(--radius-card)] bg-brand-cyan text-black text-sm font-semibold cursor-pointer hover:bg-brand-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-6 sm:px-8 py-3 rounded-[var(--radius-card)] bg-black text-white text-sm font-semibold cursor-pointer hover:bg-black/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isPending || isCreatingBooking ? t('booking.pleaseWait') : t('booking.continue')}
                     </button>
@@ -670,7 +670,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
             onClick={back}
             disabled={step === 0}
             aria-label={t('booking.back')}
-            className="shrink-0 flex items-center justify-center w-10 h-10 rounded-full border border-black text-black disabled:opacity-30 disabled:cursor-not-allowed"
+            className="shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-black text-white disabled:opacity-30 disabled:cursor-not-allowed"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -694,7 +694,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
               type="button"
               onClick={advance}
               disabled={isPending || isCreatingBooking}
-              className="shrink-0 px-6 py-3 rounded-[var(--radius-card)] bg-brand-cyan text-black text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="shrink-0 px-6 py-3 rounded-[var(--radius-card)] bg-black text-white text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isPending || isCreatingBooking ? t('booking.pleaseWait') : t('booking.continue')}
             </button>

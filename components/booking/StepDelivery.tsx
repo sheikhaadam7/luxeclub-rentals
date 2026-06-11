@@ -387,7 +387,7 @@ export function StepDelivery({ form, navButtons, onBack, isAuthed = false, onAut
             <button
               type="button"
               onClick={() => setSignInOpen(true)}
-              className="text-sm font-semibold text-brand-cyan hover:text-brand-cyan-hover underline underline-offset-4 cursor-pointer"
+              className="text-sm font-bold text-black underline underline-offset-4 cursor-pointer"
             >
               Returning customer? Sign in
             </button>
