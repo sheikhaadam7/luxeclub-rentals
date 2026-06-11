@@ -173,6 +173,13 @@ function PaymentSummaryAndPolicies({
   depositChoice,
   onOpenPriceDetails,
 }: PaymentSummaryProps) {
+  const { currency, formatPrice } = useCurrency()
+  // Show a secondary line in the customer's chosen currency (set in the navbar
+  // picker) when it's not AED — international customers see the equivalent in
+  // their home currency right next to the AED total.
+  const secondaryLine =
+    currency !== 'AED' ? `approx. ${formatPrice(payNowAmount)} — rate at checkout` : null
+
   return (
     <div className="border-t border-zinc-200 pt-5 space-y-4">
       {/* Total row */}
@@ -181,6 +188,9 @@ function PaymentSummaryAndPolicies({
           <p className="font-display text-3xl sm:text-4xl font-bold text-zinc-900 tabular-nums leading-tight">
             AED {formatAED(payNowAmount)}
           </p>
+          {secondaryLine && (
+            <p className="text-sm text-zinc-500 tabular-nums mt-0.5">{secondaryLine}</p>
+          )}
           <button
             type="button"
             onClick={onOpenPriceDetails}
@@ -327,6 +337,10 @@ function PaymentForm({
       <PaymentElement
         options={{
           layout: 'tabs',
+          // Disable Stripe Link — the "Secure, fast checkout with Link" prompt
+          // adds clutter without benefit for our customer base. Apple Pay /
+          // Google Pay are still available via the express checkout row above.
+          wallets: { link: 'never' },
         }}
       />
 
@@ -507,7 +521,7 @@ function CashCardForm({
   return (
     <form onSubmit={handleSaveCard} className="space-y-6">
       {!cardSaved && (
-        <PaymentElement options={{ layout: 'tabs' }} />
+        <PaymentElement options={{ layout: 'tabs', wallets: { link: 'never' } }} />
       )}
 
       {/* Renter's name notice — directly below the card field */}
