@@ -617,24 +617,8 @@ export function StepPayment({
   if (cashSelected) {
     return (
       <div className="space-y-5">
-        {/* Payment-explained and refunds & cancellation copy now lives in the
-            Step 5 acknowledgement popup — no need to repeat here. Only the
-            Security Deposit info box remains. */}
-
-        {/* Box — Security Deposit (Fully Refundable) */}
-        <div className="rounded-[var(--radius-card)] border border-zinc-200 bg-zinc-50 p-5 text-sm text-zinc-700">
-          <p className="font-bold text-zinc-900 mb-2 text-xs uppercase tracking-wider">
-            Security Deposit (Fully Refundable)
-          </p>
-          <p className="leading-relaxed">
-            One last thing, and it&apos;s fully refundable. At handover, we place a refundable
-            security deposit as a hold on your card — not an actual charge — to cover any
-            damage, fines or traffic violations. If the car comes back as it left, the hold is
-            released in full within 7 business days. The amount depends on the car you&apos;ve
-            chosen and is always shown before you confirm. Prefer not to leave a hold at all?
-            Simply choose our no-deposit option when you book.
-          </p>
-        </div>
+        {/* Security deposit info now lives in the "Refundable deposit" line of
+            the summary block below — no separate box needed at the top. */}
 
         {/* Card-on-file collection */}
         {setupClientSecret && stripePromise ? (
