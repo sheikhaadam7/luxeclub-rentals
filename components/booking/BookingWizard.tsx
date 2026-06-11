@@ -585,6 +585,8 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
               reservationFee={bookingReservationFee}
               balanceDueOnPickup={bookingBalanceDueOnPickup}
               depositAmount={bookingDepositAmount}
+              depositChoice={form.getValues('depositChoice') ?? 'deposit'}
+              breakdown={breakdown}
               isGuest={!isAuthed}
               guestEmail={!isAuthed ? form.getValues('guestEmail') : undefined}
             />
