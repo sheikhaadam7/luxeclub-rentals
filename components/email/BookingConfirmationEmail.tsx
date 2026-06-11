@@ -94,16 +94,16 @@ const BRAND_GOLD = '#C9A96E'
 
 const styles = {
   body: {
-    backgroundColor: '#f4f4f5',
+    backgroundColor: '#18181B',
     margin: '0',
     padding: '0',
     fontFamily: 'Arial, Helvetica, sans-serif',
   },
   container: {
-    maxWidth: '600px',
+    maxWidth: '700px',
     margin: '0 auto',
     padding: '0',
-    backgroundColor: '#f4f4f5',
+    backgroundColor: '#18181B',
   },
 
   // ---- Hero ----
@@ -141,7 +141,7 @@ const styles = {
   heroBookingNumber: {
     color: '#888888',
     fontFamily: 'Arial, Helvetica, sans-serif',
-    fontSize: '12px',
+    fontSize: '14px',
     letterSpacing: '0.08em',
     margin: '0 0 12px 0',
   },
@@ -163,7 +163,7 @@ const styles = {
 
   // ---- Body card shell ----
   cardOuter: {
-    padding: '16px 16px 0',
+    padding: '16px 0 0',
   },
   card: {
     backgroundColor: '#ffffff',
@@ -201,7 +201,7 @@ const styles = {
   itineraryLink: {
     color: '#18181b',
     fontFamily: 'Arial, Helvetica, sans-serif',
-    fontSize: '13px',
+    fontSize: '14px',
     fontWeight: 600,
     textDecoration: 'underline',
   },
@@ -220,14 +220,14 @@ const styles = {
   checklistBody: {
     color: '#52525b',
     fontFamily: 'Arial, Helvetica, sans-serif',
-    fontSize: '13px',
+    fontSize: '14px',
     lineHeight: '1.5',
     margin: '0 0 4px 0',
   },
   checklistSub: {
     color: '#71717a',
     fontFamily: 'Arial, Helvetica, sans-serif',
-    fontSize: '12px',
+    fontSize: '14px',
     lineHeight: '1.5',
     margin: '0',
   },
@@ -264,7 +264,7 @@ const styles = {
   depositExplainer: {
     color: '#52525b',
     fontFamily: 'Arial, Helvetica, sans-serif',
-    fontSize: '13px',
+    fontSize: '14px',
     lineHeight: '1.5',
     margin: '12px 0 0 0',
   },
@@ -278,7 +278,7 @@ const styles = {
   cancelBody: {
     color: '#52525b',
     fontFamily: 'Arial, Helvetica, sans-serif',
-    fontSize: '13px',
+    fontSize: '14px',
     lineHeight: '1.5',
     margin: 0,
   },
@@ -299,19 +299,19 @@ const styles = {
 
   // ---- Footer ----
   footer: {
-    padding: '24px 28px',
+    padding: '32px 28px 28px',
     textAlign: 'center' as const,
   },
   footerText: {
-    color: '#71717a',
+    color: '#a1a1aa',
     fontFamily: 'Arial, Helvetica, sans-serif',
-    fontSize: '12px',
+    fontSize: '14px',
     lineHeight: '1.5',
     margin: '0 0 4px 0',
   },
   footerLink: {
-    color: '#71717a',
-    fontSize: '12px',
+    color: '#a1a1aa',
+    fontSize: '14px',
     fontFamily: 'Arial, Helvetica, sans-serif',
     textDecoration: 'underline',
   },
@@ -343,7 +343,7 @@ function Hero({
           <Img
             src={vehicleImage}
             alt={vehicleName}
-            width={600}
+            width={700}
             height={260}
             style={styles.heroImage}
           />
