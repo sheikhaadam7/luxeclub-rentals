@@ -2,16 +2,19 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { differenceInDays } from 'date-fns'
 import { DayPicker, type DateRange, type Matcher } from 'react-day-picker'
 import { useLanguage } from '@/lib/i18n/context'
 import { getDateLocale } from '@/lib/i18n/date-locale'
+
+const MIN_RENTAL_DAYS = 2
 
 interface MobileDateRangeOverlayProps {
   open: boolean
   initialRange: DateRange | undefined
   disabledMatchers: Matcher[]
   onClose: () => void
-  onContinue: (range: { from: Date; to: Date }) => void
+  onContinue: (range: { from: Date; to?: Date }) => void
 }
 
 export function MobileDateRangeOverlay({
@@ -26,6 +29,7 @@ export function MobileDateRangeOverlay({
   const [mounted, setMounted] = useState(false)
   const [isDesktop, setIsDesktop] = useState(false)
   const [range, setRange] = useState<DateRange | undefined>(initialRange)
+  const [showMinDaysError, setShowMinDaysError] = useState(false)
   const bodyRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => setMounted(true), [])
@@ -41,8 +45,18 @@ export function MobileDateRangeOverlay({
 
   // Seed local state when opening, so closing without Continue discards changes.
   useEffect(() => {
-    if (open) setRange(initialRange)
+    if (open) {
+      setRange(initialRange)
+      setShowMinDaysError(false)
+    }
   }, [open, initialRange])
+
+  // Clear the minimum-days warning automatically whenever the user adjusts
+  // the range — so they don't have to dismiss it manually.
+  useEffect(() => {
+    if (showMinDaysError) setShowMinDaysError(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [range?.from?.getTime(), range?.to?.getTime()])
 
   // Body scroll lock
   useEffect(() => {
@@ -87,7 +101,10 @@ export function MobileDateRangeOverlay({
   if (!mounted) return null
 
   const currentMonthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
-  const canContinue = !!range?.from && !!range?.to
+  // Continue lights up as soon as the pickup date is picked. If the user
+  // hasn't picked a return date by the time they hit Continue, the parent
+  // (StepDuration) auto-fills it as pickup + 2 days (the rental minimum).
+  const canContinue = !!range?.from
   const hasAnySelection = !!range?.from || !!range?.to
 
   return createPortal(
@@ -111,7 +128,7 @@ export function MobileDateRangeOverlay({
         <div
           className={`bg-white flex flex-col
             h-[100dvh] w-full
-            sm:h-auto sm:max-h-[88vh] sm:w-full sm:max-w-[860px] sm:rounded-2xl sm:shadow-2xl sm:border sm:border-zinc-200
+            sm:h-auto sm:max-h-[88vh] sm:w-full sm:max-w-[860px] sm:rounded-2xl sm:shadow-2xl sm:border-2 sm:border-brand-cyan
             transition-transform duration-200
             sm:transition-[opacity,transform] sm:duration-150 sm:will-change-[opacity,transform]
             ${open ? 'pointer-events-auto' : 'pointer-events-none'}
@@ -127,7 +144,7 @@ export function MobileDateRangeOverlay({
               type="button"
               onClick={onClose}
               aria-label="Close"
-              className="flex items-center justify-center w-11 h-11 -ml-2 text-zinc-900"
+              className="flex items-center justify-center w-11 h-11 -ml-2 text-zinc-900 cursor-pointer"
             >
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -138,7 +155,7 @@ export function MobileDateRangeOverlay({
               type="button"
               onClick={() => setRange(undefined)}
               disabled={!hasAnySelection}
-              className="text-sm font-medium text-zinc-700 px-2 h-11 disabled:opacity-30 disabled:cursor-not-allowed"
+              className="text-sm font-medium text-zinc-700 px-2 h-11 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
             >
               Clear
             </button>
@@ -191,13 +208,30 @@ export function MobileDateRangeOverlay({
             className="border-t border-zinc-200 px-4 pt-3 bg-white sm:px-6 sm:py-4 sm:rounded-b-2xl"
             style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 12px)' }}
           >
+            {showMinDaysError && (
+              <div
+                role="alert"
+                className="mb-3 rounded-[var(--radius-card)] border border-red-300 bg-red-50 px-3 py-2.5 text-sm font-semibold text-red-700"
+              >
+                This car has a minimum {MIN_RENTAL_DAYS}-day rental. Please pick a return date at least {MIN_RENTAL_DAYS} days after the pickup date.
+              </div>
+            )}
             <button
               type="button"
               onClick={() => {
-                if (range?.from && range?.to) onContinue({ from: range.from, to: range.to })
+                if (!range?.from) return
+                // If user picked BOTH dates but the range is shorter than the
+                // minimum, block + show the inline warning. If they only
+                // picked pickup, the parent (StepDuration) auto-fills the
+                // return as pickup + MIN_RENTAL_DAYS, which is fine.
+                if (range.to && differenceInDays(range.to, range.from) < MIN_RENTAL_DAYS) {
+                  setShowMinDaysError(true)
+                  return
+                }
+                onContinue({ from: range.from, to: range.to })
               }}
               disabled={!canContinue}
-              className="w-full py-3.5 rounded-[var(--radius-card)] bg-brand-cyan text-black text-sm font-semibold transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full py-3.5 rounded-[var(--radius-card)] bg-brand-cyan text-black text-sm font-semibold transition-opacity cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Continue
             </button>

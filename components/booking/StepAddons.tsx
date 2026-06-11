@@ -196,8 +196,8 @@ export function StepAddons({ form, vehicle: _vehicle, navButtons, onBack }: Step
             <div
               key={addon.id}
               className={[
-                'rounded-[var(--radius-card)] border transition-colors',
-                on ? 'border-brand-cyan bg-brand-cyan/5' : 'border-zinc-200 bg-white',
+                'rounded-[var(--radius-card)] border-2 transition-colors',
+                on ? 'border-brand-cyan bg-brand-cyan/5' : 'border-black bg-white',
                 disabled ? 'opacity-60' : '',
               ].join(' ')}
             >

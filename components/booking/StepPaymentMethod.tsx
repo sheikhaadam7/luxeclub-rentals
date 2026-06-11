@@ -103,10 +103,10 @@ export function StepPaymentMethod({ form, navButtons, onBack }: StepPaymentMetho
               form.setValue('paymentMethod', option.value, { shouldValidate: true })
             }}
             className={[
-              'w-full p-5 rounded-[var(--radius-card)] border text-left transition-all',
+              'w-full p-5 rounded-[var(--radius-card)] border-2 text-left transition-all',
               paymentMethod === option.value
                 ? 'border-brand-cyan bg-brand-cyan/5'
-                : 'border-zinc-200 hover:border-zinc-400',
+                : 'border-black',
             ].join(' ')}
           >
             <div className="flex items-start gap-4">
@@ -127,15 +127,15 @@ export function StepPaymentMethod({ form, navButtons, onBack }: StepPaymentMetho
                   <span className={paymentMethod === option.value ? 'text-brand-cyan' : 'text-zinc-500'}>
                     {option.icon}
                   </span>
-                  <p className={['text-sm font-semibold', paymentMethod === option.value ? 'text-brand-cyan' : 'text-zinc-900'].join(' ')}>
+                  <p className={['text-base font-semibold', paymentMethod === option.value ? 'text-brand-cyan' : 'text-zinc-900'].join(' ')}>
                     {t(option.labelKey)}
                   </p>
                 </div>
-                <p className="text-xs text-zinc-600 mt-1.5 leading-relaxed">
+                <p className="text-sm text-zinc-600 mt-1.5 leading-relaxed">
                   {t(option.descKey)}
                 </p>
                 {option.fee && (
-                  <p className={`text-xs mt-1 font-medium ${'feeColor' in option && option.feeColor ? option.feeColor : 'text-amber-600'}`}>
+                  <p className={`text-sm mt-1 font-medium ${'feeColor' in option && option.feeColor ? option.feeColor : 'text-amber-600'}`}>
                     {option.fee}
                   </p>
                 )}
@@ -212,7 +212,7 @@ function CashConfirmModal({ open, onCancel, onConfirm }: CashConfirmModalProps) 
       {/* Centered card */}
       <div className="absolute inset-0 flex items-center justify-center p-4 pointer-events-none">
         <div
-          className={`relative w-full max-w-[560px] max-h-[90vh] bg-white rounded-2xl shadow-2xl border border-zinc-200 flex flex-col overflow-hidden
+          className={`relative w-full max-w-[560px] max-h-[90vh] bg-white rounded-2xl shadow-2xl border-2 border-brand-cyan flex flex-col overflow-hidden
             transition-[opacity,transform] duration-150 will-change-[opacity,transform]
             ${open ? 'pointer-events-auto opacity-100 scale-100' : 'pointer-events-none opacity-0 scale-[0.98]'}`}
         >
@@ -238,8 +238,8 @@ function CashConfirmModal({ open, onCancel, onConfirm }: CashConfirmModalProps) 
 
           {/* Body — two info boxes */}
           <div className="px-6 pb-4 overflow-y-auto space-y-3">
-            <div className="rounded-[var(--radius-card)] border border-zinc-200 bg-zinc-50 p-5 text-sm text-zinc-700">
-              <p className="font-bold text-zinc-900 mb-2 text-xs uppercase tracking-wider">
+            <div className="rounded-[var(--radius-card)] border border-zinc-200 bg-zinc-50 p-5 text-base text-zinc-700">
+              <p className="font-bold text-zinc-900 mb-2 text-sm uppercase tracking-wider">
                 Your Payment, Explained
               </p>
               <p className="leading-relaxed">
@@ -248,12 +248,12 @@ function CashConfirmModal({ open, onCancel, onConfirm }: CashConfirmModalProps) 
                 card in the renter&apos;s name. That&apos;s the only payment you make now. The
                 rest of your total is paid in cash when we deliver your car. The AED 495 isn&apos;t
                 an extra fee — it comes straight off your balance, so on the day you only pay the
-                remaining amount, and nothing more. As soon as your deposit comes through, our
-                team will send you an email to confirm your booking details.
+                remaining amount, and nothing more. As soon as payment goes through, you&apos;ll
+                get a confirmation email from our team.
               </p>
             </div>
-            <div className="rounded-[var(--radius-card)] border border-zinc-200 bg-zinc-50 p-5 text-sm text-zinc-700">
-              <p className="font-bold text-zinc-900 mb-2 text-xs uppercase tracking-wider">
+            <div className="rounded-[var(--radius-card)] border border-zinc-200 bg-zinc-50 p-5 text-base text-zinc-700">
+              <p className="font-bold text-zinc-900 mb-2 text-sm uppercase tracking-wider">
                 Refunds &amp; Cancellation
               </p>
               <p className="leading-relaxed">

@@ -266,10 +266,10 @@ export function StepDelivery({ form, navButtons, onBack, isAuthed = false, onAut
               setZonePickerOpen(true)
             }}
             className={[
-              'p-4 rounded-[var(--radius-card)] border text-left transition-all',
+              'p-4 rounded-[var(--radius-card)] border-2 text-left transition-all',
               pickupMethod === 'delivery'
                 ? 'border-brand-cyan bg-brand-cyan/5'
-                : 'border-zinc-200 hover:border-zinc-400',
+                : 'border-black',
             ].join(' ')}
           >
             <div className="flex items-start gap-3">
@@ -300,10 +300,10 @@ export function StepDelivery({ form, navButtons, onBack, isAuthed = false, onAut
               form.setValue('deliveryLocation', undefined, { shouldValidate: true })
             }}
             className={[
-              'p-4 rounded-[var(--radius-card)] border text-left transition-all',
+              'p-4 rounded-[var(--radius-card)] border-2 text-left transition-all',
               pickupMethod === 'self_pickup'
                 ? 'border-brand-cyan bg-brand-cyan/5'
-                : 'border-zinc-200 hover:border-zinc-400',
+                : 'border-black',
             ].join(' ')}
           >
             <div className="flex items-start gap-3">
@@ -337,7 +337,7 @@ export function StepDelivery({ form, navButtons, onBack, isAuthed = false, onAut
             <button
               type="button"
               onClick={() => setZonePickerOpen(true)}
-              className="relative flex items-center justify-between px-4 py-3 border border-zinc-300 rounded-xl bg-white hover:bg-zinc-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan cursor-pointer text-left gap-3"
+              className="relative flex items-center justify-between px-4 py-3 border-2 border-black rounded-xl bg-white hover:bg-zinc-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan cursor-pointer text-left gap-3"
             >
               <span className="text-base font-semibold text-zinc-900">
                 {DELIVERY_ZONE_LABELS[(deliveryLocation as ZoneKey) ?? 'within_dubai']}
@@ -372,7 +372,7 @@ export function StepDelivery({ form, navButtons, onBack, isAuthed = false, onAut
                 onChange={(e) => form.setValue('deliveryNotes', e.target.value)}
                 placeholder="e.g. Building name, apartment number, parking instructions…"
                 rows={3}
-                className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-brand-cyan focus:ring-2 focus:ring-brand-cyan resize-none"
+                className="w-full rounded-xl border-2 border-black bg-white px-4 py-3 text-base text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-brand-cyan focus:ring-2 focus:ring-brand-cyan resize-none"
               />
             </div>
           )}
@@ -432,7 +432,7 @@ export function StepDelivery({ form, navButtons, onBack, isAuthed = false, onAut
                 <button
                   type="button"
                   onClick={() => setCountryPickerOpen(true)}
-                  className="relative flex items-center px-4 py-3 border border-zinc-300 rounded-xl bg-white hover:bg-zinc-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan cursor-pointer text-left"
+                  className="relative flex items-center px-4 py-3 border-2 border-black rounded-xl bg-white hover:bg-zinc-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan cursor-pointer text-left"
                 >
                   <span className="text-xl mr-2">{country.flag}</span>
                   <span className="text-base font-semibold text-zinc-900">{country.code}</span>
@@ -497,7 +497,7 @@ export function StepDelivery({ form, navButtons, onBack, isAuthed = false, onAut
 
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-bold text-zinc-900">Country</label>
-              <div className="relative flex items-center px-4 py-3 border border-zinc-300 rounded-xl bg-white hover:bg-zinc-50 transition-colors focus-within:ring-2 focus-within:ring-brand-cyan">
+              <div className="relative flex items-center px-4 py-3 border-2 border-black rounded-xl bg-white hover:bg-zinc-50 transition-colors focus-within:ring-2 focus-within:ring-brand-cyan">
                 <span className="text-base text-zinc-900">
                   {form.watch('invoiceAddress.country') || 'United Arab Emirates'}
                 </span>

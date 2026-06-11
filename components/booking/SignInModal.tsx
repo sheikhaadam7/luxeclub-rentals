@@ -65,7 +65,7 @@ export function SignInModal({ open, onClose, onAuthenticated }: SignInModalProps
       {/* Centered card */}
       <div className="absolute inset-0 flex items-center justify-center p-4 pointer-events-none">
         <div
-          className={`bg-white rounded-2xl shadow-2xl border border-zinc-200
+          className={`bg-white rounded-2xl shadow-2xl border-2 border-brand-cyan
             w-full max-w-[440px] max-h-[88vh] flex flex-col overflow-hidden
             transition-[opacity,transform] duration-150 will-change-[opacity,transform]
             ${open ? 'pointer-events-auto opacity-100 scale-100' : 'pointer-events-none opacity-0 scale-[0.98]'}`}
@@ -87,7 +87,7 @@ export function SignInModal({ open, onClose, onAuthenticated }: SignInModalProps
             </button>
           </div>
 
-          <p className="px-6 pb-4 text-sm text-zinc-500">
+          <p className="px-6 pb-4 text-base text-zinc-500">
             {mode === 'login' ? t('booking.signInDesc') : t('booking.createAccountDesc')}
           </p>
 

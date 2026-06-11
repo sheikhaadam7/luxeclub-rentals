@@ -102,7 +102,7 @@ export function CountryCodePickerOverlay({
         <div
           className={`bg-white flex flex-col
             h-[100dvh] w-full
-            sm:h-auto sm:max-h-[88vh] sm:w-full sm:max-w-[560px] sm:rounded-2xl sm:shadow-2xl sm:border sm:border-zinc-200
+            sm:h-auto sm:max-h-[88vh] sm:w-full sm:max-w-[560px] sm:rounded-2xl sm:shadow-2xl sm:border-2 sm:border-brand-cyan
             transition-transform duration-200
             sm:transition-[opacity,transform] sm:duration-150 sm:will-change-[opacity,transform]
             ${open ? 'pointer-events-auto' : 'pointer-events-none'}
@@ -233,7 +233,15 @@ function CountryRow({
           selected ? 'bg-brand-cyan/5' : ''
         }`}
       >
-        <span className="text-2xl shrink-0">{country.flag}</span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={`https://flagcdn.com/w40/${country.iso.toLowerCase()}.png`}
+          srcSet={`https://flagcdn.com/w80/${country.iso.toLowerCase()}.png 2x`}
+          alt=""
+          width={28}
+          height={20}
+          className="w-7 h-5 object-cover rounded-sm shrink-0 ring-1 ring-zinc-200"
+        />
         <span className="text-base text-zinc-900 flex-1">
           {country.label} <span className="text-zinc-500">{country.code}</span>
         </span>

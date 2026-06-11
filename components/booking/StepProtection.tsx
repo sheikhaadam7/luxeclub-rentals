@@ -67,7 +67,7 @@ const PACKAGES: ProtectionPackage[] = [
     id: 'basic',
     name: 'Basic Protection',
     stars: 2,
-    excess: 'Excess: up to AED 5,000.00',
+    excess: 'Excess: up to AED 7,000.00',
     excessHighlight: 'red',
     included: { ldw: true, tyres: false, interior: false, roadside: false },
     priceLabel: 'Included',
@@ -87,7 +87,8 @@ const PACKAGES: ProtectionPackage[] = [
 ]
 
 export function StepProtection({ form, navButtons, onBack }: StepProtectionProps) {
-  const selectedId = (form.watch('protectionPackage') ?? 'basic') as ProtectionId
+  // No default selection — the customer must explicitly pick a package.
+  const selectedId = form.watch('protectionPackage') as ProtectionId | undefined
 
   const [openTooltip, setOpenTooltip] = useState<string | null>(null)
   const rootRef = useRef<HTMLDivElement>(null)
@@ -170,7 +171,7 @@ export function StepProtection({ form, navButtons, onBack }: StepProtectionProps
                 'text-left p-5 sm:p-6 rounded-[var(--radius-card)] border-2 transition-colors flex flex-col cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan',
                 isSelected
                   ? 'border-brand-cyan bg-brand-cyan/5'
-                  : 'border-zinc-200 hover:border-zinc-400',
+                  : 'border-black',
               ].join(' ')}
             >
               {/* Header: name + radio */}

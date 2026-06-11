@@ -70,7 +70,7 @@ export function DeliveryZonePickerOverlay({
         <div
           className={`bg-white flex flex-col
             h-[100dvh] w-full
-            sm:h-auto sm:max-h-[88vh] sm:w-full sm:max-w-[560px] sm:rounded-2xl sm:shadow-2xl sm:border sm:border-zinc-200
+            sm:h-auto sm:max-h-[88vh] sm:w-full sm:max-w-[560px] sm:rounded-2xl sm:shadow-2xl sm:border-2 sm:border-brand-cyan
             transition-transform duration-200
             sm:transition-[opacity,transform] sm:duration-150 sm:will-change-[opacity,transform]
             ${open ? 'pointer-events-auto' : 'pointer-events-none'}
