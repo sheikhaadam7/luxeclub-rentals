@@ -411,26 +411,31 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
 
   // Guest inline confirmation
   if (guestConfirmedId) {
+    const guestFullName = (form.getValues('guestName') || '').trim()
+    const guestEmail = form.getValues('guestEmail') || ''
     return (
-      <div className="max-w-lg mx-auto space-y-6 text-center py-12">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-cyan/10 border border-brand-cyan/30 mx-auto">
-          <svg className="h-8 w-8 text-brand-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <div className="max-w-3xl mx-auto space-y-8 text-center py-12 px-4">
+        {/* Green tick circle */}
+        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-green-500 mx-auto shadow-lg">
+          <svg className="h-12 w-12 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h2 className="font-display text-2xl font-semibold text-white">
-          {t('booking.bookingConfirmed')}
-        </h2>
-        <p className="text-sm text-brand-muted leading-relaxed">
-          {t('booking.bookingRefIs')}{' '}
-          <span className="text-white font-semibold font-mono">
-            {guestConfirmedId.slice(0, 8).toUpperCase()}
-          </span>
-          . {t('booking.confirmationSentTo')}{' '}
-          <span className="text-white font-semibold">{form.getValues('guestEmail')}</span>.
+
+        {/* Great choice greeting */}
+        <p className="text-2xl sm:text-3xl text-white font-normal">
+          {guestFullName ? `Great choice, ${guestFullName}` : 'Great choice'}
         </p>
-        <p className="text-xs text-brand-muted">
-          {t('booking.saveBookingRef')}
+
+        {/* Big headline */}
+        <h2 className="font-display text-4xl sm:text-6xl lg:text-7xl font-extrabold uppercase text-white tracking-tight leading-[1.05]">
+          Your Reservation Is Confirmed
+        </h2>
+
+        {/* Confirmation email line */}
+        <p className="text-xl sm:text-2xl text-white leading-relaxed pt-2">
+          We&apos;ve sent a confirmation email to{' '}
+          <span className="underline underline-offset-4 decoration-2">{guestEmail}</span>
         </p>
       </div>
     )
