@@ -568,7 +568,7 @@ function CashCardForm({
         >
           {isProcessing
             ? t('booking.savingCard')
-            : `Pay AED ${formatAED(CASH_HOLDING_DEPOSIT_AED)} holding deposit`}
+            : 'Pay and Book'}
         </button>
       )}
     </form>
