@@ -744,37 +744,6 @@ export function StepPayment({
 
   return (
     <div className="space-y-6">
-      {/* Reservation fee summary */}
-      <div className="rounded-[var(--radius-card)] border border-brand-cyan/30 bg-brand-cyan/5 p-4 space-y-2">
-        <div className="flex items-baseline justify-between gap-2">
-          <span className="text-sm font-medium text-brand-cyan">
-            {t('booking.reservationFeeNow')}
-          </span>
-          <span className="text-lg font-semibold text-brand-cyan">
-            {formatPrice(reservationFee)}
-          </span>
-        </div>
-        {balanceDueOnPickup > 0 && (
-          <div className="flex items-baseline justify-between gap-2 text-sm">
-            <span className="text-brand-muted">{t('booking.balanceDueOnPickup')}</span>
-            <span className="text-white font-medium">{formatPrice(balanceDueOnPickup)}</span>
-          </div>
-        )}
-        <p className="text-xs text-brand-cyan/80 pt-1">
-          {t('booking.reservationFeeDesc')}
-        </p>
-      </div>
-
-      {/* Forfeit policy — card path */}
-      <div className="rounded-[var(--radius-card)] border border-red-500/30 bg-red-500/5 p-4 text-sm">
-        <p className="font-semibold text-red-300 mb-1.5 text-xs uppercase tracking-wider">
-          {t('booking.forfeitPolicyTitle')}
-        </p>
-        <p className="text-red-200/80 leading-relaxed">
-          {t('booking.forfeitPolicyBody')}
-        </p>
-      </div>
-
       <Elements
         stripe={stripePromise}
         options={{
