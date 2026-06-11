@@ -308,11 +308,27 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
 
   const back = () => {
     const paymentIndex = steps.indexOf('payment')
+    const paymentMethodIndex = steps.indexOf('paymentMethod')
     if (step === paymentIndex && bookingId) {
-      // Booking already created — going back shows a notice on the previous step
+      // Step 6 → Step 5: booking already exists. Keep it; customer might
+      // only want to change payment method, which is just a sync.
       setStep(paymentIndex - 1)
       scrollToTop()
       return
+    }
+    // Step 5 → Step 4 or earlier: customer wants to edit something upstream
+    // (dates, add-ons, delivery zone, contact). The existing booking row no
+    // longer reflects what they're choosing, so reset the booking state and
+    // let the next advance create a fresh row with current form values.
+    if (step === paymentMethodIndex && bookingId) {
+      setBookingId(null)
+      setRentalClientSecret(null)
+      setSetupClientSecret(null)
+      setBookingTotalDue(0)
+      setBookingReservationFee(0)
+      setBookingBalanceDueOnPickup(0)
+      setBookingDepositAmount(0)
+      setBookingError(null)
     }
     setStep((s) => Math.max(s - 1, 0))
     scrollToTop()
@@ -520,14 +536,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
               }
               if (currentStep === 'paymentMethod') {
                 return (
-                  <>
-                    {bookingId && (
-                      <div className="mb-4 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-800">
-                        {t('booking.alreadyCreatedNotice')}
-                      </div>
-                    )}
-                    <StepPaymentMethod form={form} navButtons={lightNavButtons} onBack={back} />
-                  </>
+                  <StepPaymentMethod form={form} navButtons={lightNavButtons} onBack={back} />
                 )
               }
               if (currentStep === 'account') {
