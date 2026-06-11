@@ -195,26 +195,56 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
     const paymentIndex = steps.indexOf('payment')
 
     if (bookingId) {
-      // Booking already created (e.g. user went back) — sync payment method then go to payment
+      // Booking already created (e.g. user went back). Two cases:
+      // (a) Same Stripe Intent type as before (Card ↔ Apple Pay both use a
+      //     PaymentIntent) — just sync the payment_method column.
+      // (b) Different Intent type required (Cash ↔ Card; Cash uses SetupIntent,
+      //     Card uses PaymentIntent) — the old client secret no longer matches
+      //     the new method, so we have to wipe the booking state and fall
+      //     through to fresh creation below.
       const currentMethod = form.getValues('paymentMethod')
-      setIsCreatingBooking(true)
-      setBookingError(null)
-      try {
-        const syncResult = await updateBookingPaymentMethod(bookingId, currentMethod)
-        if ('error' in syncResult) {
-          setBookingError(syncResult.error)
+      const needsRentalIntent =
+        currentMethod === 'card' ||
+        currentMethod === 'apple_pay' ||
+        currentMethod === 'google_pay'
+      const needsSetupIntent = currentMethod === 'cash'
+      const intentMismatch =
+        (needsRentalIntent && !rentalClientSecret) ||
+        (needsSetupIntent && !setupClientSecret)
+
+      if (intentMismatch) {
+        // Reset booking state — the old draft row in the DB is orphaned but
+        // harmless; a cleanup job can prune it later.
+        setBookingId(null)
+        setRentalClientSecret(null)
+        setSetupClientSecret(null)
+        setBookingTotalDue(0)
+        setBookingReservationFee(0)
+        setBookingBalanceDueOnPickup(0)
+        setBookingDepositAmount(0)
+        setBookingError(null)
+        // Fall through to fresh creation below — DO NOT return.
+      } else {
+        // Same Intent type — fast path: just sync the method.
+        setIsCreatingBooking(true)
+        setBookingError(null)
+        try {
+          const syncResult = await updateBookingPaymentMethod(bookingId, currentMethod)
+          if ('error' in syncResult) {
+            setBookingError(syncResult.error)
+            setIsCreatingBooking(false)
+            return
+          }
+        } catch {
+          setBookingError(t('booking.somethingWentWrong'))
           setIsCreatingBooking(false)
           return
         }
-      } catch {
-        setBookingError(t('booking.somethingWentWrong'))
         setIsCreatingBooking(false)
+        setStep(paymentIndex)
+        scrollToTop()
         return
       }
-      setIsCreatingBooking(false)
-      setStep(paymentIndex)
-      scrollToTop()
-      return
     }
 
     setIsCreatingBooking(true)
@@ -246,7 +276,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
     } finally {
       setIsCreatingBooking(false)
     }
-  }, [bookingId, form, isAuthed, steps, vehicle.id, t])
+  }, [bookingId, form, isAuthed, steps, vehicle.id, t, rentalClientSecret, setupClientSecret])
 
   const advance = () => {
     startTransition(async () => {
