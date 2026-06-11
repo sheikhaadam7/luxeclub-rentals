@@ -6,9 +6,10 @@ import {
   Section,
   Text,
   Heading,
-  Hr,
   Img,
+  Link,
 } from '@react-email/components'
+import { DAILY_KM_INCLUDED, EXTRA_KM_RATE_AED } from '@/lib/pricing/constants'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -21,15 +22,14 @@ export interface BookingConfirmationEmailProps {
     vehicleImage?: string | null
     startDate: string // ISO date string "YYYY-MM-DD"
     endDate: string   // ISO date string "YYYY-MM-DD"
-    durationType: 'daily' | 'weekly' | 'monthly'
+    /** "HH:mm" 24-hour. Falls back to "10:00" when null. */
+    startTime?: string | null
+    endTime?: string | null
     pickupMethod: 'delivery' | 'self_pickup'
     returnMethod: 'collection' | 'self_dropoff'
     deliveryAddress?: string | null
+    collectionAddress?: string | null
     depositChoice: 'deposit' | 'no_deposit'
-    rentalSubtotal: number
-    deliveryFee: number
-    returnFee: number
-    noDepositSurcharge: number
     depositAmount: number
     totalDue: number
     /** Flat fee collected at booking time to secure the reservation */
@@ -38,8 +38,18 @@ export interface BookingConfirmationEmailProps {
     balanceDueOnPickup: number
     paymentMethod: 'card' | 'apple_pay' | 'google_pay' | 'cash' | 'crypto'
     status: string
+    /** First name to greet the customer with */
+    firstName: string
+    /** True if the customer was signed in — show "View or modify booking" CTA */
+    isLoggedIn: boolean
   }
 }
+
+// ---------------------------------------------------------------------------
+// Office address (fallback location label when self-pickup / self-dropoff)
+// ---------------------------------------------------------------------------
+
+const OFFICE_ADDRESS = 'Binary Tower, 32 Marasi Drive, Business Bay, Dubai'
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -55,243 +65,525 @@ function formatDate(isoDate: string): string {
   })
 }
 
+function formatTime(hhmm: string | null | undefined, fallback = '10:00'): string {
+  const t = hhmm || fallback
+  const [hStr, mStr] = t.split(':')
+  const h = Number(hStr)
+  const m = Number(mStr ?? 0)
+  if (Number.isNaN(h)) return t
+  const period = h >= 12 ? 'pm' : 'am'
+  const h12 = h % 12 === 0 ? 12 : h % 12
+  return `${h12}:${m.toString().padStart(2, '0')} ${period}`
+}
+
 function formatAED(amount: number): string {
   return `AED ${amount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
 }
 
-function formatDurationType(type: string): string {
-  if (type === 'daily') return 'Daily'
-  if (type === 'weekly') return 'Weekly'
-  if (type === 'monthly') return 'Monthly'
-  return type
-}
-
-function formatPickupMethod(method: string): string {
-  if (method === 'delivery') return 'Delivery to your location'
-  return 'Office Pickup — Downtown Dubai'
-}
-
-function formatReturnMethod(method: string): string {
-  if (method === 'collection') return 'Collection from your location'
-  return 'Office Return — Downtown Dubai'
-}
-
-function formatPaymentMethod(method: string): string {
-  if (method === 'cash') return 'Cash on Delivery'
-  if (method === 'apple_pay') return 'Apple Pay'
-  if (method === 'google_pay') return 'Google Pay'
-  return 'Card'
+function googleMapsHref(address: string): string {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`
 }
 
 // ---------------------------------------------------------------------------
-// Styles
+// Styles — dark photographic hero + white body cards on a soft grey page
+// background. Mirrors the booking wizard's Steps 4–6 visual language so the
+// post-pay email feels like a direct continuation of the flow.
 // ---------------------------------------------------------------------------
+
+const BRAND_GOLD = '#C9A96E'
 
 const styles = {
   body: {
-    backgroundColor: '#000000',
+    backgroundColor: '#f4f4f5',
     margin: '0',
     padding: '0',
-    fontFamily: 'Georgia, "Times New Roman", serif',
+    fontFamily: 'Arial, Helvetica, sans-serif',
   },
   container: {
-    maxWidth: '580px',
+    maxWidth: '600px',
     margin: '0 auto',
     padding: '0',
+    backgroundColor: '#f4f4f5',
+  },
+
+  // ---- Hero ----
+  heroOuter: {
     backgroundColor: '#0a0a0a',
+    padding: '0',
   },
-  header: {
-    backgroundColor: '#000000',
-    padding: '32px 40px 24px',
-    borderBottom: '1px solid #1a1a1a',
+  heroBrandRow: {
+    padding: '20px 28px',
   },
-  brandName: {
+  heroBrandName: {
     color: '#ffffff',
     fontFamily: 'Georgia, "Times New Roman", serif',
     fontSize: '20px',
-    fontWeight: '600',
+    fontWeight: 600,
     letterSpacing: '0.15em',
     textTransform: 'uppercase' as const,
-    margin: '0 0 4px 0',
+    margin: 0,
   },
-  brandTagline: {
-    color: '#666666',
-    fontSize: '11px',
-    letterSpacing: '0.2em',
-    textTransform: 'uppercase' as const,
-    margin: '0',
+  heroImageWrap: {
+    position: 'relative' as const,
+    backgroundColor: '#000000',
   },
-  heroSection: {
-    padding: '40px 40px 32px',
-    textAlign: 'center' as const,
+  heroImage: {
+    display: 'block',
+    width: '100%',
+    height: 'auto',
+    maxHeight: '260px',
+    objectFit: 'cover' as const,
   },
-  confirmedHeading: {
-    color: '#00ccff',
-    fontFamily: 'Georgia, "Times New Roman", serif',
-    fontSize: '13px',
-    fontWeight: '400',
-    letterSpacing: '0.3em',
-    textTransform: 'uppercase' as const,
+  heroCopy: {
+    padding: '28px 28px 32px',
+    backgroundColor: '#0a0a0a',
+  },
+  heroBookingNumber: {
+    color: '#888888',
+    fontFamily: 'Arial, Helvetica, sans-serif',
+    fontSize: '12px',
+    letterSpacing: '0.08em',
     margin: '0 0 12px 0',
   },
-  vehicleHeading: {
+  heroHeadline: {
     color: '#ffffff',
     fontFamily: 'Georgia, "Times New Roman", serif',
     fontSize: '28px',
-    fontWeight: '600',
-    margin: '0 0 8px 0',
+    fontWeight: 700,
     lineHeight: '1.2',
+    margin: '0 0 8px 0',
   },
-  statusBadge: {
-    display: 'inline-block',
-    backgroundColor: '#003344',
-    border: '1px solid #00ccff33',
-    borderRadius: '20px',
-    color: '#00ccff',
-    fontSize: '11px',
-    fontFamily: 'Arial, Helvetica, sans-serif',
-    letterSpacing: '0.15em',
-    textTransform: 'uppercase' as const,
-    padding: '4px 16px',
-    margin: '8px 0 0 0',
-  },
-  vehicleImage: {
-    borderRadius: '4px',
-    display: 'block',
-    margin: '24px auto 0',
-  },
-  sectionContainer: {
-    padding: '0 40px',
-  },
-  sectionTitle: {
-    color: '#00ccff',
-    fontFamily: 'Arial, Helvetica, sans-serif',
-    fontSize: '10px',
-    fontWeight: '600',
-    letterSpacing: '0.25em',
-    textTransform: 'uppercase' as const,
-    margin: '0 0 16px 0',
-  },
-  detailRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginBottom: '10px',
-  },
-  detailLabel: {
-    color: '#888888',
-    fontFamily: 'Arial, Helvetica, sans-serif',
-    fontSize: '12px',
-    margin: '0',
-  },
-  detailValue: {
-    color: '#ffffff',
-    fontFamily: 'Arial, Helvetica, sans-serif',
-    fontSize: '12px',
-    textAlign: 'right' as const,
-    margin: '0',
-  },
-  divider: {
-    borderColor: '#1a1a1a',
-    margin: '24px 0',
-  },
-  pricingRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginBottom: '10px',
-  },
-  pricingLabel: {
-    color: '#888888',
-    fontFamily: 'Arial, Helvetica, sans-serif',
-    fontSize: '12px',
-    margin: '0',
-  },
-  pricingValue: {
+  heroSubtitle: {
     color: '#cccccc',
     fontFamily: 'Arial, Helvetica, sans-serif',
+    fontSize: '14px',
+    lineHeight: '1.5',
+    margin: 0,
+  },
+
+  // ---- Body card shell ----
+  cardOuter: {
+    padding: '16px 16px 0',
+  },
+  card: {
+    backgroundColor: '#ffffff',
+    border: '1px solid #e4e4e7',
+    borderRadius: '12px',
+    padding: '24px',
+  },
+  cardTitle: {
+    color: '#18181b',
+    fontFamily: 'Georgia, "Times New Roman", serif',
+    fontSize: '18px',
+    fontWeight: 700,
+    margin: '0 0 16px 0',
+  },
+
+  // ---- Itinerary timeline ----
+  itineraryRow: {
+    paddingBottom: '8px',
+  },
+  itineraryDate: {
+    color: '#18181b',
+    fontFamily: 'Arial, Helvetica, sans-serif',
+    fontSize: '15px',
+    fontWeight: 700,
+    margin: '0 0 4px 0',
+    lineHeight: '1.3',
+  },
+  itineraryLocation: {
+    color: '#52525b',
+    fontFamily: 'Arial, Helvetica, sans-serif',
+    fontSize: '14px',
+    margin: '0 0 4px 0',
+    lineHeight: '1.4',
+  },
+  itineraryLink: {
+    color: '#18181b',
+    fontFamily: 'Arial, Helvetica, sans-serif',
+    fontSize: '13px',
+    fontWeight: 600,
+    textDecoration: 'underline',
+  },
+
+  // ---- Checklist (What to bring) ----
+  checklistRow: {
+    paddingBottom: '16px',
+  },
+  checklistHeading: {
+    color: '#18181b',
+    fontFamily: 'Arial, Helvetica, sans-serif',
+    fontSize: '15px',
+    fontWeight: 700,
+    margin: '0 0 4px 0',
+  },
+  checklistBody: {
+    color: '#52525b',
+    fontFamily: 'Arial, Helvetica, sans-serif',
+    fontSize: '13px',
+    lineHeight: '1.5',
+    margin: '0 0 4px 0',
+  },
+  checklistSub: {
+    color: '#71717a',
+    fontFamily: 'Arial, Helvetica, sans-serif',
     fontSize: '12px',
+    lineHeight: '1.5',
     margin: '0',
   },
-  totalLabel: {
-    color: '#ffffff',
+
+  // ---- Included items ----
+  includedRow: {
+    paddingBottom: '10px',
+  },
+  includedText: {
+    color: '#3f3f46',
     fontFamily: 'Arial, Helvetica, sans-serif',
     fontSize: '14px',
-    fontWeight: '700',
+    lineHeight: '1.45',
     margin: '0',
   },
-  totalValue: {
-    color: '#ffffff',
+
+  // ---- Payment details ----
+  paymentRow: {
+    paddingBottom: '10px',
+  },
+  paymentLabel: {
+    color: '#52525b',
     fontFamily: 'Arial, Helvetica, sans-serif',
     fontSize: '14px',
-    fontWeight: '700',
-    margin: '0',
+    margin: 0,
   },
-  depositNote: {
-    color: '#888888',
+  paymentValue: {
+    color: '#18181b',
     fontFamily: 'Arial, Helvetica, sans-serif',
-    fontSize: '11px',
-    fontStyle: 'italic',
-    margin: '4px 0 0 0',
-    textAlign: 'right' as const,
+    fontSize: '15px',
+    fontWeight: 700,
+    margin: 0,
   },
-  paymentBadgeContainer: {
-    textAlign: 'center' as const,
-    padding: '24px 0',
+  depositExplainer: {
+    color: '#52525b',
+    fontFamily: 'Arial, Helvetica, sans-serif',
+    fontSize: '13px',
+    lineHeight: '1.5',
+    margin: '12px 0 0 0',
   },
-  paymentBadge: {
+  cancelBadge: {
+    color: '#15803d',
+    fontFamily: 'Arial, Helvetica, sans-serif',
+    fontSize: '14px',
+    fontWeight: 700,
+    margin: '16px 0 4px 0',
+  },
+  cancelBody: {
+    color: '#52525b',
+    fontFamily: 'Arial, Helvetica, sans-serif',
+    fontSize: '13px',
+    lineHeight: '1.5',
+    margin: 0,
+  },
+
+  // ---- CTA button (View or modify booking) ----
+  ctaButton: {
     display: 'inline-block',
-    backgroundColor: '#111111',
-    border: '1px solid #2a2a2a',
-    borderRadius: '4px',
-    color: '#aaaaaa',
+    backgroundColor: BRAND_GOLD,
+    color: '#000000',
     fontFamily: 'Arial, Helvetica, sans-serif',
-    fontSize: '11px',
-    letterSpacing: '0.1em',
-    textTransform: 'uppercase' as const,
-    padding: '8px 20px',
+    fontSize: '14px',
+    fontWeight: 700,
+    textDecoration: 'none',
+    padding: '12px 24px',
+    borderRadius: '999px',
+    marginTop: '12px',
   },
-  referenceContainer: {
-    backgroundColor: '#0d0d0d',
-    border: '1px solid #1a1a1a',
-    borderRadius: '4px',
-    padding: '16px 24px',
-    margin: '0 40px 32px',
-    textAlign: 'center' as const,
-  },
-  referenceLabel: {
-    color: '#666666',
-    fontFamily: 'Arial, Helvetica, sans-serif',
-    fontSize: '10px',
-    letterSpacing: '0.2em',
-    textTransform: 'uppercase' as const,
-    margin: '0 0 6px 0',
-  },
-  referenceValue: {
-    color: '#ffffff',
-    fontFamily: '"Courier New", Courier, monospace',
-    fontSize: '16px',
-    fontWeight: '600',
-    letterSpacing: '0.15em',
-    margin: '0',
-  },
+
+  // ---- Footer ----
   footer: {
-    backgroundColor: '#000000',
-    borderTop: '1px solid #1a1a1a',
-    padding: '24px 40px',
+    padding: '24px 28px',
     textAlign: 'center' as const,
   },
   footerText: {
-    color: '#444444',
+    color: '#71717a',
     fontFamily: 'Arial, Helvetica, sans-serif',
-    fontSize: '11px',
-    margin: '0 0 4px 0',
+    fontSize: '12px',
     lineHeight: '1.5',
+    margin: '0 0 4px 0',
   },
   footerLink: {
-    color: '#444444',
-    fontSize: '11px',
+    color: '#71717a',
+    fontSize: '12px',
     fontFamily: 'Arial, Helvetica, sans-serif',
     textDecoration: 'underline',
   },
+}
+
+// ---------------------------------------------------------------------------
+// Section components
+// ---------------------------------------------------------------------------
+
+function Hero({
+  firstName,
+  bookingRef,
+  vehicleName,
+  vehicleImage,
+}: {
+  firstName: string
+  bookingRef: string
+  vehicleName: string
+  vehicleImage?: string | null
+}) {
+  return (
+    <Section style={styles.heroOuter}>
+      <Section style={styles.heroBrandRow}>
+        <Text style={styles.heroBrandName}>LuxeClub</Text>
+      </Section>
+
+      {vehicleImage && (
+        <Section style={styles.heroImageWrap}>
+          <Img
+            src={vehicleImage}
+            alt={vehicleName}
+            width={600}
+            height={260}
+            style={styles.heroImage}
+          />
+        </Section>
+      )}
+
+      <Section style={styles.heroCopy}>
+        <Text style={styles.heroBookingNumber}>Booking {bookingRef}</Text>
+        <Heading as="h1" style={styles.heroHeadline}>
+          Your booking is confirmed!
+        </Heading>
+        <Text style={styles.heroSubtitle}>
+          We look forward to seeing you, {firstName}.
+        </Text>
+      </Section>
+    </Section>
+  )
+}
+
+function Itinerary({
+  startDate,
+  endDate,
+  startTime,
+  endTime,
+  pickupMethod,
+  returnMethod,
+  deliveryAddress,
+  collectionAddress,
+  isLoggedIn,
+}: {
+  startDate: string
+  endDate: string
+  startTime?: string | null
+  endTime?: string | null
+  pickupMethod: 'delivery' | 'self_pickup'
+  returnMethod: 'collection' | 'self_dropoff'
+  deliveryAddress?: string | null
+  collectionAddress?: string | null
+  isLoggedIn: boolean
+}) {
+  const pickupLocation =
+    pickupMethod === 'delivery' && deliveryAddress
+      ? deliveryAddress
+      : OFFICE_ADDRESS
+  const returnLocation =
+    returnMethod === 'collection' && collectionAddress
+      ? collectionAddress
+      : OFFICE_ADDRESS
+
+  return (
+    <Section style={styles.cardOuter}>
+      <Section style={styles.card}>
+        <Heading as="h2" style={styles.cardTitle}>Your itinerary</Heading>
+
+        <Section style={styles.itineraryRow}>
+          <Text style={styles.itineraryDate}>
+            Pickup on {formatDate(startDate)} at {formatTime(startTime)}
+          </Text>
+          <Text style={styles.itineraryLocation}>{pickupLocation}</Text>
+          <Link href={googleMapsHref(pickupLocation)} style={styles.itineraryLink}>
+            See directions
+          </Link>
+        </Section>
+
+        <Section style={{ paddingTop: '14px' }}>
+          <Text style={styles.itineraryDate}>
+            Return on {formatDate(endDate)} at {formatTime(endTime, '20:00')}
+          </Text>
+          <Text style={styles.itineraryLocation}>{returnLocation}</Text>
+        </Section>
+
+        {isLoggedIn && (
+          <Section style={{ paddingTop: '8px' }}>
+            <Link href="https://luxeclubrentals.com/bookings" style={styles.ctaButton}>
+              View or modify booking
+            </Link>
+          </Section>
+        )}
+      </Section>
+    </Section>
+  )
+}
+
+function WhatToBring() {
+  return (
+    <Section style={styles.cardOuter}>
+      <Section style={styles.card}>
+        <Heading as="h2" style={styles.cardTitle}>What you need to bring at pickup</Heading>
+
+        <Section style={styles.checklistRow}>
+          <Text style={styles.checklistHeading}>Driver&apos;s licence</Text>
+          <Text style={styles.checklistBody}>
+            <strong>UAE residents:</strong> a valid UAE driving licence.
+          </Text>
+          <Text style={styles.checklistSub}>
+            <strong>Visitors:</strong> a valid physical driving licence from your home
+            country (with an International Driving Permit if your licence is not in
+            English or Arabic).
+          </Text>
+        </Section>
+
+        <Section style={styles.checklistRow}>
+          <Text style={styles.checklistHeading}>Identification</Text>
+          <Text style={styles.checklistBody}>
+            <strong>UAE residents:</strong> your Emirates ID.
+          </Text>
+          <Text style={styles.checklistSub}>
+            <strong>Visitors:</strong> a valid passport.
+          </Text>
+        </Section>
+
+        <Section>
+          <Text style={styles.checklistHeading}>Payment method</Text>
+          <Text style={styles.checklistBody}>
+            A physical credit card in the renter&apos;s name.
+          </Text>
+          <Text style={styles.checklistSub}>
+            See{' '}
+            <Link href="https://luxeclubrentals.com/contact" style={{ color: '#52525b', textDecoration: 'underline' }}>
+              rental conditions
+            </Link>{' '}
+            for accepted payment methods.
+          </Text>
+        </Section>
+      </Section>
+    </Section>
+  )
+}
+
+function IncludedInBooking({ depositAmount }: { depositAmount: number }) {
+  return (
+    <Section style={styles.cardOuter}>
+      <Section style={styles.card}>
+        <Heading as="h2" style={styles.cardTitle}>What&apos;s included in your booking</Heading>
+
+        <Section style={styles.includedRow}>
+          <Text style={styles.includedText}>Third-party insurance.</Text>
+        </Section>
+
+        <Section style={styles.includedRow}>
+          <Text style={styles.includedText}>
+            Up to {DAILY_KM_INCLUDED.toLocaleString()} km per day, AED {EXTRA_KM_RATE_AED} per
+            additional kilometre.
+          </Text>
+        </Section>
+
+        {depositAmount > 0 && (
+          <Section style={styles.includedRow}>
+            <Text style={styles.includedText}>
+              Deductible up to {formatAED(depositAmount)} for collision damage or theft.
+            </Text>
+          </Section>
+        )}
+      </Section>
+    </Section>
+  )
+}
+
+function PaymentDetails({
+  totalDue,
+  reservationFee,
+  balanceDueOnPickup,
+  depositChoice,
+  depositAmount,
+  startDate,
+}: {
+  totalDue: number
+  reservationFee: number
+  balanceDueOnPickup: number
+  depositChoice: 'deposit' | 'no_deposit'
+  depositAmount: number
+  startDate: string
+}) {
+  const showDepositHold = depositChoice === 'deposit' && depositAmount > 0
+
+  return (
+    <Section style={styles.cardOuter}>
+      <Section style={styles.card}>
+        <Heading as="h2" style={styles.cardTitle}>Payment details</Heading>
+
+        {/* Paid today */}
+        <table width="100%" cellPadding="0" cellSpacing="0" style={styles.paymentRow}>
+          <tbody>
+            <tr>
+              <td style={styles.paymentLabel}>Paid today (reservation fee)</td>
+              <td style={{ ...styles.paymentValue, textAlign: 'right' }}>
+                {formatAED(reservationFee)}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        {/* Balance due on pickup */}
+        {balanceDueOnPickup > 0 && (
+          <table width="100%" cellPadding="0" cellSpacing="0" style={styles.paymentRow}>
+            <tbody>
+              <tr>
+                <td style={styles.paymentLabel}>Rental amount to pay at pickup</td>
+                <td style={{ ...styles.paymentValue, textAlign: 'right' }}>
+                  {formatAED(balanceDueOnPickup)}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        )}
+
+        {/* Booking total */}
+        <table width="100%" cellPadding="0" cellSpacing="0" style={{ ...styles.paymentRow, paddingTop: '8px', borderTop: '1px solid #e4e4e7' }}>
+          <tbody>
+            <tr>
+              <td style={{ ...styles.paymentLabel, paddingTop: '10px' }}>Booking total</td>
+              <td style={{ ...styles.paymentValue, textAlign: 'right', paddingTop: '10px' }}>
+                {formatAED(totalDue)}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        {/* Refundable deposit hold */}
+        {showDepositHold && (
+          <Text style={styles.depositExplainer}>
+            <strong style={{ color: '#18181b' }}>Refundable deposit hold.</strong>{' '}
+            At pickup, we place a temporary {formatAED(depositAmount)} hold on
+            your card. It is not a charge and is released within a few business
+            days of returning the vehicle.
+          </Text>
+        )}
+
+        {/* Free cancellation badge */}
+        <Text style={styles.cancelBadge}>
+          ✓ Free cancellation until {formatDate(startDate)}
+        </Text>
+        <Text style={styles.cancelBody}>
+          You can cancel or modify your booking for a full refund up to 24 hours
+          before pickup. Cancellations within 24 hours of the start time, or
+          no-shows, forfeit the {formatAED(reservationFee)} reservation fee.
+        </Text>
+      </Section>
+    </Section>
+  )
 }
 
 // ---------------------------------------------------------------------------
@@ -299,7 +591,6 @@ const styles = {
 // ---------------------------------------------------------------------------
 
 export function BookingConfirmationEmail({ booking }: BookingConfirmationEmailProps) {
-  const dateRange = `${formatDate(booking.startDate)} — ${formatDate(booking.endDate)}`
   const bookingRef = booking.id.replace(/-/g, '').substring(0, 8).toUpperCase()
 
   return (
@@ -308,242 +599,47 @@ export function BookingConfirmationEmail({ booking }: BookingConfirmationEmailPr
       <Body style={styles.body}>
         <Container style={styles.container}>
 
-          {/* ---- Header / Brand ---- */}
-          <Section style={styles.header}>
-            <Text style={styles.brandName}>LuxeClub</Text>
-            <Text style={styles.brandTagline}>Luxury Car Rentals · Downtown Dubai</Text>
-          </Section>
+          <Hero
+            firstName={booking.firstName}
+            bookingRef={bookingRef}
+            vehicleName={booking.vehicleName}
+            vehicleImage={booking.vehicleImage ?? null}
+          />
 
-          {/* ---- Hero / Confirmation ---- */}
-          <Section style={styles.heroSection}>
-            <Text style={styles.confirmedHeading}>Booking Confirmed</Text>
-            <Heading as="h1" style={styles.vehicleHeading}>{booking.vehicleName}</Heading>
-            <Text style={styles.statusBadge}>
-              {booking.status === 'pending_cash' ? 'Pending Cash Payment' : 'Confirmed'}
-            </Text>
-            {booking.vehicleImage && (
-              <Img
-                src={booking.vehicleImage}
-                alt={booking.vehicleName}
-                width={460}
-                height={260}
-                style={styles.vehicleImage}
-              />
-            )}
-          </Section>
+          <Itinerary
+            startDate={booking.startDate}
+            endDate={booking.endDate}
+            startTime={booking.startTime}
+            endTime={booking.endTime}
+            pickupMethod={booking.pickupMethod}
+            returnMethod={booking.returnMethod}
+            deliveryAddress={booking.deliveryAddress}
+            collectionAddress={booking.collectionAddress}
+            isLoggedIn={booking.isLoggedIn}
+          />
 
-          <Hr style={styles.divider} />
+          <WhatToBring />
 
-          {/* ---- Booking Details ---- */}
-          <Section style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Booking Details</Text>
+          <IncludedInBooking depositAmount={booking.depositAmount} />
 
-            {/* Dates */}
-            <table width="100%" cellPadding="0" cellSpacing="0" style={{ marginBottom: '10px' }}>
-              <tbody>
-                <tr>
-                  <td style={styles.detailLabel}>Dates</td>
-                  <td style={{ ...styles.detailValue, textAlign: 'right' }}>{dateRange}</td>
-                </tr>
-              </tbody>
-            </table>
+          <PaymentDetails
+            totalDue={booking.totalDue}
+            reservationFee={booking.reservationFee}
+            balanceDueOnPickup={booking.balanceDueOnPickup}
+            depositChoice={booking.depositChoice}
+            depositAmount={booking.depositAmount}
+            startDate={booking.startDate}
+          />
 
-            {/* Duration type */}
-            <table width="100%" cellPadding="0" cellSpacing="0" style={{ marginBottom: '10px' }}>
-              <tbody>
-                <tr>
-                  <td style={styles.detailLabel}>Rate Type</td>
-                  <td style={{ ...styles.detailValue, textAlign: 'right' }}>{formatDurationType(booking.durationType)}</td>
-                </tr>
-              </tbody>
-            </table>
-
-            {/* Pickup */}
-            <table width="100%" cellPadding="0" cellSpacing="0" style={{ marginBottom: '10px' }}>
-              <tbody>
-                <tr>
-                  <td style={styles.detailLabel}>Pickup</td>
-                  <td style={{ ...styles.detailValue, textAlign: 'right' }}>{formatPickupMethod(booking.pickupMethod)}</td>
-                </tr>
-              </tbody>
-            </table>
-
-            {/* Delivery address */}
-            {booking.pickupMethod === 'delivery' && booking.deliveryAddress && (
-              <table width="100%" cellPadding="0" cellSpacing="0" style={{ marginBottom: '10px' }}>
-                <tbody>
-                  <tr>
-                    <td style={styles.detailLabel}>Delivery Address</td>
-                    <td style={{ ...styles.detailValue, textAlign: 'right', maxWidth: '260px' }}>{booking.deliveryAddress}</td>
-                  </tr>
-                </tbody>
-              </table>
-            )}
-
-            {/* Return */}
-            <table width="100%" cellPadding="0" cellSpacing="0" style={{ marginBottom: '0' }}>
-              <tbody>
-                <tr>
-                  <td style={styles.detailLabel}>Return</td>
-                  <td style={{ ...styles.detailValue, textAlign: 'right' }}>{formatReturnMethod(booking.returnMethod)}</td>
-                </tr>
-              </tbody>
-            </table>
-          </Section>
-
-          <Hr style={{ ...styles.divider, margin: '24px 40px' }} />
-
-          {/* ---- Pricing Breakdown ---- */}
-          <Section style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Pricing Breakdown</Text>
-
-            {/* Rental subtotal */}
-            <table width="100%" cellPadding="0" cellSpacing="0" style={{ marginBottom: '10px' }}>
-              <tbody>
-                <tr>
-                  <td style={styles.pricingLabel}>Rental Subtotal</td>
-                  <td style={{ ...styles.pricingValue, textAlign: 'right' }}>{formatAED(booking.rentalSubtotal)}</td>
-                </tr>
-              </tbody>
-            </table>
-
-            {/* Delivery fee */}
-            {booking.deliveryFee > 0 && (
-              <table width="100%" cellPadding="0" cellSpacing="0" style={{ marginBottom: '10px' }}>
-                <tbody>
-                  <tr>
-                    <td style={styles.pricingLabel}>Delivery Fee</td>
-                    <td style={{ ...styles.pricingValue, textAlign: 'right' }}>{formatAED(booking.deliveryFee)}</td>
-                  </tr>
-                </tbody>
-              </table>
-            )}
-
-            {/* Return fee */}
-            {booking.returnFee > 0 && (
-              <table width="100%" cellPadding="0" cellSpacing="0" style={{ marginBottom: '10px' }}>
-                <tbody>
-                  <tr>
-                    <td style={styles.pricingLabel}>Return Collection Fee</td>
-                    <td style={{ ...styles.pricingValue, textAlign: 'right' }}>{formatAED(booking.returnFee)}</td>
-                  </tr>
-                </tbody>
-              </table>
-            )}
-
-            {/* No-deposit surcharge */}
-            {booking.noDepositSurcharge > 0 && (
-              <table width="100%" cellPadding="0" cellSpacing="0" style={{ marginBottom: '10px' }}>
-                <tbody>
-                  <tr>
-                    <td style={styles.pricingLabel}>No-Deposit Surcharge</td>
-                    <td style={{ ...styles.pricingValue, textAlign: 'right' }}>{formatAED(booking.noDepositSurcharge)}</td>
-                  </tr>
-                </tbody>
-              </table>
-            )}
-
-            <Hr style={{ borderColor: '#2a2a2a', margin: '12px 0' }} />
-
-            {/* Booking total */}
-            <table width="100%" cellPadding="0" cellSpacing="0" style={{ marginBottom: '12px' }}>
-              <tbody>
-                <tr>
-                  <td style={styles.pricingLabel}>Booking Total</td>
-                  <td style={{ ...styles.pricingValue, textAlign: 'right' }}>{formatAED(booking.totalDue)}</td>
-                </tr>
-              </tbody>
-            </table>
-
-            {/* Reservation fee paid now */}
-            <table width="100%" cellPadding="0" cellSpacing="0" style={{ marginBottom: '8px' }}>
-              <tbody>
-                <tr>
-                  <td style={{ ...styles.totalLabel, color: '#C9A96E' }}>Reservation Fee (paid now)</td>
-                  <td style={{ ...styles.totalValue, textAlign: 'right', color: '#C9A96E' }}>{formatAED(booking.reservationFee)}</td>
-                </tr>
-              </tbody>
-            </table>
-            <Text style={{ ...styles.depositNote, marginTop: '0', marginBottom: '12px' }}>
-              This reservation fee has been deducted from your booking total.
-            </Text>
-
-            {/* Balance due on pickup */}
-            {booking.balanceDueOnPickup > 0 && (
-              <table width="100%" cellPadding="0" cellSpacing="0" style={{ marginBottom: '4px' }}>
-                <tbody>
-                  <tr>
-                    <td style={styles.totalLabel}>Balance Due on Pickup Day</td>
-                    <td style={{ ...styles.totalValue, textAlign: 'right' }}>{formatAED(booking.balanceDueOnPickup)}</td>
-                  </tr>
-                </tbody>
-              </table>
-            )}
-            <Text style={{ ...styles.depositNote, marginTop: '0' }}>
-              Payable in person at the start of your booking, along with any security deposit hold or no-deposit surcharge you selected.
-            </Text>
-          </Section>
-
-          {/* ---- Forfeit policy notice ---- */}
-          <Section
-            style={{
-              backgroundColor: '#2a0d0d',
-              border: '1px solid #5a1f1f',
-              borderRadius: '8px',
-              padding: '16px 18px',
-              marginBottom: '18px',
-            }}
-          >
-            <Text
-              style={{
-                color: '#ff9a9a',
-                fontSize: '11px',
-                fontWeight: 600,
-                textTransform: 'uppercase' as const,
-                letterSpacing: '0.6px',
-                margin: '0 0 6px 0',
-              }}
-            >
-              Reservation Fee Forfeit Policy
-            </Text>
-            <Text
-              style={{
-                color: '#e3b4b4',
-                fontSize: '13px',
-                lineHeight: '1.5',
-                margin: 0,
-              }}
-            >
-              Your {formatAED(booking.reservationFee)} reservation fee is non-refundable if you (1) fail to show up for your booking, or (2) cancel within 24 hours of the booking start time. Cancel more than 24 hours in advance for a full refund.
-            </Text>
-          </Section>
-
-          {/* ---- Payment Method ---- */}
-          <Section style={styles.paymentBadgeContainer}>
-            <Text style={styles.paymentBadge}>
-              Reservation fee paid via {formatPaymentMethod(booking.paymentMethod)}
-            </Text>
-          </Section>
-
-          {/* ---- Booking Reference ---- */}
-          <Section style={styles.referenceContainer}>
-            <Text style={styles.referenceLabel}>Booking Reference</Text>
-            <Text style={styles.referenceValue}>{bookingRef}</Text>
-          </Section>
-
-          {/* ---- Footer ---- */}
           <Section style={styles.footer}>
-            <Text style={styles.footerText}>LuxeClub Rentals · Downtown Dubai, UAE</Text>
+            <Text style={styles.footerText}>
+              LuxeClub Rentals · {OFFICE_ADDRESS}
+            </Text>
             <Text style={styles.footerText}>
               Questions? Reply to this email or visit{' '}
-              <a href="https://luxeclubrentals.com" style={styles.footerLink}>
+              <Link href="https://luxeclubrentals.com" style={styles.footerLink}>
                 luxeclubrentals.com
-              </a>
-            </Text>
-            <Text style={{ ...styles.footerText, marginTop: '12px' }}>
-              <a href="https://luxeclubrentals.com/unsubscribe" style={styles.footerLink}>
-                Unsubscribe from booking notifications
-              </a>
+              </Link>
             </Text>
           </Section>
 

@@ -12,3 +12,15 @@
  * capped at the booking total (the customer never pays more than owed).
  */
 export const RESERVATION_FEE_AED = 495
+
+/**
+ * Daily mileage allowance included in every rental — matches the figure
+ * displayed on each vehicle's catalogue page (i18n key vehicle.mileagePerDay).
+ */
+export const DAILY_KM_INCLUDED = 250
+
+/**
+ * Per-km charge for any distance over the daily allowance — matches the
+ * figure shown on the catalogue pages' "Additional Mileage Charge" row.
+ */
+export const EXTRA_KM_RATE_AED = 20

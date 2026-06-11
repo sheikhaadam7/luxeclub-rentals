@@ -185,11 +185,12 @@ async function sendBookingConfirmationEmail(
   const { data: booking } = await admin
     .from('bookings')
     .select(`
-      id, start_date, end_date, duration_type, pickup_method, return_method,
-      delivery_address, deposit_choice, rental_subtotal, delivery_fee, return_fee,
-      no_deposit_surcharge, deposit_amount, total_due, reservation_fee,
+      id, start_date, end_date, start_time, end_time,
+      pickup_method, return_method,
+      delivery_address, collection_address,
+      deposit_choice, deposit_amount, total_due, reservation_fee,
       balance_due_on_pickup, payment_method, status,
-      user_id, guest_email,
+      user_id, guest_email, guest_name,
       vehicles ( name, primary_image_url )
     `)
     .eq('id', bookingId)
@@ -197,13 +198,23 @@ async function sendBookingConfirmationEmail(
 
   if (!booking) return
 
-  // Determine recipient email
+  // Determine recipient email + first-name for greeting
   let recipientEmail: string | undefined
+  let firstName = 'there'
+  let isLoggedIn = false
+
   if (booking.user_id) {
     const { data: { user } } = await admin.auth.admin.getUserById(booking.user_id)
     recipientEmail = user?.email ?? undefined
+    isLoggedIn = true
+    const meta = (user?.user_metadata ?? {}) as { full_name?: string; first_name?: string; name?: string }
+    const nameSource = meta.first_name ?? meta.full_name ?? meta.name ?? user?.email?.split('@')[0] ?? 'there'
+    firstName = nameSource.split(' ')[0] || 'there'
   } else {
     recipientEmail = booking.guest_email ?? undefined
+    if (booking.guest_name) {
+      firstName = booking.guest_name.split(' ')[0] || 'there'
+    }
   }
 
   if (!recipientEmail) return
@@ -213,7 +224,7 @@ async function sendBookingConfirmationEmail(
 
   await sendEmail({
     to: recipientEmail,
-    subject: `Booking Confirmed — ${vehicle?.name ?? 'Vehicle'}`,
+    subject: 'Your car rental in Dubai',
     react: BookingConfirmationEmail({
       booking: {
         id: bookingId,
@@ -221,21 +232,21 @@ async function sendBookingConfirmationEmail(
         vehicleImage: vehicle?.primary_image_url ?? null,
         startDate: booking.start_date,
         endDate: booking.end_date,
-        durationType: booking.duration_type as 'daily' | 'weekly' | 'monthly',
+        startTime: booking.start_time,
+        endTime: booking.end_time,
         pickupMethod: booking.pickup_method as 'delivery' | 'self_pickup',
         returnMethod: booking.return_method as 'collection' | 'self_dropoff',
         deliveryAddress: booking.delivery_address ?? null,
+        collectionAddress: booking.collection_address ?? null,
         depositChoice: booking.deposit_choice,
-        rentalSubtotal: booking.rental_subtotal,
-        deliveryFee: booking.delivery_fee,
-        returnFee: booking.return_fee,
-        noDepositSurcharge: booking.no_deposit_surcharge,
         depositAmount: booking.deposit_amount,
         totalDue: booking.total_due,
         reservationFee: booking.reservation_fee,
         balanceDueOnPickup: booking.balance_due_on_pickup,
         paymentMethod: booking.payment_method as 'card' | 'apple_pay' | 'google_pay' | 'cash' | 'crypto',
         status: booking.status,
+        firstName,
+        isLoggedIn,
       },
     }),
   })
