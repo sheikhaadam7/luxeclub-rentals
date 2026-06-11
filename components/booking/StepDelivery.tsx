@@ -242,13 +242,13 @@ export function StepDelivery({ form, navButtons, onBack, isAuthed = false, onAut
             Back
           </button>
         )}
-        <h2 className="font-display text-xl sm:text-2xl font-bold uppercase tracking-tight text-zinc-900 mb-1">
+        <h2 className="text-3xl sm:text-4xl font-bold text-zinc-900 leading-tight mb-2">
           Review your booking
         </h2>
-        <p className="text-sm text-zinc-500">Confirm where you want the car, who&apos;s driving, and any invoice details.</p>
+        <p className="text-base text-zinc-700">Confirm where you want the car, who&apos;s driving, and any invoice details.</p>
       </div>
 
-      <h3 className="text-base font-bold text-zinc-900">Where &amp; when</h3>
+      <h3 className="text-xl font-bold text-zinc-900">Where &amp; when</h3>
 
       {/* Pickup method — 2 cards */}
       <div>
@@ -382,7 +382,7 @@ export function StepDelivery({ form, navButtons, onBack, isAuthed = false, onAut
       {/* ---------------- Who will drive? ---------------- */}
       <div className="pt-6 border-t border-zinc-200 space-y-4">
         <div className="flex items-baseline justify-between gap-3 flex-wrap">
-          <h3 className="text-base font-bold text-zinc-900">Who will drive?</h3>
+          <h3 className="text-xl font-bold text-zinc-900">Who will drive?</h3>
           {!isAuthed && (
             <button
               type="button"
@@ -444,10 +444,19 @@ export function StepDelivery({ form, navButtons, onBack, isAuthed = false, onAut
             })()}
           </div>
           <Input
-            {...form.register('guestPhone')}
+            // Controlled so we can strip non-digit characters on every keystroke.
+            name="guestPhone"
+            value={form.watch('guestPhone') ?? ''}
+            onChange={(e) => {
+              const digitsOnly = e.target.value.replace(/[^0-9]/g, '')
+              form.setValue('guestPhone', digitsOnly, { shouldValidate: false })
+              // Clearing any stale error so it doesn't flash when the user retypes
+              if (form.formState.errors.guestPhone) form.clearErrors('guestPhone')
+            }}
             variant="light"
             label="Phone number"
             type="tel"
+            inputMode="numeric"
             placeholder="50 123 4567"
             autoComplete="tel-national"
             error={form.formState.errors.guestPhone?.message}
@@ -484,7 +493,7 @@ export function StepDelivery({ form, navButtons, onBack, isAuthed = false, onAut
 
         {needsInvoiceAddress && (
           <div className="space-y-4">
-            <h3 className="text-base font-bold text-zinc-900">What&apos;s your invoice address?</h3>
+            <h3 className="text-xl font-bold text-zinc-900">What&apos;s your invoice address?</h3>
 
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-bold text-zinc-900">Country</label>

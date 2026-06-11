@@ -90,6 +90,8 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
   const [bookingDepositAmount, setBookingDepositAmount] = useState<number>(0)
   const [bookingError, setBookingError] = useState<string | null>(null)
   const [isCreatingBooking, setIsCreatingBooking] = useState(false)
+  /** Names of any guest-contact fields that were empty when Continue was clicked. */
+  const [missingFields, setMissingFields] = useState<string[]>([])
   const [mobilePriceOpen, setMobilePriceOpen] = useState(false)
 
   const steps = useMemo<readonly Step[]>(
@@ -256,24 +258,38 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
       // Step 6 ('contact') is gone, so Step 4 is the last place to validate.
       if (currentStep === 'delivery' && !isAuthed) {
         const v = form.getValues()
-        let missing = false
-        if (!v.guestEmail || v.guestEmail.trim() === '') {
-          form.setError('guestEmail', { type: 'required', message: 'Email is required' })
-          missing = true
-        }
+        const missing: string[] = []
         if (!v.guestFirstName || v.guestFirstName.trim() === '') {
           form.setError('guestFirstName', { type: 'required', message: 'First name is required' })
-          missing = true
+          missing.push('First name')
         }
         if (!v.guestSurname || v.guestSurname.trim() === '') {
           form.setError('guestSurname', { type: 'required', message: 'Surname is required' })
-          missing = true
+          missing.push('Surname')
         }
-        if (!v.guestPhone || v.guestPhone.trim() === '') {
+        // Email — empty OR missing @ symbol
+        const email = (v.guestEmail ?? '').trim()
+        if (!email) {
+          form.setError('guestEmail', { type: 'required', message: 'Email is required' })
+          missing.push('Email')
+        } else if (!email.includes('@') || !email.includes('.') || email.length < 5) {
+          form.setError('guestEmail', { type: 'pattern', message: 'Please enter a valid email address' })
+          missing.push('Valid email address')
+        }
+        // Phone — already stripped to digits by the controlled input.
+        // Empty OR fewer than 7 digits both count as invalid.
+        const phone = (v.guestPhone ?? '').trim()
+        if (!phone) {
           form.setError('guestPhone', { type: 'required', message: 'Phone number is required' })
-          missing = true
+          missing.push('Phone number')
+        } else if (phone.length < 7) {
+          form.setError('guestPhone', { type: 'minLength', message: 'Phone number is too short' })
+          missing.push('Valid phone number')
         }
-        if (missing) return
+        if (missing.length > 0) {
+          setMissingFields(missing)
+          return
+        }
       }
 
       // The step before payment triggers booking creation.
@@ -531,7 +547,23 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
             )}
           </>
         ) : (
-          <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-4 sm:p-6">
+          <div className="bg-white rounded-[var(--radius-card)] shadow-xl border-2 border-brand-cyan p-6 sm:p-8 space-y-6">
+            {/* Top-left back chevron — same pattern as steps 2-6, but shown
+                on every viewport here since the payment card has no in-flow
+                Back button at the bottom. */}
+            <div>
+              <button
+                type="button"
+                onClick={back}
+                aria-label="Back to previous step"
+                className="-mt-2 -ml-2 mb-1 inline-flex items-center gap-1 h-10 pl-2 pr-3 text-[15px] font-bold text-black active:bg-black/10 hover:bg-black/5 rounded-full cursor-pointer"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+                Back
+              </button>
+            </div>
             <StepPayment
               clientSecret={rentalClientSecret}
               setupClientSecret={setupClientSecret}
@@ -557,22 +589,8 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
           </div>
         )}
 
-        {/* Navigation buttons — only rendered outside the step content for the
-            payment step (dark surface). Light-card steps render their own
-            nav inside the card via lightNavButtons. */}
-        {currentStep === 'payment' && (
-          <div className="hidden sm:flex items-center justify-between gap-4">
-            <button
-              type="button"
-              onClick={back}
-              disabled={step === 0}
-              className="px-4 sm:px-6 py-2.5 rounded-[var(--radius-card)] border border-black text-[15px] font-bold text-black cursor-pointer hover:bg-black/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              {t('booking.back')}
-            </button>
-            {/* The payment step handles its own submission via the Stripe form, so no Continue here. */}
-          </div>
-        )}
+        {/* Payment step has its own back chevron at the top-left of the white
+            card now — no extra Back button rendered below. */}
       </div>
 
       {/* Desktop (lg+) sticky summary — pushed down to sit roughly inline with
@@ -648,6 +666,52 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
         onClose={() => setMobilePriceOpen(false)}
         breakdown={breakdown}
       />
+
+      {/* Missing-fields warning popup — guests trying to leave Step 4 with
+          empty contact fields. Lists exactly which fields they still need
+          to fill in so the message isn't generic. */}
+      {missingFields.length > 0 && (
+        <div role="dialog" aria-modal="true" aria-labelledby="missing-fields-title" className="fixed inset-0 z-[130] flex items-center justify-center p-4">
+          <button
+            type="button"
+            aria-label="Close warning"
+            onClick={() => setMissingFields([])}
+            className="absolute inset-0 bg-black/60 cursor-default"
+          />
+          <div className="relative w-full max-w-[420px] bg-white rounded-2xl shadow-2xl border border-zinc-200 p-6 sm:p-7">
+            <div className="flex items-start gap-3">
+              <span className="shrink-0 w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                </svg>
+              </span>
+              <div className="flex-1 min-w-0">
+                <h3 id="missing-fields-title" className="text-2xl font-bold text-zinc-900 leading-tight">
+                  Please complete your details
+                </h3>
+                <p className="text-base text-zinc-700 mt-2">
+                  Before we can continue, please fill in:
+                </p>
+                <ul className="mt-3 space-y-2">
+                  {missingFields.map((name) => (
+                    <li key={name} className="flex items-center gap-2.5 text-base text-zinc-900 font-bold">
+                      <span className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
+                      {name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setMissingFields([])}
+              className="mt-7 w-full px-6 py-3.5 rounded-[var(--radius-card)] bg-brand-cyan text-black text-base font-bold cursor-pointer hover:bg-brand-cyan-hover transition-colors"
+            >
+              OK, got it
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

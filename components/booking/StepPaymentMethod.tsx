@@ -1,5 +1,7 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { UseFormReturn } from 'react-hook-form'
 import { BookingFormValues } from '@/lib/validations/booking'
 import { useTranslation } from '@/lib/i18n/context'
@@ -63,6 +65,9 @@ const PAYMENT_OPTIONS = [
 export function StepPaymentMethod({ form, navButtons, onBack }: StepPaymentMethodProps) {
   const { t } = useTranslation()
   const paymentMethod = form.watch('paymentMethod')
+  /** Cash on Delivery requires explicit acknowledgement of the AED 495 deposit
+      before the selection is committed. Popup opens on every Cash click. */
+  const [cashPopupOpen, setCashPopupOpen] = useState(false)
 
   return (
     <div className="bg-white rounded-[var(--radius-card)] shadow-xl border-2 border-brand-cyan p-6 sm:p-8 space-y-6">
@@ -89,7 +94,14 @@ export function StepPaymentMethod({ form, navButtons, onBack }: StepPaymentMetho
           <button
             key={option.value}
             type="button"
-            onClick={() => form.setValue('paymentMethod', option.value, { shouldValidate: true })}
+            onClick={() => {
+              // Cash on Delivery — defer selection until the deposit popup is acknowledged.
+              if (option.value === 'cash') {
+                setCashPopupOpen(true)
+                return
+              }
+              form.setValue('paymentMethod', option.value, { shouldValidate: true })
+            }}
             className={[
               'w-full p-5 rounded-[var(--radius-card)] border text-left transition-all',
               paymentMethod === option.value
@@ -134,6 +146,146 @@ export function StepPaymentMethod({ form, navButtons, onBack }: StepPaymentMetho
       </div>
 
       {navButtons && <div className="pt-4 border-t border-zinc-200">{navButtons}</div>}
+
+      <CashConfirmModal
+        open={cashPopupOpen}
+        onCancel={() => setCashPopupOpen(false)}
+        onConfirm={() => {
+          form.setValue('paymentMethod', 'cash', { shouldValidate: true })
+          setCashPopupOpen(false)
+        }}
+      />
     </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Cash confirmation modal — forces an explicit acknowledgement of the AED 495
+// holding deposit before Cash on Delivery is committed as the payment method.
+// Kept inline (one-off use, not exported).
+// ---------------------------------------------------------------------------
+
+interface CashConfirmModalProps {
+  open: boolean
+  onCancel: () => void
+  onConfirm: () => void
+}
+
+function CashConfirmModal({ open, onCancel, onConfirm }: CashConfirmModalProps) {
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+
+  // Body scroll lock + Esc close
+  useEffect(() => {
+    if (!open) return
+    const original = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') onCancel()
+    }
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = original
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [open, onCancel])
+
+  if (!mounted) return null
+
+  return createPortal(
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cash-confirm-title"
+      className={`fixed inset-0 z-[130] ${open ? '' : 'pointer-events-none'}`}
+    >
+      {/* Backdrop */}
+      <button
+        type="button"
+        aria-label="Close"
+        onClick={onCancel}
+        className={`absolute inset-0 bg-black/60 transition-opacity duration-150 cursor-default ${
+          open ? 'opacity-100' : 'opacity-0'
+        }`}
+      />
+
+      {/* Centered card */}
+      <div className="absolute inset-0 flex items-center justify-center p-4 pointer-events-none">
+        <div
+          className={`relative w-full max-w-[560px] max-h-[90vh] bg-white rounded-2xl shadow-2xl border border-zinc-200 flex flex-col overflow-hidden
+            transition-[opacity,transform] duration-150 will-change-[opacity,transform]
+            ${open ? 'pointer-events-auto opacity-100 scale-100' : 'pointer-events-none opacity-0 scale-[0.98]'}`}
+        >
+          {/* Header */}
+          <div className="flex items-start justify-between px-6 pt-6 pb-4">
+            <h3
+              id="cash-confirm-title"
+              className="text-2xl font-bold text-zinc-900 leading-tight pr-4"
+            >
+              Cash on Delivery — please read
+            </h3>
+            <button
+              type="button"
+              onClick={onCancel}
+              aria-label="Close"
+              className="text-zinc-500 hover:text-zinc-900 transition-colors cursor-pointer shrink-0"
+            >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Body — two info boxes */}
+          <div className="px-6 pb-4 overflow-y-auto space-y-3">
+            <div className="rounded-[var(--radius-card)] border border-zinc-200 bg-zinc-50 p-5 text-sm text-zinc-700">
+              <p className="font-bold text-zinc-900 mb-2 text-xs uppercase tracking-wider">
+                Your Payment, Explained
+              </p>
+              <p className="leading-relaxed">
+                You&apos;ve chosen to pay in cash on delivery — here&apos;s exactly how it works.
+                To lock in your booking, we ask for a small AED 495 holding deposit today, on a
+                card in the renter&apos;s name. That&apos;s the only payment you make now. The
+                rest of your total is paid in cash when we deliver your car. The AED 495 isn&apos;t
+                an extra fee — it comes straight off your balance, so on the day you only pay the
+                remaining amount, and nothing more. As soon as your deposit comes through, our
+                team will send you an email to confirm your booking details.
+              </p>
+            </div>
+            <div className="rounded-[var(--radius-card)] border border-zinc-200 bg-zinc-50 p-5 text-sm text-zinc-700">
+              <p className="font-bold text-zinc-900 mb-2 text-xs uppercase tracking-wider">
+                Refunds &amp; Cancellation
+              </p>
+              <p className="leading-relaxed">
+                We understand plans change, so we keep this simple. Cancel more than 24 hours
+                before your booking starts, and we refund your AED 495 holding deposit in full.
+                Cancel within 24 hours of the start time, or don&apos;t show up, and the deposit
+                is non-refundable. And if your booking goes ahead as planned, the deposit simply
+                comes off your balance on the day.
+              </p>
+            </div>
+          </div>
+
+          {/* Footer actions */}
+          <div className="px-6 py-4 border-t border-zinc-200 flex flex-col sm:flex-row-reverse gap-3">
+            <button
+              type="button"
+              onClick={onConfirm}
+              className="flex-1 px-6 py-3.5 rounded-[var(--radius-card)] bg-brand-cyan text-black text-base font-bold cursor-pointer hover:bg-brand-cyan-hover transition-colors"
+            >
+              I understand — continue with Cash
+            </button>
+            <button
+              type="button"
+              onClick={onCancel}
+              className="flex-1 sm:flex-none px-6 py-3.5 rounded-[var(--radius-card)] border border-zinc-300 text-base font-bold text-zinc-900 cursor-pointer hover:bg-zinc-50 transition-colors"
+            >
+              Choose another method
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>,
+    document.body,
   )
 }

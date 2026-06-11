@@ -115,11 +115,11 @@ function PaymentForm({
 
       {/* Divider */}
       <div className="flex items-center gap-3">
-        <div className="h-px flex-1 bg-brand-border" />
-        <span className="text-xs text-brand-muted uppercase tracking-widest">
+        <div className="h-px flex-1 bg-zinc-200" />
+        <span className="text-xs text-zinc-500 uppercase tracking-widest">
           {t('booking.orPayWithCard')}
         </span>
-        <div className="h-px flex-1 bg-brand-border" />
+        <div className="h-px flex-1 bg-zinc-200" />
       </div>
 
       {/* Card input */}
@@ -130,8 +130,8 @@ function PaymentForm({
       />
 
       {/* Cancellation policy */}
-      <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-4 text-sm text-brand-muted">
-        <p className="font-semibold text-white/70 mb-1.5 text-xs uppercase tracking-wider">
+      <div className="rounded-[var(--radius-card)] border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-700">
+        <p className="font-bold text-zinc-900 mb-1.5 text-xs uppercase tracking-wider">
           {t('booking.cancellationPolicy')}
         </p>
         <p>
@@ -141,7 +141,7 @@ function PaymentForm({
 
       {/* Error message */}
       {errorMessage && (
-        <p className="text-sm text-red-400 text-center">{errorMessage}</p>
+        <p className="text-sm text-red-600 text-center">{errorMessage}</p>
       )}
 
       {/* Submit button */}
@@ -207,33 +207,33 @@ function CryptoPayment({ bookingId, reservationFee, balanceDueOnPickup, isGuest,
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h3 className="text-sm font-semibold text-white">
+          <h3 className="text-sm font-bold text-zinc-900">
             {t('booking.cryptoPayment')}
           </h3>
         </div>
-        <p className="text-sm text-brand-muted leading-relaxed">
+        <p className="text-sm text-zinc-700 leading-relaxed">
           {t('booking.cryptoReservationFeeDesc').replace('{amount}', formatPrice(reservationFee))}
         </p>
         {balanceDueOnPickup > 0 && (
-          <p className="text-sm text-brand-muted leading-relaxed">
+          <p className="text-sm text-zinc-700 leading-relaxed">
             {t('booking.balanceDueOnPickupDesc').replace('{amount}', formatPrice(balanceDueOnPickup))}
           </p>
         )}
       </div>
 
       {/* Forfeit policy */}
-      <div className="rounded-[var(--radius-card)] border border-red-500/30 bg-red-500/5 p-4 text-sm">
-        <p className="font-semibold text-red-300 mb-1.5 text-xs uppercase tracking-wider">
+      <div className="rounded-[var(--radius-card)] border border-red-300 bg-red-50 p-4 text-sm">
+        <p className="font-bold text-red-700 mb-1.5 text-xs uppercase tracking-wider">
           {t('booking.forfeitPolicyTitle')}
         </p>
-        <p className="text-red-200/80 leading-relaxed">
+        <p className="text-red-700/80 leading-relaxed">
           {t('booking.forfeitPolicyBody')}
         </p>
       </div>
 
       {/* Error message */}
       {errorMessage && (
-        <p className="text-sm text-red-400 text-center">{errorMessage}</p>
+        <p className="text-sm text-red-600 text-center">{errorMessage}</p>
       )}
 
       <button
@@ -379,40 +379,13 @@ export function StepPayment({
   if (cashSelected) {
     return (
       <div className="space-y-5">
-        {/* Box 1 — Your Payment, Explained */}
-        <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-5 text-sm text-brand-muted">
-          <p className="font-semibold text-white/70 mb-2 text-xs uppercase tracking-wider">
-            Your Payment, Explained
-          </p>
-          <p className="leading-relaxed">
-            You&apos;ve chosen to pay in cash on delivery — here&apos;s exactly how it works.
-            To lock in your booking, we take a small AED 495 holding deposit today, on a card
-            in the renter&apos;s name. That&apos;s the only payment you make now. The rest of
-            your total is paid in cash when we deliver your car. The AED 495 isn&apos;t an
-            extra fee — it comes straight off your balance, so on the day you only pay the
-            remaining amount, and nothing more. As soon as your deposit comes through, our
-            team confirms everything and will send you an email to confirm your booking
-            details.
-          </p>
-        </div>
+        {/* Payment-explained and refunds & cancellation copy now lives in the
+            Step 5 acknowledgement popup — no need to repeat here. Only the
+            Security Deposit info box remains. */}
 
-        {/* Box 2 — Refunds & Cancellation */}
-        <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-5 text-sm text-brand-muted">
-          <p className="font-semibold text-white/70 mb-2 text-xs uppercase tracking-wider">
-            Refunds &amp; Cancellation
-          </p>
-          <p className="leading-relaxed">
-            Plans change, and we keep this simple. Cancel more than 24 hours before your
-            booking starts, and we refund your AED 495 holding deposit in full. Cancel within
-            24 hours of the start time, or don&apos;t show up, and the deposit is non-refundable.
-            And if your booking goes ahead as planned, the deposit simply comes off your
-            balance on the day.
-          </p>
-        </div>
-
-        {/* Box 3 — Security Deposit (Fully Refundable) */}
-        <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface p-5 text-sm text-brand-muted">
-          <p className="font-semibold text-white/70 mb-2 text-xs uppercase tracking-wider">
+        {/* Box — Security Deposit (Fully Refundable) */}
+        <div className="rounded-[var(--radius-card)] border border-zinc-200 bg-zinc-50 p-5 text-sm text-zinc-700">
+          <p className="font-bold text-zinc-900 mb-2 text-xs uppercase tracking-wider">
             Security Deposit (Fully Refundable)
           </p>
           <p className="leading-relaxed">
@@ -432,11 +405,11 @@ export function StepPayment({
             options={{
               clientSecret: setupClientSecret,
               appearance: {
-                theme: 'night',
+                theme: 'stripe',
                 variables: {
                   colorPrimary: '#C9A96E',
-                  colorBackground: '#0a0a0a',
-                  colorText: '#ffffff',
+                  colorBackground: '#ffffff',
+                  colorText: '#18181b',
                   borderRadius: '0.75rem',
                 },
               },
