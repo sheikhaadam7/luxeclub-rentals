@@ -46,7 +46,7 @@ function Item({ children }: { children: React.ReactNode }) {
   )
 }
 
-export function BookingOverview({ form, vehicle, rentalDays }: BookingOverviewProps) {
+export function BookingOverview({ form, vehicle: _vehicle, rentalDays }: BookingOverviewProps) {
   const protectionPackage = form.watch('protectionPackage') ?? 'basic'
   const addons = form.watch('addons') ?? {
     additionalDriver: false,
@@ -60,7 +60,11 @@ export function BookingOverview({ form, vehicle, rentalDays }: BookingOverviewPr
 
   const days = Math.max(1, rentalDays || 1)
   const kmIncluded = days * KM_PER_DAY
-  const ldwAmount = vehicle.deposit_amount ?? 2500
+  // Basic-protection Loss Damage Waiver excess. Fixed at AED 7,000 across
+  // every vehicle to match the Step 2 Basic-package excess copy. The USD
+  // approximation uses ~AED 1 = $0.273 — refreshed manually when rates shift.
+  const ldwAmount = 7000
+  const ldwUsdApprox = '$1,910.73'
 
   const deliveryLabel =
     pickupMethod === 'delivery' && deliveryLocation
@@ -70,7 +74,7 @@ export function BookingOverview({ form, vehicle, rentalDays }: BookingOverviewPr
         : null
 
   return (
-    <div className="rounded-md bg-zinc-100 border border-zinc-200 p-5 space-y-4">
+    <div className="rounded-[var(--radius-card)] bg-zinc-100 border-2 border-brand-cyan p-5 space-y-4">
       <p className="text-base font-bold text-zinc-900">Your booking overview:</p>
       <ul className="space-y-3">
         <Item>Third party insurance</Item>
@@ -78,7 +82,7 @@ export function BookingOverview({ form, vehicle, rentalDays }: BookingOverviewPr
         {protectionPackage === 'basic' && (
           <Item>
             Loss Damage Waiver (including theft protection) up to AED {formatAED(ldwAmount)}{' '}
-            financial responsibility
+            (approx {ldwUsdApprox}) financial responsibility
           </Item>
         )}
 

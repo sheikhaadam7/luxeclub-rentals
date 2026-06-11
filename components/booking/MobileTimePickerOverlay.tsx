@@ -146,7 +146,7 @@ export function MobileTimePickerOverlay({
         <div
           className={`bg-white flex flex-col
             h-[100dvh] w-full
-            sm:h-auto sm:max-h-[88vh] sm:w-full sm:max-w-[720px] sm:rounded-2xl sm:shadow-2xl sm:border sm:border-zinc-200
+            sm:h-auto sm:max-h-[88vh] sm:w-full sm:max-w-[720px] sm:rounded-2xl sm:shadow-2xl sm:border-2 sm:border-brand-cyan
             transition-transform duration-200
             sm:transition-[opacity,transform] sm:duration-150 sm:will-change-[opacity,transform]
             ${open ? 'pointer-events-auto' : 'pointer-events-none'}
@@ -169,7 +169,16 @@ export function MobileTimePickerOverlay({
           </svg>
         </button>
         <h2 className="font-display text-xl font-semibold text-zinc-900 text-center">{title}</h2>
-        <span className="w-11" />
+        <button
+          type="button"
+          onClick={onBack}
+          aria-label="Close"
+          className="flex items-center justify-center w-11 h-11 -mr-2 text-zinc-900 cursor-pointer"
+        >
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
 
       {/* Summary cards — both clickable to toggle activeMode */}
@@ -287,7 +296,7 @@ export function MobileTimePickerOverlay({
           type="button"
           onClick={() => onContinue({ startTime, endTime })}
           disabled={continueDisabled}
-          className="w-full py-3.5 rounded-[var(--radius-card)] bg-brand-cyan text-black text-sm font-semibold transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+          className="w-full py-3.5 rounded-[var(--radius-card)] bg-brand-cyan text-black text-sm font-semibold transition-opacity cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
         >
           Continue
         </button>

@@ -367,7 +367,7 @@ function PaymentForm({
         disabled={!stripe || !elements || isProcessing}
         className="w-full rounded-[var(--radius-card)] bg-brand-cyan py-3.5 text-base font-bold text-black hover:bg-brand-cyan-hover cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {isProcessing ? t('booking.processing') : `Pay AED ${formatAED(totalDue)}`}
+        {isProcessing ? t('booking.processing') : 'Pay and Book'}
       </button>
     </form>
   )
@@ -647,6 +647,7 @@ export function StepPayment({
                   colorBackground: '#ffffff',
                   colorText: '#18181b',
                   borderRadius: '0.75rem',
+                  fontSizeBase: '16px',
                 },
                 rules: {
                   '.Input': { borderColor: '#000000', borderWidth: '2px' },
@@ -755,6 +756,7 @@ export function StepPayment({
               colorBackground: '#ffffff',
               colorText: '#18181b',
               borderRadius: '0.75rem',
+              fontSizeBase: '16px',
             },
             rules: {
               '.Input': { borderColor: '#000000', borderWidth: '2px' },

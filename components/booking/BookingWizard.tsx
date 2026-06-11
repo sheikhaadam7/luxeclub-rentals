@@ -125,7 +125,9 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
       driverAge: '30+',
       startTime: '09:30',
       endTime: '09:30',
-      protectionPackage: 'basic',
+      // Intentionally no default for protectionPackage — the customer must
+      // make an explicit choice on Step 2. Continue stays disabled until
+      // they select one.
       addons: {
         additionalDriver: false,
         personalDriver: false,
@@ -140,6 +142,14 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
   })
 
   const breakdown = useBookingBreakdown(form, vehicle)
+
+  // Per-step "is the user allowed to advance yet?" check. We keep this in the
+  // wizard so the shared Continue button can stay disabled until the current
+  // step's required-input is filled. Today it only gates Step 2 (Protection
+  // package must be explicitly picked).
+  const protectionPackageWatched = form.watch('protectionPackage')
+  const currentStepReady =
+    currentStep === 'protection' ? !!protectionPackageWatched : true
 
   // Save / resume booking via sessionStorage, scoped per vehicle slug
   const storageKey = `luxeclub-booking-${vehicle.slug}`
@@ -524,7 +534,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
                     <button
                       type="button"
                       onClick={advance}
-                      disabled={isPending || isCreatingBooking}
+                      disabled={isPending || isCreatingBooking || !currentStepReady}
                       className="px-6 sm:px-8 py-3 rounded-[var(--radius-card)] bg-black text-white text-sm font-semibold cursor-pointer hover:bg-black/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isPending || isCreatingBooking ? t('booking.pleaseWait') : t('booking.continue')}
@@ -693,7 +703,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
             <button
               type="button"
               onClick={advance}
-              disabled={isPending || isCreatingBooking}
+              disabled={isPending || isCreatingBooking || !currentStepReady}
               className="shrink-0 px-6 py-3 rounded-[var(--radius-card)] bg-black text-white text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isPending || isCreatingBooking ? t('booking.pleaseWait') : t('booking.continue')}

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import { type DateRange } from 'react-day-picker'
-import { differenceInDays, format } from 'date-fns'
+import { addDays, differenceInDays, format } from 'date-fns'
 import 'react-day-picker/style.css'
 import { BookingFormValues } from '@/lib/validations/booking'
 import { Vehicle } from '@/components/booking/BookingWizard'
@@ -39,7 +39,7 @@ export const TIME_SLOTS = Array.from({ length: 36 }, (_, i) => {
   return { value, label: value }
 })
 
-export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons, onAdvance }: StepDurationProps) {
+export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons }: StepDurationProps) {
   const { t } = useTranslation()
   const startDate = form.watch('startDate')
   const endDate = form.watch('endDate')
@@ -92,7 +92,7 @@ export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons
   }
 
   const QUICK_DURATIONS = [
-    { label: '1 day', days: 1 },
+    { label: '2 days', days: 2 },
     { label: '3 days', days: 3 },
     { label: '1 week', days: 7 },
     { label: '1 month', days: 30 },
@@ -105,7 +105,7 @@ export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons
 
   // Visual styles for the date/time boxes
   const boxBase =
-    'px-4 py-4 flex items-center gap-2 text-left bg-white border border-zinc-300 rounded-[var(--radius-card)] cursor-pointer hover:bg-zinc-50 hover:border-zinc-400 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan focus-visible:ring-inset'
+    'px-4 py-4 flex items-center gap-2 text-left bg-white border-2 border-black rounded-[var(--radius-card)] cursor-pointer hover:bg-zinc-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan focus-visible:ring-inset'
 
   return (
     <div className="bg-white rounded-[var(--radius-card)] shadow-xl border-2 border-brand-cyan p-6 sm:p-8 space-y-6">
@@ -146,7 +146,7 @@ export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons
             <label className="text-xs text-zinc-500 uppercase tracking-wider mb-2 block">
               {t('booking.driverAge')}
             </label>
-            <div className="relative flex items-center gap-2 px-3 py-3 border border-zinc-300 rounded-[var(--radius-card)] bg-white hover:bg-zinc-50 cursor-pointer focus-within:ring-2 focus-within:ring-brand-cyan transition-colors">
+            <div className="relative flex items-center gap-2 px-3 py-3 border-2 border-black rounded-[var(--radius-card)] bg-white hover:bg-zinc-50 cursor-pointer focus-within:ring-2 focus-within:ring-brand-cyan transition-colors">
               <svg
                 className="w-4 h-4 text-zinc-700 shrink-0"
                 fill="none"
@@ -290,8 +290,12 @@ export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons
         disabledMatchers={disabledMatchers}
         onClose={() => setPickerOverlay(null)}
         onContinue={(range) => {
+          // If the user only picked a pickup date, auto-fill the return date
+          // as pickup + 2 days — that's the rental minimum. They can change
+          // either date later by reopening the calendar.
+          const endDate = range.to ?? addDays(range.from, 2)
           form.setValue('startDate', range.from, { shouldValidate: true })
-          form.setValue('endDate', range.to, { shouldValidate: true })
+          form.setValue('endDate', endDate, { shouldValidate: true })
           setPickerOverlay('time')
         }}
       />
@@ -306,7 +310,6 @@ export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons
           form.setValue('startTime', s, { shouldValidate: true })
           form.setValue('endTime', e, { shouldValidate: true })
           setPickerOverlay(null)
-          onAdvance?.()
         }}
       />
     </div>
