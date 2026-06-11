@@ -12,6 +12,8 @@ interface StepAddonsProps {
   vehicle: Vehicle
   /** Navigation buttons (Back / Continue) rendered inside the white card */
   navButtons?: React.ReactNode
+  /** Called when the user taps the back chevron on the card (mobile) */
+  onBack?: () => void
 }
 
 type AddonId = 'noDeposit' | 'additionalDriver' | 'personalDriver' | 'babySeat' | 'childSeat'
@@ -47,7 +49,7 @@ const ADDONS: AddonRow[] = [
     priceLabel: (days) => `AED ${noDepositTierFee(days).toFixed(2)}`,
     period: 'one-time',
     details:
-      "For customers who don't opt into the No-Deposit Option, a pre-authorisation deposit of AED 1,000–3,000 (depending on the vehicle type) is placed on the credit card at pickup. No money is taken from your card — the amount is only pre-authorised by your credit card company and released within a few days after the vehicle is returned.",
+      "For customers who are not eligible for the No-Deposit option, a pre-authorisation deposit of AED 1,000–3,000 (depending on the vehicle type) is placed on the credit card at pickup. No money is taken from your card — the amount is only pre-authorised by your credit card company and released within a few days after the vehicle is returned.",
     icon: (
       <Icon>
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 3l8 4v5c0 4.5-3 8.5-8 9-5-.5-8-4.5-8-9V7l8-4z" />
@@ -114,7 +116,7 @@ const ADDONS: AddonRow[] = [
   },
 ]
 
-export function StepAddons({ form, vehicle: _vehicle, navButtons }: StepAddonsProps) {
+export function StepAddons({ form, vehicle: _vehicle, navButtons, onBack }: StepAddonsProps) {
   const driverAge = form.watch('driverAge') ?? '30+'
   const underTwentyFour = ['21', '22', '23'].includes(driverAge)
 
@@ -166,9 +168,24 @@ export function StepAddons({ form, vehicle: _vehicle, navButtons }: StepAddonsPr
       ref={cardRef}
       className="bg-white rounded-[var(--radius-card)] shadow-xl border-2 border-brand-cyan p-6 sm:p-8 space-y-6"
     >
-      <h2 className="font-display text-xl sm:text-2xl font-bold uppercase tracking-tight text-zinc-900">
-        Which add-ons do you need?
-      </h2>
+      <div>
+        {onBack && (
+          <button
+            type="button"
+            onClick={onBack}
+            aria-label="Back to previous step"
+            className="sm:hidden -mt-2 -ml-2 mb-1 inline-flex items-center gap-1 h-10 pl-2 pr-3 text-[15px] font-bold text-black active:bg-black/10 rounded-full"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back
+          </button>
+        )}
+        <h2 className="font-display text-xl sm:text-2xl font-bold uppercase tracking-tight text-zinc-900">
+          Which add-ons do you need?
+        </h2>
+      </div>
 
       <div className="space-y-3">
         {ADDONS.map((addon) => {

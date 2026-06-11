@@ -219,6 +219,7 @@ const zh: Record<string, string> = {
   'booking.backTo': '返回到',
   'booking.stepDuration': '租期',
   'booking.stepDelivery': '配送',
+  'booking.stepReview': '核对',
   'booking.stepDeposit': '押金',
   'booking.stepPayMethod': '付款方式',
   'booking.stepAccount': '账户',

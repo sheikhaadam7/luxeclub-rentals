@@ -219,6 +219,7 @@ const de: Record<string, string> = {
   'booking.backTo': 'Zurück zu',
   'booking.stepDuration': 'Dauer',
   'booking.stepDelivery': 'Lieferung',
+  'booking.stepReview': 'Überprüfung',
   'booking.stepDeposit': 'Kaution',
   'booking.stepPayMethod': 'Zahlung',
   'booking.stepAccount': 'Konto',

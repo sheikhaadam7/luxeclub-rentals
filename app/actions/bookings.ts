@@ -196,8 +196,8 @@ export async function createBooking(
       start_date: formData.startDate.toISOString().split('T')[0],
       end_date: formData.endDate.toISOString().split('T')[0],
       duration_type: formData.durationType,
-      start_time: formData.startTime ?? null,
-      end_time: formData.endTime ?? null,
+      start_time: formData.startTime || null,
+      end_time: formData.endTime || null,
       pickup_method: formData.pickupMethod,
       delivery_address: formData.deliveryAddress ?? null,
       delivery_lat: formData.deliveryLat ?? null,
@@ -409,6 +409,40 @@ export async function getUserBookings(): Promise<UserBooking[] | { error: string
   }
 
   return (data ?? []) as unknown as UserBooking[]
+}
+
+// ---------------------------------------------------------------------------
+// getLatestBookingForUser — used by the Step 4 sign-in modal to auto-fill
+// the "Who will drive?" form with the customer's saved contact details.
+// ---------------------------------------------------------------------------
+
+export interface LatestBookingGuestInfo {
+  guestName: string | null
+  guestEmail: string | null
+  guestPhone: string | null
+}
+
+export async function getLatestBookingForUser(): Promise<LatestBookingGuestInfo | null> {
+  const supabase = await createClient()
+  const { data: claimsData } = await supabase.auth.getClaims()
+  const userId = claimsData?.claims?.sub
+  if (!userId) return null
+
+  const { data, error } = await supabase
+    .from('bookings')
+    .select('guest_name, guest_email, guest_phone')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  if (error || !data) return null
+
+  return {
+    guestName: data.guest_name ?? null,
+    guestEmail: data.guest_email ?? null,
+    guestPhone: data.guest_phone ?? null,
+  }
 }
 
 // ---------------------------------------------------------------------------

@@ -19,13 +19,9 @@ function formatAED(n: number): string {
   })
 }
 
-export function BookingTotalHeader({ form, vehicle }: BookingTotalHeaderProps) {
-  const [open, setOpen] = useState(false)
-
-  // Watch all the form values that affect pricing
+export function useBookingBreakdown(form: UseFormReturn<BookingFormValues>, vehicle: Vehicle) {
   const values = form.watch()
-
-  const breakdown = useMemo(() => {
+  return useMemo(() => {
     const start = values.startDate instanceof Date ? values.startDate : new Date()
     const end = values.endDate instanceof Date ? values.endDate : new Date(start.getTime() + 24 * 60 * 60 * 1000)
     return calculateBookingTotal(
@@ -41,6 +37,7 @@ export function BookingTotalHeader({ form, vehicle }: BookingTotalHeaderProps) {
         durationType: values.durationType ?? 'daily',
         pickupMethod: values.pickupMethod ?? 'self_pickup',
         returnMethod: values.returnMethod ?? 'self_dropoff',
+        deliveryLocation: values.deliveryLocation,
         depositChoice: values.depositChoice ?? 'deposit',
         paymentMethod: values.paymentMethod ?? 'card',
         protectionPackage: values.protectionPackage ?? 'basic',
@@ -53,10 +50,15 @@ export function BookingTotalHeader({ form, vehicle }: BookingTotalHeaderProps) {
       },
     )
   }, [values, vehicle])
+}
+
+export function BookingTotalHeader({ form, vehicle }: BookingTotalHeaderProps) {
+  const [open, setOpen] = useState(false)
+  const breakdown = useBookingBreakdown(form, vehicle)
 
   return (
     <>
-      <div className="flex items-start justify-end">
+      <div className="hidden sm:flex lg:hidden items-start justify-end">
         <div className="text-right">
           <p className="text-xs sm:text-sm text-brand-muted uppercase tracking-wider">Total</p>
           <p className="font-display text-2xl sm:text-3xl font-bold text-white tabular-nums">
@@ -76,3 +78,5 @@ export function BookingTotalHeader({ form, vehicle }: BookingTotalHeaderProps) {
     </>
   )
 }
+
+export { formatAED }

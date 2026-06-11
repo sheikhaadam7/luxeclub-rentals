@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import dynamic from 'next/dynamic'
+import { usePathname } from 'next/navigation'
 import { useTranslation } from '@/lib/i18n/context'
 
 const ChatPanel = dynamic(() => import('./ChatPanel'), { ssr: false })
@@ -10,6 +11,8 @@ export function ChatWidget() {
   const [open, setOpen] = useState(false)
   const [hasOpened, setHasOpened] = useState(false)
   const { t } = useTranslation()
+  const pathname = usePathname()
+  const hideOnBook = pathname?.startsWith('/book/')
 
   function handleToggle() {
     if (!hasOpened) setHasOpened(true)
@@ -22,7 +25,7 @@ export function ChatWidget() {
       <button
         onClick={handleToggle}
         aria-label={open ? t('chat.ariaClose') : t('chat.ariaOpen')}
-        className={`fixed bottom-6 left-6 z-50 flex items-center justify-center w-14 h-14 rounded-full bg-brand-cyan text-brand-black shadow-lg shadow-brand-cyan/25 hover:scale-110 hover:shadow-brand-cyan/40 transition-all duration-300 cursor-pointer ${open ? 'hidden md:flex' : ''}`}
+        className={`fixed bottom-6 left-6 z-50 flex items-center justify-center w-14 h-14 rounded-full bg-brand-cyan text-brand-black shadow-lg shadow-brand-cyan/25 hover:scale-110 hover:shadow-brand-cyan/40 transition-all duration-300 cursor-pointer ${open ? 'hidden md:flex' : ''} ${hideOnBook ? 'hidden' : ''}`}
       >
         {open ? (
           // Close icon

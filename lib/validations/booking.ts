@@ -42,30 +42,6 @@ export const deliveryStepSchema = z
     collectionLat: z.number().optional(),
     collectionLng: z.number().optional(),
   })
-  .refine(
-    (data) => {
-      if (data.pickupMethod === 'delivery') {
-        return !!data.deliveryAddress && data.deliveryAddress.trim().length > 0
-      }
-      return true
-    },
-    {
-      message: 'Delivery address is required when delivery is selected',
-      path: ['deliveryAddress'],
-    }
-  )
-  .refine(
-    (data) => {
-      if (data.returnMethod === 'collection') {
-        return !!data.collectionAddress && data.collectionAddress.trim().length > 0
-      }
-      return true
-    },
-    {
-      message: 'Collection address is required when collection is selected',
-      path: ['collectionAddress'],
-    }
-  )
 
 /**
  * Step 2 (new): Protection package — Basic or All Inclusive
@@ -118,6 +94,21 @@ export const bookingSchema = z
     driverAge: z.enum(['21', '22', '23', '24', '25', '26', '27', '28', '29', '30+']),
     // Delivery step
     pickupMethod: z.enum(['delivery', 'self_pickup']),
+    deliveryLocation: z
+      .enum([
+        'within_dubai',
+        'al_maktoum_airport',
+        'sharjah_airport',
+        'sharjah_city',
+        'ajman',
+        'abu_dhabi',
+        'al_ain',
+        'fujairah',
+        'ras_al_khaimah',
+      ])
+      .optional(),
+    /** Free-text address + delivery instructions when zone === 'within_dubai'. */
+    deliveryNotes: z.string().max(500).optional(),
     deliveryAddress: z.string().optional(),
     deliveryLat: z.number().optional(),
     deliveryLng: z.number().optional(),
@@ -140,6 +131,22 @@ export const bookingSchema = z
     guestName: z.string().optional(),
     guestEmail: z.string().optional(),
     guestPhone: z.string().optional(),
+    // Review step (step 4) — driver details. First/Surname feed guestName on submit;
+    // PhoneCountry + raw phone feed guestPhone. Company is informational for now.
+    guestFirstName: z.string().max(80).optional(),
+    guestSurname: z.string().max(80).optional(),
+    guestPhoneCountry: z.string().max(8).optional(),
+    guestCompany: z.string().max(120).optional(),
+    // Optional VAT invoice address — opt-in via needsInvoiceAddress checkbox.
+    needsInvoiceAddress: z.boolean().optional(),
+    invoiceAddress: z
+      .object({
+        country: z.string().optional(),
+        street: z.string().optional(),
+        postcode: z.string().optional(),
+        city: z.string().optional(),
+      })
+      .optional(),
     // Payment step
     paymentMethod: z.enum(['card', 'apple_pay', 'google_pay', 'cash', 'crypto']),
   })
@@ -150,25 +157,13 @@ export const bookingSchema = z
   .refine(
     (data) => {
       if (data.pickupMethod === 'delivery') {
-        return !!data.deliveryAddress && data.deliveryAddress.trim().length > 0
+        return !!data.deliveryLocation
       }
       return true
     },
     {
-      message: 'Delivery address is required when delivery is selected',
-      path: ['deliveryAddress'],
-    }
-  )
-  .refine(
-    (data) => {
-      if (data.returnMethod === 'collection') {
-        return !!data.collectionAddress && data.collectionAddress.trim().length > 0
-      }
-      return true
-    },
-    {
-      message: 'Collection address is required when collection is selected',
-      path: ['collectionAddress'],
+      message: 'Please choose a delivery zone',
+      path: ['deliveryLocation'],
     }
   )
 

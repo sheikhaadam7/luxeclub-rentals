@@ -10,6 +10,8 @@ interface StepProtectionProps {
   vehicle: Vehicle
   /** Navigation buttons (Back / Continue) rendered inside the white card */
   navButtons?: React.ReactNode
+  /** Called when the user taps the back chevron on the card (mobile) */
+  onBack?: () => void
 }
 
 type ProtectionId = 'basic' | 'inclusive'
@@ -84,7 +86,7 @@ const PACKAGES: ProtectionPackage[] = [
   },
 ]
 
-export function StepProtection({ form, navButtons }: StepProtectionProps) {
+export function StepProtection({ form, navButtons, onBack }: StepProtectionProps) {
   const selectedId = (form.watch('protectionPackage') ?? 'basic') as ProtectionId
 
   const [openTooltip, setOpenTooltip] = useState<string | null>(null)
@@ -129,9 +131,24 @@ export function StepProtection({ form, navButtons }: StepProtectionProps) {
       ref={rootRef}
       className="bg-white rounded-[var(--radius-card)] shadow-xl border-2 border-brand-cyan p-6 sm:p-8 space-y-6"
     >
-      <h2 className="font-display text-xl sm:text-2xl font-bold uppercase tracking-tight text-zinc-900">
-        Which protection package do you need?
-      </h2>
+      <div>
+        {onBack && (
+          <button
+            type="button"
+            onClick={onBack}
+            aria-label="Back to previous step"
+            className="sm:hidden -mt-2 -ml-2 mb-1 inline-flex items-center gap-1 h-10 pl-2 pr-3 text-[15px] font-bold text-black active:bg-black/10 rounded-full"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back
+          </button>
+        )}
+        <h2 className="font-display text-xl sm:text-2xl font-bold uppercase tracking-tight text-zinc-900">
+          Which protection package do you need?
+        </h2>
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {PACKAGES.map((pkg) => {

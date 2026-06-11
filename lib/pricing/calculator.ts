@@ -20,6 +20,23 @@ export const ADDON_PRICES = {
   childSeat: 24.95,
 } as const
 
+/**
+ * Delivery-zone fees (AED). Charged once and covers BOTH the delivery to the
+ * customer AND collection at the end of the rental. Self-pickup from our office
+ * (Business Bay / Downtown Dubai) is free.
+ */
+export const DELIVERY_ZONE_FEES: Record<string, number> = {
+  within_dubai: 100,
+  al_maktoum_airport: 200,
+  sharjah_airport: 200,
+  sharjah_city: 200,
+  ajman: 500,
+  abu_dhabi: 1000,
+  al_ain: 1000,
+  fujairah: 1000,
+  ras_al_khaimah: 1000,
+}
+
 /** Daily surcharge for the All Inclusive Protection package (AED). */
 export const ALL_INCLUSIVE_PROTECTION_PER_DAY = 72.8
 
@@ -55,6 +72,8 @@ export interface BookingPricingInput {
   durationType: 'daily' | 'weekly' | 'monthly'
   pickupMethod: 'delivery' | 'self_pickup'
   returnMethod: 'collection' | 'self_dropoff'
+  /** Zone key from DELIVERY_ZONE_FEES (only used when pickupMethod === 'delivery') */
+  deliveryLocation?: string
   depositChoice: 'deposit' | 'no_deposit'
   paymentMethod?: 'card' | 'apple_pay' | 'google_pay' | 'cash' | 'crypto'
   protectionPackage?: 'basic' | 'inclusive'
@@ -121,7 +140,6 @@ export function calculateBookingTotal(
     startDate,
     endDate,
     pickupMethod,
-    returnMethod,
     depositChoice,
     paymentMethod,
     protectionPackage,
@@ -167,9 +185,14 @@ export function calculateBookingTotal(
     total: addonTotal,
   }
 
-  // Delivery / return fees (legacy — Delivery step will be reworked separately)
-  const deliveryFee = pickupMethod === 'delivery' ? 50 : 0
-  const returnFee = returnMethod === 'collection' ? 50 : 0
+  // Delivery / return fees — single zone-based fee covering both legs.
+  // Self-pickup from the office is free; delivery fee comes from the selected zone.
+  const zoneFee =
+    pickupMethod === 'delivery' && formValues.deliveryLocation
+      ? DELIVERY_ZONE_FEES[formValues.deliveryLocation] ?? 0
+      : 0
+  const deliveryFee = zoneFee
+  const returnFee = 0
 
   // No Deposit Option (tiered one-time)
   const noDepositSurcharge = depositChoice === 'no_deposit' ? noDepositTierFee(rentalDays) : 0

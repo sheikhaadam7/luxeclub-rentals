@@ -67,7 +67,7 @@ export default async function BookingPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-luxury overflow-x-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-32 sm:pb-10 space-y-8">
         {/* Back link */}
         <Link
           href={`/catalogue/${slug}`}
