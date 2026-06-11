@@ -648,6 +648,12 @@ export function StepPayment({
                   colorText: '#18181b',
                   borderRadius: '0.75rem',
                 },
+                rules: {
+                  '.Input': { borderColor: '#000000', borderWidth: '2px' },
+                  '.Input:focus': { borderColor: '#C9A96E', borderWidth: '2px' },
+                  '.Block': { borderColor: '#000000', borderWidth: '2px' },
+                  '.Tab': { borderColor: '#000000', borderWidth: '2px' },
+                },
               },
             }}
           >
@@ -774,12 +780,18 @@ export function StepPayment({
         options={{
           clientSecret,
           appearance: {
-            theme: 'night',
+            theme: 'stripe',
             variables: {
               colorPrimary: '#C9A96E',
-              colorBackground: '#0a0a0a',
-              colorText: '#ffffff',
+              colorBackground: '#ffffff',
+              colorText: '#18181b',
               borderRadius: '0.75rem',
+            },
+            rules: {
+              '.Input': { borderColor: '#000000', borderWidth: '2px' },
+              '.Input:focus': { borderColor: '#C9A96E', borderWidth: '2px' },
+              '.Block': { borderColor: '#000000', borderWidth: '2px' },
+              '.Tab': { borderColor: '#000000', borderWidth: '2px' },
             },
           },
         }}
