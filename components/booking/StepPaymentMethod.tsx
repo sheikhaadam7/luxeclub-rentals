@@ -276,7 +276,7 @@ function CashConfirmModal({ open, onCancel, onConfirm }: CashConfirmModalProps) 
               onClick={onConfirm}
               className="flex-1 px-6 py-3.5 rounded-[var(--radius-card)] bg-brand-cyan text-black text-base font-bold cursor-pointer hover:bg-brand-cyan-hover transition-colors"
             >
-              I understand — continue
+              Continue
             </button>
             <button
               type="button"
