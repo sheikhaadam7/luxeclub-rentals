@@ -76,7 +76,7 @@ function RentersNameNotice() {
 }
 
 function ImportantInfoCollapsible() {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(true)
   return (
     <div className="border-t border-b border-zinc-200 py-3">
       <button
