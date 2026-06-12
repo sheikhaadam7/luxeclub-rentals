@@ -70,6 +70,8 @@ export function PriceDetailsModal({ open, onClose, breakdown }: PriceDetailsModa
     protectionSurcharge,
     addonBreakdown,
     noDepositSurcharge,
+    deliveryFee,
+    returnFee,
     creditCardSurcharge,
     totalDue,
   } = breakdown
@@ -79,6 +81,7 @@ export function PriceDetailsModal({ open, onClose, breakdown }: PriceDetailsModa
     protectionSurcharge +
     addonBreakdown.total +
     noDepositSurcharge
+  const deliveryTotal = deliveryFee + returnFee
   const taxesAndFeesTotal = creditCardSurcharge
 
   return createPortal(
@@ -143,6 +146,23 @@ export function PriceDetailsModal({ open, onClose, breakdown }: PriceDetailsModa
               )}
             </div>
           </section>
+
+          {/* Delivery & collection — shown only when the customer picked the
+              Delivery option in Step 4. Surfaced as its own section so the
+              fee doesn't quietly fold into the total. */}
+          {deliveryTotal > 0 && (
+            <section className="space-y-2">
+              <Line label="Delivery & collection" amount={deliveryTotal} bold />
+              <div className="pl-3 border-l-2 border-zinc-100 space-y-1.5">
+                {deliveryFee > 0 && (
+                  <Line label="Delivery to your address" amount={deliveryFee} />
+                )}
+                {returnFee > 0 && (
+                  <Line label="Collection from your address" amount={returnFee} />
+                )}
+              </div>
+            </section>
+          )}
 
           {/* Taxes and fees (collapsible) */}
           <section className="space-y-2">
