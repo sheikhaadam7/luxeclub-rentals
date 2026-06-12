@@ -148,19 +148,11 @@ export function PriceDetailsModal({ open, onClose, breakdown }: PriceDetailsModa
           </section>
 
           {/* Delivery & collection — shown only when the customer picked the
-              Delivery option in Step 4. Surfaced as its own section so the
-              fee doesn't quietly fold into the total. */}
+              Delivery option in Step 4. Single line, no sub-list (the section
+              label already says what the fee is for). */}
           {deliveryTotal > 0 && (
-            <section className="space-y-2">
+            <section>
               <Line label="Delivery & collection" amount={deliveryTotal} bold />
-              <div className="pl-3 border-l-2 border-zinc-100 space-y-1.5">
-                {deliveryFee > 0 && (
-                  <Line label="Delivery to your address" amount={deliveryFee} />
-                )}
-                {returnFee > 0 && (
-                  <Line label="Collection from your address" amount={returnFee} />
-                )}
-              </div>
             </section>
           )}
 
