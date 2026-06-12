@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom'
 import { UseFormReturn } from 'react-hook-form'
 import { BookingFormValues } from '@/lib/validations/booking'
 import { useTranslation } from '@/lib/i18n/context'
+import { useCurrency } from '@/lib/currency/context'
 
 interface StepPaymentMethodProps {
   form: UseFormReturn<BookingFormValues>
@@ -173,6 +174,8 @@ interface CashConfirmModalProps {
 
 function CashConfirmModal({ open, onCancel, onConfirm }: CashConfirmModalProps) {
   const [mounted, setMounted] = useState(false)
+  const { formatPrice } = useCurrency()
+  const holdingDeposit = formatPrice(495, { exact: true })
   useEffect(() => setMounted(true), [])
 
   // Body scroll lock + Esc close
@@ -244,9 +247,9 @@ function CashConfirmModal({ open, onCancel, onConfirm }: CashConfirmModalProps) 
               </p>
               <p className="leading-relaxed">
                 You&apos;ve chosen Payment on Delivery — here&apos;s exactly how it works.
-                To lock in your booking, we ask for a small AED 495 holding deposit today, on a
+                To lock in your booking, we ask for a small {holdingDeposit} holding deposit today, on a
                 card in the renter&apos;s name. That&apos;s the only payment you make now. The
-                rest of your total is paid when we deliver your car. The AED 495 isn&apos;t
+                rest of your total is paid when we deliver your car. The {holdingDeposit} isn&apos;t
                 an extra fee — it comes straight off your balance, so on the day you only pay the
                 remaining amount, and nothing more. As soon as payment goes through, you&apos;ll
                 get a confirmation email from our team.
@@ -258,7 +261,7 @@ function CashConfirmModal({ open, onCancel, onConfirm }: CashConfirmModalProps) 
               </p>
               <p className="leading-relaxed">
                 We understand plans change, so we keep this simple. Cancel more than 24 hours
-                before your booking starts, and we refund your AED 495 holding deposit in full.
+                before your booking starts, and we refund your {holdingDeposit} holding deposit in full.
                 Cancel within 24 hours of the start time, or don&apos;t show up, and the deposit
                 is non-refundable. And if your booking goes ahead as planned, the deposit simply
                 comes off your balance on the day.
