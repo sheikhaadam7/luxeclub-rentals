@@ -178,7 +178,7 @@ export function PriceDetailsModal({ open, onClose, breakdown }: PriceDetailsModa
                   <Line label="Booking fees (3% card surcharge)" amount={creditCardSurcharge} />
                 )}
                 {creditCardSurcharge === 0 && (
-                  <p className="text-xs text-zinc-500">No fees on cash bookings.</p>
+                  <p className="text-xs text-zinc-500">No fees on payment-on-delivery bookings.</p>
                 )}
               </div>
             )}
@@ -195,6 +195,14 @@ export function PriceDetailsModal({ open, onClose, breakdown }: PriceDetailsModa
               </span>
             </div>
           </section>
+
+          {/* Security-deposit footnote — hidden when the user took the No Deposit
+              Option in Step 3 (noDepositSurcharge > 0 implies that choice). */}
+          {noDepositSurcharge === 0 && (
+            <p className="text-xs text-zinc-500 leading-relaxed">
+              *Security deposit at pickup ranges from AED 2,500–5,000 depending on the vehicle.
+            </p>
+          )}
         </div>
       </div>
     </div>,
