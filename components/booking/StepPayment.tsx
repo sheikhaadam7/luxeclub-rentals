@@ -188,7 +188,7 @@ function PaymentSummaryAndPolicies({
       {/* Total row */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="font-display text-3xl sm:text-4xl font-bold text-zinc-900 tabular-nums leading-tight">
+          <p className="font-body text-3xl sm:text-4xl font-bold text-zinc-900 tabular-nums leading-tight tracking-tight">
             {formatPrice(payNowAmount, { exact: true })}
           </p>
           <ChargeCurrencyDisclaimer />

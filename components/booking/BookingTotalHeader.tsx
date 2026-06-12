@@ -56,7 +56,7 @@ export function BookingTotalHeader({ form, vehicle }: BookingTotalHeaderProps) {
       <div className="hidden sm:flex lg:hidden items-start justify-end">
         <div className="text-right">
           <p className="text-xs sm:text-sm text-brand-muted uppercase tracking-wider">Total</p>
-          <p className="font-display text-2xl sm:text-3xl font-bold text-white tabular-nums">
+          <p className="font-body text-2xl sm:text-3xl font-bold text-white tabular-nums tracking-tight">
             {formatPrice(breakdown.totalDue, { exact: true })}
           </p>
           <button

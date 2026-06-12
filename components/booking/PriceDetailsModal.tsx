@@ -186,7 +186,7 @@ export function PriceDetailsModal({ open, onClose, breakdown }: PriceDetailsModa
               <span className="text-base sm:text-lg font-bold text-zinc-900">
                 Total <span className="font-normal">(incl. tax)</span>
               </span>
-              <span className="font-display text-3xl sm:text-4xl font-bold text-zinc-900 tabular-nums">
+              <span className="font-body text-3xl sm:text-4xl font-bold text-zinc-900 tabular-nums tracking-tight">
                 {formatPrice(totalDue, { exact: true })}
               </span>
             </div>

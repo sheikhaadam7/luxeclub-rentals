@@ -657,7 +657,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
         <div className="sticky top-24 mt-20 pl-2 space-y-6">
           <div>
             <p className="text-xs uppercase tracking-wider text-brand-muted">Total</p>
-            <p className="font-display text-4xl font-bold text-white tabular-nums leading-tight">
+            <p className="font-body text-4xl font-bold text-white tabular-nums leading-tight tracking-tight">
               {formatPrice(breakdown.totalDue, { exact: true })}
             </p>
             <button
