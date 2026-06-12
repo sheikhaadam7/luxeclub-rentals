@@ -9,6 +9,7 @@ import { CountryCodePickerOverlay } from '@/components/booking/CountryCodePicker
 import { DeliveryZonePickerOverlay } from '@/components/booking/DeliveryZonePickerOverlay'
 import { SignInModal } from '@/components/booking/SignInModal'
 import { getLatestBookingForUser } from '@/app/actions/bookings'
+import { useCurrency } from '@/lib/currency/context'
 
 // Delivery zones — label + AED fee. Fee covers both delivery and collection.
 type ZoneKey =
@@ -161,6 +162,7 @@ interface StepDeliveryProps {
 
 export function StepDelivery({ form, navButtons, onBack, isAuthed = false, onAuthenticated }: StepDeliveryProps) {
   const router = useRouter()
+  const { formatPrice } = useCurrency()
   const pickupMethod = form.watch('pickupMethod')
   const guestPhoneCountry = form.watch('guestPhoneCountry')
   const needsInvoiceAddress = form.watch('needsInvoiceAddress') ?? false
@@ -344,7 +346,7 @@ export function StepDelivery({ form, navButtons, onBack, isAuthed = false, onAut
               </span>
               <span className="flex items-center gap-2">
                 <span className="text-base font-bold text-zinc-900 tabular-nums">
-                  AED {DELIVERY_ZONE_FEES[(deliveryLocation as ZoneKey) ?? 'within_dubai'].toLocaleString('en-AE')}
+                  {formatPrice(DELIVERY_ZONE_FEES[(deliveryLocation as ZoneKey) ?? 'within_dubai'], { exact: true })}
                 </span>
                 <svg className="w-4 h-4 text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />

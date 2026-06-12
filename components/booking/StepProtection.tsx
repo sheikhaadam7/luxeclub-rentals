@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import { BookingFormValues } from '@/lib/validations/booking'
 import { Vehicle } from '@/components/booking/BookingWizard'
+import { useCurrency } from '@/lib/currency/context'
 
 interface StepProtectionProps {
   form: UseFormReturn<BookingFormValues>
@@ -57,7 +58,8 @@ interface ProtectionPackage {
   excess: string
   excessHighlight: 'red' | 'green'
   included: Record<FeatureKey, boolean>
-  priceLabel: string
+  /** AED amount per day, or null for "Included" (no extra charge) */
+  priceAedPerDay: number | null
   priceSubtext?: string
   depositChoice: 'deposit' | 'no_deposit'
 }
@@ -70,7 +72,7 @@ const PACKAGES: ProtectionPackage[] = [
     excess: 'Excess: up to AED 7,000.00',
     excessHighlight: 'red',
     included: { ldw: true, tyres: false, interior: false, roadside: false },
-    priceLabel: 'Included',
+    priceAedPerDay: null,
     depositChoice: 'deposit',
   },
   {
@@ -80,7 +82,7 @@ const PACKAGES: ProtectionPackage[] = [
     excess: 'No excess',
     excessHighlight: 'green',
     included: { ldw: true, tyres: true, interior: true, roadside: true },
-    priceLabel: 'AED 72.80 / day',
+    priceAedPerDay: 72.80,
     priceSubtext: 'added to total',
     depositChoice: 'no_deposit',
   },
@@ -92,6 +94,7 @@ export function StepProtection({ form, navButtons, onBack }: StepProtectionProps
 
   const [openTooltip, setOpenTooltip] = useState<string | null>(null)
   const rootRef = useRef<HTMLDivElement>(null)
+  const { formatPrice } = useCurrency()
 
   // Close tooltip on outside tap or Escape
   useEffect(() => {
@@ -278,7 +281,11 @@ export function StepProtection({ form, navButtons, onBack }: StepProtectionProps
               </ul>
 
               <div className="pt-3 border-t border-zinc-200">
-                <p className="text-lg font-bold text-zinc-900">{pkg.priceLabel}</p>
+                <p className="text-lg font-bold text-zinc-900">
+                  {pkg.priceAedPerDay === null
+                    ? 'Included'
+                    : `${formatPrice(pkg.priceAedPerDay, { exact: true })} / day`}
+                </p>
                 {pkg.priceSubtext && (
                   <p className="text-xs text-zinc-500 mt-0.5">{pkg.priceSubtext}</p>
                 )}

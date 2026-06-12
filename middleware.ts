@@ -1,11 +1,30 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { moneyPages } from '@/lib/money-pages'
+import { currencyForCountry } from '@/lib/currency/country-map'
 
 // Build a Set of all money-page slugs at module load. These are SEO landing
 // pages registered in lib/money-pages.ts — all must be publicly accessible.
 // Using a Set keeps the per-request lookup O(1).
 const MONEY_PAGE_PATHS = new Set(moneyPages.map((p) => `/${p.slug}`))
+
+const GEO_COOKIE_MAX_AGE = 60 * 60 * 24 * 30 // 30 days
+
+// Sets the geo-currency cookie on the response IFF the visitor has neither
+// an explicit picker choice nor a previous geo guess. Idempotent — safe to
+// call before any return path.
+function setGeoCookieIfNeeded(response: NextResponse, request: NextRequest) {
+  if (request.cookies.has('luxeclub-currency')) return
+  if (request.cookies.has('geo-currency')) return
+  const country = request.headers.get('x-vercel-ip-country')
+  const currency = currencyForCountry(country)
+  response.cookies.set('geo-currency', currency, {
+    httpOnly: false,
+    sameSite: 'lax',
+    maxAge: GEO_COOKIE_MAX_AGE,
+    path: '/',
+  })
+}
 
 export async function middleware(request: NextRequest) {
   // www → non-www 301 redirect. Google indexes both www and non-www
@@ -15,6 +34,13 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone()
     url.host = host.replace(/^www\./, '')
     return NextResponse.redirect(url, 301)
+  }
+
+  // /api/* gets no geo cookie (JSON responses don't need it) and bypasses
+  // auth + supabase entirely below. Route handlers manage their own auth.
+  const { pathname } = request.nextUrl
+  if (pathname.startsWith('/api/')) {
+    return NextResponse.next({ request })
   }
 
   let supabaseResponse = NextResponse.next({
@@ -49,8 +75,6 @@ export async function middleware(request: NextRequest) {
   const { data: claimsData } = await supabase.auth.getClaims()
   const claims = claimsData?.claims ?? null
 
-  const { pathname } = request.nextUrl
-
   // Public routes — accessible without auth
   const publicPaths = ['/', '/sign-in', '/about', '/contact', '/faq', '/catalogue', '/guides', '/reset-password', '/booking-lookup', '/privacy', '/bookings/confirmation']
   const isPublicRoute =
@@ -73,16 +97,23 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone()
     url.pathname = '/sign-in'
     url.searchParams.set('redirectTo', pathname)
-    return NextResponse.redirect(url)
+    const redirectResponse = NextResponse.redirect(url)
+    setGeoCookieIfNeeded(redirectResponse, request)
+    return redirectResponse
   }
 
   // Authenticated user visiting the sign-in page — redirect to home
   if (claims && pathname === '/sign-in') {
     const url = request.nextUrl.clone()
     url.pathname = '/'
-    return NextResponse.redirect(url)
+    const redirectResponse = NextResponse.redirect(url)
+    setGeoCookieIfNeeded(redirectResponse, request)
+    return redirectResponse
   }
 
+  // Set the geo cookie AFTER all supabase logic — supabaseResponse may have
+  // been reassigned inside the setAll callback, so we attach to the final ref.
+  setGeoCookieIfNeeded(supabaseResponse, request)
   return supabaseResponse
 }
 

@@ -20,9 +20,16 @@ import type { BookingPriceBreakdown } from '@/lib/pricing/calculator'
 // lib/pricing/constants.ts (495 today). If you change one, change the other.
 const CASH_HOLDING_DEPOSIT_AED = 495
 
-// Format AED to "1,235.50" style for display labels
-function formatAED(n: number): string {
-  return n.toLocaleString('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+// Shown on Step 6 only when the customer is viewing a non-AED currency —
+// avoids "why does my email say AED 1,800 when I paid £400?" support tickets.
+function ChargeCurrencyDisclaimer() {
+  const { currency } = useCurrency()
+  if (currency === 'AED') return null
+  return (
+    <p className="text-xs text-zinc-500 italic mt-2">
+      Charged in AED. Your bank converts at their daily rate.
+    </p>
+  )
 }
 
 // Dev/test mode: when Stripe key is missing, show a test payment UI
@@ -173,24 +180,16 @@ function PaymentSummaryAndPolicies({
   depositChoice,
   onOpenPriceDetails,
 }: PaymentSummaryProps) {
-  const { currency, formatPrice } = useCurrency()
-  // Show a secondary line in the customer's chosen currency (set in the navbar
-  // picker) when it's not AED — international customers see the equivalent in
-  // their home currency right next to the AED total.
-  const secondaryLine =
-    currency !== 'AED' ? `approx. ${formatPrice(payNowAmount)} — rate at checkout` : null
-
+  const { formatPrice } = useCurrency()
   return (
     <div className="border-t border-zinc-200 pt-5 space-y-4">
       {/* Total row */}
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="font-display text-3xl sm:text-4xl font-bold text-zinc-900 tabular-nums leading-tight">
-            AED {formatAED(payNowAmount)}
+            {formatPrice(payNowAmount, { exact: true })}
           </p>
-          {secondaryLine && (
-            <p className="text-sm text-zinc-500 tabular-nums mt-0.5">{secondaryLine}</p>
-          )}
+          <ChargeCurrencyDisclaimer />
           <button
             type="button"
             onClick={onOpenPriceDetails}
@@ -219,7 +218,7 @@ function PaymentSummaryAndPolicies({
       {depositChoice === 'deposit' && depositAmount > 0 && (
         <p className="text-sm text-zinc-700 leading-relaxed">
           <span className="font-semibold text-zinc-900">Refundable deposit:</span>{' '}
-          An additional AED {formatAED(depositAmount)} security deposit will be
+          An additional {formatPrice(depositAmount, { exact: true })} security deposit will be
           blocked on your card at pickup and released within a few business days
           of the vehicle&apos;s return.
         </p>
@@ -489,6 +488,7 @@ function CashCardForm({
   const stripe = useStripe()
   const elements = useElements()
   const { t } = useTranslation()
+  const { formatPrice } = useCurrency()
   const [isProcessing, setIsProcessing] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [cardSaved, setCardSaved] = useState(false)
@@ -533,7 +533,7 @@ function CashCardForm({
       {!cardSaved && (
         <PaymentSummaryAndPolicies
           payNowAmount={CASH_HOLDING_DEPOSIT_AED}
-          amountSubLabel={`Holding deposit — paid today. Balance of AED ${formatAED(balanceDueOnPickup)} paid in cash at delivery.`}
+          amountSubLabel={`Holding deposit — paid today. Balance of ${formatPrice(balanceDueOnPickup, { exact: true })} paid at delivery.`}
           depositAmount={depositAmount}
           depositChoice={depositChoice}
           onOpenPriceDetails={onOpenPriceDetails}

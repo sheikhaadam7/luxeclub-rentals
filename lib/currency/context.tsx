@@ -21,6 +21,7 @@ interface CurrencyContextValue {
 const STORAGE_KEY = 'luxeclub-currency'
 const RATES_CACHE_KEY = 'luxeclub-rates'
 const RATES_MAX_AGE = 3_600_000 // 1 hour
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 365 // 1 year
 
 const FALLBACK_RATES: Record<Currency, number> = {
   AED: 1,
@@ -76,11 +77,20 @@ const CurrencyContext = createContext<CurrencyContextValue | null>(null)
 // Provider
 // ---------------------------------------------------------------------------
 
-export function CurrencyProvider({ children }: { children: ReactNode }) {
-  const [currency, setCurrencyState] = useState<Currency>('AED')
+export function CurrencyProvider({
+  children,
+  initialCurrency,
+}: {
+  children: ReactNode
+  initialCurrency?: Currency
+}) {
+  // useState initializer takes initialCurrency from the server (header or
+  // geo cookie) so first paint already uses the right symbol — no flash.
+  const [currency, setCurrencyState] = useState<Currency>(initialCurrency ?? 'AED')
   const [rates, setRates] = useState<Record<Currency, number>>(() => getCachedRates() ?? FALLBACK_RATES)
 
-  // Read saved preference on mount
+  // Read saved preference on mount — localStorage takes precedence over the
+  // server-passed initialCurrency since localStorage = user's explicit choice.
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY) as Currency | null
@@ -126,13 +136,20 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
     return () => { cancelled = true }
   }, [])
 
-  // Persist preference
+  // Persist preference to both localStorage (long-term client storage) and a
+  // cookie (so the server-side middleware sees the choice on next request and
+  // won't re-tag with a geo guess).
   const setCurrency = useCallback((c: Currency) => {
     setCurrencyState(c)
     try {
       localStorage.setItem(STORAGE_KEY, c)
     } catch {
       // localStorage unavailable
+    }
+    try {
+      document.cookie = `${STORAGE_KEY}=${c}; path=/; max-age=${COOKIE_MAX_AGE}; SameSite=Lax`
+    } catch {
+      // document unavailable (SSR — shouldn't happen here, defensive)
     }
   }, [])
 

@@ -6,17 +6,11 @@ import { BookingFormValues } from '@/lib/validations/booking'
 import { Vehicle } from '@/components/booking/BookingWizard'
 import { calculateBookingTotal } from '@/lib/pricing/calculator'
 import { PriceDetailsModal } from '@/components/booking/PriceDetailsModal'
+import { useCurrency } from '@/lib/currency/context'
 
 interface BookingTotalHeaderProps {
   form: UseFormReturn<BookingFormValues>
   vehicle: Vehicle
-}
-
-function formatAED(n: number): string {
-  return n.toLocaleString('en-AE', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })
 }
 
 export function useBookingBreakdown(form: UseFormReturn<BookingFormValues>, vehicle: Vehicle) {
@@ -55,6 +49,7 @@ export function useBookingBreakdown(form: UseFormReturn<BookingFormValues>, vehi
 export function BookingTotalHeader({ form, vehicle }: BookingTotalHeaderProps) {
   const [open, setOpen] = useState(false)
   const breakdown = useBookingBreakdown(form, vehicle)
+  const { formatPrice } = useCurrency()
 
   return (
     <>
@@ -62,7 +57,7 @@ export function BookingTotalHeader({ form, vehicle }: BookingTotalHeaderProps) {
         <div className="text-right">
           <p className="text-xs sm:text-sm text-brand-muted uppercase tracking-wider">Total</p>
           <p className="font-display text-2xl sm:text-3xl font-bold text-white tabular-nums">
-            AED {formatAED(breakdown.totalDue)}
+            {formatPrice(breakdown.totalDue, { exact: true })}
           </p>
           <button
             type="button"
@@ -78,5 +73,3 @@ export function BookingTotalHeader({ form, vehicle }: BookingTotalHeaderProps) {
     </>
   )
 }
-
-export { formatAED }

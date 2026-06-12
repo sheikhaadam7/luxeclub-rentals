@@ -3,18 +3,12 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { BookingPriceBreakdown } from '@/lib/pricing/calculator'
+import { useCurrency } from '@/lib/currency/context'
 
 interface PriceDetailsModalProps {
   open: boolean
   onClose: () => void
   breakdown: BookingPriceBreakdown
-}
-
-function formatAED(n: number): string {
-  return n.toLocaleString('en-AE', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })
 }
 
 interface LineProps {
@@ -24,19 +18,21 @@ interface LineProps {
 }
 
 function Line({ label, amount, bold = false }: LineProps) {
+  const { formatPrice } = useCurrency()
   return (
     <div className="flex items-baseline justify-between gap-4 text-sm">
       <span className={['text-zinc-700', bold ? 'font-semibold text-zinc-900' : ''].join(' ')}>
         {label}
       </span>
       <span className={['tabular-nums', bold ? 'font-semibold text-zinc-900' : 'text-zinc-700'].join(' ')}>
-        AED {formatAED(amount)}
+        {formatPrice(amount, { exact: true })}
       </span>
     </div>
   )
 }
 
 export function PriceDetailsModal({ open, onClose, breakdown }: PriceDetailsModalProps) {
+  const { formatPrice } = useCurrency()
   const [mounted, setMounted] = useState(false)
   const [taxesOpen, setTaxesOpen] = useState(false)
 
@@ -124,7 +120,7 @@ export function PriceDetailsModal({ open, onClose, breakdown }: PriceDetailsModa
             <Line label="Rental charges" amount={rentalChargesTotal} bold />
             <div className="pl-3 border-l-2 border-zinc-100 space-y-1.5">
               <Line
-                label={`Base rental (${rentalDays} ${rentalDays === 1 ? 'day' : 'days'} × AED ${formatAED(baseRate)}${discountPercent > 0 ? ` — ${discountPercent}% off` : ''})`}
+                label={`Base rental (${rentalDays} ${rentalDays === 1 ? 'day' : 'days'} × ${formatPrice(baseRate, { exact: true })}${discountPercent > 0 ? ` — ${discountPercent}% off` : ''})`}
                 amount={rentalSubtotal}
               />
               {protectionSurcharge > 0 && (
@@ -169,7 +165,7 @@ export function PriceDetailsModal({ open, onClose, breakdown }: PriceDetailsModa
                 </svg>
               </span>
               {taxesOpen && (
-                <span className="tabular-nums">AED {formatAED(taxesAndFeesTotal)}</span>
+                <span className="tabular-nums">{formatPrice(taxesAndFeesTotal, { exact: true })}</span>
               )}
             </button>
             {taxesOpen && (
@@ -191,7 +187,7 @@ export function PriceDetailsModal({ open, onClose, breakdown }: PriceDetailsModa
                 Total <span className="font-normal">(incl. tax)</span>
               </span>
               <span className="font-display text-3xl sm:text-4xl font-bold text-zinc-900 tabular-nums">
-                AED {formatAED(totalDue)}
+                {formatPrice(totalDue, { exact: true })}
               </span>
             </div>
           </section>

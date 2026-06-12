@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { useCurrency } from '@/lib/currency/context'
 
 export interface ZoneEntry {
   value: string
@@ -17,10 +18,6 @@ interface DeliveryZonePickerOverlayProps {
   onSelect: (value: string) => void
 }
 
-function formatAED(n: number): string {
-  return n.toLocaleString('en-AE')
-}
-
 export function DeliveryZonePickerOverlay({
   open,
   zones,
@@ -28,6 +25,7 @@ export function DeliveryZonePickerOverlay({
   onClose,
   onSelect,
 }: DeliveryZonePickerOverlayProps) {
+  const { formatPrice } = useCurrency()
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
 
@@ -128,7 +126,7 @@ export function DeliveryZonePickerOverlay({
                         <p className="text-base font-semibold text-zinc-900">{z.label}</p>
                       </div>
                       <p className="text-base font-bold text-zinc-900 tabular-nums shrink-0">
-                        AED {formatAED(z.fee)}
+                        {formatPrice(z.fee, { exact: true })}
                       </p>
                       {isSelected && (
                         <svg className="w-5 h-5 text-brand-cyan shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

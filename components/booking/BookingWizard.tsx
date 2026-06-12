@@ -10,12 +10,13 @@ import { bookingSchema, type BookingFormValues } from '@/lib/validations/booking
 import { StepDuration } from '@/components/booking/StepDuration'
 import { StepProtection } from '@/components/booking/StepProtection'
 import { StepAddons } from '@/components/booking/StepAddons'
-import { BookingTotalHeader, useBookingBreakdown, formatAED } from '@/components/booking/BookingTotalHeader'
+import { BookingTotalHeader, useBookingBreakdown } from '@/components/booking/BookingTotalHeader'
 import { BookingOverview } from '@/components/booking/BookingOverview'
 import { PriceDetailsModal } from '@/components/booking/PriceDetailsModal'
 import { StepPaymentMethod } from '@/components/booking/StepPaymentMethod'
 import { StepAuth } from '@/components/booking/StepAuth'
 import { createBooking, updateBookingPaymentMethod } from '@/app/actions/bookings'
+import { useCurrency } from '@/lib/currency/context'
 
 const StepDelivery = dynamic(() => import('./StepDelivery').then(m => ({ default: m.StepDelivery })), { ssr: false })
 const StepPayment = dynamic(() => import('./StepPayment').then(m => ({ default: m.StepPayment })), { ssr: false })
@@ -142,6 +143,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
   })
 
   const breakdown = useBookingBreakdown(form, vehicle)
+  const { formatPrice } = useCurrency()
 
   // Per-step "is the user allowed to advance yet?" check. We keep this in the
   // wizard so the shared Continue button can stay disabled until the current
@@ -656,7 +658,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
           <div>
             <p className="text-xs uppercase tracking-wider text-brand-muted">Total</p>
             <p className="font-display text-4xl font-bold text-white tabular-nums leading-tight">
-              AED {formatAED(breakdown.totalDue)}
+              {formatPrice(breakdown.totalDue, { exact: true })}
             </p>
             <button
               type="button"
@@ -694,7 +696,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
           <div className="flex flex-col min-w-0 flex-1">
             <span className="text-[11px] uppercase tracking-wider text-brand-muted">Total</span>
             <span className="text-2xl font-bold text-white tabular-nums leading-tight">
-              AED {formatAED(breakdown.totalDue)}
+              {formatPrice(breakdown.totalDue, { exact: true })}
             </span>
             <button
               type="button"
