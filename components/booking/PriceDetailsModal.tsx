@@ -196,7 +196,7 @@ export function PriceDetailsModal({ open, onClose, breakdown }: PriceDetailsModa
               Option in Step 3 (noDepositSurcharge > 0 implies that choice). */}
           {noDepositSurcharge === 0 && (
             <p className="text-xs text-zinc-500 leading-relaxed">
-              *Security deposit at pickup ranges from AED 2,500–5,000 depending on the vehicle.
+              *Security deposit at pickup ranges from {formatPrice(2500, { exact: true })}–{formatPrice(5000, { exact: true })} depending on the vehicle.
             </p>
           )}
         </div>
