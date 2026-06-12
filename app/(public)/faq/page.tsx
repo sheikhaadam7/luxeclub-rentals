@@ -30,7 +30,7 @@ const faqsForSchema = [
   },
   {
     q: 'What payment methods do you accept?',
-    a: 'We accept credit/debit cards, Apple Pay, Google Pay, cryptocurrency, and cash on delivery.',
+    a: 'We accept credit/debit cards, Apple Pay, Google Pay, cryptocurrency, and payment on delivery.',
   },
   {
     q: 'What is the security deposit?',

@@ -68,8 +68,8 @@ const SYSTEM_PROMPT = `You are LuxeClub's friendly AI assistant on the LuxeClub 
 ### Pricing & Payment
 - Prices are shown on the website per day, per week, and per month
 - All prices include comprehensive insurance
-- Payment methods: Credit/debit card, Apple Pay, Google Pay, cryptocurrency (BTC, ETH, USDT, etc.), and cash on delivery
-- A valid credit or debit card in the renter's name is required for all bookings (even cash payments) to cover cancellation/no-show fees
+- Payment methods: Credit/debit card, Apple Pay, Google Pay, cryptocurrency (BTC, ETH, USDT, etc.), and payment on delivery
+- A valid credit or debit card in the renter's name is required for all bookings (even payment-on-delivery bookings) to cover cancellation/no-show fees
 
 ### Security Deposit
 - A refundable security deposit is held on the renter's credit card at vehicle handover
@@ -129,7 +129,7 @@ const SYSTEM_PROMPT = `You are LuxeClub's friendly AI assistant on the LuxeClub 
 2. Select dates and vehicle
 3. Choose delivery or self-pickup
 4. Choose deposit or no-deposit option
-5. Pay online or choose cash on delivery
+5. Pay online or choose payment on delivery
 6. Car delivered or ready for pickup
 
 ## Important Guidelines

@@ -76,7 +76,7 @@ function RentersNameNotice() {
 }
 
 function ImportantInfoCollapsible() {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(true)
   return (
     <div className="border-t border-b border-zinc-200 py-3">
       <button
@@ -583,7 +583,7 @@ function CashCardForm({
  * Booking wizard — Step 5: Payment
  *
  * Renders:
- *  - Cash on delivery: confirmation card + "Confirm Booking" button
+ *  - Payment on Delivery: confirmation card + "Confirm Booking" button
  *  - Card/wallet: Stripe Elements with ExpressCheckoutElement (Apple/Google Pay)
  *    + PaymentElement (card input) + cancellation policy + optional deposit notice
  *
@@ -627,7 +627,7 @@ export function StepPayment({
     )
   }
 
-  // Cash on delivery path
+  // Payment on Delivery path
   if (cashSelected) {
     return (
       <div className="space-y-5">

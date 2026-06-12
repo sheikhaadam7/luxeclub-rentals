@@ -413,7 +413,7 @@ export async function getUserBookings(): Promise<UserBooking[] | { error: string
 
 // ---------------------------------------------------------------------------
 // getLatestBookingForUser — used by the Step 4 sign-in modal to auto-fill
-// the "Who will drive?" form with the customer's saved contact details.
+// the Renter Information form with the customer's saved contact details.
 // ---------------------------------------------------------------------------
 
 export interface LatestBookingGuestInfo {
