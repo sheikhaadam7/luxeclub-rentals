@@ -30,7 +30,7 @@ function Item({ children }: { children: React.ReactNode }) {
   return (
     <li className="flex items-start gap-3 text-sm text-zinc-800">
       <svg
-        className="w-4 h-4 mt-0.5 shrink-0 text-brand-cyan"
+        className="w-4 h-4 mt-0.5 shrink-0 text-[#9B7E3C]"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
