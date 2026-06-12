@@ -270,7 +270,7 @@ export function StepDelivery({ form, navButtons, onBack, isAuthed = false, onAut
             className={[
               'p-4 rounded-[var(--radius-card)] border-2 text-left transition-all',
               pickupMethod === 'delivery'
-                ? 'border-brand-cyan bg-brand-cyan/5'
+                ? 'border-brand-cyan bg-brand-cyan/15 shadow-md ring-2 ring-brand-cyan/30'
                 : 'border-black',
             ].join(' ')}
           >
@@ -304,7 +304,7 @@ export function StepDelivery({ form, navButtons, onBack, isAuthed = false, onAut
             className={[
               'p-4 rounded-[var(--radius-card)] border-2 text-left transition-all',
               pickupMethod === 'self_pickup'
-                ? 'border-brand-cyan bg-brand-cyan/5'
+                ? 'border-brand-cyan bg-brand-cyan/15 shadow-md ring-2 ring-brand-cyan/30'
                 : 'border-black',
             ].join(' ')}
           >
