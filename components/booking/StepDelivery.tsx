@@ -153,7 +153,7 @@ interface StepDeliveryProps {
   navButtons?: React.ReactNode
   /** Called when the user taps the back chevron on the card (mobile) */
   onBack?: () => void
-  /** Auth state — controls whether the "Who will drive?" section + sign-in link render */
+  /** Auth state — controls whether the Renter Information section + sign-in link render */
   isAuthed?: boolean
   /** Called after a successful sign-in via the modal. Should set isAuthed = true. */
   onAuthenticated?: () => void
@@ -194,7 +194,7 @@ export function StepDelivery({ form, navButtons, onBack, isAuthed = false, onAut
   }, [guestFirstName, guestSurname, form])
 
   // When the user signs in via the modal, fetch their latest booking and
-  // pre-fill the "Who will drive?" fields so they don't re-type details.
+  // pre-fill the Renter Information fields so they don't re-type details.
   useEffect(() => {
     if (!isAuthed) return
     let cancelled = false
@@ -379,10 +379,10 @@ export function StepDelivery({ form, navButtons, onBack, isAuthed = false, onAut
         </div>
       )}
 
-      {/* ---------------- Who will drive? ---------------- */}
+      {/* ---------------- Renter Information ---------------- */}
       <div className="pt-6 border-t border-zinc-200 space-y-4">
         <div className="flex items-baseline justify-between gap-3 flex-wrap">
-          <h3 className="text-xl font-bold text-zinc-900">Who will drive?</h3>
+          <h3 className="text-xl font-bold text-zinc-900">Renter Information</h3>
           {!isAuthed && (
             <button
               type="button"

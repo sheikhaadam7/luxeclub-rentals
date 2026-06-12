@@ -294,7 +294,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
       const valid = await form.trigger(fields)
       if (!valid) return
 
-      // Step 4: enforce the "Who will drive?" contact fields for guests.
+      // Step 4: enforce the Renter Information contact fields for guests.
       // Step 6 ('contact') is gone, so Step 4 is the last place to validate.
       if (currentStep === 'delivery' && !isAuthed) {
         const v = form.getValues()
