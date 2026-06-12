@@ -1,15 +1,11 @@
-const CACHE = 'public, s-maxage=31536000, immutable'
+import { legacyGarageResponse } from '@/lib/legacy-garage-route'
 
-export async function GET() {
-  return new Response('Gone', {
-    status: 410,
-    headers: { 'Content-Type': 'text/plain', 'Cache-Control': CACHE },
-  })
+type Params = { params: Promise<{ slug: string }> }
+
+export async function GET(_req: Request, { params }: Params) {
+  return legacyGarageResponse((await params).slug, true)
 }
 
-export async function HEAD() {
-  return new Response(null, {
-    status: 410,
-    headers: { 'Cache-Control': CACHE },
-  })
+export async function HEAD(_req: Request, { params }: Params) {
+  return legacyGarageResponse((await params).slug, false)
 }

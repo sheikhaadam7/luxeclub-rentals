@@ -65,19 +65,11 @@ const nextConfig: NextConfig = {
       // ── Numeric ID URLs from the OLD site ───────────────────────────────
       // The previous CMS used numeric vehicle IDs in paths (e.g. /garage/1000,
       // /catalogue/1000). Those IDs do not map to anything in the current
-      // database, so send all numeric paths to the fleet listing page —
-      // this preserves the link equity instead of letting them 404 + noindex.
-      // Path-level regex `(\\d+)` matches one-or-more digits only.
-      {
-        source: '/garage/:id(\\d+)',
-        destination: '/catalogue',
-        permanent: true,
-      },
-      {
-        source: '/old-garage/:id(\\d+)',
-        destination: '/catalogue',
-        permanent: true,
-      },
+      // database. /garage/:id and /old-garage/:id are now handled by
+      // app/(old-)garage/[slug]/route.ts which returns 410 Gone for any
+      // slug not present in the vehicles table — cleaner SEO signal than
+      // a 301 to the listing.
+      // /catalogue/:id stays as a 301 to /catalogue (different scope).
       {
         source: '/catalogue/:id(\\d+)',
         destination: '/catalogue',
