@@ -65,8 +65,8 @@ const PAYMENT_OPTIONS = [
 export function StepPaymentMethod({ form, navButtons, onBack }: StepPaymentMethodProps) {
   const { t } = useTranslation()
   const paymentMethod = form.watch('paymentMethod')
-  /** Cash on Delivery requires explicit acknowledgement of the AED 495 deposit
-      before the selection is committed. Popup opens on every Cash click. */
+  /** The 'cash' option requires explicit acknowledgement of the AED 495 deposit
+      before the selection is committed. */
   const [cashPopupOpen, setCashPopupOpen] = useState(false)
 
   return (
@@ -95,7 +95,7 @@ export function StepPaymentMethod({ form, navButtons, onBack }: StepPaymentMetho
             key={option.value}
             type="button"
             onClick={() => {
-              // Cash on Delivery — defer selection until the deposit popup is acknowledged.
+              // 'cash' option — defer selection until the deposit popup is acknowledged.
               if (option.value === 'cash') {
                 setCashPopupOpen(true)
                 return
@@ -160,8 +160,8 @@ export function StepPaymentMethod({ form, navButtons, onBack }: StepPaymentMetho
 }
 
 // ---------------------------------------------------------------------------
-// Cash confirmation modal — forces an explicit acknowledgement of the AED 495
-// holding deposit before Cash on Delivery is committed as the payment method.
+// Confirmation modal for the 'cash' option — forces explicit acknowledgement of
+// the AED 495 holding deposit before the selection is committed.
 // Kept inline (one-off use, not exported).
 // ---------------------------------------------------------------------------
 
@@ -222,7 +222,7 @@ function CashConfirmModal({ open, onCancel, onConfirm }: CashConfirmModalProps) 
               id="cash-confirm-title"
               className="text-2xl font-bold text-zinc-900 leading-tight pr-4"
             >
-              Cash on Delivery — please read
+              Payment on Delivery — please read
             </h3>
             <button
               type="button"
@@ -243,10 +243,10 @@ function CashConfirmModal({ open, onCancel, onConfirm }: CashConfirmModalProps) 
                 Your Payment, Explained
               </p>
               <p className="leading-relaxed">
-                You&apos;ve chosen to pay in cash on delivery — here&apos;s exactly how it works.
+                You&apos;ve chosen Payment on Delivery — here&apos;s exactly how it works.
                 To lock in your booking, we ask for a small AED 495 holding deposit today, on a
                 card in the renter&apos;s name. That&apos;s the only payment you make now. The
-                rest of your total is paid in cash when we deliver your car. The AED 495 isn&apos;t
+                rest of your total is paid when we deliver your car. The AED 495 isn&apos;t
                 an extra fee — it comes straight off your balance, so on the day you only pay the
                 remaining amount, and nothing more. As soon as payment goes through, you&apos;ll
                 get a confirmation email from our team.
@@ -273,7 +273,7 @@ function CashConfirmModal({ open, onCancel, onConfirm }: CashConfirmModalProps) 
               onClick={onConfirm}
               className="flex-1 px-6 py-3.5 rounded-[var(--radius-card)] bg-brand-cyan text-black text-base font-bold cursor-pointer hover:bg-brand-cyan-hover transition-colors"
             >
-              I understand — continue with Cash
+              I understand — continue
             </button>
             <button
               type="button"
