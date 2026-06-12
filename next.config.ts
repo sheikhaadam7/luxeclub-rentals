@@ -65,39 +65,24 @@ const nextConfig: NextConfig = {
       // ── Numeric ID URLs from the OLD site ───────────────────────────────
       // The previous CMS used numeric vehicle IDs in paths (e.g. /garage/1000,
       // /catalogue/1000). Those IDs do not map to anything in the current
-      // database, so send all numeric paths to the fleet listing page —
-      // this preserves the link equity instead of letting them 404 + noindex.
-      // Path-level regex `(\\d+)` matches one-or-more digits only.
-      {
-        source: '/garage/:id(\\d+)',
-        destination: '/catalogue',
-        permanent: true,
-      },
-      {
-        source: '/old-garage/:id(\\d+)',
-        destination: '/catalogue',
-        permanent: true,
-      },
+      // database. /garage/:id and /old-garage/:id are now handled by
+      // app/(old-)garage/[slug]/route.ts which returns 410 Gone for any
+      // slug not present in the vehicles table — cleaner SEO signal than
+      // a 301 to the listing.
+      // /catalogue/:id stays as a 301 to /catalogue (different scope).
       {
         source: '/catalogue/:id(\\d+)',
         destination: '/catalogue',
         permanent: true,
       },
 
-      // ── Old /garage/* + /old-garage/* → current /catalogue/* ────────────
+      // ── Old /garage + /old-garage index pages → current /catalogue ──────
       // The previous version of the site used /garage/ as the vehicle
-      // detail route. Google still has these indexed — 301 redirects
-      // consolidate the signals into the canonical /catalogue/ URLs.
-      {
-        source: '/garage/:slug',
-        destination: '/catalogue/:slug',
-        permanent: true,
-      },
-      {
-        source: '/old-garage/:slug',
-        destination: '/catalogue/:slug',
-        permanent: true,
-      },
+      // detail route. We deliberately do NOT keep generic /garage/:slug or
+      // /old-garage/:slug catch-all 301s — those would mask retired cars
+      // as soft-404s on /catalogue/:slug. Instead, anything not matched by
+      // a specific override above is handled by app/garage/[slug]/route.ts
+      // and app/old-garage/[slug]/route.ts which return 410 Gone.
       {
         source: '/garage',
         destination: '/catalogue',
