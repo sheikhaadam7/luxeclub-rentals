@@ -3,6 +3,7 @@
 import { UseFormReturn } from 'react-hook-form'
 import type { BookingFormValues } from '@/lib/validations/booking'
 import type { Vehicle } from '@/components/booking/BookingWizard'
+import { useCurrency } from '@/lib/currency/context'
 
 const KM_PER_DAY = 250
 const EXTRA_KM_RATE_AED = 2.55
@@ -25,10 +26,6 @@ interface BookingOverviewProps {
   rentalDays: number
 }
 
-function formatAED(n: number): string {
-  return n.toLocaleString('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-}
-
 function Item({ children }: { children: React.ReactNode }) {
   return (
     <li className="flex items-start gap-3 text-sm text-zinc-800">
@@ -47,6 +44,7 @@ function Item({ children }: { children: React.ReactNode }) {
 }
 
 export function BookingOverview({ form, vehicle: _vehicle, rentalDays }: BookingOverviewProps) {
+  const { formatPrice } = useCurrency()
   const protectionPackage = form.watch('protectionPackage') ?? 'basic'
   const addons = form.watch('addons') ?? {
     additionalDriver: false,
@@ -61,10 +59,8 @@ export function BookingOverview({ form, vehicle: _vehicle, rentalDays }: Booking
   const days = Math.max(1, rentalDays || 1)
   const kmIncluded = days * KM_PER_DAY
   // Basic-protection Loss Damage Waiver excess. Fixed at AED 7,000 across
-  // every vehicle to match the Step 2 Basic-package excess copy. The USD
-  // approximation uses ~AED 1 = $0.273 — refreshed manually when rates shift.
+  // every vehicle to match the Step 2 Basic-package excess copy.
   const ldwAmount = 7000
-  const ldwUsdApprox = '$1,910.73'
 
   const deliveryLabel =
     pickupMethod === 'delivery' && deliveryLocation
@@ -81,14 +77,14 @@ export function BookingOverview({ form, vehicle: _vehicle, rentalDays }: Booking
 
         {protectionPackage === 'basic' && (
           <Item>
-            Loss Damage Waiver (including theft protection) up to AED {formatAED(ldwAmount)}{' '}
-            (approx {ldwUsdApprox}) financial responsibility
+            Loss Damage Waiver (including theft protection) up to {formatPrice(ldwAmount, { exact: true })}{' '}
+            financial responsibility
           </Item>
         )}
 
         <Item>
-          {kmIncluded.toLocaleString('en-AE')} km are included, each additional kilometer costs AED{' '}
-          {EXTRA_KM_RATE_AED.toFixed(2)}
+          {kmIncluded.toLocaleString('en-US')} km are included, each additional kilometer costs{' '}
+          {formatPrice(EXTRA_KM_RATE_AED, { exact: true })}
         </Item>
 
         {protectionPackage === 'inclusive' && (

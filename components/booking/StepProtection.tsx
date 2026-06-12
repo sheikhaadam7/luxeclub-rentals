@@ -55,7 +55,9 @@ interface ProtectionPackage {
   id: ProtectionId
   name: string
   stars: number
-  excess: string
+  /** AED amount of the excess (financial responsibility cap), or null for
+   *  "No excess". Formatted into the customer's currency at render time. */
+  excessAed: number | null
   excessHighlight: 'red' | 'green'
   included: Record<FeatureKey, boolean>
   /** AED amount per day, or null for "Included" (no extra charge) */
@@ -69,7 +71,7 @@ const PACKAGES: ProtectionPackage[] = [
     id: 'basic',
     name: 'Basic Protection',
     stars: 2,
-    excess: 'Excess: up to AED 7,000.00',
+    excessAed: 7000,
     excessHighlight: 'red',
     included: { ldw: true, tyres: false, interior: false, roadside: false },
     priceAedPerDay: null,
@@ -79,7 +81,7 @@ const PACKAGES: ProtectionPackage[] = [
     id: 'inclusive',
     name: 'All Inclusive Protection',
     stars: 3,
-    excess: 'No excess',
+    excessAed: null,
     excessHighlight: 'green',
     included: { ldw: true, tyres: true, interior: true, roadside: true },
     priceAedPerDay: 72.80,
@@ -211,7 +213,9 @@ export function StepProtection({ form, navButtons, onBack }: StepProtectionProps
                   pkg.excessHighlight === 'green' ? 'text-emerald-600' : 'text-zinc-900',
                 ].join(' ')}
               >
-                {pkg.excess}
+                {pkg.excessAed === null
+                  ? 'No excess'
+                  : `Excess: up to ${formatPrice(pkg.excessAed, { exact: true })}`}
               </p>
 
               <div className="h-px bg-zinc-200 mb-4" />

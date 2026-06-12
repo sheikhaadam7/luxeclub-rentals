@@ -84,6 +84,8 @@ function RentersNameNotice() {
 
 function ImportantInfoCollapsible() {
   const [open, setOpen] = useState(true)
+  const { formatPrice } = useCurrency()
+  const cancellationFee = formatPrice(495, { exact: true })
   return (
     <div className="border-t border-b border-zinc-200 py-3">
       <button
@@ -114,9 +116,9 @@ function ImportantInfoCollapsible() {
           <ul className="list-disc pl-5 space-y-2.5 marker:text-zinc-400">
             <li>
               <span className="font-semibold text-zinc-900">Booking cancellation:</span>{' '}
-              An amount of AED 495 will be charged to cancel the booking
+              An amount of {cancellationFee} will be charged to cancel the booking
               (possible until the agreed pickup time). Any remaining prepaid
-              amount over AED 495 will be refunded.
+              amount over {cancellationFee} will be refunded.
             </li>
             <li>
               <span className="font-semibold text-zinc-900">
@@ -361,13 +363,16 @@ function PaymentForm({
       )}
 
       {/* Submit button — shows the actual amount */}
-      <button
-        type="submit"
-        disabled={!stripe || !elements || isProcessing}
-        className="w-full rounded-[var(--radius-card)] bg-brand-cyan py-3.5 text-base font-bold text-black hover:bg-brand-cyan-hover cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {isProcessing ? t('booking.processing') : 'Pay and Book'}
-      </button>
+      <div className="space-y-2">
+        <button
+          type="submit"
+          disabled={!stripe || !elements || isProcessing}
+          className="w-full rounded-[var(--radius-card)] bg-brand-cyan py-3.5 text-base font-bold text-black hover:bg-brand-cyan-hover cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isProcessing ? t('booking.processing') : 'Pay and Book'}
+        </button>
+        <ChargeCurrencyDisclaimer />
+      </div>
     </form>
   )
 }
@@ -561,15 +566,18 @@ function CashCardForm({
           </button>
         </div>
       ) : (
-        <button
-          type="submit"
-          disabled={!stripe || !elements || isProcessing}
-          className="w-full rounded-[var(--radius-card)] bg-black py-3.5 text-base font-bold text-white cursor-pointer hover:bg-black/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isProcessing
-            ? t('booking.savingCard')
-            : 'Pay and Book'}
-        </button>
+        <div className="space-y-2">
+          <button
+            type="submit"
+            disabled={!stripe || !elements || isProcessing}
+            className="w-full rounded-[var(--radius-card)] bg-black py-3.5 text-base font-bold text-white cursor-pointer hover:bg-black/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isProcessing
+              ? t('booking.savingCard')
+              : 'Pay and Book'}
+          </button>
+          <ChargeCurrencyDisclaimer />
+        </div>
       )}
     </form>
   )

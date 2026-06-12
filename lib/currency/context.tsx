@@ -153,17 +153,29 @@ export function CurrencyProvider({
     }
   }, [])
 
-  // Format an AED amount into the selected currency
+  // Format an AED amount into the selected currency.
+  // - exact:true   → preserves cents (Intl 2-decimal). Required for any
+  //                  price the user is about to pay AND for small/sub-unit
+  //                  amounts like the extra-km rate, otherwise Math.round
+  //                  collapses AED 2.55 → £1 in low-rate currencies.
+  // - exact:false  → rounds up to nearest 5 in the target currency, used
+  //                  for catalogue "from" prices where a clean number reads
+  //                  better than e.g. "£217.43 / day".
   const formatPrice = useCallback(
     (aedAmount: number, options?: { exact?: boolean }): string => {
       if (currency === 'AED') {
         return `AED ${aedAmount.toLocaleString('en-US')}`
       }
       const raw = aedAmount * rates[currency]
-      const converted = options?.exact
-        ? Math.round(raw)
-        : Math.ceil(raw / 5) * 5
-      return `${SYMBOLS[currency]}${converted.toLocaleString('en-US')}`
+      if (options?.exact) {
+        const formatted = new Intl.NumberFormat('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }).format(raw)
+        return `${SYMBOLS[currency]}${formatted}`
+      }
+      const rounded = Math.ceil(raw / 5) * 5
+      return `${SYMBOLS[currency]}${rounded.toLocaleString('en-US')}`
     },
     [currency, rates],
   )
