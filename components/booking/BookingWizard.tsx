@@ -709,7 +709,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
               type="button"
               onClick={advance}
               disabled={isPending || isCreatingBooking || !currentStepReady}
-              className="shrink-0 px-6 py-3 rounded-[var(--radius-card)] bg-black text-white text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="shrink-0 px-6 py-3 rounded-[var(--radius-card)] bg-brand-cyan text-black text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isPending || isCreatingBooking ? t('booking.pleaseWait') : t('booking.continue')}
             </button>
