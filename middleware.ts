@@ -62,6 +62,8 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith('/guides/') ||
     pathname.startsWith('/rent-') ||
     pathname.startsWith('/api/') ||
+    pathname.startsWith('/garage') ||
+    pathname.startsWith('/old-garage') ||
     pathname === '/sitemap.xml' ||
     pathname === '/robots.txt'
 

@@ -84,20 +84,13 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
 
-      // ── Old /garage/* + /old-garage/* → current /catalogue/* ────────────
+      // ── Old /garage + /old-garage index pages → current /catalogue ──────
       // The previous version of the site used /garage/ as the vehicle
-      // detail route. Google still has these indexed — 301 redirects
-      // consolidate the signals into the canonical /catalogue/ URLs.
-      {
-        source: '/garage/:slug',
-        destination: '/catalogue/:slug',
-        permanent: true,
-      },
-      {
-        source: '/old-garage/:slug',
-        destination: '/catalogue/:slug',
-        permanent: true,
-      },
+      // detail route. We deliberately do NOT keep generic /garage/:slug or
+      // /old-garage/:slug catch-all 301s — those would mask retired cars
+      // as soft-404s on /catalogue/:slug. Instead, anything not matched by
+      // a specific override above is handled by app/garage/[slug]/route.ts
+      // and app/old-garage/[slug]/route.ts which return 410 Gone.
       {
         source: '/garage',
         destination: '/catalogue',
