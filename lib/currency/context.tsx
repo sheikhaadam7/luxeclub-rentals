@@ -21,6 +21,7 @@ interface CurrencyContextValue {
 const STORAGE_KEY = 'luxeclub-currency'
 const RATES_CACHE_KEY = 'luxeclub-rates'
 const RATES_MAX_AGE = 3_600_000 // 1 hour
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 365 // 1 year
 
 const FALLBACK_RATES: Record<Currency, number> = {
   AED: 1,
@@ -76,11 +77,20 @@ const CurrencyContext = createContext<CurrencyContextValue | null>(null)
 // Provider
 // ---------------------------------------------------------------------------
 
-export function CurrencyProvider({ children }: { children: ReactNode }) {
-  const [currency, setCurrencyState] = useState<Currency>('AED')
+export function CurrencyProvider({
+  children,
+  initialCurrency,
+}: {
+  children: ReactNode
+  initialCurrency?: Currency
+}) {
+  // useState initializer takes initialCurrency from the server (header or
+  // geo cookie) so first paint already uses the right symbol — no flash.
+  const [currency, setCurrencyState] = useState<Currency>(initialCurrency ?? 'AED')
   const [rates, setRates] = useState<Record<Currency, number>>(() => getCachedRates() ?? FALLBACK_RATES)
 
-  // Read saved preference on mount
+  // Read saved preference on mount — localStorage takes precedence over the
+  // server-passed initialCurrency since localStorage = user's explicit choice.
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY) as Currency | null
@@ -126,7 +136,9 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
     return () => { cancelled = true }
   }, [])
 
-  // Persist preference
+  // Persist preference to both localStorage (long-term client storage) and a
+  // cookie (so the server-side middleware sees the choice on next request and
+  // won't re-tag with a geo guess).
   const setCurrency = useCallback((c: Currency) => {
     setCurrencyState(c)
     try {
@@ -134,19 +146,36 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
     } catch {
       // localStorage unavailable
     }
+    try {
+      document.cookie = `${STORAGE_KEY}=${c}; path=/; max-age=${COOKIE_MAX_AGE}; SameSite=Lax`
+    } catch {
+      // document unavailable (SSR — shouldn't happen here, defensive)
+    }
   }, [])
 
-  // Format an AED amount into the selected currency
+  // Format an AED amount into the selected currency.
+  // - exact:true   → preserves cents (Intl 2-decimal). Required for any
+  //                  price the user is about to pay AND for small/sub-unit
+  //                  amounts like the extra-km rate, otherwise Math.round
+  //                  collapses AED 2.55 → £1 in low-rate currencies.
+  // - exact:false  → rounds up to nearest 5 in the target currency, used
+  //                  for catalogue "from" prices where a clean number reads
+  //                  better than e.g. "£217.43 / day".
   const formatPrice = useCallback(
     (aedAmount: number, options?: { exact?: boolean }): string => {
       if (currency === 'AED') {
         return `AED ${aedAmount.toLocaleString('en-US')}`
       }
       const raw = aedAmount * rates[currency]
-      const converted = options?.exact
-        ? Math.round(raw)
-        : Math.ceil(raw / 5) * 5
-      return `${SYMBOLS[currency]}${converted.toLocaleString('en-US')}`
+      if (options?.exact) {
+        const formatted = new Intl.NumberFormat('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }).format(raw)
+        return `${SYMBOLS[currency]}${formatted}`
+      }
+      const rounded = Math.ceil(raw / 5) * 5
+      return `${SYMBOLS[currency]}${rounded.toLocaleString('en-US')}`
     },
     [currency, rates],
   )

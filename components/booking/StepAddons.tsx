@@ -6,6 +6,7 @@ import { differenceInDays } from 'date-fns'
 import { BookingFormValues } from '@/lib/validations/booking'
 import { Vehicle } from '@/components/booking/BookingWizard'
 import { ADDON_PRICES, noDepositTierFee } from '@/lib/pricing/calculator'
+import { useCurrency } from '@/lib/currency/context'
 
 interface StepAddonsProps {
   form: UseFormReturn<BookingFormValues>
@@ -21,8 +22,10 @@ type AddonId = 'noDeposit' | 'additionalDriver' | 'personalDriver' | 'babySeat' 
 interface AddonRow {
   id: AddonId
   name: string
-  /** Function that returns the displayed price label, given context (rentalDays). */
-  priceLabel: (rentalDays: number) => string
+  /** Function that returns the AED amount for this addon given the rental days
+   *  (needed for the tiered noDeposit fee). Formatted into the customer's
+   *  currency at render time via useCurrency(). */
+  priceAed: (rentalDays: number) => number
   period: string
   details: string
   icon: React.ReactNode
@@ -46,7 +49,7 @@ const ADDONS: AddonRow[] = [
   {
     id: 'noDeposit',
     name: 'No Deposit Option',
-    priceLabel: (days) => `AED ${noDepositTierFee(days).toFixed(2)}`,
+    priceAed: (days) => noDepositTierFee(days),
     period: 'one-time',
     details:
       "For customers who are not eligible for the No-Deposit option, a pre-authorisation deposit of AED 1,000–3,000 (depending on the vehicle type) is placed on the credit card at pickup. No money is taken from your card — the amount is only pre-authorised by your credit card company and released within a few days after the vehicle is returned.",
@@ -60,7 +63,7 @@ const ADDONS: AddonRow[] = [
   {
     id: 'additionalDriver',
     name: 'Additional Driver',
-    priceLabel: () => `AED ${ADDON_PRICES.additionalDriver.toFixed(2)}`,
+    priceAed: () => ADDON_PRICES.additionalDriver,
     period: '/ day',
     details:
       "Add a second driver to share the wheel — perfect for long road trips. Both drivers must present their valid driving licence at pickup.",
@@ -75,7 +78,7 @@ const ADDONS: AddonRow[] = [
   {
     id: 'personalDriver',
     name: 'Personal Driver',
-    priceLabel: () => `AED ${ADDON_PRICES.personalDriver.toFixed(2)}`,
+    priceAed: () => ADDON_PRICES.personalDriver,
     period: '/ day',
     details:
       "Driving in Dubai isn't always easy for visitors — unfamiliar roads, busy parking, unpredictable traffic. With your own chauffeur, you're dropped off and picked up at your leisure. Hassle-free.",
@@ -90,7 +93,7 @@ const ADDONS: AddonRow[] = [
   {
     id: 'babySeat',
     name: 'Baby Seat',
-    priceLabel: () => `AED ${ADDON_PRICES.babySeat.toFixed(2)}`,
+    priceAed: () => ADDON_PRICES.babySeat,
     period: '/ day',
     details:
       "A rear-facing baby seat suitable for infants up to 13 kg, fitted before pickup. Please confirm your child's age when booking so we send the right model.",
@@ -103,7 +106,7 @@ const ADDONS: AddonRow[] = [
   {
     id: 'childSeat',
     name: 'Child Seat',
-    priceLabel: () => `AED ${ADDON_PRICES.childSeat.toFixed(2)}`,
+    priceAed: () => ADDON_PRICES.childSeat,
     period: '/ day',
     details:
       "A forward-facing child seat suitable for children roughly 9–18 kg / 1–4 years old, fitted before pickup.",
@@ -119,6 +122,7 @@ const ADDONS: AddonRow[] = [
 export function StepAddons({ form, vehicle: _vehicle, navButtons, onBack }: StepAddonsProps) {
   const driverAge = form.watch('driverAge') ?? '30+'
   const underTwentyFour = ['21', '22', '23'].includes(driverAge)
+  const { formatPrice } = useCurrency()
 
   const startDate = form.watch('startDate')
   const endDate = form.watch('endDate')
@@ -208,7 +212,7 @@ export function StepAddons({ form, vehicle: _vehicle, navButtons, onBack }: Step
                 <div className="flex-1 min-w-0">
                   <p className="text-base font-bold text-zinc-900">{addon.name}</p>
                   <p className="text-sm text-zinc-700 mt-0.5">
-                    <span className="font-semibold">{addon.priceLabel(rentalDays)}</span>{' '}
+                    <span className="font-semibold">{formatPrice(addon.priceAed(rentalDays), { exact: true })}</span>{' '}
                     <span className="text-zinc-500">{addon.period}</span>
                   </p>
                   {disabled && (

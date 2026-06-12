@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import { useCurrency } from '@/lib/currency/context'
 
 interface Vehicle {
   slug: string
@@ -23,6 +24,7 @@ function ResultsList({
   vehicles: Vehicle[]
   onSelect: (slug: string) => void
 }) {
+  const { formatPrice } = useCurrency()
   return (
     <ul>
       {vehicles.map((vehicle) => (
@@ -53,7 +55,7 @@ function ResultsList({
               <p className="text-sm sm:text-base text-white font-medium truncate">{vehicle.name}</p>
               {vehicle.daily_rate && (
                 <p className="text-xs sm:text-sm text-white/40">
-                  AED {vehicle.daily_rate.toLocaleString()} / day
+                  {formatPrice(vehicle.daily_rate)} / day
                 </p>
               )}
             </div>
