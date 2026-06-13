@@ -387,7 +387,7 @@ function CryptoComingSoonModal({ open, onClose }: CryptoComingSoonModalProps) {
           <div className="px-6 pb-4 overflow-y-auto">
             <div className="rounded-[var(--radius-card)] border border-zinc-200 bg-zinc-50 p-5 text-base text-zinc-700">
               <p className="leading-relaxed">
-                We&apos;re finalising our self-serve crypto checkout. Until that&apos;s live,
+                Our crypto payment system is currently under maintenance. In the meantime,
                 the easiest way to book and pay in crypto is to message us directly on
                 WhatsApp — our team will confirm availability, send you a payment invoice
                 in BTC, ETH, USDT or your preferred coin, and lock the booking in once
