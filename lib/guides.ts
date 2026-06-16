@@ -1103,4 +1103,165 @@ export const guides: Guide[] = [
       },
     ],
   },
+  {
+    slug: 'salik-tags-explained-dubai-tourists',
+    title: 'Salik Tags Explained for Dubai Tourists (2026)',
+    metaTitle: 'Salik Tags Explained for Dubai Tourists (2026) — Tolls in a Rental Car',
+    metaDescription:
+      "How Dubai's Salik toll system works in a rental car. Gate locations, peak vs off-peak pricing, the rental admin-fee trap, and what to actually budget for tolls.",
+    publishedDate: '2026-06-08',
+    category: 'driving',
+    image: '/guides/salik-hero.jpg',
+    imageAlt: "Sheikh Zayed Road at dusk with the Burj Khalifa — Dubai's main artery where most Salik toll gates sit",
+    sections: [
+      {
+        heading: 'What Salik actually is (and why it matters in a rental)',
+        content:
+          "Salik is Dubai's electronic toll system. There are no booths — gantries stretched across the road read a small tag fixed to your windshield as you pass underneath at full speed. A few dirhams get deducted automatically, and that's the whole transaction.\n\nIn a rental car you don't deal with the tag directly. Every legitimate rental on Dubai roads has one fitted before you collect the car. What you DO deal with is the bill — and the bill is where most tourists get mildly surprised.\n\nThis guide covers what Salik costs, where the gates are, how rental companies pass the charges back to you, and the one fee line that's worth asking about before you sign. For the wider rules picture — speed limits, parking, fuel — our [Dubai driving rules for tourists guide](/guides/dubai-driving-rules-for-tourists) is the prerequisite read.",
+      },
+      {
+        heading: "Where the gates are (and which ones you'll actually hit)",
+        image: '/guides/salik-gantry.png',
+        imageAlt: 'A Salik toll gantry in Dubai showing the brand logo and overhead camera — what every gate looks like as you drive through',
+        content:
+          "Salik now operates around ten gates across Dubai. The locations matter because the route you take across the city directly drives how many times you get charged.\n\nThe heavily-trafficked ones for tourists:\n\n- **Sheikh Zayed Road** runs the spine of Dubai and carries the most gates. You'll hit at least two on most cross-city journeys.\n- **Al Garhoud Bridge and Al Maktoum Bridge** cross the Creek between Bur Dubai and Deira — relevant if you're visiting the old city or Dubai International Airport.\n- **Business Bay Crossing** — central, hits anyone driving between Downtown and Festival City.\n- **Airport Tunnel (DXB)** — every airport collection and drop-off goes through this one.\n- **Al Safa gates** — added in 2024–2025 to close a long-running gap on the central stretch of Sheikh Zayed Road. You'll now hit one heading north between Downtown and the Marina.\n- **Al Mamzar, Jebel Ali, Al Barsha** — outer-Dubai gates that catch you on longer trips or northbound runs toward Sharjah.\n\nPractical maths for tourists: if you're staying somewhere central (Downtown, Marina, JBR, Palm) and driving across town daily, count on 3–6 Salik hits per day.",
+      },
+      {
+        heading: 'Per-pass cost: peak vs off-peak, and the dynamic pricing rule',
+        content:
+          "Salik moved to dynamic pricing in early 2025, and the rates as of 2026 are:\n\n- **AED 4 per pass off-peak** — the standard rate most of the day\n- **AED 6 per pass peak** — Monday to Saturday, 6:00–10:00 AM and 4:00–8:00 PM\n- **Free between 1:00 AM and 6:00 AM** — late-night and early-morning trips are toll-free\n- **Sundays are off-peak all day** — the UAE working week runs Monday to Friday, so Sundays don't carry the rush-hour multiplier\n\nOne useful rule: if you pass through the same gate twice within four seconds (a U-turn under a gantry, for example), you're only charged once. There's no daily cap, no monthly cap — drive a lot, pay a lot.\n\nFor visitors planning a long drive on a Friday morning (heading out to Hatta or Abu Dhabi), the off-peak treatment from Friday onward makes the toll burden lower than the same trip on a Monday. Worth knowing if your itinerary is flexible.",
+      },
+      {
+        heading: 'How rental companies handle Salik (and the admin-fee trap)',
+        image: '/guides/salik-dubai-aerial.png',
+        imageAlt: 'Satellite view of Dubai with the Palm Jumeirah and main road network visible — the toll system covers most of the central road grid',
+        content:
+          "Two models exist:\n\n**Pre-loaded tag model.** The rental company keeps a topped-up Salik account on the tag attached to your car. Tolls deduct as you drive. At return, they reconcile the total against your booking and bill you the difference (or invoice you for the trip total).\n\n**Post-rental bill model.** The tag is registered to the rental company's master account. Every charge gets logged. After you return the car, they send you an itemised bill — sometimes the same day, sometimes weeks later.\n\nEither way, the per-toll cost is AED 4–6 at face value. What varies — and what catches people out — is the **admin fee per Salik pass**. This is a markup the rental company adds on top of the actual toll cost.\n\nThe range across the Dubai rental market: anywhere from AED 5 to AED 25 per toll, on top of the toll itself. At five Salik passes per day, seven days, the AED 25-per-pass version turns into AED 875 in admin charges alone. The toll itself was only AED 140 of that.\n\n**Ask before you sign.** The Salik admin fee is rarely on the booking page. It surfaces in the rental agreement small print or at handover. If the answer is anything over AED 10 per toll, it's worth pushing back or comparing operators.\n\nAt LuxeClub we pass Salik through at cost with a small flat handling fee disclosed at booking — no per-toll markup. For the full picture on what other charges can land on a rental bill after the trip ends, our [what happens if you get a fine in a rental car in Dubai guide](/guides/rental-car-fines-dubai-what-happens) covers fines, Salik reconciliation, and the typical timeline.",
+      },
+      {
+        heading: 'What happens if you drive a rental into Abu Dhabi?',
+        content:
+          "This is where most tourists get confused: Salik is a *Dubai* system. Abu Dhabi runs its own tolls under a separate brand called **Darb**.\n\nWhat it means in practice:\n\n- Salik tags do not work in Abu Dhabi. Driving through a Darb gate with only a Salik tag racks up an unregistered fine (AED 100 per gate plus the toll).\n- Reputable rental companies pre-register your car on the Darb system for the trip, so you don't get caught out. Ask explicitly when you confirm a cross-emirate booking.\n- Darb is cheaper than Salik — typically AED 4 per pass at peak, free off-peak — but only the bridges and approaches into Abu Dhabi island have gates.\n\nIf your itinerary includes a day trip or overnight to Abu Dhabi, our [Dubai to Abu Dhabi road trip guide](/guides/dubai-to-abu-dhabi-road-trip-guide) covers the route, the Darb gates you'll hit, and what to ask the rental company before you set off.",
+      },
+      {
+        heading: 'What this actually looks like on your bill',
+        content:
+          "For a representative 7-day tourist trip — staying in the Marina, daily drives to Downtown and JBR, one day trip to Abu Dhabi, one Hatta weekend run — here's a realistic Salik picture:\n\n- **Around 25–35 Salik passes total** across the week\n- **AED 100–180 in raw tolls** at the AED 4–6 mix\n- **AED 0–500 in admin fees** depending on the operator (this is the wide variable)\n- **AED 10–25 in Darb tolls** for the Abu Dhabi day\n\nTotal budget: **AED 150–250 if your rental passes tolls through cleanly**, AED 400–700 if your rental tacks heavy admin fees onto each one.\n\nThis is also a good moment to check on speeding — the Salik gantries don't take speed photos, but Dubai's separate radar network is one of the strictest in the world. Our [Dubai traffic fines complete guide](/guides/dubai-traffic-fines-complete-guide) covers the radar tolerance, the per-offence cost, and the black-point system.",
+      },
+      {
+        heading: 'Practical advice for tourists',
+        content:
+          "Three things worth doing before you collect the car:\n\n1. **Ask about the Salik admin fee.** Get a number in dirhams per toll, in writing if possible. AED 5 or less is fine. AED 15+ is a flag.\n2. **Confirm Abu Dhabi / Sharjah coverage** if your itinerary crosses emirates. Make sure the car is registered on Darb (Abu Dhabi) if you're heading south.\n3. **Budget AED 150–250 for tolls across a typical week** in Dubai. It won't be the biggest line on your trip — but knowing the number stops the bill from looking strange at the end.\n\nYou don't need to download anything, register anything, or carry cash for tolls. The system runs itself in the background. The only thing tourists need to actually do is ask the right question at the rental desk — and now you know what it is.\n\nIf you're at the planning stage and weighing operators, our wider [Dubai luxury car rental hub](/car-rental-dubai) covers our standard fee structure (booking fee, deposit hold, Salik handling, insurance), and the [first-time renting a luxury car in Dubai guide](/guides/first-time-renting-luxury-car-dubai) walks through the full handover experience start to finish.",
+      },
+    ],
+  },
+  {
+    slug: 'dubai-child-car-seat-law-tourists',
+    title: 'Dubai Child Car Seat Law for Tourists (2026)',
+    metaTitle: 'Dubai Child Car Seat Law for Tourists (2026) — What Parents Need to Know',
+    metaDescription:
+      "Dubai's child car seat law in plain English. Which age needs which seat, what rentals provide, the front-seat rule, and the AED 400 fine you avoid by knowing it.",
+    publishedDate: '2026-06-15',
+    category: 'planning',
+    image: '/guides/child-seat-hero.png',
+    imageAlt: 'A smiling young child secured in a child safety seat in the back of a car — the legal and safe way to travel with kids in Dubai',
+    sections: [
+      {
+        heading: 'The law in one paragraph (and why parents from elsewhere get caught out)',
+        content:
+          "Two rules to know before you collect a rental car in Dubai with kids:\n\n1. **Any child under 4 must be in an approved child restraint.** Rear-facing for infants, forward-facing for toddlers. No exceptions, including short trips.\n2. **No child under 10 — or under 145 cm tall — can sit in the front passenger seat.** This is the rule visitors from countries without a front-seat law forget the most.\n\nEither offence is AED 400 plus 4 black points on the driver's record. Enforced regularly at routine checkpoints and through the dashcam reports the UAE police take seriously.\n\nThe rest of this guide covers which seat for which age, what rental companies actually provide, and the practical bits that come up at handover. For the wider rulebook — speed limits, parking, Salik — start with our [Dubai driving rules for tourists guide](/guides/dubai-driving-rules-for-tourists).",
+      },
+      {
+        heading: 'The four seat groups and which one your child needs',
+        content:
+          "UAE law follows the European seat groupings, so anything compliant in the EU or UK is compliant here. The four groups:\n\n- **Group 0+ (infant carrier, rear-facing).** Birth to roughly 12–15 months, or up to 13 kg. Rear-facing is mandatory at this stage and significantly safer in a frontal impact.\n- **Group 1 (toddler seat, forward-facing).** Roughly 9 months to 4 years, or 9–18 kg. Many parents extend rear-facing in a Group 1+ seat into this band; the law allows it, the safety data supports it.\n- **Group 2 (high-back booster).** Roughly 4 to 7 years, or 15–25 kg. The high back gives side-impact protection — important on Dubai's wide, fast roads.\n- **Group 3 (booster cushion).** Roughly 6 to 12 years, or 22–36 kg. Backless boosters are legal but the high-back version (Group 2/3 combination seat) is the safer choice if your child still fits.\n\nA newer standard called **i-Size (ECE R129)** sizes seats by height instead of weight and is fully accepted in the UAE. If you're shopping for one to bring or asking what the rental supplies, i-Size compatibility is the easier framing.",
+      },
+      {
+        heading: 'ISOFIX in rental cars: what to expect at handover',
+        image: 'https://images.unsplash.com/photo-1619719287848-883c8f26efbc?w=1200&q=80&auto=format',
+        imageAlt: 'A grey-and-black child safety seat installed in a car — the type of seat reputable Dubai rentals supply with ISOFIX anchors',
+        content:
+          "Every modern luxury car has ISOFIX anchor points on the two outer rear seats. ISOFIX gives you a rigid metal attachment for the seat base, removing the seatbelt-routing step that's the most common source of installation error.\n\nWhat this means in practice across Dubai's rental fleet:\n\n- **All Audi, BMW, Mercedes, Bentley, Range Rover, Porsche, and Lexus cars** in the typical rental fleet have ISOFIX as standard\n- **Older Toyota and Hyundai economy rentals** sometimes don't — check before you accept the car\n- **Some supercars (Ferrari, Lamborghini, McLaren two-seaters)** physically can't fit a child seat at all — not a viable family-car choice\n\nOn the LuxeClub owned fleet specifically: the [Audi Q3 S Line](/catalogue/audi-q3), Audi RSQ8, and Bentley Bentayga all have ISOFIX on both outer rear seats. For the broader argument on why an SUV (rather than a saloon) is the right shape for a Dubai family trip, our [luxury SUV Dubai family and honeymoon guide](/guides/luxury-suv-dubai-family-honeymoon) covers each car in detail with boot capacity, ride height, and the trade-offs between the three.",
+      },
+      {
+        heading: 'What rental companies actually provide',
+        content:
+          "Most operators in Dubai will supply a child seat at handover for an extra daily charge — typically AED 25–50 per day, sometimes capped at a weekly maximum.\n\nQuality varies dramatically. The questions worth asking before you book:\n\n- **What brand and model is the seat?** Cybex, Maxi-Cosi, Britax, and Joie are reliable. Unbranded or generic seats can be old, worn, and missing manufacturer documentation\n- **Is it i-Size certified, or the older standard?** Either is legal, but i-Size is newer and easier to fit\n- **Will someone install it at handover and let you check the fit?** A poorly installed seat is barely safer than no seat\n- **What's the seat's birthdate and expiry?** Child seats expire (typically 6–10 years from manufacture). Foam degrades.\n\n**Bringing your own from home is a legitimate option.** Almost every airline lets you check a child seat as free hold luggage in addition to your standard allowance — confirm with your carrier. The benefit is you know the seat history, the fit for your child, and how to install it.\n\n**One thing rentals can't help with: Uber and Careem rides don't carry seats.** If you're using ride-hailing between hotels, restaurants, and the airport, you need your own seat for any child under 4. Careem has a 'Careem Kids' tier in some emirates that includes a seat, but availability is patchy. Plan for it.",
+      },
+      {
+        heading: 'The front seat rule and the practical implications',
+        content:
+          "Under 10 years, or under 145 cm tall — back seat only. The driver gets the fine, not the parent if they're different people.\n\nThe practical complications this creates for family trips:\n\n- Two adults plus two small kids — all kids go in the back; rear bench gets crowded\n- Older child approaching 10 / 145 cm — measure before the trip, not after a stop\n- Multi-generational trip — grandparents driving with grandkids need to know this rule\n- Single-parent-with-one-child — your 7-year-old is still in the back\n\nThis rule was tightened in recent years (it used to be 'under 10' only; now both age AND height count). A tall 9-year-old still cannot sit in front. A short 11-year-old technically could.",
+      },
+      {
+        heading: 'Common mistakes tourists make (and the fine each one earns)',
+        content:
+          "The handover team see these regularly:\n\n- **'Just a short drive to the hotel'** — same rules apply on the airport-to-hotel run as on a highway trip. AED 400 / 4 points.\n- **Backless booster too early.** Legal, but a Group 2 high-back booster does meaningfully more for side-impact safety. Not a fine, just a choice worth making.\n- **Anchoring without the top tether.** Forward-facing seats need the top strap as well as the lap belt or ISOFIX. Skipping it is common and dangerous.\n- **Believing Uber drivers will provide one.** They won't. Apply the same rule on ride-hailing as on the rental.\n- **Tipping the seat forward over time.** The most common installation drift on a week-long trip — re-check the tightness mid-week.\n\nFor the full schedule of UAE traffic fines and how the black-points system actually affects a tourist (it doesn't — the points sit against the driver's licence number but the cash fine still has to be settled), our [Dubai traffic fines complete guide](/guides/dubai-traffic-fines-complete-guide) is the reference.",
+      },
+      {
+        heading: 'Practical advice for a Dubai trip with kids',
+        image: 'https://images.unsplash.com/photo-1761047321481-abbdcfb7ff00?w=1200&q=80&auto=format',
+        imageAlt: 'A child waves from a car window while their mother drives — the everyday family road-trip moment a properly installed seat makes safe',
+        content:
+          "The short version:\n\n1. **Reserve the seat at booking, not at handover.** Tell us your child's age, weight, height, and whether you want rear-facing or forward-facing. We have the right seat ready and installed when you arrive.\n2. **Measure the older child against the 145 cm threshold** if it's close. Take a photo with a tape measure on the morning of pickup — saves an argument at a checkpoint.\n3. **Check the seat install at handover yourself.** Push it side-to-side at the base — proper install moves less than 2.5 cm.\n4. **Re-check mid-trip.** A week of getting in and out of a car loosens any seat. Two minutes on day four saves a lot.\n5. **Plan ride-hailing around the seat.** Either bring a portable booster, use Careem Kids where available, or stick to your rental for kid trips.\n\nFor the broader argument on which car shape works best for Dubai with kids — Audi Q3 S Line as the entry choice, RSQ8 as the value pick, Bentayga for the milestone trip — the [luxury SUV Dubai family guide](/guides/luxury-suv-dubai-family-honeymoon) goes through each option. The full owned-and-B2B SUV catalogue is on the [Dubai luxury SUV rental page](/rent-luxury-suv-in-dubai).",
+      },
+    ],
+  },
+  {
+    slug: 'renting-dxb-airport-vs-hotel-delivery',
+    title: 'Renting at DXB Airport vs Hotel Delivery: Which Is Better? (2026)',
+    metaTitle: 'Renting at DXB Airport vs Hotel Delivery: Which Is Better in Dubai? (2026)',
+    metaDescription:
+      "Should you collect your rental at DXB airport or have it delivered to your Dubai hotel? Honest comparison on time, cost, hidden fees, luggage, and why a 2-seater at the airport is a bad call.",
+    publishedDate: '2026-06-22',
+    category: 'planning',
+    image: 'https://images.unsplash.com/photo-1609763252108-b727080cdd4f?w=1200&q=80&auto=format',
+    imageAlt: 'Emirates aircraft on the tarmac at Dubai International Airport Terminal 3 — where most rental decisions get made on autopilot',
+    sections: [
+      {
+        heading: "The actual choice (and why it's not really 50/50)",
+        content:
+          "Most tourists default to 'airport pickup' without thinking about it. It feels obviously convenient — land, walk to a desk, drive away.\n\nIn Dubai specifically, that mental model doesn't quite match reality. DXB's rental setup isn't a desk-at-the-gate operation, the time savings shrink the moment you look at the actual logistics, and the alternative — hotel delivery, where the car arrives at your hotel when you're ready — is offered by almost every premium operator at little or no cost.\n\nThis guide compares the two side by side on time, cost, hidden fees, and the practical bits (including one luggage trap that catches out supercar renters every season). For the wider rental experience walk-through, our [first time renting a luxury car in Dubai guide](/guides/first-time-renting-luxury-car-dubai) is the prerequisite read.",
+      },
+      {
+        heading: "What 'airport rental' actually involves at DXB",
+        content:
+          "DXB has three terminals. Each has rental kiosks landside (after baggage claim and customs), but the kiosks don't hand you keys — they hand you a paper, a parking-bay number, and instructions to take a shuttle bus to the off-airport rental compound.\n\nThe real flow:\n\n1. Land. Disembark. Walk to immigration. (10–25 min depending on terminal and queue)\n2. Collect baggage. (10–30 min)\n3. Walk to the rental kiosks landside.\n4. Sign paperwork and get directed to the shuttle. (10–15 min)\n5. Wait for the shuttle, ride to the rental compound. (10–25 min)\n6. Walk the car at the compound, sign final handover, drive off. (15–25 min)\n\nBest case: 60 minutes from disembarking to driving off. Realistic case for a busy evening landing: 100–120 minutes. The 'desk at the gate' mental model is off by an order of magnitude.\n\nFor the official airport parking and pickup zones at each terminal — useful if you're collecting someone, or planning the timing the other way — our [Dubai airport parking guide](/guides/dubai-airport-parking-guide) maps every zone and the rates.",
+      },
+      {
+        heading: "What 'hotel delivery' actually involves",
+        content:
+          "The premium-rental flow looks very different. You land, taxi to your hotel, check in, get your bags to the room, and then call the rental company. The car arrives at your hotel door — usually within 30–60 minutes of your call — and a handover specialist walks you through the car in the lobby driveway.\n\nFor most Dubai hotels and villas this delivery is **free of charge** within the city. Outer-area delivery (Hatta, Jebel Ali, Mina Rashid) typically costs AED 100–250.\n\nThe advantages compound:\n\n- **You travel from DXB to your hotel by taxi or ride-hail.** Cheaper than the off-airport shuttle, faster than the rental compound flow, no paperwork at the front end of the trip.\n- **The car arrives at your convenience.** Tired and want to nap first? Order it for tomorrow morning. Want to settle in for the evening? Order it for 8 AM next day.\n- **The handover happens in calm conditions.** Walking the car at a hotel lobby is genuinely different from walking it at a busy rental compound at 2 AM after a long flight.\n\nOn the LuxeClub side specifically, delivery is included free anywhere in Dubai. Booking detail and standard pricing live on the [Dubai luxury car rental hub](/car-rental-dubai).",
+      },
+      {
+        heading: 'The luggage-and-passenger maths (and the 2-seater trap)',
+        image: 'https://images.unsplash.com/photo-1630312465536-5c6b1f76dc3f?w=1200&q=80&auto=format',
+        imageAlt: 'A red supercar parked beside a white modern building in Dubai — the kind of two-seater whose front compartment will not take a checked suitcase',
+        content:
+          "Here's the practical question almost nobody asks until it's too late: **does the rental car physically fit you, your party, and your luggage?**\n\nFor a family of four with two large suitcases, two cabin bags, and a buggy, a saloon or SUV is fine. For a couple with two large suitcases and two cabin bags, almost anything works.\n\nFor a couple or single traveller renting a **two-seater supercar** — Ferrari 488/F8/SF90, Lamborghini Huracán, McLaren GT, Porsche 911 Cabriolet, Audi R8 Spyder, F-Type cabriolet — the maths breaks. These cars have either no rear seats or token '+2' seats that won't take a person, and front-luggage compartments ('frunks') that hold a single soft weekend bag at most.\n\nWhat this means in practice:\n\n- **Two large suitcases simply will not fit.** The Lamborghini Huracán's front compartment is 100 litres. The Ferrari 488 Pista's is 80 litres. Your average 28-inch checked suitcase is 90+ litres on its own.\n- **At the airport, this becomes your problem at the rental compound.** You signed paperwork, you walked to the parking bay, and now you're standing next to a car that cannot take your luggage. There's no taxi rank at the compound. The fallbacks (rent a second car, ask the rental to call a luggage transfer, leave bags somewhere) all cost time and money.\n- **With hotel delivery, the problem doesn't exist.** Your luggage is already at the hotel. The supercar arrives empty. You drive it for the day, return it (or pick up a different car for an airport run), and your luggage stays put.\n\n**The general rule:** if you're renting any two-seater or strict 2+2 supercar, don't do airport pickup. Have it delivered to your hotel after you've settled in. If you also need an airport-collection car for the family on a different day of the trip, book a four-seater for the airport leg and a two-seater for the experience days. Most operators (including us) can structure a multi-car booking that way.\n\nFor the broader picture on which supercar suits which trip — and the practical seating and luggage constraints of each — the [supercar rental Dubai page](/rent-supercar-in-dubai) covers every car in the fleet with passenger and storage numbers.",
+      },
+      {
+        heading: 'The cost comparison: airport pickup vs delivery',
+        content:
+          "Two cost lines change between the two options:\n\n**Airport pickup adds:**\n- An **airport surcharge** at most operators — AED 50 to AED 200 added to the booking. Sometimes called a 'premium location fee' or 'airport handling fee'. Buried in the small print.\n- A **Salik toll** at the Airport Tunnel gate on the way out of DXB — AED 4–6.\n- Often a **higher base daily rate** at airport-located fleets because the operator pays a concession to the airport authority.\n\n**Hotel delivery adds:**\n- A **delivery fee** if applicable. Most premium operators bundle Dubai delivery free. Some charge AED 100–300 for outer-area addresses.\n- No Salik toll, no concession-driven base-rate uplift.\n\nFor a 7-day rental, the delta is typically AED 200–500 in favour of hotel delivery, even before you count the time savings. For supercars where the airport markups are highest, the gap can be AED 500–1,000.\n\nWhile you're sense-checking the bill, the other variable cost most tourists miss is Salik tolls during the trip itself — our [Salik tags explained for Dubai tourists guide](/guides/salik-tags-explained-dubai-tourists) covers the gate locations and what to expect on the rental bill.",
+      },
+      {
+        heading: 'When airport pickup is actually the right call',
+        content:
+          "Hotel delivery is the right default. But there are real cases where airport pickup wins:\n\n- **You're driving direct to Abu Dhabi or out of town from the airport** — bypassing Dubai entirely. Hotel delivery doesn't help if you have no hotel.\n- **You're a single traveller with carry-on only** and you've booked a four-seater rental. The luggage trap doesn't apply, the time cost is lower, and there's no settle-in step.\n- **You need the car immediately on landing** — a meeting from the airport, a tight wedding-day timeline, an early-morning drive to Hatta. The 60-minute hotel-and-call cycle won't fit your schedule.\n- **You're a UAE resident familiar with the rental compound flow**, not a tourist. The friction the off-airport shuttle creates is much lower when you know exactly where to go.\n\nThe deciding question is usually: 'do I need the car within an hour of landing, and am I confident it can take my luggage?' If both answers are yes, pickup at the airport is fine. If either is no, deliver to the hotel.",
+      },
+      {
+        heading: 'Other variables worth checking before you decide',
+        content:
+          "Three details to ask either way:\n\n- **Insurance scope.** If you might drive to Abu Dhabi, Sharjah, or Oman, confirm coverage extends across emirates and (if relevant) across the border. For Dubai-specific rules — speed limits, parking, fuel, signage — our [Dubai driving rules for tourists guide](/guides/dubai-driving-rules-for-tourists) is the reference.\n- **Fuel level at handover.** Some operators charge a refuelling premium if you return short of the level you collected at. Note the level at handover and photograph the gauge.\n- **Deposit hold and booking fee structure.** Standard at LuxeClub is a small fixed booking fee plus an AED 2,500 hold on the credit card at handover, released within 5 business days of return. Operator practice varies. Confirm the amount and the release timeline.",
+      },
+      {
+        heading: 'The LuxeClub take',
+        image: 'https://images.unsplash.com/photo-1772929004291-dd78df4247ad?w=1200&q=80&auto=format',
+        imageAlt: 'A modern hotel entrance with cars at the porte-cochere — the kind of calm-conditions handover that hotel delivery makes possible',
+        content:
+          "For about 90% of visitors landing at DXB, hotel delivery is the better choice. The time savings are real, the cost is usually lower, the handover happens in calm conditions, and the luggage problem disappears.\n\nThe 10% where airport pickup wins are clear: out-of-Dubai destination, single traveller with light luggage in a four-seater, tight first-day schedule, resident-level familiarity with the rental compound.\n\nIf you're booking a two-seater for the trip — Ferrari, Lamborghini, McLaren, two-seat Porsche — make it delivery regardless. The luggage maths doesn't get better at the airport.\n\nOur delivery to any Dubai address is free. Booking detail, our standard handover walkthrough, and the full fleet sit on the [Dubai luxury car rental hub](/car-rental-dubai). If it's your first luxury rental in Dubai, our [first-time renting a luxury car in Dubai guide](/guides/first-time-renting-luxury-car-dubai) walks the whole experience start to finish.",
+      },
+    ],
+  },
 ]
