@@ -41,10 +41,10 @@
 
 Ordered by SEO value and commercial alignment with the owned fleet (Q3 S Line, RSQ8, Bentayga, A3). Mark ✅ when shipped, ⏳ when in progress. Pull the next ⏳ topic each Monday.
 
-1. ⏳ **Salik tags explained for Dubai tourists** — answers the most common toll-related question, links to traffic-fines + Abu Dhabi road-trip guides.
+1. ✅ **Salik tags explained for Dubai tourists** — shipped 2026-06-16 (backdated 2026-06-08). Slug: `salik-tags-explained-dubai-tourists`.
 2. ⏳ **Renting a car in Dubai during Ramadan (2027)** — seasonal, high-intent. Should publish ~6 weeks before Ramadan 2027.
-3. ⏳ **Dubai child car seat law for tourists** — addresses gap in family-oriented coverage. Links cleanly to SUV family/honeymoon guide.
-4. ⏳ **Renting at DXB airport vs hotel delivery — which is better?** — answers concrete decision question. Links to airport-parking + first-time-rental.
+3. ✅ **Dubai child car seat law for tourists** — shipped 2026-06-16 (backdated 2026-06-15). Slug: `dubai-child-car-seat-law-tourists`.
+4. ✅ **Renting at DXB airport vs hotel delivery — which is better?** — shipped 2026-06-16 (backdated 2026-06-22). Slug: `renting-dxb-airport-vs-hotel-delivery`.
 5. ⏳ **Audi RSQ8 vs BMW X5 M Competition: Dubai SUV comparison** — owned-fleet anchor + competitive comparison. RSQ8 wins on value.
 6. ⏳ **Bentley Bentayga long weekend in Oman: route, paperwork, fuel** — owned-fleet anchor + adventure content. Honeymoon-extension play.
 7. ⏳ **Dubai to Ras Al Khaimah road trip: Jebel Jais and the desert hotels** — fills the RAK gap. Links to scenic-drives + Abu Dhabi guides.
