@@ -44,3 +44,9 @@ next-env.d.ts
 
 # local dev scratch — email previews, color picker, etc.
 /tmp/
+
+# Car-type spreadsheet workflow (scripts/export-car-types.py +
+# scripts/import-car-types.py). Generated on demand from Supabase; not source
+# of truth for the catalogue. Backups are written before every --apply.
+/data/car-types.xlsx
+/data/car-types-backup-*.csv

@@ -62,24 +62,9 @@ function extractBrand(name: string): string {
   return firstWord
 }
 
-const SUV_KEYWORDS = [
-  'range rover', 'vogue', 'cayenne', 'bentayga', 'cullinan',
-  'escalade', 'dbx', 'rsq8', 'sq7', 'sq8', 'g63', 'gle',
-  'gls', 'x5', 'x7', 'urus', 'levante', 'macan', 'trackhawk',
-  'purosangue', 'x6',
-]
-
-const CONVERTIBLE_KEYWORDS = [
-  'spyder', 'spider', 'dawn', 'gtc', 'cabriolet', 'cabrio',
-  'roadster', 'convertible', 'carrera s spyder', 'portofino',
-]
-
-function extractCarType(name: string): 'SUV' | 'Convertible' | 'Sports' {
-  const lower = name.toLowerCase()
-  if (CONVERTIBLE_KEYWORDS.some((kw) => lower.includes(kw))) return 'Convertible'
-  if (SUV_KEYWORDS.some((kw) => lower.includes(kw))) return 'SUV'
-  return 'Sports'
-}
+// Car type matching now reads `vehicles.categories` directly from Supabase —
+// see components/catalogue/VehicleGrid.tsx and the spreadsheet workflow in
+// scripts/export-car-types.py + scripts/import-car-types.py.
 
 // ---------------------------------------------------------------------------
 // Data fetching
@@ -89,6 +74,7 @@ interface Vehicle {
   slug: string
   name: string
   category: string | null
+  categories: string[] | null
   primary_image_url: string | null
   image_urls: string[] | null
   daily_rate: number | null
@@ -101,7 +87,7 @@ const getVehicles = unstable_cache(
     const supabase = createAdminClient()
     const { data, error } = await supabase
       .from('vehicles')
-      .select('slug, name, category, primary_image_url, image_urls, daily_rate, weekly_rate, monthly_rate')
+      .select('slug, name, category, categories, primary_image_url, image_urls, daily_rate, weekly_rate, monthly_rate')
       .eq('is_available', true)
       .order('name')
     if (error) console.error('Failed to fetch vehicles:', error)
@@ -116,7 +102,7 @@ function filterVehicles(vehicles: Vehicle[], filter: { type: string; value: stri
     return vehicles.filter((v) => extractBrand(v.name).toLowerCase() === filter.value.toLowerCase())
   }
   if (filter.type === 'type') {
-    return vehicles.filter((v) => extractCarType(v.name) === filter.value)
+    return vehicles.filter((v) => (v.categories ?? []).includes(filter.value))
   }
   if (filter.type === 'model') {
     const needle = filter.value.toLowerCase()

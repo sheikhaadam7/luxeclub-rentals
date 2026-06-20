@@ -8,6 +8,7 @@ interface Vehicle {
   slug: string
   name: string
   category: string | null
+  categories: string[] | null
   primary_image_url: string | null
   image_urls: string[] | null
   daily_rate: number | null
@@ -41,11 +42,19 @@ const BRANDS = [
   'Rolls Royce',
 ] as const
 
-/** Car types for filtering */
+/**
+ * Canonical car types — read directly from `vehicles.categories` in Supabase.
+ * Order here is the pill display order. Assignment is driven by the
+ * spreadsheet workflow at `scripts/export-car-types.py` /
+ * `scripts/import-car-types.py`.
+ */
 const CAR_TYPES = [
-  'Sports Cars',
-  'SUV Cars',
-  'Convertible Cars',
+  'Sports',
+  'SUV',
+  'Convertible',
+  'Sedan',
+  'Coupe',
+  'Family',
 ] as const
 
 /** Multi-word brands that need prefix matching */
@@ -65,46 +74,6 @@ function extractBrand(name: string): string {
   const firstWord = name.split(' ')[0] ?? name
   const matchedBrand = BRANDS.find((b) => b.toLowerCase() === firstWord.toLowerCase())
   return matchedBrand ?? firstWord
-}
-
-/**
- * SUV models — matched by keyword in vehicle name.
- * Covers: Range Rover variants, Cayenne, Bentayga, Cullinan, Escalade, DBX,
- * RSQ8, SQ7, G63, GLE, GLS, X5, X7, Urus, etc.
- */
-const SUV_KEYWORDS = [
-  'range rover', 'vogue', 'cayenne', 'bentayga', 'cullinan',
-  'escalade', 'dbx', 'rsq8', 'sq7', 'sq8', 'g63', 'gle',
-  'gls', 'x5', 'x7', 'urus', 'levante', 'macan', 'trackhawk',
-  'purosangue', 'x6',
-]
-
-/**
- * Convertible / Spyder models — matched by keyword in vehicle name.
- * Covers: Spyder, Spider, Dawn, GTC, Cabriolet, Roadster, etc.
- */
-const CONVERTIBLE_KEYWORDS = [
-  'spyder', 'spider', 'dawn', 'gtc', 'cabriolet', 'cabrio',
-  'roadster', 'convertible', 'carrera s spyder', 'portofino',
-]
-
-/**
- * Determine car type from the vehicle name (since DB category may be null).
- * Falls back to DB category if name doesn't match any known pattern.
- */
-function extractCarType(name: string, category: string | null): string | null {
-  const lower = name.toLowerCase()
-
-  // Check convertible first (more specific — e.g. "911 Carrera S Spyder")
-  if (CONVERTIBLE_KEYWORDS.some((kw) => lower.includes(kw))) return 'Convertible Cars'
-
-  // Check SUV
-  if (SUV_KEYWORDS.some((kw) => lower.includes(kw))) return 'SUV Cars'
-
-  // Everything else is a sports car (coupes, sedans, performance cars)
-  // This covers: RS7, RS6, RS5, RS3, R8, 911 Turbo S, GT3, GT3 RS,
-  // Wraith, Continental GT, Vantage, MC20, AMG GT, etc.
-  return 'Sports Cars'
 }
 
 // ---------------------------------------------------------------------------
@@ -171,13 +140,13 @@ export function VehicleGrid({ vehicles, initialBrand }: VehicleGridProps) {
   )
   const [selectedType, setSelectedType] = useState<string | null>(null)
 
-  // Pre-compute brand and car type for each vehicle
+  // Pre-compute brand for each vehicle. Categories come straight from the DB array.
   const vehiclesWithMeta = useMemo(
     () =>
       vehicles.map((v) => ({
         ...v,
         brand: extractBrand(v.name),
-        carType: extractCarType(v.name, v.category),
+        categories: v.categories ?? [],
       })),
     [vehicles]
   )
@@ -187,7 +156,7 @@ export function VehicleGrid({ vehicles, initialBrand }: VehicleGridProps) {
     const set = new Set<string>()
     vehiclesWithMeta.forEach((v) => {
       if (!BRANDS.includes(v.brand as typeof BRANDS[number])) return
-      if (selectedType && v.carType !== selectedType) return
+      if (selectedType && !v.categories.includes(selectedType)) return
       set.add(v.brand)
     })
     return set
@@ -197,9 +166,10 @@ export function VehicleGrid({ vehicles, initialBrand }: VehicleGridProps) {
   const availableTypes = useMemo(() => {
     const set = new Set<string>()
     vehiclesWithMeta.forEach((v) => {
-      if (!v.carType || !CAR_TYPES.includes(v.carType as typeof CAR_TYPES[number])) return
       if (selectedBrand && v.brand !== selectedBrand) return
-      set.add(v.carType)
+      v.categories.forEach((c) => {
+        if (CAR_TYPES.includes(c as typeof CAR_TYPES[number])) set.add(c)
+      })
     })
     return set
   }, [vehiclesWithMeta, selectedBrand])
@@ -208,7 +178,7 @@ export function VehicleGrid({ vehicles, initialBrand }: VehicleGridProps) {
   const filtered = useMemo(() => {
     return vehiclesWithMeta.filter((v) => {
       if (selectedBrand && v.brand !== selectedBrand) return false
-      if (selectedType && v.carType !== selectedType) return false
+      if (selectedType && !v.categories.includes(selectedType)) return false
       return true
     })
   }, [vehiclesWithMeta, selectedBrand, selectedType])
@@ -220,8 +190,6 @@ export function VehicleGrid({ vehicles, initialBrand }: VehicleGridProps) {
       </div>
     )
   }
-
-  const hasActiveFilter = selectedBrand || selectedType
 
   return (
     <div>

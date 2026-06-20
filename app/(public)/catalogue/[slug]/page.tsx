@@ -193,16 +193,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-/** Derive a car type label from the vehicle name (mirrors VehicleGrid logic) */
-function deriveCarType(name: string): string {
-  const lower = name.toLowerCase()
-  const convertibleKw = ['spyder', 'spider', 'dawn', 'gtc', 'cabriolet', 'cabrio', 'roadster', 'convertible', 'portofino']
-  if (convertibleKw.some((kw) => lower.includes(kw))) return 'Convertible Cars'
-  const suvKw = ['range rover', 'vogue', 'cayenne', 'bentayga', 'cullinan', 'escalade', 'dbx', 'rsq8', 'sq7', 'sq8', 'g63', 'gle', 'gls', 'x5', 'x7', 'urus', 'levante', 'macan', 'purosangue', 'x6']
-  if (suvKw.some((kw) => lower.includes(kw))) return 'SUV Cars'
-  return 'Sports Cars'
-}
-
 const WHATSAPP_NUMBER = '971588086137'
 
 export default async function VehicleDetailPage({ params }: PageProps) {
@@ -245,7 +235,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
   }
 
   const specs = vehicle.specs as Record<string, string> | null
-  const carType = vehicle.category || deriveCarType(vehicle.name)
+  const carType = (vehicle.categories as string[] | null)?.[0] ?? vehicle.category ?? null
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Hi, I'm interested in renting the ${vehicle.name}.`)}`
   const callUrl = `tel:+${WHATSAPP_NUMBER}`
 
