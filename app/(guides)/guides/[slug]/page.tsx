@@ -330,7 +330,7 @@ export default async function GuidePage({
           <span className="text-white/20">·</span>
           <Link href="/rent-luxury-car-in-dubai" className="text-xs text-brand-cyan hover:text-brand-cyan-hover transition-colors">Luxury Car Rental</Link>
           <span className="text-white/20">·</span>
-          <Link href="/rent-luxury-suv-in-dubai" className="text-xs text-brand-cyan hover:text-brand-cyan-hover transition-colors">SUV Rental</Link>
+          <Link href="/rent-suv-in-dubai" className="text-xs text-brand-cyan hover:text-brand-cyan-hover transition-colors">SUV Rental</Link>
           <span className="text-white/20">·</span>
           <Link href="/rent-sports-car-in-dubai" className="text-xs text-brand-cyan hover:text-brand-cyan-hover transition-colors">Sports Car Rental</Link>
         </div>

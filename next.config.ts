@@ -62,6 +62,17 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
 
+      // ── Renamed money pages (slug shortened for SEO) ───────────────────
+      // rent-luxury-suv-in-dubai → rent-suv-in-dubai (2026-06-21). The
+      // short slug matches the higher-volume search term ("rent SUV Dubai"),
+      // and the page heading still reads "Luxury SUV Rental Dubai" so brand
+      // positioning is unchanged. 301 transfers existing equity.
+      {
+        source: '/rent-luxury-suv-in-dubai',
+        destination: '/rent-suv-in-dubai',
+        permanent: true,
+      },
+
       // ── Numeric ID URLs from the OLD site ───────────────────────────────
       // The previous CMS used numeric vehicle IDs in paths (e.g. /garage/1000,
       // /catalogue/1000). Those IDs do not map to anything in the current

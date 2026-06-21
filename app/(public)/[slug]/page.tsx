@@ -31,7 +31,7 @@ const BRAND_LINKS = [
 
 const TYPE_LINKS = [
   { label: 'Sports Cars', slug: 'rent-sports-car-in-dubai' },
-  { label: 'SUVs', slug: 'rent-luxury-suv-in-dubai' },
+  { label: 'SUVs', slug: 'rent-suv-in-dubai' },
   { label: 'Convertibles', slug: 'rent-convertible-in-dubai' },
 ] as const
 
