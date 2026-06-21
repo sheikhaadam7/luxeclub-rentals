@@ -506,7 +506,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
           </div>
         </div>
 
-        {/* Availability calendar */}
+        {/* Availability + description */}
         <div className="mt-12 space-y-4">
           <h2 className="font-display text-xl font-medium text-white">
             <T k="vehicle.availability" />
@@ -514,7 +514,19 @@ export default async function VehicleDetailPage({ params }: PageProps) {
           <p className="text-sm text-brand-muted">
             <T k="vehicle.availabilityDesc" />
           </p>
-          <AvailabilityCalendar bookedRanges={bookedRanges} />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <AvailabilityCalendar bookedRanges={bookedRanges} />
+            {vehicle.description && (
+              <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-6">
+                <p className="text-xs uppercase tracking-wider text-brand-muted mb-3">
+                  About this {vehicle.name}
+                </p>
+                <p className="text-[15px] text-white/80 leading-relaxed whitespace-pre-line">
+                  {vehicle.description}
+                </p>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Model-specific SEO content — below all visual content */}
