@@ -1,3 +1,17 @@
+// ⚠️ WARNING — scraper vs. spreadsheet conflict.
+//
+// This scraper writes to vehicles.{name, daily/weekly/monthly_rate, specs,
+// image_urls, primary_image_url, category} via ON CONFLICT (slug) DO UPDATE.
+// As of the fleet master spreadsheet rollout (2026-06-20), the spreadsheet at
+// data/fleet.xlsx is the source of truth for those fields. Running this
+// scraper while the spreadsheet workflow is in use will OVERWRITE any edits
+// the user made.
+//
+// If you intend to keep the scraper running, pause the spreadsheet workflow.
+// If the spreadsheet is the source of truth, do not run this scraper.
+//
+// See scripts/README-fleet-workflow.md for the recommended workflow.
+
 import type { Page } from 'playwright'
 
 export interface ScrapedVehicle {

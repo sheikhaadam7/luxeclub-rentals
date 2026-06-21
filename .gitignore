@@ -50,3 +50,20 @@ next-env.d.ts
 # of truth for the catalogue. Backups are written before every --apply.
 /data/car-types.xlsx
 /data/car-types-backup-*.csv
+
+# Fleet master spreadsheet workflow (scripts/{export,import,upload,watch,enhance}-fleet.py).
+# Sheet, backups, image-staging folders, slug log, and enhancement review log
+# all stay local.
+/data/fleet.xlsx
+/data/fleet-backup-*.csv
+/data/images-to-upload/
+/data/images-backup-*.csv
+/data/descriptions-backup-*.csv
+/data/descriptions-for-review.txt
+/data/last-assigned-slugs.txt
+
+# Excel lock files (appear while a workbook is open in Excel).
+~$*.xlsx
+
+# Claude Code session state.
+.claude/scheduled_tasks.lock
