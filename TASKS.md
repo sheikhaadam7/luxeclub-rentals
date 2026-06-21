@@ -19,6 +19,7 @@
 | Sweep "24/7" claims sitewide — replace with plain "WhatsApp Support" / "support" | ⏳ | 🟡 | S | — (user will pick up later) |
 | Sweep "case by case" / "case-by-case" sitewide (~30 mentions, mostly pricing) — replace with softer phrasings | ⏳ | 🔵 | S | — (user dislikes phrasing; no-deposit page fixed; rest pending) |
 | AggregateRating via Google Places API | ⚠️ | 🟡 | M | — (blocked on API wiring) |
+| Fix `import-fleet.py` un-retire logic — don't publish hide-until-photos cars on subsequent sheet saves | ⏳ | 🟡 | S | — |
 
 **Status key:** ✅ done & verified · 🟢 done not tested · ⏳ not started · 🔧 in progress · ⚠️ blocked · 💤 deprioritized
 **Priority key:** 🔴 critical · 🟡 important · 🔵 nice-to-have
@@ -35,6 +36,7 @@
 - **5. Add `Organization` schema + `sameAs` social links** to root layout. Entity signal for E-E-A-T. Needs Instagram/TikTok/YouTube/X profile URLs from user.
 - **6. Add `dateModified` / `datePublished` to money-page JSON-LD** — guides got this in commit 4da091e; money pages didn't. Needs `updatedDate` field added to `MoneyPage` interface.
 - **Weekly guide cadence** — publish 1–2 new guides every 7 days to keep `/guides` fresh and build topical authority for AI/search retrieval. Latest batch is 2026-06-01 (IDP, Abu Dhabi road trip, SUV family/honeymoon). **Next due: 2026-06-08.** Pick the next topic from the queue below; mark it ✅ when shipped. Quarterly refresh of the 6 oldest guides also belongs to this cadence — next quarterly refresh due 2026-09-01.
+- **Fix `import-fleet.py` un-retire logic for hide-until-photos rows** — when a new car is inserted with no primary image, the script correctly sets `is_active=false` (hide-until-photos). But on the *next* save of `data/fleet.xlsx`, the watcher fires the import; the script sees the row's `retire?` cell is blank and **un-retires** it (per the plan's "clear retire? = un-retire" rule), pushing the photo-less car onto the live site. Hit this on 2026-06-21 while adding the Mercedes GLE 63 S. **Fix:** in the un-retire branch (search `unretires.append`), only un-retire when `current.primary_image_url` is non-empty. Hide-until-photos rows then stay hidden across sheet saves until `upload-fleet-images.py` runs (which auto-flips `is_active=true` once a real photo lands). Workaround in use until fixed: mark `retire? = X` on photo-less rows, then clear the X after the photo upload finishes.
 - **Standardize remaining no-deposit-themed FAQs with bespoke wording** — the canonical 4-paragraph block (memory: `feedback_deposit_canonical_copy.md`) doesn't fit these four because they're specifically about no-deposit, not general deposit info. Need a separate canonical block. Pending FAQs: (1) `car-rental-dubai` → "Can I rent a car in Dubai without a deposit?", (2) `rent-exotic-car-in-dubai` → "Can I get the no-deposit option on an exotic rental?", (3) `rent-luxury-car-in-dubai` → "Can I rent a luxury car with a no-deposit option in Dubai?", (4) `rent-supercar-in-dubai` → "Can I rent a supercar in Dubai with no deposit?".
 
 ### Guide topic queue (next 20)
