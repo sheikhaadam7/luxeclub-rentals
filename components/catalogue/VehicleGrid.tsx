@@ -7,6 +7,7 @@ import { useTranslation } from '@/lib/i18n/context'
 interface Vehicle {
   slug: string
   name: string
+  brand: string | null
   category: string | null
   categories: string[] | null
   primary_image_url: string | null
@@ -141,11 +142,13 @@ export function VehicleGrid({ vehicles, initialBrand }: VehicleGridProps) {
   const [selectedType, setSelectedType] = useState<string | null>(null)
 
   // Pre-compute brand for each vehicle. Categories come straight from the DB array.
+  // Brand: prefer the explicit DB column (set via the fleet spreadsheet); fall
+  // back to the name-regex extractor for rows that haven't been brand-tagged.
   const vehiclesWithMeta = useMemo(
     () =>
       vehicles.map((v) => ({
         ...v,
-        brand: extractBrand(v.name),
+        brand: v.brand ?? extractBrand(v.name),
         categories: v.categories ?? [],
       })),
     [vehicles]

@@ -25,8 +25,9 @@ const getVehicles = unstable_cache(
     const supabase = createAdminClient()
     const { data, error } = await supabase
       .from('vehicles')
-      .select('slug, name, category, categories, primary_image_url, image_urls, daily_rate, weekly_rate, monthly_rate')
+      .select('slug, name, brand, category, categories, primary_image_url, image_urls, daily_rate, weekly_rate, monthly_rate')
       .eq('is_available', true)
+      .eq('is_active', true)
       .order('name')
     if (error) console.error('Failed to fetch vehicles:', error)
     return data

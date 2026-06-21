@@ -73,6 +73,7 @@ function extractBrand(name: string): string {
 interface Vehicle {
   slug: string
   name: string
+  brand: string | null
   category: string | null
   categories: string[] | null
   primary_image_url: string | null
@@ -87,8 +88,9 @@ const getVehicles = unstable_cache(
     const supabase = createAdminClient()
     const { data, error } = await supabase
       .from('vehicles')
-      .select('slug, name, category, categories, primary_image_url, image_urls, daily_rate, weekly_rate, monthly_rate')
+      .select('slug, name, brand, category, categories, primary_image_url, image_urls, daily_rate, weekly_rate, monthly_rate')
       .eq('is_available', true)
+      .eq('is_active', true)
       .order('name')
     if (error) console.error('Failed to fetch vehicles:', error)
     return (data ?? []) as Vehicle[]
@@ -99,7 +101,7 @@ const getVehicles = unstable_cache(
 
 function filterVehicles(vehicles: Vehicle[], filter: { type: string; value: string }): Vehicle[] {
   if (filter.type === 'brand') {
-    return vehicles.filter((v) => extractBrand(v.name).toLowerCase() === filter.value.toLowerCase())
+    return vehicles.filter((v) => (v.brand ?? extractBrand(v.name)).toLowerCase() === filter.value.toLowerCase())
   }
   if (filter.type === 'type') {
     return vehicles.filter((v) => (v.categories ?? []).includes(filter.value))

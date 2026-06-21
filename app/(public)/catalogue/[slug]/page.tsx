@@ -154,6 +154,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     .from('vehicles')
     .select('name, daily_rate, primary_image_url, category')
     .eq('slug', slug)
+    .eq('is_active', true)
     .single()
 
   if (!vehicle) return { title: 'Vehicle Not Found' }
@@ -203,6 +204,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
     .from('vehicles')
     .select('*')
     .eq('slug', slug)
+    .eq('is_active', true)
     .single()
 
   if (error || !vehicle) {
@@ -241,17 +243,20 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
   const seoContent = vehicleContentMap[slug]
 
-  // Extract brand — handle multi-word brands
-  const MULTI_WORD = ['Aston Martin', 'Range Rover', 'Rolls Royce']
-  let brandName = vehicle.name.split(' ')[0]
-  for (const mw of MULTI_WORD) {
-    if (vehicle.name.toLowerCase().startsWith(mw.toLowerCase())) {
-      brandName = mw
-      break
+  // Extract brand — prefer the explicit DB column (set via the fleet
+  // spreadsheet); fall back to the name-regex extractor for legacy rows.
+  let brandName: string = vehicle.brand ?? vehicle.name.split(' ')[0]
+  if (!vehicle.brand) {
+    const MULTI_WORD = ['Aston Martin', 'Range Rover', 'Rolls Royce']
+    for (const mw of MULTI_WORD) {
+      if (vehicle.name.toLowerCase().startsWith(mw.toLowerCase())) {
+        brandName = mw
+        break
+      }
     }
-  }
-  if (vehicle.name.toLowerCase().includes('amg') || vehicle.name.toLowerCase().startsWith('g63')) {
-    brandName = 'Mercedes'
+    if (vehicle.name.toLowerCase().includes('amg') || vehicle.name.toLowerCase().startsWith('g63')) {
+      brandName = 'Mercedes'
+    }
   }
 
   const productJsonLd = {
@@ -362,7 +367,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-white/60"><T k="vehicle.additionalMileageCharge" /></span>
-                  <PriceDisplay amount={20} className="text-sm font-bold text-white" suffix="/Km" exact />
+                  <PriceDisplay amount={vehicle.overage_rate_per_km ?? 20} className="text-sm font-bold text-white" suffix="/Km" exact />
                 </div>
 
                 {/* Weekly / Monthly rates — contact-based */}
@@ -491,7 +496,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-white/60"><T k="vehicle.additionalMileage" /></span>
-              <PriceDisplay amount={20} className="text-sm font-bold text-white" suffix="/Km" exact />
+              <PriceDisplay amount={vehicle.overage_rate_per_km ?? 20} className="text-sm font-bold text-white" suffix="/Km" exact />
             </div>
             <div className="h-px bg-white/[0.06]" />
             <div className="flex items-center gap-2 text-sm text-white/60">

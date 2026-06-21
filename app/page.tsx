@@ -47,6 +47,7 @@ export default async function HomePage() {
         .from('vehicles')
         .select('slug, name, category, primary_image_url, image_urls, daily_rate, weekly_rate, monthly_rate')
         .eq('is_available', true)
+        .eq('is_active', true)
         .order('name')
       return data
     },
