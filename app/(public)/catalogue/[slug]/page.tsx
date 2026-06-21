@@ -513,7 +513,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
               About this {vehicle.name}
             </h2>
             <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-6">
-              <p className="text-[15px] text-white/80 leading-relaxed whitespace-pre-line">
+              <p className="text-[16px] text-white/80 leading-relaxed whitespace-pre-line">
                 {vehicle.description}
               </p>
             </div>
