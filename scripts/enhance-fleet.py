@@ -23,6 +23,13 @@ import urllib.request
 from datetime import datetime
 from pathlib import Path
 
+# Force UTF-8 console output on Windows so checkmarks/arrows render cleanly.
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+except Exception:
+    pass
+
 PROJECT = Path("C:/Users/lenovo/projects/luxeclub-rentals")
 APPLY = "--apply" in sys.argv
 SLUG_FILTER: str | None = None

@@ -59,6 +59,7 @@ next-env.d.ts
 /data/images-to-upload/
 /data/images-backup-*.csv
 /data/descriptions-backup-*.csv
+/data/descriptions-pre-wipe-*.csv
 /data/descriptions-for-review.txt
 /data/last-assigned-slugs.txt
 
