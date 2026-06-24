@@ -102,7 +102,7 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
               <form action={logout}>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-lg text-[15px] font-medium tracking-wide text-brand-muted hover:text-white hover:bg-white/[0.04] transition-all duration-200"
+                  className="px-4 py-2 rounded-lg text-[16px] font-medium tracking-wide text-brand-muted hover:text-white hover:bg-white/[0.04] transition-all duration-200"
                 >
                   {t('nav.logout')}
                 </button>
@@ -110,7 +110,7 @@ export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }
             ) : (
               <Link
                 href="/sign-in"
-                className="px-4 py-2 rounded-lg text-[15px] font-medium tracking-wide text-brand-muted hover:text-white hover:bg-white/[0.04] transition-all duration-200"
+                className="px-4 py-2 rounded-lg text-[16px] font-medium tracking-wide text-brand-muted hover:text-white hover:bg-white/[0.04] transition-all duration-200"
               >
                 {t('nav.signIn')}
               </Link>

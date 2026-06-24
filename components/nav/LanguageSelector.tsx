@@ -27,7 +27,7 @@ export function LanguageSelector() {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[13px] font-medium tracking-wide text-white border border-white/20 bg-white/[0.06] hover:bg-white/[0.12] hover:border-white/30 transition-all duration-200"
+        className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[16px] font-medium tracking-wide text-white border border-white/20 bg-white/[0.06] hover:bg-white/[0.12] hover:border-white/30 transition-all duration-200"
       >
         <Image
           src={flagUrl(current.country, 'w40')}
