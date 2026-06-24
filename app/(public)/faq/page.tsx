@@ -34,7 +34,7 @@ const faqsForSchema = [
   },
   {
     q: 'What is the security deposit?',
-    a: "A refundable security deposit is held on your card at collection — the amount depends on the car. AED 2,500 on most vehicles, AED 4,500 on Lamborghini, Ferrari, and McLaren models (the Urus and Portofino stay at AED 2,500), and AED 5,000 on our top-tier cars (Revuelto, Purosangue, SF90, GT3 RS, Cullinan Mansory). The exact deposit is shown on each vehicle's page. Drivers under 23 always pay AED 5,000 regardless of the car. Once the vehicle is returned and inspected, the deposit is released back to your card.\n\nA no-deposit option is available to drivers who have held a full driving licence for more than 5 years — just speak with our team and we'll arrange it for you.",
+    a: "AED 495 is taken at booking to confirm your reservation and lock the price for pay-on-collection rentals. It comes off the rental total when you collect the car — it isn't an additional cost. If you cancel more than 24 hours before pickup, the AED 495 is refunded in full to your original payment method.\n\nA no-deposit option is available to drivers who have held a full driving licence for more than 5 years. Many of our customers qualify — just let our team know at booking and we'll arrange it.\n\nIf a deposit does apply, the amount varies by car and is shown on each vehicle's page. It's held as a refundable pre-authorisation at collection and released back to your card after the vehicle is returned and inspected — usually within five working days.\n\nDrivers under 23 always pay AED 5,000 regardless of the car or licence-held duration.",
   },
   {
     q: 'What is the cancellation policy?',
