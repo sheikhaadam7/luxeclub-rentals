@@ -1272,8 +1272,8 @@ export const guides: Guide[] = [
       "Two 600+ hp SUVs, one Dubai. We rent both — here's the honest call on which to pick for weekends, school runs, and the airport detour.",
     publishedDate: '2026-06-24',
     category: 'cars',
-    image: 'https://oezwrobajotfxzmqabvp.supabase.co/storage/v1/object/public/vehicle-images/audi-rsq8/2.jpg',
-    imageAlt: 'Audi RSQ8 — the daily-driver performance SUV we recommend over the BMW X5 M Competition for most Dubai weeks',
+    image: 'https://images.unsplash.com/photo-1731988666894-482242ceae2f?w=1200&q=80&auto=format',
+    imageAlt: 'Black BMW X5 — the X5 M Competition is the louder, more theatrical of the two SUVs in this Dubai comparison',
     sections: [
       {
         heading: 'The short answer',
