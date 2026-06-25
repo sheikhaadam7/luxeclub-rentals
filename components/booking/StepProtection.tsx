@@ -54,6 +54,8 @@ const FEATURES: Feature[] = [
 interface ProtectionPackage {
   id: ProtectionId
   name: string
+  /** Shown on its own line below the name, e.g. "Minimum age 25". */
+  ageRequirement?: string
   stars: number
   /** AED amount of the excess (financial responsibility cap), or null for
    *  "No excess". Formatted into the customer's currency at render time. */
@@ -80,6 +82,7 @@ const PACKAGES: ProtectionPackage[] = [
   {
     id: 'inclusive',
     name: 'All Inclusive Protection',
+    ageRequirement: 'Minimum age 25',
     stars: 3,
     excessAed: null,
     excessHighlight: 'green',
@@ -181,8 +184,11 @@ export function StepProtection({ form, navButtons, onBack }: StepProtectionProps
             >
               {/* Header: name + radio */}
               <div className="flex items-start justify-between gap-3 mb-3">
-                <h3 className="font-display text-lg sm:text-xl font-bold text-zinc-900 leading-tight">
+                <h3 className="font-display text-xl sm:text-2xl font-bold text-zinc-900 leading-tight">
                   {pkg.name}
+                  {pkg.ageRequirement && (
+                    <span className="block">({pkg.ageRequirement})</span>
+                  )}
                 </h3>
                 <div
                   className={[
@@ -209,7 +215,7 @@ export function StepProtection({ form, navButtons, onBack }: StepProtectionProps
 
               <p
                 className={[
-                  'text-sm font-bold mb-4',
+                  'text-base font-bold mb-4',
                   pkg.excessHighlight === 'green' ? 'text-emerald-600' : 'text-zinc-900',
                 ].join(' ')}
               >
@@ -228,7 +234,7 @@ export function StepProtection({ form, navButtons, onBack }: StepProtectionProps
                   return (
                     <li
                       key={feature.key}
-                      className="relative flex items-start gap-3 text-base"
+                      className="relative flex items-start gap-3 text-base sm:text-lg"
                     >
                       {included ? (
                         <svg

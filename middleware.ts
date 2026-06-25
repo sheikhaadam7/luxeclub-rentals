@@ -76,7 +76,7 @@ export async function middleware(request: NextRequest) {
   const claims = claimsData?.claims ?? null
 
   // Public routes — accessible without auth
-  const publicPaths = ['/', '/sign-in', '/about', '/contact', '/faq', '/catalogue', '/guides', '/reset-password', '/booking-lookup', '/privacy', '/bookings/confirmation']
+  const publicPaths = ['/', '/sign-in', '/about', '/contact', '/faq', '/catalogue', '/guides', '/reset-password', '/booking-lookup', '/privacy', '/rental-terms', '/bookings/confirmation']
   const isPublicRoute =
     publicPaths.includes(pathname) ||
     MONEY_PAGE_PATHS.has(pathname) ||
