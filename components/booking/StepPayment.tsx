@@ -170,7 +170,12 @@ function TermsAcknowledgement() {
         Terms and Conditions
       </Link>
       , and the{' '}
-      <Link href="/privacy" className="underline underline-offset-4 hover:text-zinc-900">
+      <Link
+        href="/privacy"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline underline-offset-4 hover:text-zinc-900"
+      >
         Privacy Policy
       </Link>
       , and I acknowledge that I am booking a prepaid rate, where the total

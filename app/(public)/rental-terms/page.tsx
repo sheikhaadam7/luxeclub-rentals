@@ -5,6 +5,7 @@ import {
   rentalTermsLastUpdated,
   rentalTermsSections,
 } from '@/lib/rental-terms'
+import { CloseTabButton } from '@/components/ui/CloseTabButton'
 
 export const metadata: Metadata = {
   title: 'Rental Information & Terms',
@@ -64,6 +65,10 @@ export default function RentalTermsPage() {
 
   return (
     <main className="min-h-screen bg-brand-bg text-brand-muted">
+      {/* Floating close button — positioned below the NavBar (h-16 on mobile) so it has clear space */}
+      <div className="fixed top-20 right-4 sm:top-24 sm:right-6 z-[60]">
+        <CloseTabButton />
+      </div>
       <div className="max-w-3xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
         {/* Title */}
         <header className="mb-10 pb-8 border-b border-brand-border">

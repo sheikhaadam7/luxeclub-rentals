@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { CloseTabButton } from '@/components/ui/CloseTabButton'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
@@ -42,6 +43,11 @@ export default function PrivacyPolicyPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+
+      {/* Floating close button — positioned below the NavBar so it has clear space */}
+      <div className="fixed top-20 right-4 sm:top-24 sm:right-6 z-[60]">
+        <CloseTabButton />
+      </div>
 
       {/* Hero */}
       <div className="flex flex-col items-center justify-center px-4 py-20 sm:py-28 text-center">
