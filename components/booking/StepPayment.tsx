@@ -74,7 +74,12 @@ function RentersNameNotice() {
     <p className="text-sm text-zinc-700 leading-relaxed">
       The payment method must be under the renter&apos;s name and physically presented
       at pickup. See{' '}
-      <Link href="/rental-terms" className="underline underline-offset-4 hover:text-zinc-900">
+      <Link
+        href="/rental-terms"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline underline-offset-4 hover:text-zinc-900"
+      >
         Rental Information
       </Link>{' '}
       for more details on accepted payment methods.
@@ -147,11 +152,21 @@ function TermsAcknowledgement() {
   return (
     <p className="text-sm text-zinc-700 leading-relaxed">
       I have read and accept the{' '}
-      <Link href="/rental-terms" className="underline underline-offset-4 hover:text-zinc-900">
+      <Link
+        href="/rental-terms"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline underline-offset-4 hover:text-zinc-900"
+      >
         Rental Information
       </Link>
       , the{' '}
-      <Link href="/rental-terms" className="underline underline-offset-4 hover:text-zinc-900">
+      <Link
+        href="/rental-terms"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline underline-offset-4 hover:text-zinc-900"
+      >
         Terms and Conditions
       </Link>
       , and the{' '}
