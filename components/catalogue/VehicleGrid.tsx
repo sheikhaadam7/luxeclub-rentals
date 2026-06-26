@@ -20,6 +20,7 @@ interface Vehicle {
 interface VehicleGridProps {
   vehicles: Vehicle[]
   initialBrand?: string | null
+  initialCategory?: string | null
 }
 
 // ---------------------------------------------------------------------------
@@ -134,12 +135,14 @@ function PillFilter({ options, selected, onSelect, availableOptions }: PillFilte
 // Main grid component
 // ---------------------------------------------------------------------------
 
-export function VehicleGrid({ vehicles, initialBrand }: VehicleGridProps) {
+export function VehicleGrid({ vehicles, initialBrand, initialCategory }: VehicleGridProps) {
   const { t } = useTranslation()
   const [selectedBrand, setSelectedBrand] = useState<string | null>(
     BRANDS.find((b) => b.toLowerCase() === initialBrand?.toLowerCase()) ?? null
   )
-  const [selectedType, setSelectedType] = useState<string | null>(null)
+  const [selectedType, setSelectedType] = useState<string | null>(
+    CAR_TYPES.find((c) => c.toLowerCase() === initialCategory?.toLowerCase()) ?? null
+  )
 
   // Pre-compute brand for each vehicle. Categories come straight from the DB array.
   // Brand: prefer the explicit DB column (set via the fleet spreadsheet); fall

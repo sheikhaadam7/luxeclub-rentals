@@ -30,9 +30,12 @@ const BRAND_LINKS = [
 ] as const
 
 const TYPE_LINKS = [
-  { label: 'Sports Cars', slug: 'rent-sports-car-in-dubai' },
-  { label: 'SUVs', slug: 'rent-suv-in-dubai' },
-  { label: 'Convertibles', slug: 'rent-convertible-in-dubai' },
+  { label: 'Sports Cars', slug: 'rent-sports-car-in-dubai', href: '/rent-sports-car-in-dubai' },
+  { label: 'SUVs', slug: 'rent-suv-in-dubai', href: '/rent-suv-in-dubai' },
+  { label: 'Convertibles', slug: 'rent-convertible-in-dubai', href: '/rent-convertible-in-dubai' },
+  { label: 'Sedan', slug: 'catalogue-category-sedan', href: '/catalogue?category=Sedan' },
+  { label: 'Coupe', slug: 'catalogue-category-coupe', href: '/catalogue?category=Coupe' },
+  { label: 'Family', slug: 'catalogue-category-family', href: '/catalogue?category=Family' },
 ] as const
 
 const KEYWORD_LINKS = [
@@ -589,7 +592,7 @@ export default async function MoneyPage({ params }: PageProps) {
             {TYPE_LINKS.map((t) => (
               <Link
                 key={t.slug}
-                href={`/${t.slug}`}
+                href={t.href}
                 className={`px-4 py-2 text-sm font-medium rounded-none border whitespace-nowrap transition-all duration-200 ${
                   slug === t.slug
                     ? 'bg-white text-black border-white'

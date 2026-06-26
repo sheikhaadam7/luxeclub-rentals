@@ -51,11 +51,11 @@ const jsonLd = {
 }
 
 interface PageProps {
-  searchParams: Promise<{ brand?: string }>
+  searchParams: Promise<{ brand?: string; category?: string }>
 }
 
 export default async function CataloguePage({ searchParams }: PageProps) {
-  const { brand } = await searchParams
+  const { brand, category } = await searchParams
   const vehicles = await getVehicles()
 
   return (
@@ -77,7 +77,7 @@ export default async function CataloguePage({ searchParams }: PageProps) {
       </div>
 
       {/* Vehicle grid — full width edge to edge */}
-      <VehicleGrid vehicles={vehicles ?? []} initialBrand={brand} />
+      <VehicleGrid vehicles={vehicles ?? []} initialBrand={brand} initialCategory={category} />
     </main>
   )
 }
