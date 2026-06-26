@@ -170,11 +170,11 @@ function renderInline(text: string, keyPrefix: string | number): React.ReactNode
 
 function renderParagraphs(content: string, centered = false) {
   const pClass = centered
-    ? 'text-[15px] text-brand-muted leading-relaxed max-w-3xl mx-auto text-center mb-4 last:mb-0'
-    : 'text-[15px] text-brand-muted leading-relaxed max-w-3xl mb-4 last:mb-0'
+    ? 'text-base text-brand-muted leading-relaxed max-w-3xl mx-auto text-center mb-4 last:mb-0'
+    : 'text-base text-brand-muted leading-relaxed max-w-3xl mb-4 last:mb-0'
   const ulClass = centered
-    ? 'list-none space-y-2 text-[15px] text-brand-muted leading-relaxed max-w-3xl mx-auto text-center mb-4 last:mb-0'
-    : 'list-disc pl-6 space-y-2 text-[15px] text-brand-muted leading-relaxed max-w-3xl mb-4 last:mb-0 marker:text-brand-cyan'
+    ? 'list-none space-y-2 text-base text-brand-muted leading-relaxed max-w-3xl mx-auto text-center mb-4 last:mb-0'
+    : 'list-disc pl-6 space-y-2 text-base text-brand-muted leading-relaxed max-w-3xl mb-4 last:mb-0 marker:text-brand-cyan'
   const h3Class = centered
     ? 'font-display text-lg sm:text-xl font-semibold text-white text-center mt-6 mb-3 first:mt-0'
     : 'font-display text-lg sm:text-xl font-semibold text-white mt-6 mb-3 first:mt-0'
