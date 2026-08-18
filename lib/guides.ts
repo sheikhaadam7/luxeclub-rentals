@@ -1375,4 +1375,57 @@ export const guides: Guide[] = [
       },
     ],
   },
+  {
+    slug: 'dubai-to-ras-al-khaimah-jebel-jais-road-trip',
+    title: 'Dubai to Ras Al Khaimah Road Trip: Jebel Jais and the Desert Hotels (2026)',
+    metaTitle: 'Dubai to Ras Al Khaimah — Jebel Jais Road Trip (2026)',
+    metaDescription:
+      "The 90-minute drive from Dubai to Jebel Jais and the RAK resorts. Route, tolls, viewpoints, where to eat, and where to stay — the honest weekend guide.",
+    publishedDate: '2026-07-08',
+    category: 'driving',
+    image: 'https://images.unsplash.com/photo-1745708804966-fc71b259a01b?w=1200&q=80&auto=format',
+    imageAlt: 'A winding mountain road ascending Jebel Jais under a clear sky — the highest paved road in the UAE, 90 minutes north of Dubai',
+    sections: [
+      {
+        heading: 'The short answer',
+        content:
+          "Ras Al Khaimah is 90 minutes north of Dubai on the E311. The road at the far end is the Jebel Jais climb — a paved, well-graded mountain switchback that finishes at the highest viewing deck in the UAE, roughly 1,600 metres above where you started.\n\nFor a couple it's a full-day trip if you leave Dubai at 8am and are back for dinner. For a family or a weekend group, one night at a RAK resort turns it into the calmest short break Dubai offers.\n\nYou can do it in almost anything. The car makes a real difference here though. The AC works overtime on the climb. The road is 30 km of continuous switchbacks that punish stiff or under-suspended cars. A [premium SUV rental](/rent-suv-in-dubai) with adaptive damping and cabin quiet turns the drive itself into part of the experience, not the part you're enduring to get to the view.",
+      },
+      {
+        heading: 'The route',
+        content:
+          "Straight north on E311 (Sheikh Mohammed bin Zayed Road). Motorway grade the whole way. Speed limit sits at 120 km/h in most sections and enforcement is consistent — Dubai cameras trigger at 1 km/h over posted, RAK's are similar.\n\nTimings from central Dubai:\n\n- Business Bay → RAK Airport turnoff: 75–90 minutes depending on traffic\n- RAK Airport → Jebel Jais base: 30 minutes\n- Base → Jebel Jais viewing deck: 40 minutes of continuous climb, including at least one stop\n\nSalik: most of the tolls apply on the Dubai stretch. Once you're past the outer emirates border, you're through. Fuel: a full tank of Special 95 gets you the round trip and change on almost any SUV.\n\nLeave Dubai by 8am if you want to be at the summit before the light gets flat. Summer months (June–September) keep the summit at 35°C+, but a good 10–12°C cooler than sea level. Winter (November–March) the summit can drop below 15°C — take a light jacket.",
+      },
+      {
+        heading: 'The climb — what to expect',
+        content:
+          "The Jebel Jais mountain road is one of the best pieces of tarmac in the region and it doesn't need to be rushed to be enjoyed. It climbs 1,500 metres over 30 kilometres of banked switchbacks with proper barriers, generous run-off, and long sight-lines.\n\nGradient hits 8–10% in places. A budget rental with worn brakes will feel that on the descent; a premium SUV with larger discs handles it without complaint. The other thing worth knowing is that summer heat plus mountain climb is genuine work for the engine — a well-cooled premium car doesn't notice, an old compact sometimes does.\n\nThree stops worth making on the way up:\n\n- **1484 by Puro** — the highest restaurant in the UAE, at 1,484 m. Sit-down lunch or coffee with the view.\n- **Jais Viewing Deck Park** — the summit terminus. Free entry, clear line-of-sight into Oman on a clear day.\n- **Bear Grylls Explorers Camp** — the overnight option, glamping at altitude on the mountain.\n\nIf you're planning multiple drives across a Dubai week, our [seven best driving roads in the UAE guide](/guides/best-driving-roads-dubai-uae) covers Jebel Jais alongside Hatta, Al Ain, and the Al Qudra Cycle Track loop.",
+      },
+      {
+        heading: 'What to actually do up there',
+        content:
+          "The zip line is the headline. Jebel Jais Flight is the world's longest — 2.83 km, held prone, top speed around 120–150 km/h depending on wind. Weight limits apply and pre-booking is essential; weekends fill days in advance.\n\nBeyond the zip line:\n\n- **Jais Sledder** — a 1.8 km toboggan track. Popular with kids over 8.\n- **Jais Sky Tour** — six shorter zip lines connected by walkways for people who don't want the 2.83 km commitment.\n- **Bear Grylls Ropes Course** — high-ropes and rappel activities at the Explorers Camp.\n- **Viewing deck sunset** — if you're staying overnight in RAK, drive up in the late afternoon. Sunset over the Hajar range is the reason people bring cameras.\n\nFor a family day it's easy to spend six hours on the mountain and drive down for an early dinner in the Al Hamra area.",
+      },
+      {
+        heading: 'Where to stay if you extend it',
+        content:
+          "RAK's resort strip splits between two beaches — Al Hamra (developed, gated marina) and Al Marjan Islands (newer, more open).\n\n- **Waldorf Astoria Ras Al Khaimah** (Al Hamra) — the most refined of the group. Colonial architecture, a beach that's swimmable in winter, one of the better in-room breakfast spreads in the UAE.\n- **Ritz-Carlton Al Hamra Beach** — beach villas and tented residences. Family-heavy on weekends.\n- **Ritz-Carlton Al Wadi Desert** — 45 minutes inland from RAK town, tented villas with private pools in the wadi. The desert-hotel option and the one that turns a two-night trip into a proper reset.\n- **Rixos Bab Al Bahr** — all-inclusive on Al Marjan. Works for a family group where you don't want to think about restaurant reservations.\n- **Cove Rotana** — quieter than the flagship hotels; the real value pick.\n\nFor couples the Waldorf or Ritz-Carlton Al Wadi are the two calls. For families, Rixos or Ritz-Carlton Al Hamra.",
+      },
+      {
+        heading: 'The car makes it',
+        content:
+          "You can drive from Dubai to Jebel Jais in a rental compact. You can also do it in an air-conditioned taxi. Neither is the trip most people are picturing when they book the day.\n\nThe mountain road specifically rewards ground clearance and adaptive suspension (the banked corners don't scrape a premium SUV; some compacts do brush at speed), AC that can hold cabin temperature under load (the engine is working, the AC is working, and a marginal compact can lose the fight in July), and cabin quiet on the descent so 60 km/h in low gear stays a conversation instead of a shouting match.\n\nTwo solid picks from our fleet for this trip specifically. The [Audi RSQ8](/catalogue/audi-rsq8) — air suspension raises 50 mm in Allroad mode, the V8 is quiet at cruise, and the brakes shrug off the descent. The [Bentley Bentayga](/catalogue/bentley-bentayga) — the quiet second row is what makes it a proper weekend car. If there are four of you, this is the one.",
+      },
+      {
+        heading: 'Food and practical stops',
+        content:
+          "Coming and going, the fuel-and-food stops that matter:\n\n- **ADNOC service stations on E311** — clean toilets, decent coffee, and one before the RAK town exit.\n- **Manar Mall** (RAK town, on the way to Jebel Jais) — supermarket for water and snacks before the climb; there's not much retail on the mountain itself.\n- **1484 by Puro** — booking recommended on weekends. Salad-and-sandwich menu at height.\n- **Al Hamra town square** (if you're staying in RAK overnight) — a handful of family restaurants including Puro's ground-level branch.\n\nTake at least two litres of water per person and a small bag of snacks. The summit has one restaurant and one small shop; queues at both are real on weekends.",
+      },
+      {
+        heading: 'Renting from LuxeClub',
+        content:
+          "The full fleet sits on our catalogue with clear daily rates and specs. What's standard on a booking for a trip like this:\n\n- Free delivery anywhere in Dubai\n- First tank of Special 95 pre-filled\n- Comprehensive insurance with a clearly disclosed excess\n- Salik gantry tag pre-installed\n- A short walk-through at handover covering the drive-mode selector, cabin controls, and anything specific to the car\n\nReservation: AED 495 is taken at booking to confirm the car and lock the price for pay-on-collection rentals. It comes off the rental total at handover, so it isn't an extra cost. Deposit: many customers qualify for our no-deposit option — just let us know at booking. Where a deposit does apply, the amount is shown on each vehicle's page, held as a refundable pre-authorisation at handover, and released within five working days of return.\n\nIf it's your first luxury rental in Dubai, our [first-time renting a luxury car in Dubai guide](/guides/first-time-renting-luxury-car-dubai) walks the whole experience end to end.",
+      },
+    ],
+  },
 ]
