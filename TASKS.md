@@ -50,7 +50,8 @@ Ordered by SEO value and commercial alignment with the owned fleet (Q3 S Line, R
 3. ✅ **Dubai child car seat law for tourists** — shipped 2026-06-16 (backdated 2026-06-15). Slug: `dubai-child-car-seat-law-tourists`.
 4. ✅ **Renting at DXB airport vs hotel delivery — which is better?** — shipped 2026-06-16 (backdated 2026-06-22). Slug: `renting-dxb-airport-vs-hotel-delivery`.
 5. ✅ **Audi RSQ8 vs BMW X5 M Competition: Dubai SUV comparison** — shipped 2026-06-24. Slug: `audi-rsq8-vs-bmw-x5-m-competition-dubai`. Bundled with sitewide copy sweep applying 3 new framing rules (no ownership disclosure, AED 495 not a "fee", no-deposit leads deposit narrative).
-6. ⏳ **Bentley Bentayga long weekend in Oman: route, paperwork, fuel** — owned-fleet anchor + adventure content. Honeymoon-extension play.
+5b. ✅ **Budget vs Premium Car Rental in Dubai: The Honest Comfort and Safety Case** — shipped 2026-08-18 (backdated 2026-07-01). Slug: `budget-vs-premium-car-rental-dubai`. Off-queue backfill — first of ~5 backdated slots planned to close the 2026-06-24 → 2026-08-18 cadence gap. Category: planning. ZeroGPT: 12.5%.
+6. ❌ **VETOED — Bentley Bentayga long weekend in Oman: route, paperwork, fuel** — vetoed 2026-08-18. Cars must stay in the UAE for tracking / theft-risk reasons. See `project_no_cross_border_content.md` in memory. Do not draft any cross-border content.
 7. ⏳ **Dubai to Ras Al Khaimah road trip: Jebel Jais and the desert hotels** — fills the RAK gap. Links to scenic-drives + Abu Dhabi guides.
 8. ⏳ **Female solo drivers in Dubai: what to actually expect** — answers a real concern, broadens audience.
 9. ⏳ **Luxury convertible rentals in Dubai winter: the 5 best months** — Continental GTC, R8 Spyder, F1 Cabriolet. Seasonal SEO.
