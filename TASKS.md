@@ -55,7 +55,7 @@ Ordered by SEO value and commercial alignment with the owned fleet (Q3 S Line, R
 7. ✅ **Dubai to Ras Al Khaimah road trip: Jebel Jais and the desert hotels** — shipped 2026-08-18 (backdated 2026-07-08). Slug: `dubai-to-ras-al-khaimah-jebel-jais-road-trip`. Backfill slot 2 of ~5. Category: driving. ZeroGPT: 14.9%.
 8. ⏳ **Female solo drivers in Dubai: what to actually expect** — answers a real concern, broadens audience.
 9. ⏳ **Luxury convertible rentals in Dubai winter: the 5 best months** — Continental GTC, R8 Spyder, F1 Cabriolet. Seasonal SEO.
-10. ⏳ **What it costs to live with a luxury car for a month in Dubai** — month-long rental angle for residents/relocators. RSQ8/Bentayga primary anchors.
+10. ✅ **What a month with a luxury car in Dubai actually costs** — shipped 2026-08-18 (backdated 2026-07-15). Slug: `cost-of-monthly-luxury-car-rental-dubai`. Backfill slot 3 of ~5. Category: planning. ZeroGPT: 7.6% (cleanest of the batch).
 11. ⏳ **Ferrari Portofino vs Aston Martin DB12: Dubai grand-tourer comparison** — competitive comparison in the GT category.
 12. ⏳ **How to spec a luxury rental for a Dubai photoshoot** — niche but high-conversion. Bentayga Black Line + Cullinan + Urus primary.
 13. ⏳ **Insurance in luxury rentals: what's covered, what isn't** — addresses anxiety question. Links to deposits + rental-fines guides.
