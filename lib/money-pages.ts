@@ -32,8 +32,9 @@ export interface MoneyPage {
   /** When true, render `sections` between the hero and the brand nav /
    *  vehicle grid, and add a "Skip to fleet" anchor in the hero. */
   sectionsBeforeGrid?: boolean
-  /** When true, the hero and long-form sections render centered
-   *  (text-center + mx-auto on width-constrained children). */
+  /** Layout alignment for hero and long-form sections. Defaults to `true`
+   *  (centered: text-center + mx-auto on width-constrained children).
+   *  Set to `false` on an entry to opt out and left-align that page. */
   centered?: boolean
   /** Index of the body section (FAQs excluded) after which the
    *  "Take a Look at Our Guides" block renders. Defaults to 0. */
@@ -1843,6 +1844,101 @@ export const moneyPages: MoneyPage[] = [
     content:
       "We keep our pricing transparent and competitive. Every rental includes comprehensive insurance, delivery across Dubai, and no hidden fees. No surprise Salik charges, no phantom fines, no cleaning fees. The price you see is the price you pay. Browse our fleet below sorted by daily rate. New to driving in the UAE? Our [UAE roundabout rules guide](/guides/uae-roundabout-rules-guide) covers the lane discipline most first-time visitors get wrong — worth five minutes before pickup.",
     filter: { type: 'keyword', value: '' },
+  },
+  {
+    slug: 'rent-car-dubai-airport-dxb',
+    title: 'Car Rental Dubai Airport (DXB)',
+    metaTitle: 'Car Rental Dubai Airport DXB — Meet & Greet at Arrivals',
+    metaDescription:
+      "Car rental at Dubai Airport (DXB) with meet-and-greet at arrivals — Marina, Downtown, DIFC, or Palm delivery too. SUVs, Bentley Bentayga, luxury range. No compound shuttle, no airport surcharge.",
+    heading: 'Car Rental at Dubai Airport (DXB)',
+    subheading: 'Meet-and-greet at arrivals, walked to your car by a member of our team. Not a shuttle-to-compound rental.',
+    heroImage: 'https://images.unsplash.com/photo-1609763252108-b727080cdd4f?w=1200&q=80&auto=format',
+    heroImageAlt: 'Emirates aircraft at Dubai International Airport Terminal 3 — where our airport pickups happen',
+    centered: true,
+    content:
+      "Landing at DXB and want a car ready at arrivals? This is the honest page for that. Most Dubai rental operators run a shuttle-to-compound model — you land, walk to a kiosk, then wait for a bus that takes you off-airport to sign paperwork. That adds 45+ minutes to an already tired arrival. Our airport pickup works differently: one of our team meets you at the arrivals exit with a name board, helps with luggage, and walks you to the car parked in the airport car park. Delivery is a flat AED 110 plus AED 110 pickup (free on monthly bookings), the same rate as anywhere in Dubai — no separate airport surcharge, no concession-driven base-rate uplift. Same fleet as our Marina, Downtown, DIFC, and Palm deliveries: Audi Q3 S Line through Bentley Bentayga, RSQ8, Cullinan Mansory, and the rest of the range. Read below for when airport pickup is actually the right call vs when hotel delivery is the smarter default.",
+    sections: [
+      {
+        heading: 'When Airport Pickup at DXB Is the Right Call',
+        content:
+          "Airport pickup isn't the automatic answer. For most tourists, hotel delivery is the better default — settle in first, then have the car brought to you when you're ready. Our [full DXB airport vs hotel delivery guide](/guides/renting-dxb-airport-vs-hotel-delivery) walks through why hotel delivery wins for about 90% of visitors (luggage, tiredness, the calm of a hotel-lobby handover).\n\nThe 10% where airport pickup genuinely wins:\n\n**You're a resident coming home from a trip.** No hotel to settle into. You want to be in your own car and driving to your apartment in the first 45 minutes.\n\n**You're driving straight out of Dubai from the airport.** A Ras Al Khaimah weekend, a Hatta day, an Abu Dhabi meeting from a morning arrival. Hotel delivery doesn't help if there's no hotel in the plan.\n\n**You're travelling light in a four-seater.** A single traveller or couple with carry-on only and a Q3, Macan, or Bentayga booking — the luggage trap that catches supercar renters doesn't apply, and the airport-to-car walk is faster than a taxi ride plus a delivery wait.\n\n**Your first-day schedule is tight.** A wedding you're attending straight from the airport, a business meeting in DIFC within two hours of landing, a scheduled photo shoot. The 60-minute hotel-then-call cycle won't fit.\n\n**You're a UAE resident already familiar with the airport pickup flow.** The friction the shuttle model creates for first-time tourists is lower once you know the layout.\n\nEverything else is more comfortable with hotel delivery. If your booking is a two-seater supercar (Ferrari, Lamborghini, McLaren, R8 Spyder) don't pick airport delivery regardless — the front luggage compartments don't take a checked suitcase and there's no fix at the terminal. Book the airport leg in a four-seater and switch cars later.",
+      },
+      {
+        heading: 'How Airport Handover Works at DXB',
+        image: 'https://images.unsplash.com/photo-1705926984536-cf641440fd18?w=1200&q=80&auto=format',
+        imageAlt: 'Multi-storey airport car park at Dubai International — where our team parks the car for arrivals meet-and-greet handover',
+        content:
+          "The flow, terminal by terminal:\n\n**Before you land.** Give us your flight number at booking. We track it against the airline schedule. If the flight is delayed, we adjust the handover time automatically — no call needed from your end. If you're delayed inside the terminal (long baggage queue, immigration hold), WhatsApp us and we hold.\n\n**On landing.** Clear immigration and collect baggage as normal. Timing: 10–25 minutes for immigration depending on terminal and queue; 10–30 minutes for baggage. Terminal-by-terminal notes:\n\n- **Terminal 3.** Emirates and the Emirates network. Largest terminal, dedicated Emirates immigration lanes, arrivals hall opens onto the main road with a covered walkway to the multi-storey car park.\n- **Terminal 1.** Most other international carriers (British Airways, Lufthansa, Etihad codeshares, Air France, KLM, etc.). Slightly smaller arrivals hall than T3.\n- **Terminal 2.** flydubai and low-cost carriers. Physically separate from T1 and T3 — it's a 15-minute drive between them, so don't confuse them if you're arriving on flydubai.\n\n**At arrivals.** One of our team is at the arrivals exit with a name board bearing your name. Suited, English-speaking, briefed on your booking. They help with luggage and walk you to where the car is parked (a few minutes on foot from the exit — DXB isn't a small airport but the car parks are directly connected to each terminal's arrivals hall).\n\n**Walk-through at the car.** 10 to 15 minutes covering drive modes, cabin controls, Salik tag location, fuel level, luggage loading, and anything specific to the car. Same walk-through we do for hotel deliveries — nothing rushed because you're at the airport.\n\n**Total time from wheels-down to leaving in the car.** Realistic: 30 to 45 minutes for T1 and T3, slightly less for T2 (smaller terminal). Most of that is immigration and baggage — the LuxeClub side of it is 15 to 20 minutes. This beats the shuttle-to-compound model by roughly 45 minutes.\n\nFor context on how DXB's rental setup is structured, and why the compound-shuttle flow eats so much time, the [airport vs hotel delivery guide](/guides/renting-dxb-airport-vs-hotel-delivery) covers it in detail.",
+      },
+      {
+        heading: 'The Best Cars for a DXB Airport Pickup',
+        image: 'https://oezwrobajotfxzmqabvp.supabase.co/storage/v1/object/public/vehicle-images/bentley-bentayga/0.jpg',
+        imageAlt: 'Bentley Bentayga — the LuxeClub featured car for family DXB airport arrivals',
+        content:
+          "For airport pickup specifically — where luggage capacity, cabin quiet, and passenger comfort after a long flight all matter — we recommend the SUV end of the fleet. The full SUV range sits on our [rent an SUV in Dubai page](/rent-suv-in-dubai) with passenger and storage numbers.\n\n**Bentley Bentayga — the family arrival choice.** The [Bentley Bentayga](/catalogue/bentley-bentayga) is the car we recommend most often for family DXB arrivals. Twin-turbo V8, hand-finished cabin at Bentley's Crewe facility, air suspension throughout, and one of the quietest cabins in any SUV — noticeably calmer than the alternatives at 120 km/h after a long-haul flight. Real luggage capacity for a family of four with two large suitcases and cabin bags. Naim for Bentley audio makes the drive from DXB to Downtown or Palm Jumeirah a proper decompression. Three trims on our fleet including the Black Line Edition (white with gloss-black styling).\n\n**Audi RSQ8 — the sporting SUV pick.** 591 hp twin-turbo V8, air suspension with a raise function for driveway ramps and speed bumps, and the more discreet of the performance-SUV options. Right choice if you're driving from DXB to a Jebel Jais weekend or an Abu Dhabi meeting the same day.\n\n**Audi Q3 S Line — the entry-premium pick.** Right car for a single traveller or couple with modest luggage. Small enough to be easy on the arrivals car park and around Marina, premium enough to feel like a proper Dubai rental rather than a budget compact.\n\n**Rolls-Royce Cullinan Mansory — the VIP pick.** For arrivals where the car is the moment. Full carbon-fibre Mansory aero, starlight headliner, whisper-quiet passenger experience. Book at least a week ahead — most-requested car in the fleet.\n\nBrowse the live fleet below for real-time availability on your dates.",
+      },
+      {
+        heading: 'What DXB Airport Pickup Actually Costs',
+        content:
+          "Straightforward pricing — the same rate structure as anywhere in Dubai, no airport premium:\n\n**Delivery: AED 110.** Flat rate, whether you're landing at DXB, DWC, staying at a Marina hotel, an apartment in DIFC, or a Palm villa.\n\n**Pickup: AED 110.** Same flat rate for when you return the car.\n\n**Free on monthly bookings.** Both charges waived.\n\n**No separate airport surcharge.** Some Dubai operators add AED 50–200 as an 'airport handling fee' or 'premium location fee' — buried in the small print. We don't. The AED 110 delivery is what you pay for a DXB drop-off, full stop.\n\n**Airport Tunnel Salik.** One Salik gate sits on the road out of DXB (the Airport Tunnel) at AED 6, deducted automatically from our fleet account and passed through at cost on your final bill. No mark-up. For the full picture of how Salik works and where the gates are, see our [Salik tags explained for Dubai tourists guide](/guides/salik-tags-explained-dubai-tourists).\n\n**No compound-shuttle fee.** We don't run a compound so there's nothing to charge for. The kiosk-shuttle-compound flow that some operators bill separately doesn't apply.\n\n**Deposit and reservation.** Same as any LuxeClub booking: AED 495 taken at reservation to secure the specific car on specific dates and deducted from the rental total at handover. A refundable damage pre-authorisation applies at pickup (amount shown on each vehicle page). Eligible drivers can opt for our no-deposit option at booking. See our [low-deposit luxury car rental page](/luxury-car-rental-no-deposit-dubai) for eligibility.",
+      },
+      {
+        heading: 'Airport Drop-Off on Your Departure Day',
+        image: 'https://images.unsplash.com/photo-1772929004291-dd78df4247ad?w=1200&q=80&auto=format',
+        imageAlt: 'Cars at a Dubai hotel porte-cochere — where LuxeClub collects rental cars on departure mornings',
+        content:
+          "The return trip has two shapes:\n\n**Hotel-collection-on-morning-of-departure — the easier default.** Tell us your flight departure time and we collect the car from your hotel on the morning of the flight. You leave for the airport by taxi with nothing to think about, no boot to unload at the terminal, no rush against a check-in cutoff. This is what most of our airport-pickup customers switch to for the return leg once they see how it works.\n\n**Airport drop-off at the terminal — works for specific cases.** Give us your flight departure time at handover (or via WhatsApp closer to the day) and we meet you at the DXB drop-off zone. Useful when:\n\n- You're returning from an out-of-Dubai road trip and heading straight to the airport (Ras Al Khaimah, Hatta, Abu Dhabi meeting).\n- You need the car right up until departure — a same-day airport meeting, a last-Dubai photo shoot, a family event that runs late.\n- You've extended and don't want to move the car back to a hotel that's already been checked out of.\n\nEither works. Hotel collection is the easier option unless you're on a very early flight (before 6am) or a very late one (after 11pm) where the timing gets tight either way.\n\nFor the counter-argument on delivery vs airport pickup in general, our [DXB airport vs hotel delivery guide](/guides/renting-dxb-airport-vs-hotel-delivery) walks through the trade-offs. For a first-time luxury renter unfamiliar with how any of this works, our [first-time renting a luxury car in Dubai guide](/guides/first-time-renting-luxury-car-dubai) is the prerequisite read.",
+      },
+      {
+        heading: 'Al Maktoum (DWC) — Same Terms',
+        content:
+          "Al Maktoum International (DWC) at Dubai South is the smaller of Dubai's two airports and serves a growing list of carriers as Emirates and flydubai gradually shift operations there over the next several years. Right now it's still less common as a Dubai arrival point, but if it's where you're landing, our airport pickup works the same way at DWC as at DXB:\n\n- **Same AED 110 delivery + AED 110 pickup.** Not a separate airport, not a different rate.\n- **Meet-and-greet at arrivals** with a name board, walked to the car.\n- **Same fleet available.** Any car on our Dubai fleet can be delivered to DWC.\n- **Often quicker on the airport side.** DWC is a shorter walk from arrivals to the car park than DXB — the on-airport portion of the handover is usually 5 to 10 minutes faster.\n\nDWC is a longer drive to central Dubai than DXB (roughly 45 minutes to Downtown or Marina depending on traffic, versus 20 to 25 from DXB), but the car park logistics work in your favour compared to the larger airport.",
+      },
+      {
+        heading: 'Can I rent a car at Dubai International Airport (DXB)?',
+        isFaq: true,
+        content:
+          "Yes. Book any car in our catalogue online or over WhatsApp and choose airport delivery at DXB. The car is delivered to your arrival terminal and one of our team meets you at arrivals with a name board. It's the same fleet as our Dubai deliveries — Q3 through Bentayga, RSQ8, Cullinan Mansory, and the rest of the range.",
+      },
+      {
+        heading: 'Which terminal do you deliver to at DXB?',
+        isFaq: true,
+        content:
+          "All three DXB terminals — T1, T2, and T3 — plus Al Maktoum (DWC) if that's where you're landing. Tell us your flight number at booking and we track it against the airline schedule. If you're delayed, message us on WhatsApp and we adjust the handover time. Standard split of terminals: T3 for Emirates and the Emirates network, T1 for most other international carriers, T2 for flydubai and low-cost airlines.",
+      },
+      {
+        heading: 'How much does airport delivery cost?',
+        isFaq: true,
+        content:
+          "AED 110 for delivery and AED 110 for pickup — the same flat rate as anywhere in Dubai, whether it's DXB, DWC, your hotel, or your apartment. On monthly bookings, both delivery and pickup are free. There's no separate airport surcharge and no compound-shuttle fee (we don't run a compound).",
+      },
+      {
+        heading: 'How long does the handover take at DXB?',
+        isFaq: true,
+        content:
+          "Plan 30 to 45 minutes from wheels-down to leaving the airport in the car. Most of that is immigration and baggage — the actual handover once you're at the car is 10 to 15 minutes including the walk-through of drive modes, cabin controls, and Salik. Faster than the shuttle-to-compound model most operators run, which typically adds 45 minutes on top of arrival.",
+      },
+      {
+        heading: 'Can I pick up the car at Al Maktoum (DWC) instead?',
+        isFaq: true,
+        content:
+          "Yes. Same terms — meet-and-greet at arrivals, AED 110 delivery, same handover process. DWC is a shorter walk to the car park so the on-airport portion is often quicker than DXB. Less common request but no different in how it works.",
+      },
+      {
+        heading: 'Do you offer a meet-and-greet service at arrivals?',
+        isFaq: true,
+        content:
+          "Yes, standard on every airport pickup at no extra charge. One of our team waits at the arrivals exit with a name board, helps with luggage, and walks you to the car. Your driver is scheduled to your flight's arrival time — whether that's an 8am landing or a 2am one. We ask for your flight number at booking so we can adjust for delays without you needing to call.",
+      },
+      {
+        heading: 'Can I drop the car off at the airport when I fly out?',
+        isFaq: true,
+        content:
+          "Yes. Give us your flight departure time at handover (or on WhatsApp closer to the day) and we meet you at the DXB drop-off zone. The alternative most people prefer: we collect the car from your hotel on the morning of departure, so you leave for the airport by taxi with nothing to think about. Both work; the hotel collection is the easier option unless you're on a very early or very late flight.",
+      },
+    ],
+    filter: { type: 'type', value: 'SUV' },
   },
 ]
 
