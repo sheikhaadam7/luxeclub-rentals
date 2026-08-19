@@ -22,7 +22,7 @@
 | Fix `import-fleet.py` un-retire logic — don't publish hide-until-photos cars on subsequent sheet saves | ⏳ | 🟡 | S | — |
 | Fix `import-fleet.py` — stop wiping `primary_image_url`/`image_urls` on sheet save when cells are blank | ⏳ | 🔴 | S | — |
 | **SEO audit 2026-08-19** — full-site Google-ranking evaluation (~70% coverage) | ✅ | 🔴 | M | — (findings below) |
-| A1. Build `/rent-car-dubai-airport-dxb` money page (DXB airport, meet-and-greet differentiator) | 🟢 | 🔴 | L | — (built + verified locally 2026-08-19, uncommitted; awaits mobile spot-check + "make it live") |
+| A1. Build `/rent-car-dubai-airport-dxb` money page (DXB airport, meet-and-greet differentiator) | ✅ | 🔴 | L | ac513c1 (PR #4, live 2026-08-19) |
 | A2. Build `/rent-car-by-month-dubai` money page (conversion target for monthly-cost guide) | ⏳ | 🔴 | L | — |
 | A3. Build `/rent-chauffeur-service-dubai` money page (conversion target for Rolls-vs-Bentley chauffeur guide) | ⏳ | 🔴 | L | — |
 | A4. Repeat `LocalBusiness` schema on individual money pages (currently root-layout only) | ⏳ | 🔴 | M | — |
