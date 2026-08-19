@@ -255,6 +255,10 @@ export default async function MoneyPage({ params }: PageProps) {
   const allVehicles = await getVehicles()
   const vehicles = filterVehicles(allVehicles, page.filter)
 
+  // Money pages default to a centered layout (headings, paragraphs, images).
+  // Set `centered: false` on an entry to opt out.
+  const isCentered = page.centered ?? true
+
   // FAQ sections → FAQPage schema (only if page has any isFaq sections)
   const faqSections = (page.sections ?? []).filter((s) => s.isFaq)
   const faqJsonLd =
@@ -361,7 +365,7 @@ export default async function MoneyPage({ params }: PageProps) {
             </section>
           )
           return (
-            <section id="about" className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 space-y-8 ${page.centered ? 'text-center' : ''}`}>
+            <section id="about" className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 space-y-8 ${isCentered ? 'text-center' : ''}`}>
               <div className="border-t border-brand-border pt-8">
                 <p className="text-xs uppercase tracking-wider text-brand-muted mb-6">
                   About {page.heading}
@@ -383,7 +387,7 @@ export default async function MoneyPage({ params }: PageProps) {
                       {section.heading}
                     </h2>
                     {section.image && (
-                      <div className={`relative w-full max-w-3xl aspect-[16/9] rounded-xl overflow-hidden ${page.centered ? 'mx-auto' : ''}`}>
+                      <div className={`relative w-full max-w-3xl aspect-[16/9] rounded-xl overflow-hidden ${isCentered ? 'mx-auto' : ''}`}>
                         <img
                           src={section.image}
                           alt={section.imageAlt || section.heading}
@@ -392,7 +396,7 @@ export default async function MoneyPage({ params }: PageProps) {
                         />
                       </div>
                     )}
-                    <div>{renderParagraphs(section.content, page.centered)}</div>
+                    <div>{renderParagraphs(section.content, isCentered)}</div>
                     {section.whatsapp && (
                       <div className="pt-2">
                         <a
@@ -425,7 +429,7 @@ export default async function MoneyPage({ params }: PageProps) {
                   <FaqAccordion
                     items={faqSections.map((s) => ({
                       question: s.heading,
-                      answer: <div>{renderParagraphs(s.content, page.centered)}</div>,
+                      answer: <div>{renderParagraphs(s.content, isCentered)}</div>,
                     }))}
                   />
                 </div>
@@ -507,7 +511,7 @@ export default async function MoneyPage({ params }: PageProps) {
       ))}
 
       {/* Hero section */}
-      <section className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 space-y-4 ${page.centered ? 'text-center' : ''}`}>
+      <section className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 space-y-4 ${isCentered ? 'text-center' : ''}`}>
         <nav className="text-sm text-brand-muted">
           <Link href="/" className="hover:text-white transition-colors">Home</Link>
           <span className="mx-2">/</span>
@@ -518,7 +522,7 @@ export default async function MoneyPage({ params }: PageProps) {
           {page.heading}
         </h1>
         {page.heroImage && (
-          <div className={`relative w-full max-w-5xl aspect-[16/9] rounded-xl overflow-hidden ${page.centered ? 'mx-auto' : ''}`}>
+          <div className={`relative w-full max-w-5xl aspect-[16/9] rounded-xl overflow-hidden ${isCentered ? 'mx-auto' : ''}`}>
             <img
               src={page.heroImage}
               alt={page.heroImageAlt || page.heading}
@@ -527,10 +531,10 @@ export default async function MoneyPage({ params }: PageProps) {
             />
           </div>
         )}
-        <p className={`text-lg sm:text-xl text-brand-muted max-w-2xl ${page.centered ? 'mx-auto' : ''}`}>
+        <p className={`text-lg sm:text-xl text-brand-muted max-w-2xl ${isCentered ? 'mx-auto' : ''}`}>
           {page.subheading}
         </p>
-        <div className={`text-base text-white/70 max-w-3xl leading-relaxed space-y-4 ${page.centered ? 'mx-auto' : ''}`}>
+        <div className={`text-base text-white/70 max-w-3xl leading-relaxed space-y-4 ${isCentered ? 'mx-auto' : ''}`}>
           {page.content.split('\n\n').map((para, i) => (
             <p key={i}>{para}</p>
           ))}
