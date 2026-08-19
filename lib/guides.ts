@@ -1481,4 +1481,62 @@ export const guides: Guide[] = [
       },
     ],
   },
+  {
+    slug: 'rolls-royce-vs-bentley-dubai-chauffeur-day',
+    title: 'Rolls-Royce vs Bentley for a Dubai Chauffeur Day: Which to Pick and When (2026)',
+    metaTitle: 'Rolls-Royce vs Bentley Chauffeur Day Dubai — Which to Pick (2026)',
+    metaDescription:
+      "Cullinan Mansory or Bentayga for a driven-around day in Dubai. The honest split between the two brands, when each wins, and how the chauffeur booking actually works.",
+    publishedDate: '2026-07-22',
+    category: 'cars',
+    image: 'https://images.unsplash.com/photo-1762599107234-6373d3467d25?w=1200&q=80&auto=format',
+    imageAlt: 'A luxury car at an elegant hotel entrance at night — the arrival moment that a Rolls-Royce or Bentley chauffeur day is built around',
+    sections: [
+      {
+        heading: 'The short answer',
+        content:
+          "If you're booking a driven-around day in Dubai — a wedding, an anniversary, a signing event, an arrival that has to land — the real choice is between two cars: the Rolls-Royce Cullinan Mansory and the Bentley Bentayga.\n\nRolls-Royce is the more presence-heavy of the two. The Cullinan Mansory in particular does not walk into a hotel valet line quietly. Bentley is the more understated marque — the Bentayga arrives as a car that people who know cars notice, and people who don't recognise as \"the right kind of expensive.\"\n\nSimplest split: **Rolls-Royce for the day where the arrival is the moment.** Weddings, milestone anniversaries, product launches, the kind of photo you'll frame. **Bentley for the day where the arrival needs to be gracious but not the headline.** Business meetings, DIFC lunches, private-jet transfers, family occasions where the guests you're greeting matter more than the car.",
+      },
+      {
+        heading: 'The core difference',
+        content:
+          "Both brands have made their case for over a century and both are objectively excellent. The difference is a philosophy of how a luxury car is supposed to feel.\n\nRolls-Royce is built around the passenger. Every design choice — the coach-hinged rear doors, the umbrellas in the door frames, the starlight headliner, the cabin isolation that reduces road noise to a hum — is engineered so that being driven is the primary experience.\n\nBentley builds for both driver and passenger. The Bentayga is a car you can enjoy driving as much as being driven in. The cabin is quieter than a Cullinan on the highway, warmer in feel, and the driving position is engineered to remove the sense of the SUV's size. It's the more all-round car.\n\nFor a day where you're always in the back, Rolls-Royce is engineered for exactly that. For a day where you might drive it home yourself in the evening, Bentley is the more flexible answer.",
+      },
+      {
+        heading: 'The Cullinan Mansory in detail',
+        content:
+          "The [Rolls-Royce Cullinan Mansory](/catalogue/rolls-royce-culli-mansory) is the top of our fleet and the most photographed car in it. The underlying car is Rolls-Royce's SUV, powered by a 6.75-litre twin-turbo V12 with air suspension calibrated for the \"magic carpet\" ride Rolls-Royce is known for.\n\nMansory adds a full carbon-fibre aero kit — front splitter, side skirts, rear diffuser, roof spoiler — plus a custom exhaust and wider wheels. Inside, the starlight headliner and bespoke trim upgrades push the presence further again.\n\nWhat this means practically:\n\n- **Arrival.** No other rental SUV in Dubai draws attention like this one. If you want the doorman to open the door before the car has fully stopped, this is the car.\n- **Rear cabin.** Two passengers in the rear ride in silence. The seats recline, the massage function works, and the starlight headliner overhead becomes the ceiling of a proper room, not just an interior.\n- **Photography.** The Mansory aero package plus the interior details are what wedding and event photographers frame around. If the day is going to be photographed, the car earns its rate.\n\nDaily rate: AED 2,499. Weekly and bespoke event packages are quoted directly.",
+      },
+      {
+        heading: 'The Bentayga in detail',
+        content:
+          "The [Bentley Bentayga](/catalogue/bentley-bentayga) is a very different proposition. Same category — a full-size luxury SUV — but built to a different brief.\n\nIt runs a 4.0-litre twin-turbo V8 producing 542 bhp, 0–100 in 4.4 seconds, air suspension throughout. The cabin is hand-finished at Bentley's Crewe facility in the UK — leather hand-selected, wood veneers matched by eye, jewellery-grade metalwork including the signature bullseye vents. The Naim for Bentley audio system is one of the best in any SUV.\n\nWhat this means practically:\n\n- **Discretion.** The Bentayga arrives with authority but doesn't demand attention. In DIFC or the JLT boardrooms this is the more appropriate car.\n- **Cabin quiet.** The V8's cabin sits roughly 2 dB quieter than a Cullinan at 120 km/h — small on paper, real on a Dubai-to-Abu Dhabi run.\n- **Range across the day.** The Bentayga suits multiple use cases in a single booking — school run in the morning, meeting in the middle, event in the evening. The Cullinan Mansory works for one occasion at a time.\n\nDaily rate: AED 1,299. Three trims sit on our fleet — black, brown, and the [Black Line Edition](/catalogue/bentley-bentayga-s) (white with gloss-black styling pack), which is the most photographed of the three for weddings.",
+      },
+      {
+        heading: 'When to pick Rolls-Royce',
+        content:
+          "- **Wedding day.** The one occasion where the car IS a character.\n- **Milestone anniversary or engagement.** Same reasoning — the arrival is part of the story.\n- **Business signing with the visual counted.** Not every meeting warrants this level. The ones where a photo will go public do.\n- **Family visit for a very special occasion.** Grandparents in town, a graduation, an event you'll remember. The Cullinan makes any of these into a proper occasion.\n- **Product launch or brand campaign.** For the exterior arrival footage where the car is the shot.",
+      },
+      {
+        heading: 'When to pick Bentley',
+        content:
+          "- **Business day with multiple meetings.** The car needs to fit into different contexts without being the loudest thing in the room.\n- **DIFC or JLT lunch.** More at home here than a Mansory-body Cullinan.\n- **Airport-to-hotel transfer for a returning client or family.** Warm, quiet, gracious.\n- **Multi-day booking where you might drive it yourself some of the time.** The Bentayga is genuinely enjoyable to drive; the Cullinan is engineered around the passenger experience.\n- **Family occasion where the car should be presence but not the headline.** A birthday dinner, an anniversary at Nobu, a private tour of the city with visiting parents.\n\nIf the day is specifically a wedding, our [best cars for a Dubai wedding guide](/guides/best-cars-rent-dubai-wedding) covers the full shortlist across brands, including which trims photograph best in daytime vs evening light.",
+      },
+      {
+        heading: 'The chauffeur question',
+        content:
+          "Chauffeur service is available on request as an add-on to any of our luxury bookings — most commonly on the Cullinan Mansory and the Bentayga for wedding and event work.\n\nWhat to specify when you book:\n\n- **Time window.** A three-hour block, a full day, or a multi-day. Chauffeur is charged separately from the car.\n- **Language.** English is standard. Arabic-speaking drivers are available with notice.\n- **Attire.** Standard is a black suit and tie. Formal white gloves for wedding bookings on request.\n- **Route or open brief.** Some clients want a fixed itinerary; others want a driver at the door of every venue for an open evening.\n\nBook at least a week ahead for chauffeur bookings, and two weeks during peak wedding season (November through March).",
+      },
+      {
+        heading: 'What a chauffeur day actually looks like',
+        content:
+          "Most bookings run one of three shapes:\n\n- **The wedding shape.** Car delivered to the venue an hour before ceremony start. Ceremony departure, photo stops at two or three locations (usually a beach, an iconic hotel, and Downtown), then reception drop-off. Four to six hours in total. Chauffeur throughout.\n- **The event shape.** Car delivered to the client's hotel or residence in the morning. Meetings in DIFC, lunch, an afternoon commitment, evening event. Chauffeur across the day. Eight to ten hours.\n- **The arrival shape.** Airport pickup for a VIP or family, one hotel drop-off, then either the car stays for the visitor's use or returns to us. Two to four hours.\n\nFor any of these, the car is prepared before delivery — detailed, fuelled, tags installed. The chauffeur arrives suited and briefed on the itinerary.",
+      },
+      {
+        heading: 'Renting from LuxeClub',
+        content:
+          "Both cars sit on our catalogue with clear daily rates and delivery included. What's standard on either booking:\n\n- Free delivery anywhere in Dubai at a time you pick\n- First tank of Special 95 pre-filled\n- Comprehensive insurance with a clearly disclosed excess\n- Salik gantry tag pre-installed\n- A short walk-through at handover covering the drive-mode selector, cabin controls, and anything specific to the car\n- Chauffeur service available on request — quoted at time of booking\n\nReservation: AED 495 is taken at booking to confirm the car and lock the price for pay-on-collection bookings. It comes off the rental total at handover, so it isn't an extra cost. Deposit: many customers qualify for our no-deposit option — just let us know at booking. Where a deposit does apply, the amount is shown on each vehicle's page, held as a refundable pre-authorisation at handover, and released within five working days of return.\n\nIf it's your first luxury rental in Dubai, our [first-time renting a luxury car in Dubai guide](/guides/first-time-renting-luxury-car-dubai) walks the whole experience end to end.",
+      },
+    ],
+  },
 ]

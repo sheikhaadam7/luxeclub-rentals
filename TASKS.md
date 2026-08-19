@@ -59,7 +59,7 @@ Ordered by SEO value and commercial alignment with the owned fleet (Q3 S Line, R
 11. ⏳ **Ferrari Portofino vs Aston Martin DB12: Dubai grand-tourer comparison** — competitive comparison in the GT category.
 12. ⏳ **How to spec a luxury rental for a Dubai photoshoot** — niche but high-conversion. Bentayga Black Line + Cullinan + Urus primary.
 13. ⏳ **Insurance in luxury rentals: what's covered, what isn't** — addresses anxiety question. Links to deposits + rental-fines guides.
-14. ⏳ **Rolls-Royce vs Bentley for a Dubai chauffeur day** — high-intent decision content. Cullinan vs Bentayga + Continental GT.
+14. ✅ **Rolls-Royce vs Bentley for a Dubai chauffeur day** — shipped 2026-08-19 (backdated 2026-07-22). Slug: `rolls-royce-vs-bentley-dubai-chauffeur-day`. Backfill slot 4 of ~5. Category: cars. ZeroGPT: 13.4%. Continental GT left out (no dedicated catalogue slug); Cullinan Mansory vs Bentayga head-to-head.
 15. ⏳ **Best valet experiences in Dubai by car category** — practical and shareable. Links to mall guide + SUV guide.
 16. ⏳ **Renting in Dubai with a Schengen-only driving licence** — covers EU-resident edge case not addressed by IDP guide.
 17. ⏳ **Renting between Dubai and Sharjah: what changes** — addresses cross-emirate confusion. Links to Salik + driving rules.
