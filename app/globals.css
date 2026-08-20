@@ -23,6 +23,10 @@ select option {
   /* Brand Colors */
   --color-brand-black: #000000;
   --color-brand-surface: #0a0a0a;
+  /* Band-alt: used by the v2 money-page banded template to alternate against
+   * brand-black. Deliberately lifted higher than brand-surface (which is
+   * the site-wide card background) so bands read as clearly distinct. */
+  --color-brand-band-alt: #181818;
   --color-brand-glass: rgba(18, 18, 18, 0.72);
   --color-brand-border: rgba(255, 255, 255, 0.08);
   --color-brand-border-hover: rgba(255, 255, 255, 0.18);

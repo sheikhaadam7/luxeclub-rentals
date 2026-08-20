@@ -346,7 +346,7 @@ export default async function MoneyPage({ params }: PageProps) {
                   <Link
                     key={g.slug}
                     href={`/guides/${g.slug}`}
-                    className="group bg-white/[0.03] border border-white/[0.08] p-5 space-y-2 hover:border-white/20 transition-all duration-300"
+                    className="group bg-white/[0.08] border border-brand-cyan/25 p-5 space-y-2 hover:bg-white/[0.12] hover:border-brand-cyan/50 transition-all duration-300"
                   >
                     <p className="text-xs text-white/40">
                       {new Date(g.publishedDate).toLocaleDateString('en-GB', {
@@ -500,6 +500,223 @@ export default async function MoneyPage({ params }: PageProps) {
       </section>
     ) : null
 
+  // ------------------------------------------------------------------
+  // v2 layout — banded sections (opt-in via `layoutVariant: 'v2'`).
+  // Each top-level block sits in its own alternating-background band
+  // with a hairline gold divider. Pilot: DXB airport page (2026-08-19).
+  // ------------------------------------------------------------------
+  if (page.layoutVariant === 'v2') {
+    const heroBlock = (
+      <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 ${isCentered ? 'text-center' : ''}`}>
+        <nav className="text-sm text-brand-muted">
+          <Link href="/" className="hover:text-white transition-colors">Home</Link>
+          <span className="mx-2">/</span>
+          <span className="text-white">{page.title}</span>
+        </nav>
+        <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold text-white tracking-tight">
+          {page.heading}
+        </h1>
+        {page.heroImage && (
+          <div className={`relative w-full max-w-5xl aspect-[16/9] rounded-xl overflow-hidden ${isCentered ? 'mx-auto' : ''}`}>
+            <img
+              src={page.heroImage}
+              alt={page.heroImageAlt || page.heading}
+              loading="eager"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          </div>
+        )}
+        <p className={`text-lg sm:text-xl text-brand-muted max-w-2xl ${isCentered ? 'mx-auto' : ''}`}>
+          {page.subheading}
+        </p>
+        <div className={`text-base text-white/70 max-w-3xl leading-relaxed space-y-4 ${isCentered ? 'mx-auto' : ''}`}>
+          {page.content.split('\n\n').map((para, i) => (
+            <p key={i}>{para}</p>
+          ))}
+        </div>
+      </div>
+    )
+
+    const navAndGridBlock = (
+      <div className="space-y-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+          <div>
+            <p className="text-xs uppercase tracking-wider text-brand-muted mb-2">Browse by Brand</p>
+            <div className="flex flex-wrap gap-2">
+              {BRAND_LINKS.map((b) => {
+                const active = slug === b.slug
+                return (
+                  <Link
+                    key={b.slug}
+                    href={`/${b.slug}`}
+                    className={`inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-none border whitespace-nowrap transition-all duration-200 ${
+                      active
+                        ? 'bg-white text-black border-white'
+                        : 'bg-transparent text-white/60 border-white/[0.12] hover:text-white hover:border-white/30'
+                    }`}
+                  >
+                    <img
+                      src={b.logo}
+                      alt=""
+                      aria-hidden="true"
+                      width={26}
+                      height={26}
+                      className={`h-[26px] w-[26px] object-contain shrink-0 ${active ? '' : 'opacity-90'}`}
+                    />
+                    {b.label}
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+          <div>
+            <p className="text-xs uppercase tracking-wider text-brand-muted mb-2">Browse by Type</p>
+            <div className="flex flex-wrap gap-2">
+              {TYPE_LINKS.map((t) => (
+                <Link
+                  key={t.slug}
+                  href={t.href}
+                  className={`px-4 py-2 text-sm font-medium rounded-none border whitespace-nowrap transition-all duration-200 ${
+                    slug === t.slug
+                      ? 'bg-white text-black border-white'
+                      : 'bg-transparent text-white/60 border-white/[0.12] hover:text-white hover:border-white/30'
+                  }`}
+                >
+                  {t.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+          <div>
+            <p className="text-xs uppercase tracking-wider text-brand-muted mb-2">Popular Searches</p>
+            <div className="flex flex-wrap gap-2">
+              {KEYWORD_LINKS.map((k) => (
+                <Link
+                  key={k.slug}
+                  href={`/${k.slug}`}
+                  className={`px-4 py-2 text-sm font-medium rounded-none border whitespace-nowrap transition-all duration-200 ${
+                    slug === k.slug
+                      ? 'bg-white text-black border-white'
+                      : 'bg-transparent text-white/60 border-white/[0.12] hover:text-white hover:border-white/30'
+                  }`}
+                >
+                  {k.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+          <p className="text-[13px] text-brand-muted pt-2">
+            {vehicles.length} {vehicles.length === 1 ? 'vehicle' : 'vehicles'} available
+          </p>
+        </div>
+        {vehicles.length === 0 ? (
+          <div className="flex items-center justify-center py-20">
+            <p className="text-brand-muted text-sm">No vehicles available in this category right now.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-px bg-brand-border">
+            {vehicles.map((vehicle) => (
+              <VehicleCard key={vehicle.slug} {...vehicle} />
+            ))}
+          </div>
+        )}
+      </div>
+    )
+
+    const ctaBlock = (
+      <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 ${isCentered ? 'text-center' : ''}`}>
+        <h2 className="font-display text-2xl sm:text-3xl font-semibold text-white">
+          Ready to drive?
+        </h2>
+        <p className={`text-brand-muted max-w-xl ${isCentered ? 'mx-auto' : ''}`}>
+          Every rental includes comprehensive insurance and a full handover walkthrough. Delivery across Dubai is free on monthly rentals; daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge. No hidden fees.
+        </p>
+        <div className={`flex flex-wrap gap-4 ${isCentered ? 'justify-center' : ''}`}>
+          <Link
+            href="/catalogue"
+            className="px-8 py-3 bg-white text-black font-medium text-sm hover:bg-white/90 transition-colors"
+          >
+            Browse Full Fleet
+          </Link>
+          <a
+            href="https://wa.me/971588086137?text=Hi%2C%20I%27m%20interested%20in%20renting%20a%20car."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-8 py-3 bg-[#25D366]/20 hover:bg-[#25D366]/40 text-white font-medium text-sm transition-colors"
+          >
+            WhatsApp Us
+          </a>
+        </div>
+      </div>
+    )
+
+    // Assemble bands. v2 order: hero → (icon grid) → sections → cta → fleet grid.
+    // Fleet grid moves to the bottom so the page reads as a funnel — the user
+    // consumes the argument first, then hits the CTA, then picks a car.
+    const bands: React.ReactNode[] = [heroBlock]
+    if (iconGridSection) bands.push(iconGridSection)
+    if (sectionsBlock) bands.push(sectionsBlock)
+    if (!page.sections || page.sections.length === 0) {
+      bands.push(
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+          <h2 className="font-display text-xl font-medium text-white">
+            <Link href="/guides" className="hover:text-brand-cyan transition-colors duration-300">
+              Take a Look at Our Guides
+            </Link>
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {guides.slice(0, 3).map((g) => (
+              <Link
+                key={g.slug}
+                href={`/guides/${g.slug}`}
+                className="group bg-white/[0.08] border border-brand-cyan/25 p-5 space-y-2 hover:bg-white/[0.12] hover:border-brand-cyan/50 transition-all duration-300"
+              >
+                <p className="text-xs text-white/40">
+                  {new Date(g.publishedDate).toLocaleDateString('en-GB', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                  })}
+                </p>
+                <h3 className="text-sm font-medium text-white group-hover:text-brand-cyan transition-colors duration-300 line-clamp-2">
+                  {g.title}
+                </h3>
+                <p className="text-xs text-white/50 line-clamp-2">{g.metaDescription}</p>
+              </Link>
+            ))}
+          </div>
+        </div>,
+      )
+    }
+    bands.push(ctaBlock)
+    bands.push(navAndGridBlock)
+
+    return (
+      <main className="min-h-screen bg-brand-black">
+        {jsonLd.map((schema, i) => (
+          <script
+            key={i}
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          />
+        ))}
+        {bands.map((band, i) => (
+          <section
+            key={i}
+            className={`${i % 2 === 0 ? 'bg-brand-black' : 'bg-brand-band-alt'} ${
+              i > 0 ? 'border-t border-brand-cyan/20' : ''
+            } py-12 sm:py-16 lg:py-20`}
+          >
+            {band}
+          </section>
+        ))}
+      </main>
+    )
+  }
+
+  // ------------------------------------------------------------------
+  // v1 layout — single flat background (default). Unchanged.
+  // ------------------------------------------------------------------
   return (
     <main className="min-h-screen bg-luxury">
       {jsonLd.map((schema, i) => (
@@ -664,7 +881,7 @@ export default async function MoneyPage({ params }: PageProps) {
               <Link
                 key={g.slug}
                 href={`/guides/${g.slug}`}
-                className="group bg-white/[0.03] border border-white/[0.08] p-5 space-y-2 hover:border-white/20 transition-all duration-300"
+                className="group bg-white/[0.08] border border-brand-cyan/25 p-5 space-y-2 hover:bg-white/[0.12] hover:border-brand-cyan/50 transition-all duration-300"
               >
                 <p className="text-xs text-white/40">
                   {new Date(g.publishedDate).toLocaleDateString('en-GB', {
@@ -702,7 +919,7 @@ export default async function MoneyPage({ params }: PageProps) {
             href="https://wa.me/971588086137?text=Hi%2C%20I%27m%20interested%20in%20renting%20a%20car."
             target="_blank"
             rel="noopener noreferrer"
-            className="px-8 py-3 border border-white/20 text-white font-medium text-sm hover:border-white/40 transition-colors"
+            className="px-8 py-3 bg-[#25D366]/20 hover:bg-[#25D366]/40 text-white font-medium text-sm transition-colors"
           >
             WhatsApp Us
           </a>

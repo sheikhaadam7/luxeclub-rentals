@@ -36,6 +36,12 @@ export interface MoneyPage {
    *  (centered: text-center + mx-auto on width-constrained children).
    *  Set to `false` on an entry to opt out and left-align that page. */
   centered?: boolean
+  /** Visual template. `v1` (default) renders the page on a single flat
+   *  background. `v2` wraps each top-level block (hero / nav / grid /
+   *  sections / cta) in an alternating-background band with a hairline
+   *  gold divider — quieter than a card layout but visually distinct.
+   *  Pilot: enabled on `/rent-car-dubai-airport-dxb` from 2026-08-19. */
+  layoutVariant?: 'v1' | 'v2'
   /** Index of the body section (FAQs excluded) after which the
    *  "Take a Look at Our Guides" block renders. Defaults to 0. */
   guidesAfterSectionIndex?: number
@@ -1856,6 +1862,7 @@ export const moneyPages: MoneyPage[] = [
     heroImage: 'https://images.unsplash.com/photo-1609763252108-b727080cdd4f?w=1200&q=80&auto=format',
     heroImageAlt: 'Emirates aircraft at Dubai International Airport Terminal 3 — where our airport pickups happen',
     centered: true,
+    layoutVariant: 'v2',
     content:
       "Landing at DXB and want a car ready at arrivals? This is the honest page for that. Most Dubai rental operators run a shuttle-to-compound model — you land, walk to a kiosk, then wait for a bus that takes you off-airport to sign paperwork. That adds 45+ minutes to an already tired arrival. Our airport pickup works differently: one of our team meets you at the arrivals exit with a name board, helps with luggage, and walks you to the car parked in the airport car park. Delivery is a flat AED 110 plus AED 110 pickup (free on monthly bookings), the same rate as anywhere in Dubai — no separate airport surcharge, no concession-driven base-rate uplift. Same fleet as our Marina, Downtown, DIFC, and Palm deliveries: Audi Q3 S Line through Bentley Bentayga, RSQ8, Cullinan Mansory, and the rest of the range. Read below for when airport pickup is actually the right call vs when hotel delivery is the smarter default.",
     sections: [
