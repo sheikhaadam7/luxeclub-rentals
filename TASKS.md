@@ -10,8 +10,8 @@
 | Write SEO punch list into `TASKS.md` | ✅ | 🟡 | S | — (uncommitted) |
 | 1. Flesh out `rent-sports-car-in-dubai` + `rent-convertible-in-dubai` | ⏳ | 🔴 | L | — |
 | 2. Migrate `<img>` → `next/image` on money pages + brand pills | ⏳ | 🔴 | M | — |
-| 3. Add `Vehicle` schema to `catalogue/[slug]` | ⏳ | 🟡 | M | — |
-| 4. Per-vehicle meta descriptions from `vehicleContentMap` | ⏳ | 🟡 | S | — |
+| 3. Add `Vehicle` schema to `catalogue/[slug]` | 🟢 | 🟡 | M | — (schema.org/Vehicle with Offer/LeaseOut + AutoRental seller; all 49 cars covered via template) |
+| 4. Per-vehicle meta descriptions from `vehicleContentMap` | 🟢 | 🟡 | S | — (fallback template rebuilt: name + car type + neighborhoods for cars without curated content) |
 | 5. `Organization` schema + `sameAs` social links | ⏳ | 🔵 | S | — (needs social URLs) |
 | 6. `dateModified` / `datePublished` on money-page JSON-LD | ⏳ | 🔵 | S | — |
 | Weekly guide cadence — next due **2026-06-08** | ⏳ | 🟡 | M | — (ongoing; topics in queue below) |
@@ -34,6 +34,7 @@
 | A10. New money page: **Wedding Car Rental Dubai** (seasonal peak, high-AOV) | ⏳ | 🟡 | L | — |
 | A11. New money page: **Business Bay Car Rental** (hyperlocal — we're in Binary Tower) | ⏳ | 🟡 | L | — |
 | A12. New money page: **Car Rental for Photoshoot / Film** (high-AOV, low-comp) | ⏳ | 🟡 | L | — |
+| A13. Flip money-page `layoutVariant` default from `v1` → `v2` (site-wide banded template rollout) | ⏳ | 🟡 | S | — (piloted on DXB ab11e72, awaiting bounce-rate signal before rollout) |
 
 **Status key:** ✅ done & verified · 🟢 done not tested · ⏳ not started · 🔧 in progress · ⚠️ blocked · 💤 deprioritized
 **Priority key:** 🔴 critical · 🟡 important · 🔵 nice-to-have
@@ -84,9 +85,12 @@ Full-site Google-ranking evaluation done 2026-08-19. Verdict: **~70% of what Goo
 - **A11.** No **Business Bay Car Rental** hyperlocal page — we're literally in Binary Tower on Marasi Drive.
 - **A12.** No **Car Rental for Photoshoot / Film** page — high-AOV, low-comp niche.
 
+**Template rollout (A13):**
+- **A13.** Flip `layoutVariant` default from `v1` → `v2` in `app/(public)/[slug]/page.tsx` so the remaining 21 money pages inherit the banded template shipped on DXB (`ab11e72`, 2026-08-20). One-line change: `if (page.layoutVariant === 'v2')` → `if ((page.layoutVariant ?? 'v2') === 'v2')`, or equivalently drop the v1 branch entirely once we're sure. Before flipping: (i) let DXB run in prod for ~5–7 days and check Google Analytics bounce rate against a v1 control page (e.g. Lamborghini) to confirm the redesign helps, not hurts; (ii) spot-check that the sectionsBlock compound-padding issue (band's `py-12/16/20` plus inner `pt-12 pb-8`) isn't visibly heavier than the other bands — if it is, tighten sectionsBlock's inner padding when layoutVariant is v2 before rolling out. Pilot page: https://luxeclubrentals.com/rent-car-dubai-airport-dxb — compare against any v1 page to see the difference.
+
 **Nice-to-have (not queued):** `VideoObject` for hero video, `hreflang` (i18n locales exist but unlinked), `SpecialAnnouncement` for no-deposit promo, `HowTo` on step-by-step money-page sections.
 
-**Recommended build order:** A1 → A2 → A3 → A5 → A4 → A6 → then A10-A12.
+**Recommended build order:** A1 → A2 → A3 → A5 → A4 → A6 → then A10-A12. **A13 runs on its own timeline** — only after DXB has ~5–7 days of live traffic to validate the template.
 
 ### Money-page house rules (added 2026-08-19)
 

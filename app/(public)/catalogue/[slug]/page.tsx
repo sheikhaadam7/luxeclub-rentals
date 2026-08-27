@@ -152,7 +152,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const supabase = createAdminClient()
   const { data: vehicle } = await supabase
     .from('vehicles')
-    .select('name, daily_rate, primary_image_url, category')
+    .select('name, daily_rate, primary_image_url, category, categories')
     .eq('slug', slug)
     .eq('is_active', true)
     .single()
@@ -161,9 +161,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const seoContent = vehicleContentMap[slug]
   const title = seoContent?.metaTitle ?? `Rent ${vehicle.name} in Dubai`
-  // Prefer the first paragraph of the curated description for priority vehicles;
-  // otherwise fall back to the formulaic template so we never ship an empty description.
-  const fallbackDescription = `Rent a ${vehicle.name} in Dubai from AED ${vehicle.daily_rate?.toLocaleString('en-US') ?? ''}/day. Insurance included, delivery all over Dubai. Book online with LuxeClub Rentals.`
+  const carType = (vehicle.categories as string[] | null)?.[0] ?? vehicle.category ?? null
+  const typeLabel = carType ? ` ${carType}` : ''
+  const priceStr = vehicle.daily_rate
+    ? ` from AED ${vehicle.daily_rate.toLocaleString('en-US')}/day`
+    : ''
+  const fullFallback = `Rent the ${vehicle.name}${typeLabel} in Dubai${priceStr}. Delivery across Marina, Downtown, DIFC, and Palm Jumeirah. Insurance included with LuxeClub Rentals.`
+  const fallbackDescription =
+    fullFallback.length > 160 ? `${fullFallback.slice(0, 157).trimEnd()}…` : fullFallback
   const description = seoContent?.description
     ? (() => {
         const firstPara = seoContent.description.split(/\n\n+/)[0] ?? ''
@@ -259,26 +264,138 @@ export default async function VehicleDetailPage({ params }: PageProps) {
     }
   }
 
-  const productJsonLd = {
+  // Extract common Vehicle schema fields from the free-form specs jsonb.
+  const specValue = (...keys: string[]): string | undefined => {
+    if (!specs) return undefined
+    for (const key of keys) {
+      for (const dbKey of Object.keys(specs)) {
+        if (dbKey.toLowerCase().trim() === key) {
+          const v = specs[dbKey]?.toString().trim()
+          if (v) return v
+        }
+      }
+    }
+    return undefined
+  }
+  const parseInteger = (v?: string): number | undefined => {
+    if (!v) return undefined
+    const m = v.match(/\d+/)
+    return m ? parseInt(m[0], 10) : undefined
+  }
+  const driveConfig = (v?: string): string | undefined => {
+    if (!v) return undefined
+    const l = v.toLowerCase()
+    if (l.includes('awd') || l.includes('all-wheel'))
+      return 'https://schema.org/AllWheelDriveConfiguration'
+    if (l.includes('rwd') || l.includes('rear-wheel'))
+      return 'https://schema.org/RearWheelDriveConfiguration'
+    if (l.includes('fwd') || l.includes('front-wheel'))
+      return 'https://schema.org/FrontWheelDriveConfiguration'
+    if (l.includes('4wd') || l.includes('4x4'))
+      return 'https://schema.org/FourWheelDriveConfiguration'
+    return undefined
+  }
+  const normalizeFuel = (v?: string): string | undefined => {
+    if (!v) return undefined
+    const l = v.toLowerCase()
+    if (l.includes('gasoline') || l.includes('petrol')) return 'Gasoline'
+    if (l.includes('diesel')) return 'Diesel'
+    if (l.includes('electric')) return 'Electric'
+    if (l.includes('hybrid')) return 'Hybrid'
+    return v
+  }
+
+  const modelYear = parseInteger(specValue('year'))
+  const transmission = specValue('transmission')
+  const seatingCapacity = parseInteger(specValue('seats'))
+  const doorCount = parseInteger(specValue('doors'))
+  const drive = driveConfig(specValue('drivetrain'))
+  const fuel = normalizeFuel(specValue('fuel', 'fuel type', 'fueltype'))
+  const bodyTypeValue =
+    specValue('body type', 'bodytype') ?? (carType && carType.length <= 30 ? carType : undefined)
+  const colorValue = specValue('color', 'colour', 'exterior color', 'exterior colour')
+  const engineType = specValue('engine', 'engine type')
+  const horsepower = parseInteger(specValue('horsepower', 'hp', 'power'))
+
+  const vehicleUrl = `https://luxeclubrentals.com/catalogue/${slug}`
+
+  const offer: Record<string, unknown> = {
+    '@type': 'Offer',
+    priceCurrency: 'AED',
+    price: vehicle.daily_rate,
+    businessFunction: 'https://schema.org/LeaseOut',
+    url: vehicleUrl,
+    availability: vehicle.is_available
+      ? 'https://schema.org/InStock'
+      : 'https://schema.org/OutOfStock',
+    seller: {
+      '@type': 'AutoRental',
+      name: 'LuxeClub Rentals',
+      url: 'https://luxeclubrentals.com',
+      telephone: '+971588086137',
+      email: 'bookings@luxeclubrentals.com',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: 'Binary Tower, 32 Marasi Drive',
+        addressLocality: 'Business Bay',
+        addressRegion: 'Dubai',
+        addressCountry: 'AE',
+      },
+    },
+  }
+  if (vehicle.daily_rate) {
+    offer.priceSpecification = {
+      '@type': 'UnitPriceSpecification',
+      price: vehicle.daily_rate,
+      priceCurrency: 'AED',
+      unitCode: 'DAY',
+      referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitCode: 'DAY' },
+    }
+  }
+
+  const vehicleJsonLd: Record<string, unknown> = {
     '@context': 'https://schema.org',
-    '@type': 'Product',
+    '@type': 'Vehicle',
     name: vehicle.name,
-    description: `Rent a ${vehicle.name} in Dubai with LuxeClub Rentals. Insurance included, delivery across Dubai.`,
-    image: allImages[0],
-    url: `https://luxeclubrentals.com/catalogue/${slug}`,
+    description:
+      seoContent?.description?.split(/\n\n+/)[0] ??
+      `Rent the ${vehicle.name} in Dubai with LuxeClub Rentals. Insurance included, delivery across Dubai.`,
+    image: allImages.length > 0 ? allImages : undefined,
+    url: vehicleUrl,
     sku: slug,
     productID: slug,
     brand: { '@type': 'Brand', name: brandName },
-    offers: {
-      '@type': 'Offer',
-      priceCurrency: 'AED',
-      price: vehicle.daily_rate,
-      url: `https://luxeclubrentals.com/catalogue/${slug}`,
-      availability: vehicle.is_available
-        ? 'https://schema.org/InStock'
-        : 'https://schema.org/OutOfStock',
-      seller: { '@type': 'Organization', name: 'LuxeClub Rentals' },
-    },
+    manufacturer: { '@type': 'Organization', name: brandName },
+    itemCondition: 'https://schema.org/UsedCondition',
+    offers: offer,
+  }
+  if (modelYear) vehicleJsonLd.vehicleModelDate = String(modelYear)
+  if (transmission) vehicleJsonLd.vehicleTransmission = transmission
+  if (seatingCapacity)
+    vehicleJsonLd.vehicleSeatingCapacity = {
+      '@type': 'QuantitativeValue',
+      value: seatingCapacity,
+      unitCode: 'C62',
+    }
+  if (doorCount) vehicleJsonLd.numberOfDoors = doorCount
+  if (drive) vehicleJsonLd.driveWheelConfiguration = drive
+  if (fuel) vehicleJsonLd.fuelType = fuel
+  if (bodyTypeValue) vehicleJsonLd.bodyType = bodyTypeValue
+  if (colorValue) vehicleJsonLd.color = colorValue
+  if (engineType || horsepower) {
+    const engine: Record<string, unknown> = { '@type': 'EngineSpecification' }
+    if (engineType) engine.engineType = engineType
+    if (horsepower)
+      engine.enginePower = {
+        '@type': 'QuantitativeValue',
+        value: horsepower,
+        unitCode: 'BHP',
+      }
+    vehicleJsonLd.vehicleEngine = engine
+  }
+  // Strip undefined so JSON stays clean.
+  for (const k of Object.keys(vehicleJsonLd)) {
+    if (vehicleJsonLd[k] === undefined) delete vehicleJsonLd[k]
   }
 
   const faqJsonLd = seoContent?.faqs?.length
@@ -297,7 +414,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
     <main className="min-h-screen bg-luxury">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd ? [productJsonLd, faqJsonLd] : productJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd ? [vehicleJsonLd, faqJsonLd] : vehicleJsonLd) }}
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
