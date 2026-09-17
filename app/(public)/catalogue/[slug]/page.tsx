@@ -728,7 +728,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
               About this {vehicle.name}
             </h2>
             <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-6">
-              <p className="text-[16px] text-white/80 leading-relaxed whitespace-pre-line">
+              <p className="text-base sm:text-lg text-white/80 leading-[1.7] whitespace-pre-line">
                 {vehicle.description}
               </p>
             </div>
@@ -749,12 +749,12 @@ export default async function VehicleDetailPage({ params }: PageProps) {
         {/* Model-specific SEO content — below all visual content */}
         {seoContent && (
           <div className="mt-16 space-y-8 border-t border-white/[0.08] pt-10">
-            <div>
-              <p className="text-xs uppercase tracking-wider text-brand-muted mb-4">
+            <div className="space-y-5">
+              <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">
                 About renting the {vehicle.name} in Dubai
-              </p>
+              </h2>
               {seoContent.description.split(/\n\n+/).map((para, i) => (
-                <p key={i} className="text-[15px] text-brand-muted leading-relaxed max-w-3xl mb-4 last:mb-0">
+                <p key={i} className="text-base sm:text-lg text-white/80 leading-[1.7] max-w-3xl">
                   {para}
                 </p>
               ))}
@@ -769,7 +769,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
                   items={seoContent.faqs.map((f) => ({
                     question: f.question,
                     answer: (
-                      <p className="text-[15px] text-brand-muted leading-relaxed max-w-3xl">
+                      <p className="text-base sm:text-lg text-white/80 leading-[1.7] max-w-3xl">
                         {f.answer}
                       </p>
                     ),
