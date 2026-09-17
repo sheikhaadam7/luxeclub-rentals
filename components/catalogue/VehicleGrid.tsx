@@ -27,40 +27,64 @@ interface VehicleGridProps {
 // Brand & type matching — mirrors LuxeClub /garage filters
 // ---------------------------------------------------------------------------
 
-/** All brands available across scraped sources */
+/** All brands we support as top-level filter chips. Union of LuxeClub's current
+ *  fleet + VIP's 27 brand pages (verified 2026-09-17). Alphabetized. Chips with
+ *  no matching vehicles are disabled by PillFilter via `availableOptions`. */
 const BRANDS = [
   'Aston Martin',
   'Audi',
   'Bentley',
   'BMW',
+  'Brabus',
   'Cadillac',
+  'Chevrolet',
+  'Corvette',
+  'Dodge',
   'Ferrari',
+  'Ford',
+  'GMC',
+  'Infiniti',
+  'Jaguar',
   'Lamborghini',
+  'Land Rover',
   'Maserati',
+  'Maybach',
   'McLaren',
   'Mercedes',
+  'Mini',
+  'Mustang',
+  'Nissan',
   'Porsche',
   'Range Rover',
   'Rolls Royce',
+  'Tesla',
+  'Toyota',
 ] as const
 
 /**
  * Canonical car types — read directly from `vehicles.categories` in Supabase.
  * Order here is the pill display order. Assignment is driven by the
  * spreadsheet workflow at `scripts/export-car-types.py` /
- * `scripts/import-car-types.py`.
+ * `scripts/import-car-types.py`. Extended 2026-09-18 to mirror VIP's category
+ * breadth (Luxury, Supercar, Van, 7-Seater, Modified). Monthly/Budget skipped
+ * — those are pricing filters, not vehicle types.
  */
 const CAR_TYPES = [
+  'Luxury',
   'Sports',
+  'Supercar',
   'SUV',
   'Convertible',
   'Sedan',
   'Coupe',
   'Family',
+  'Van',
+  '7-Seater',
+  'Modified',
 ] as const
 
 /** Multi-word brands that need prefix matching */
-const MULTI_WORD_BRANDS = ['Aston Martin', 'Range Rover', 'Rolls Royce']
+const MULTI_WORD_BRANDS = ['Aston Martin', 'Land Rover', 'Range Rover', 'Rolls Royce']
 
 /** Extract the brand from a vehicle name */
 function extractBrand(name: string): string {
