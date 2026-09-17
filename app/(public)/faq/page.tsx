@@ -72,7 +72,7 @@ export default function FAQPage() {
           <h1 className="font-display text-3xl sm:text-4xl font-semibold text-white tracking-tight">
             <T k="faq.title" />
           </h1>
-          <p className="text-base text-brand-muted"><T k="faq.subtitle" /></p>
+          <p className="text-base sm:text-lg text-white/80 leading-[1.7]"><T k="faq.subtitle" /></p>
         </div>
 
         <FaqList />

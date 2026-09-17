@@ -64,7 +64,7 @@ export default function GuidesPage() {
           <h1 className="font-display text-3xl sm:text-4xl font-semibold text-white tracking-tight">
             Guides, Blogs & Just... Venting
           </h1>
-          <p className="text-base text-brand-muted">
+          <p className="text-base sm:text-lg text-white/80 leading-[1.7]">
             Everything you need to know before getting behind the wheel in Dubai. And some things we just needed to get off our chest.
           </p>
         </div>
@@ -135,7 +135,7 @@ export default function GuidesPage() {
                           <h2 className="font-display text-lg font-medium text-white group-hover:text-brand-cyan transition-colors duration-300">
                             {guide.title}
                           </h2>
-                          <p className="text-sm text-brand-muted leading-relaxed line-clamp-3">
+                          <p className="text-base text-white/70 leading-relaxed line-clamp-3">
                             {guide.metaDescription}
                           </p>
                           <span className="inline-flex items-center gap-1 text-sm text-brand-cyan font-medium mt-auto">

@@ -62,7 +62,7 @@ export default function PrivacyPolicyPage() {
         </p>
       </div>
 
-      <article className="max-w-3xl mx-auto px-4 sm:px-6 pb-24 text-white/70 leading-relaxed space-y-10 text-[15px]">
+      <article className="max-w-3xl mx-auto px-4 sm:px-6 pb-24 text-base sm:text-lg text-white/80 leading-[1.7] space-y-10">
 
         <section className="space-y-3">
           <p>

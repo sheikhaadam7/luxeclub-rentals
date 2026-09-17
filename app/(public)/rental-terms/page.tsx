@@ -113,7 +113,7 @@ export default function RentalTermsPage() {
               </h2>
 
               {sec.intro.map((para, pi) => (
-                <p key={`intro-${si}-${pi}`} className="text-base text-brand-muted leading-relaxed">
+                <p key={`intro-${si}-${pi}`} className="text-base sm:text-lg text-white/80 leading-[1.7]">
                   {renderInline(para, pi)}
                 </p>
               ))}
@@ -126,7 +126,7 @@ export default function RentalTermsPage() {
                   {sub.paragraphs.map((para, pi) => (
                     <p
                       key={`sub-${si}-${subi}-${pi}`}
-                      className="text-base text-brand-muted leading-relaxed"
+                      className="text-base sm:text-lg text-white/80 leading-[1.7]"
                     >
                       {renderInline(para, pi)}
                     </p>

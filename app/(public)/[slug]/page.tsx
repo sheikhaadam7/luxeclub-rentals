@@ -173,14 +173,14 @@ function renderInline(text: string, keyPrefix: string | number): React.ReactNode
 
 function renderParagraphs(content: string, centered = false) {
   const pClass = centered
-    ? 'text-base text-brand-muted leading-relaxed max-w-3xl mx-auto text-center mb-4 last:mb-0'
-    : 'text-base text-brand-muted leading-relaxed max-w-3xl mb-4 last:mb-0'
+    ? 'text-base sm:text-lg text-white/80 leading-[1.7] max-w-3xl mx-auto text-center mb-4 last:mb-0'
+    : 'text-base sm:text-lg text-white/80 leading-[1.7] max-w-3xl mb-4 last:mb-0'
   const ulClass = centered
-    ? 'list-none space-y-2 text-base text-brand-muted leading-relaxed max-w-3xl mx-auto text-center mb-4 last:mb-0'
-    : 'list-disc pl-6 space-y-2 text-base text-brand-muted leading-relaxed max-w-3xl mb-4 last:mb-0 marker:text-brand-cyan'
+    ? 'list-none space-y-2 text-base sm:text-lg text-white/80 leading-[1.7] max-w-3xl mx-auto text-center mb-4 last:mb-0'
+    : 'list-disc pl-6 space-y-2 text-base sm:text-lg text-white/80 leading-[1.7] max-w-3xl mb-4 last:mb-0 marker:text-brand-cyan'
   const h3Class = centered
-    ? 'font-display text-lg sm:text-xl font-semibold text-white text-center mt-6 mb-3 first:mt-0'
-    : 'font-display text-lg sm:text-xl font-semibold text-white mt-6 mb-3 first:mt-0'
+    ? 'font-display text-xl sm:text-2xl font-bold text-white tracking-tight text-center mt-8 mb-3 first:mt-0'
+    : 'font-display text-xl sm:text-2xl font-bold text-white tracking-tight mt-8 mb-3 first:mt-0'
 
   return content.split(/\n\n+/).map((para, i) => {
     const trimmed = para.trim()
@@ -529,7 +529,7 @@ export default async function MoneyPage({ params }: PageProps) {
         <p className={`text-lg sm:text-xl text-brand-muted max-w-2xl ${isCentered ? 'mx-auto' : ''}`}>
           {page.subheading}
         </p>
-        <div className={`text-base text-white/70 max-w-3xl leading-relaxed space-y-4 ${isCentered ? 'mx-auto' : ''}`}>
+        <div className={`text-base sm:text-lg text-white/80 max-w-3xl leading-[1.7] space-y-4 ${isCentered ? 'mx-auto' : ''}`}>
           {page.content.split('\n\n').map((para, i) => (
             <p key={i}>{para}</p>
           ))}
@@ -751,7 +751,7 @@ export default async function MoneyPage({ params }: PageProps) {
         <p className={`text-lg sm:text-xl text-brand-muted max-w-2xl ${isCentered ? 'mx-auto' : ''}`}>
           {page.subheading}
         </p>
-        <div className={`text-base text-white/70 max-w-3xl leading-relaxed space-y-4 ${isCentered ? 'mx-auto' : ''}`}>
+        <div className={`text-base sm:text-lg text-white/80 max-w-3xl leading-[1.7] space-y-4 ${isCentered ? 'mx-auto' : ''}`}>
           {page.content.split('\n\n').map((para, i) => (
             <p key={i}>{para}</p>
           ))}

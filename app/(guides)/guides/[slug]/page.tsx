@@ -258,7 +258,7 @@ export default async function GuidePage({
                 />
               )}
               {section.content.split('\n\n').map((paragraph, j) => (
-                <p key={j} className="text-base text-brand-muted leading-relaxed">
+                <p key={j} className="text-base sm:text-lg text-white/80 leading-[1.7]">
                   {paragraph.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\([^)]+\))/).filter(Boolean).map((part, k) => {
                     if (part.startsWith('**') && part.endsWith('**')) {
                       return <strong key={k} className="text-white font-medium">{part.slice(2, -2)}</strong>

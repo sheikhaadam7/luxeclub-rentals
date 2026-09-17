@@ -275,7 +275,7 @@ export default async function HomePage() {
                 </div>
                 <div className="p-6 text-center space-y-3">
                   <h3 className="font-display text-xl font-medium text-white"><T k="home.luxuryCarRentals" /></h3>
-                  <p className="text-sm text-white/40 leading-relaxed">
+                  <p className="text-base sm:text-lg text-white/70 leading-[1.7]">
                     <T k="home.luxuryCarRentalsDesc" />
                   </p>
                 </div>
@@ -297,7 +297,7 @@ export default async function HomePage() {
                 </div>
                 <div className="p-6 text-center space-y-3">
                   <h3 className="font-display text-xl font-medium text-white"><T k="home.chauffeurService" /></h3>
-                  <p className="text-sm text-white/40 leading-relaxed">
+                  <p className="text-base sm:text-lg text-white/70 leading-[1.7]">
                     <T k="home.chauffeurServiceDesc" />
                   </p>
                 </div>
@@ -320,7 +320,7 @@ export default async function HomePage() {
               </div>
               <div className="p-6 text-center space-y-3">
                 <h3 className="font-display text-xl font-medium text-white"><T k="home.pickUpDropOff" /></h3>
-                <p className="text-sm text-white/40 leading-relaxed">
+                <p className="text-base sm:text-lg text-white/70 leading-[1.7]">
                   <T k="home.pickUpDropOffDesc" />
                 </p>
               </div>
@@ -334,7 +334,7 @@ export default async function HomePage() {
             <h2 className="font-display text-3xl sm:text-4xl font-medium text-white">
               <T k="home.howItWorks" />
             </h2>
-            <p className="text-sm text-brand-muted">
+            <p className="text-base sm:text-lg text-white/70 leading-[1.7]">
               <T k="home.howItWorksSubtitle" />
             </p>
           </div>
@@ -344,21 +344,21 @@ export default async function HomePage() {
                 <span className="text-sm font-bold text-brand-purple">01</span>
               </div>
               <h3 className="font-display text-lg font-medium text-white"><T k="home.step1Title" /></h3>
-              <p className="text-sm text-white/40 leading-relaxed"><T k="home.step1Desc" /></p>
+              <p className="text-base sm:text-lg text-white/70 leading-[1.7]"><T k="home.step1Desc" /></p>
             </div>
             <div className="text-center space-y-4">
               <div className="w-14 h-14 mx-auto rounded-full border border-brand-purple/30 flex items-center justify-center">
                 <span className="text-sm font-bold text-brand-purple">02</span>
               </div>
               <h3 className="font-display text-lg font-medium text-white"><T k="home.step2Title" /></h3>
-              <p className="text-sm text-white/40 leading-relaxed"><T k="home.step2Desc" /></p>
+              <p className="text-base sm:text-lg text-white/70 leading-[1.7]"><T k="home.step2Desc" /></p>
             </div>
             <div className="text-center space-y-4">
               <div className="w-14 h-14 mx-auto rounded-full border border-brand-purple/30 flex items-center justify-center">
                 <span className="text-sm font-bold text-brand-purple">03</span>
               </div>
               <h3 className="font-display text-lg font-medium text-white"><T k="home.step3Title" /></h3>
-              <p className="text-sm text-white/40 leading-relaxed"><T k="home.step3Desc" /></p>
+              <p className="text-base sm:text-lg text-white/70 leading-[1.7]"><T k="home.step3Desc" /></p>
             </div>
           </div>
         </section>
@@ -370,7 +370,7 @@ export default async function HomePage() {
               <h2 className="font-display text-2xl sm:text-3xl font-semibold text-white tracking-tight">
                 <T k="home.featuredVehicles" />
               </h2>
-              <p className="text-sm text-brand-muted">
+              <p className="text-base sm:text-lg text-white/70 leading-[1.7]">
                 <T k="home.featuredVehiclesSubtitle" />
               </p>
             </div>
@@ -405,7 +405,7 @@ export default async function HomePage() {
             <h2 className="font-display text-2xl sm:text-3xl font-semibold text-white tracking-tight">
               <T k="home.testimonials" />
             </h2>
-            <p className="text-sm text-brand-muted">
+            <p className="text-base sm:text-lg text-white/70 leading-[1.7]">
               <T k="home.testimonialsSubtitle" />
             </p>
           </div>
@@ -418,7 +418,7 @@ export default async function HomePage() {
             <h2 className="font-display text-3xl sm:text-4xl font-medium text-white">
               <T k="home.ctaTitle" />
             </h2>
-            <p className="text-base text-white/40 leading-relaxed">
+            <p className="text-base sm:text-lg text-white/70 leading-[1.7]">
               <T k="home.ctaSubtitle" />
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">

@@ -20,7 +20,7 @@ export function FaqList() {
           className="group bg-brand-surface border border-brand-border rounded-[var(--radius-card)] overflow-hidden transition-colors duration-300 hover:border-brand-border-hover"
         >
           <summary className="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none select-none">
-            <span className="text-[15px] font-medium text-white">{q}</span>
+            <span className="text-base sm:text-lg font-semibold text-white">{q}</span>
             <svg
               className="w-4 h-4 text-brand-muted flex-shrink-0 transition-transform duration-300 group-open:rotate-180"
               fill="none"
@@ -33,7 +33,7 @@ export function FaqList() {
           </summary>
           <div className="px-6 pb-5 space-y-3">
             {a.split('\n\n').map((paragraph, j) => (
-              <p key={j} className="text-[14px] text-brand-muted leading-relaxed">{paragraph}</p>
+              <p key={j} className="text-base sm:text-lg text-white/80 leading-[1.7]">{paragraph}</p>
             ))}
           </div>
         </details>

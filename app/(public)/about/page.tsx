@@ -72,19 +72,19 @@ export default function AboutPage() {
             <h2 className="font-display text-2xl font-medium text-white">
               <T k="about.founderTitle" />
             </h2>
-            <p className="text-sm text-white/50 leading-relaxed">
+            <p className="text-base sm:text-lg text-white/80 leading-[1.7]">
               <T k="about.founderP1" />
             </p>
-            <p className="text-sm text-white/50 leading-relaxed">
+            <p className="text-base sm:text-lg text-white/80 leading-[1.7]">
               <T k="about.founderP2" />
             </p>
-            <p className="text-sm text-white/50 leading-relaxed">
+            <p className="text-base sm:text-lg text-white/80 leading-[1.7]">
               <T k="about.founderP3" />
             </p>
-            <p className="text-sm text-white/50 leading-relaxed">
+            <p className="text-base sm:text-lg text-white/80 leading-[1.7]">
               <T k="about.founderP4" />
             </p>
-            <p className="text-sm text-white/50 leading-relaxed">
+            <p className="text-base sm:text-lg text-white/80 leading-[1.7]">
               <T k="about.founderP5" />
             </p>
           </div>
@@ -120,7 +120,7 @@ export default function AboutPage() {
         <h2 className="font-display text-3xl sm:text-4xl font-medium text-white mb-6">
           <T k="about.whatSetsUsApart" />
         </h2>
-        <p className="text-white/50 leading-relaxed">
+        <p className="text-base sm:text-lg text-white/80 leading-[1.7]">
           <T k="about.whatSetsUsApartDesc" />
         </p>
       </section>
@@ -136,7 +136,7 @@ export default function AboutPage() {
               </svg>
             </div>
             <h3 className="font-display text-lg font-medium text-white"><T k="about.curatedExcellence" /></h3>
-            <p className="text-sm text-white/40 leading-relaxed"><T k="about.curatedExcellenceDesc" /></p>
+            <p className="text-base text-white/70 leading-relaxed"><T k="about.curatedExcellenceDesc" /></p>
           </div>
 
           {/* Personal Touch */}
@@ -147,7 +147,7 @@ export default function AboutPage() {
               </svg>
             </div>
             <h3 className="font-display text-lg font-medium text-white"><T k="about.personalTouch" /></h3>
-            <p className="text-sm text-white/40 leading-relaxed"><T k="about.personalTouchDesc" /></p>
+            <p className="text-base text-white/70 leading-relaxed"><T k="about.personalTouchDesc" /></p>
           </div>
 
           {/* Complete Transparency */}
@@ -158,7 +158,7 @@ export default function AboutPage() {
               </svg>
             </div>
             <h3 className="font-display text-lg font-medium text-white"><T k="about.completeTransparency" /></h3>
-            <p className="text-sm text-white/40 leading-relaxed"><T k="about.completeTransparencyDesc" /></p>
+            <p className="text-base text-white/70 leading-relaxed"><T k="about.completeTransparencyDesc" /></p>
           </div>
         </div>
       </section>
