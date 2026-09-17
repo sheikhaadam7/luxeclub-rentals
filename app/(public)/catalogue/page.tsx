@@ -66,11 +66,11 @@ export default async function CataloguePage({ searchParams }: PageProps) {
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Page header */}
-        <div className="mb-10 space-y-2">
-          <h1 className="font-display text-3xl font-semibold text-white tracking-tight">
+        <div className="mb-12 space-y-4">
+          <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.05] uppercase">
             <T k="catalogue.ourFleet" />
           </h1>
-          <p className="text-brand-muted text-base">
+          <p className="text-brand-muted text-lg sm:text-xl max-w-2xl leading-relaxed">
             <T k="catalogue.subtitle" />
           </p>
         </div>

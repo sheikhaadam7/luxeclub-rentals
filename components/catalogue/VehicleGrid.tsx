@@ -122,7 +122,7 @@ function PillFilter({ options, selected, onSelect, availableOptions }: PillFilte
         type="button"
         onClick={() => onSelect(null)}
         className={[
-          'px-4 py-2 rounded-none text-sm font-medium transition-all duration-200 border whitespace-nowrap',
+          'px-5 py-2.5 rounded-none text-base font-semibold transition-all duration-200 border whitespace-nowrap',
           !selected
             ? 'bg-white text-black border-white'
             : 'bg-transparent text-white/60 border-white/[0.12] hover:border-white/30 hover:text-white',
@@ -139,7 +139,7 @@ function PillFilter({ options, selected, onSelect, availableOptions }: PillFilte
             type="button"
             onClick={() => isAvailable && onSelect(isSelected ? null : option)}
             className={[
-              'px-4 py-2 rounded-none text-sm font-medium transition-all duration-200 border whitespace-nowrap',
+              'px-5 py-2.5 rounded-none text-base font-semibold transition-all duration-200 border whitespace-nowrap',
               isSelected
                 ? 'bg-white text-black border-white'
                 : isAvailable
@@ -228,7 +228,7 @@ export function VehicleGrid({ vehicles, initialBrand, initialCategory }: Vehicle
         <div className="space-y-4">
           {/* Brand pills */}
           <div>
-            <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">{t('catalogue.brand')}</p>
+            <p className="text-sm text-brand-muted uppercase tracking-wider font-semibold mb-3">{t('catalogue.brand')}</p>
             <PillFilter
               options={BRANDS}
               selected={selectedBrand}
@@ -239,7 +239,7 @@ export function VehicleGrid({ vehicles, initialBrand, initialCategory }: Vehicle
 
           {/* Type pills */}
           <div>
-            <p className="text-xs text-brand-muted uppercase tracking-wider mb-3">{t('catalogue.type')}</p>
+            <p className="text-sm text-brand-muted uppercase tracking-wider font-semibold mb-3">{t('catalogue.type')}</p>
             <PillFilter
               options={CAR_TYPES}
               selected={selectedType}

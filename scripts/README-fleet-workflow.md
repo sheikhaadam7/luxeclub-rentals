@@ -1,5 +1,26 @@
 # Fleet master spreadsheet — workflow
 
+> **⚠️ DEPRECATED as of 2026-09-17.**
+>
+> `data/fleet.xlsx` and the `import-fleet.py` / `watch-fleet.py` / `export-fleet.py` scripts are **no longer the primary workflow** for managing cars on the site. They still work as a fallback, but the new consolidated flow lives in the **master price sheet** at:
+>
+> `C:\Users\lenovo\Desktop\Luxeclub price master sheet\luxeclub master price sheet.xlsx`
+>
+> Add / amend / retire cars via that sheet's Master tab. The push script `scripts\push-vehicles-to-site.py` (in that same folder) handles INSERT / PATCH / retire against Supabase — new cars land as invisible drafts, then you finish prep in the admin panel Fleet tab.
+>
+> Column reference (master price sheet):
+> - **A** Name (drives `name` and slug generation)
+> - **B** Categories (comma-separated; drives `categories` text[])
+> - **AS** Site slug (system-generated on first push, don't edit)
+> - **AT** Show on site? (Y = visible, N = hidden, blank = leave alone)
+> - **AU** Upload to site? (**the gate** — Y = manage this row, blank = ignore)
+> - **AV** Retire? (Y = permanent hard-remove via `is_active=false`)
+> - **AW-BB** Brand, Year, Deposit, Overage, Weekly, Monthly
+>
+> For the full flow, see the `reference_master_price_sheet.md` memory. The docs below describe the LEGACY `data/fleet.xlsx` flow — keep them as historical reference and for the images upload workflow (`upload-fleet-images.py` still lives in `scripts/`).
+
+---
+
 `data/fleet.xlsx` is the source of truth for every car on the site.
 Edit a cell → save → the change is on the site within ~2 seconds.
 

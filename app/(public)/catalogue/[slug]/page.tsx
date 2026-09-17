@@ -465,18 +465,18 @@ export default async function VehicleDetailPage({ params }: PageProps) {
             <div className="lg:sticky lg:top-24 bg-white/[0.03] border border-white/[0.08] p-7 space-y-6">
 
               {/* Category */}
-              <p className="text-sm text-white/60 font-medium">{carType}</p>
+              <p className="text-sm text-white/60 font-semibold uppercase tracking-wider">{carType}</p>
 
               {/* Name */}
-              <h1 className="font-display text-3xl sm:text-4xl font-semibold text-white tracking-tight leading-tight">
+              <h1 className="font-display text-4xl sm:text-5xl font-bold text-white tracking-tight leading-[1.05]">
                 {vehicle.name}
               </h1>
 
               {/* Daily rate */}
               {vehicle.daily_rate && (
                 <p className="text-white">
-                  <PriceDisplay amount={vehicle.daily_rate} className="text-2xl font-bold" />
-                  <span className="text-white/50 text-base ml-1.5"><T k="vehicle.daily" /></span>
+                  <PriceDisplay amount={vehicle.daily_rate} className="text-3xl font-bold" />
+                  <span className="text-white/50 text-lg ml-1.5"><T k="vehicle.daily" /></span>
                 </p>
               )}
 
@@ -607,7 +607,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
               className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.08] p-3 text-white/80"
             >
               <span className="text-lg leading-none" aria-hidden>{b.icon}</span>
-              <span className="text-xs font-medium leading-tight">{b.label}</span>
+              <span className="text-sm font-semibold leading-tight">{b.label}</span>
             </div>
           ))}
         </div>
@@ -644,7 +644,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
           const allSpecs = [...sorted, ...extras]
           return allSpecs.length > 0 ? (
             <div className="mt-12 space-y-4">
-              <h2 className="font-display text-xl font-medium text-white">
+              <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">
                 <T k="vehicle.specifications" />
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -664,7 +664,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
         {/* Rental Terms section */}
         <div className="mt-12 space-y-4">
-          <h2 className="font-display text-xl font-medium text-white">
+          <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">
             <T k="vehicle.rentalTerms" />
           </h2>
           <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-6 space-y-4">
@@ -692,7 +692,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
         {/* Documents Required panel — Tourists vs Residents */}
         <div className="mt-12 space-y-4">
-          <h2 className="font-display text-xl font-medium text-white">Documents required</h2>
+          <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">Documents required</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="bg-white/[0.03] border border-white/[0.08] p-6 space-y-3">
               <div className="flex items-center gap-2">
@@ -724,7 +724,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
         {/* Description (between Rental Terms and Availability) */}
         {vehicle.description && (
           <div className="mt-12 space-y-4">
-            <h2 className="font-display text-xl font-medium text-white">
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">
               About this {vehicle.name}
             </h2>
             <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-6">
@@ -737,7 +737,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
         {/* Availability calendar */}
         <div className="mt-12 space-y-4">
-          <h2 className="font-display text-xl font-medium text-white">
+          <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">
             <T k="vehicle.availability" />
           </h2>
           <p className="text-sm text-brand-muted">
@@ -762,7 +762,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
             {seoContent.faqs.length > 0 && (
               <div className="space-y-4">
-                <h2 className="font-display text-xl font-medium text-white">
+                <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">
                   Frequently Asked Questions
                 </h2>
                 <FaqAccordion
@@ -783,7 +783,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
         {/* Similar cars — same category, comparable price */}
         {similarCars.length > 0 && (
           <div className="mt-16 space-y-4">
-            <h2 className="font-display text-xl font-medium text-white">You might also like</h2>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">You might also like</h2>
             <p className="text-sm text-brand-muted">
               Other cars in this category and price range from our fleet
             </p>
@@ -814,7 +814,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
           if (related.length === 0) return null
           return (
             <div className="mt-12 space-y-4">
-              <h2 className="font-display text-xl font-medium text-white">Related guides</h2>
+              <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">Related guides</h2>
               <ul className="space-y-2">
                 {related.map((g) => (
                   <li key={g.slug}>
