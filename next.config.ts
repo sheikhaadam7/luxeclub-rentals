@@ -62,6 +62,26 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
 
+      // Old "bentley-bentayga-s" → current "bentley-bentayga-black-line-edition"
+      // (the white Black Line Edition — same V8 engine as standard Bentayga,
+      // never was an "S" variant). Slug renamed 2026-09-18 to match the
+      // canonical car name and remove the incorrect "-s" suffix.
+      {
+        source: '/catalogue/bentley-bentayga-s',
+        destination: '/catalogue/bentley-bentayga-black-line-edition',
+        permanent: true,
+      },
+      {
+        source: '/garage/bentley-bentayga-s',
+        destination: '/catalogue/bentley-bentayga-black-line-edition',
+        permanent: true,
+      },
+      {
+        source: '/old-garage/bentley-bentayga-s',
+        destination: '/catalogue/bentley-bentayga-black-line-edition',
+        permanent: true,
+      },
+
       // ── Renamed money pages (slug shortened for SEO) ───────────────────
       // rent-luxury-suv-in-dubai → rent-suv-in-dubai (2026-06-21). The
       // short slug matches the higher-volume search term ("rent SUV Dubai"),
