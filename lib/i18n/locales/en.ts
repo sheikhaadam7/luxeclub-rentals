@@ -71,7 +71,7 @@ const en: Record<string, string> = {
   'catalogue.subtitle': 'Explore our collection of luxury vehicles',
   'catalogue.all': 'All',
   'catalogue.brand': 'Brand',
-  'catalogue.type': 'Type',
+  'catalogue.type': 'Category',
   'catalogue.vehicle': 'vehicle',
   'catalogue.vehicles': 'vehicles',
   'catalogue.by': 'by',

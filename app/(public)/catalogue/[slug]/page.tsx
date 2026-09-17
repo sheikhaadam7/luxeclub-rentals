@@ -6,6 +6,7 @@ import { AvailabilityCalendar } from '@/components/ui/AvailabilityCalendar'
 import { ImageGallery } from '@/components/catalogue/ImageGallery'
 import { PriceDisplay } from '@/components/catalogue/PriceDisplay'
 import { NoDepositBadge } from '@/components/catalogue/NoDepositBadge'
+import { VehicleCard } from '@/components/catalogue/VehicleCard'
 import { FaqAccordion } from '@/components/ui/FaqAccordion'
 import { T } from '@/components/ui/T'
 import { vehicleContentMap } from '@/lib/vehicle-content'
@@ -227,6 +228,28 @@ export default async function VehicleDetailPage({ params }: PageProps) {
       to: new Date(r.end_date),
     })
   )
+
+  // Similar cars — same primary category, within ±50-80% of the daily rate,
+  // active + available on the site, current car excluded. Up to 6.
+  const firstCategory = (vehicle.categories as string[] | null)?.[0] ?? null
+  const priceLo = vehicle.daily_rate ? Math.round(vehicle.daily_rate * 0.5) : null
+  const priceHi = vehicle.daily_rate ? Math.round(vehicle.daily_rate * 1.8) : null
+  let similarQuery = supabase
+    .from('vehicles')
+    .select('slug, name, category, primary_image_url, image_urls, daily_rate, weekly_rate, monthly_rate')
+    .eq('is_active', true)
+    .eq('is_available', true)
+    .neq('slug', vehicle.slug)
+    .not('daily_rate', 'is', null)
+    .limit(6)
+  if (firstCategory) {
+    similarQuery = similarQuery.contains('categories', [firstCategory])
+  }
+  if (priceLo !== null && priceHi !== null) {
+    similarQuery = similarQuery.gte('daily_rate', priceLo).lte('daily_rate', priceHi)
+  }
+  const { data: similarCarsRaw } = await similarQuery
+  const similarCars = similarCarsRaw ?? []
 
   // Build full image list with primary first
   const allImages: string[] = []
@@ -569,19 +592,63 @@ export default async function VehicleDetailPage({ params }: PageProps) {
           </aside>
         </div>
 
-        {/* Specs section — exclude rental term fields */}
-        {specs && Object.keys(specs).length > 0 && (() => {
+        {/* Trust badges strip — sits below the pricing card, above the specs */}
+        <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          {[
+            { icon: '🛡️', label: 'Insurance included' },
+            { icon: '🚗', label: 'Free delivery in Dubai' },
+            { icon: '💳', label: 'No-deposit option' },
+            { icon: '₿', label: 'Crypto accepted' },
+            { icon: '💬', label: 'WhatsApp support' },
+            { icon: '⭐', label: '4.9 Google rating' },
+          ].map((b) => (
+            <div
+              key={b.label}
+              className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.08] p-3 text-white/80"
+            >
+              <span className="text-lg leading-none" aria-hidden>{b.icon}</span>
+              <span className="text-xs font-medium leading-tight">{b.label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Specs section — canonical order + universal facts */}
+        {(() => {
           const RENTAL_TERM_KEYS = ['deposit', 'daily km limit', 'additional mileage charge', 'mileage limit', 'included mileage', 'extra mileage']
-          const filteredSpecs = Object.entries(specs).filter(
+          // Preferred display order — matches how MK and VIP present their spec tables
+          const CANONICAL_ORDER = [
+            'engine', 'engine type', 'horsepower', 'power', 'torque',
+            '0-100', '0-100 km/h', '0 - 100 km/h', 'acceleration', 'top speed',
+            'transmission', 'drivetrain', 'drive', 'fuel', 'fuel type', 'fueltype',
+            'seats', 'doors', 'luggage', 'body type', 'bodytype',
+            'color', 'colour', 'exterior color', 'exterior colour', 'interior', 'interior color', 'year',
+          ]
+          const specEntries = specs ? Object.entries(specs).filter(
             ([key]) => !RENTAL_TERM_KEYS.some((rk) => key.toLowerCase().includes(rk))
-          )
-          return filteredSpecs.length > 0 ? (
+          ) : []
+          // Sort by canonical order; anything not in the list falls to the end preserving original order.
+          const orderIndex = (k: string) => {
+            const kl = k.toLowerCase().trim()
+            const i = CANONICAL_ORDER.indexOf(kl)
+            return i === -1 ? 999 : i
+          }
+          const sorted = [...specEntries].sort(([a], [b]) => orderIndex(a) - orderIndex(b))
+          // Universal facts — apply to every car, appended if not already in specs
+          const universalFacts: Array<[string, string]> = [
+            ['Delivery', 'Free within Dubai'],
+            ['Payment', 'Card / Cash / Crypto'],
+            ['Support', 'WhatsApp booking'],
+          ]
+          const existingLower = sorted.map(([k]) => k.toLowerCase())
+          const extras = universalFacts.filter(([k]) => !existingLower.some((sk) => sk.includes(k.toLowerCase())))
+          const allSpecs = [...sorted, ...extras]
+          return allSpecs.length > 0 ? (
             <div className="mt-12 space-y-4">
               <h2 className="font-display text-xl font-medium text-white">
                 <T k="vehicle.specifications" />
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                {filteredSpecs.map(([key, value]) => (
+                {allSpecs.map(([key, value]) => (
                   <div
                     key={key}
                     className="bg-white/[0.03] border border-white/[0.08] p-4 space-y-1"
@@ -619,6 +686,37 @@ export default async function VehicleDetailPage({ params }: PageProps) {
             <div className="flex items-center gap-2 text-sm text-white/60">
               <span>&#x2139;&#xFE0F;</span>
               <span><T k="vehicle.insuranceIncludedAll" /></span>
+            </div>
+          </div>
+        </div>
+
+        {/* Documents Required panel — Tourists vs Residents */}
+        <div className="mt-12 space-y-4">
+          <h2 className="font-display text-xl font-medium text-white">Documents required</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="bg-white/[0.03] border border-white/[0.08] p-6 space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="text-lg" aria-hidden>🌍</span>
+                <p className="text-sm font-semibold text-white">Tourists</p>
+              </div>
+              <ul className="space-y-2 text-sm text-white/70 leading-relaxed">
+                <li>• Valid passport</li>
+                <li>• Home-country driving licence</li>
+                <li>• International Driving Permit (IDP)</li>
+                <li>• Minimum age 25 (some cars 21+, exotics 27+)</li>
+              </ul>
+            </div>
+            <div className="bg-white/[0.03] border border-white/[0.08] p-6 space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="text-lg" aria-hidden>🇦🇪</span>
+                <p className="text-sm font-semibold text-white">UAE residents</p>
+              </div>
+              <ul className="space-y-2 text-sm text-white/70 leading-relaxed">
+                <li>• Valid UAE driving licence</li>
+                <li>• Emirates ID (front + back)</li>
+                <li>• Minimum age 25 (some cars 21+, exotics 27+)</li>
+                <li>• Insurance included, deposit varies by car</li>
+              </ul>
             </div>
           </div>
         </div>
@@ -679,6 +777,31 @@ export default async function VehicleDetailPage({ params }: PageProps) {
                 />
               </div>
             )}
+          </div>
+        )}
+
+        {/* Similar cars — same category, comparable price */}
+        {similarCars.length > 0 && (
+          <div className="mt-16 space-y-4">
+            <h2 className="font-display text-xl font-medium text-white">You might also like</h2>
+            <p className="text-sm text-brand-muted">
+              Other cars in this category and price range from our fleet
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {similarCars.slice(0, 6).map((car) => (
+                <VehicleCard
+                  key={car.slug}
+                  slug={car.slug}
+                  name={car.name}
+                  category={car.category}
+                  primary_image_url={car.primary_image_url}
+                  image_urls={car.image_urls}
+                  daily_rate={car.daily_rate}
+                  weekly_rate={car.weekly_rate}
+                  monthly_rate={car.monthly_rate}
+                />
+              ))}
+            </div>
           </div>
         )}
 
