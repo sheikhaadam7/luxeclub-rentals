@@ -1,0 +1,7 @@
+{
+  "_comment_1": "Source of truth for owner-set daily rates that OVERRIDE col O from the master sheet.",
+  "_comment_2": "Git-tracked deliberately — the commit history IS the audit trail. Every edit here is a public GitHub commit.",
+  "_comment_3": "Shape: {slug: daily_rate_aed}. Add or remove entries as needed; apply-daily-rate-update.py reads this every run.",
+  "_comment_4": "If a slug appears here, its price wins over anything the sheet says. Blank object = no overrides.",
+  "overrides": {}
+}

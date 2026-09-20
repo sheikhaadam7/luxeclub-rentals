@@ -62,6 +62,44 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
 
+      // Old "911-carerra-s-spyder" (typo, missing porsche- prefix) → current
+      // "porsche-911-carrera-s-spyder". Slug renamed 2026-09-20 to correct
+      // spelling and add proper brand prefix.
+      {
+        source: '/catalogue/911-carerra-s-spyder',
+        destination: '/catalogue/porsche-911-carrera-s-spyder',
+        permanent: true,
+      },
+      {
+        source: '/garage/911-carerra-s-spyder',
+        destination: '/catalogue/porsche-911-carrera-s-spyder',
+        permanent: true,
+      },
+      {
+        source: '/old-garage/911-carerra-s-spyder',
+        destination: '/catalogue/porsche-911-carrera-s-spyder',
+        permanent: true,
+      },
+
+      // Old "bmw-x6-m-competition-blue" → current "bmw-x6". Slug renamed
+      // 2026-09-20 — the car is a standard BMW X6, not the M Competition
+      // variant; original slug was incorrect. Live URL preserved via 301.
+      {
+        source: '/catalogue/bmw-x6-m-competition-blue',
+        destination: '/catalogue/bmw-x6',
+        permanent: true,
+      },
+      {
+        source: '/garage/bmw-x6-m-competition-blue',
+        destination: '/catalogue/bmw-x6',
+        permanent: true,
+      },
+      {
+        source: '/old-garage/bmw-x6-m-competition-blue',
+        destination: '/catalogue/bmw-x6',
+        permanent: true,
+      },
+
       // Old "bentley-bentayga-s" → current "bentley-bentayga-black-line-edition"
       // (the white Black Line Edition — same V8 engine as standard Bentayga,
       // never was an "S" variant). Slug renamed 2026-09-18 to match the

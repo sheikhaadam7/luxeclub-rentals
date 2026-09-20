@@ -12,6 +12,7 @@ import {
   type FleetData,
   type AvailabilityBlock,
 } from '@/app/actions/admin'
+import { VehicleImagesModal } from './VehicleImagesModal'
 
 // ─── Helpers ────────────────────────────────────────────────
 
@@ -380,6 +381,12 @@ function VehicleCard({
   onUpdated: () => void
 }) {
   const [editOpen, setEditOpen] = useState(false)
+  const [imagesOpen, setImagesOpen] = useState(false)
+  const [localImageState, setLocalImageState] = useState({
+    primary_image_url: vehicle.primary_image_url,
+    image_urls: vehicle.image_urls ?? [],
+    updated_at: vehicle.updated_at,
+  })
   const [blocks, setBlocks] = useState<AvailabilityBlock[]>(vehicle.availability_blocks)
   const [isPendingActive, startActiveTransition] = useTransition()
   const [isPendingAvail, startAvailTransition] = useTransition()
@@ -480,6 +487,16 @@ function VehicleCard({
           />
           <button
             type="button"
+            onClick={() => setImagesOpen(true)}
+            className="text-xs px-3 py-1.5 rounded border border-brand-border text-brand-muted hover:text-white hover:border-brand-cyan/50 transition-colors"
+          >
+            Images
+            {localImageState.image_urls.length > 0 && (
+              <span className="ml-1.5 text-white/40">({localImageState.image_urls.length})</span>
+            )}
+          </button>
+          <button
+            type="button"
             onClick={() => setEditOpen((o) => !o)}
             className="text-xs px-3 py-1.5 rounded border border-brand-border text-brand-muted hover:text-white hover:border-brand-cyan/50 transition-colors"
           >
@@ -487,6 +504,30 @@ function VehicleCard({
           </button>
         </div>
       </div>
+
+      {imagesOpen && (
+        <VehicleImagesModal
+          vehicle={{
+            id: vehicle.id,
+            slug: vehicle.slug,
+            name: vehicle.name,
+            primary_image_url: localImageState.primary_image_url,
+            image_urls: localImageState.image_urls,
+            updated_at: localImageState.updated_at,
+          }}
+          onClose={() => {
+            setImagesOpen(false)
+            onUpdated()
+          }}
+          onVehicleChanged={(v) =>
+            setLocalImageState({
+              primary_image_url: v.primary_image_url,
+              image_urls: v.image_urls ?? [],
+              updated_at: v.updated_at,
+            })
+          }
+        />
+      )}
 
       {/* Edit form */}
       {editOpen && (
@@ -605,6 +646,7 @@ export function FleetTab() {
   const [data, setData] = useState<FleetData | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [query, setQuery] = useState('')
 
   const fetchData = useCallback(async () => {
     setLoading(true)
@@ -649,8 +691,68 @@ export function FleetTab() {
 
   const { vehicles, lastRun, isStale } = data!
 
+  const q = query.trim().toLowerCase()
+  const filteredVehicles = q
+    ? vehicles.filter((v) => {
+        const haystack = `${v.name} ${v.category ?? ''} ${v.slug}`.toLowerCase()
+        return haystack.includes(q)
+      })
+    : vehicles
+
   return (
     <div className="space-y-6">
+      {/* Search — sticky at the top so it's always in reach while scrolling */}
+      <div
+        className="sticky top-2 z-30 rounded-xl p-4 shadow-lg"
+        style={{ backgroundColor: '#ffffff', border: '2px solid #C9A96E' }}
+      >
+        <label
+          htmlFor="fleet-search"
+          className="block text-xs uppercase tracking-wider font-bold mb-2"
+          style={{ color: '#111827' }}
+        >
+          Find a car
+        </label>
+        <div className="relative">
+          <span
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-lg pointer-events-none"
+            aria-hidden
+          >
+            🔍
+          </span>
+          <input
+            id="fleet-search"
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Type a brand or name — e.g. Mercedes, RSQ8, Range Rover…"
+            className="w-full text-base rounded-lg pl-12 pr-12 py-3 focus:outline-none"
+            style={{
+              backgroundColor: '#f9fafb',
+              border: '2px solid #d1d5db',
+              color: '#111827',
+            }}
+            autoComplete="off"
+          />
+          {query && (
+            <button
+              type="button"
+              onClick={() => setQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-xl leading-none px-2 py-1 rounded hover:bg-gray-200"
+              style={{ color: '#4b5563' }}
+              aria-label="Clear search"
+            >
+              ×
+            </button>
+          )}
+        </div>
+        {query.trim() && (
+          <p className="mt-2 text-sm" style={{ color: '#4b5563' }}>
+            Showing <strong style={{ color: '#111827' }}>{filteredVehicles.length}</strong> of {vehicles.length} cars matching &quot;{query}&quot;
+          </p>
+        )}
+      </div>
+
       {/* Staleness alert */}
       {isStale && (
         <div className="flex items-start gap-3 bg-amber-400/10 border border-amber-400/30 rounded-[var(--radius-card)] px-4 py-3">
@@ -755,7 +857,8 @@ export function FleetTab() {
       {/* Vehicle list */}
       <div className="space-y-4">
         <h2 className="font-display text-lg font-medium text-white">
-          Vehicles ({vehicles.length})
+          Vehicles ({filteredVehicles.length}
+          {query.trim() ? ` of ${vehicles.length}` : ''})
         </h2>
         {vehicles.length === 0 ? (
           <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-6 text-center">
@@ -763,9 +866,15 @@ export function FleetTab() {
               No vehicles in database. Run the scraper first or add one above.
             </p>
           </div>
+        ) : filteredVehicles.length === 0 ? (
+          <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-6 text-center">
+            <p className="text-brand-muted text-sm">
+              No matches for &quot;{query}&quot;. Try fewer letters, or clear the search.
+            </p>
+          </div>
         ) : (
           <div className="space-y-3">
-            {vehicles.map((vehicle) => (
+            {filteredVehicles.map((vehicle) => (
               <VehicleCard key={vehicle.id} vehicle={vehicle} onUpdated={fetchData} />
             ))}
           </div>

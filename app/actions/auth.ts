@@ -72,7 +72,22 @@ export async function login(formData: FormData) {
   }
 
   const redirectTo = formData.get('redirectTo') as string | null
-  redirect(redirectTo || '/')
+  if (redirectTo) {
+    redirect(redirectTo)
+  }
+
+  // If the user is an admin, drop them straight into /admin. Otherwise home.
+  if (signInData.user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', signInData.user.id)
+      .single()
+    if (profile?.role === 'admin') {
+      redirect('/admin?tab=fleet')
+    }
+  }
+  redirect('/')
 }
 
 export async function resetPassword(email: string) {

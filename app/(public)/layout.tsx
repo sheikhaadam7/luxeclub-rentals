@@ -17,6 +17,16 @@ export default async function PublicLayout({
   const { data: claimsData } = await supabase.auth.getClaims()
   const isAuthenticated = !!claimsData?.claims
 
+  let isAdmin = false
+  if (claimsData?.claims?.sub) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', claimsData.claims.sub)
+      .single()
+    isAdmin = profile?.role === 'admin'
+  }
+
   const cookieStore = await cookies()
   const userChoice = cookieStore.get('luxeclub-currency')?.value as Currency | undefined
   const geoGuess = cookieStore.get('geo-currency')?.value as Currency | undefined
@@ -26,7 +36,7 @@ export default async function PublicLayout({
   return (
     <LanguageProvider>
       <CurrencyProvider initialCurrency={initialCurrency}>
-        <NavBar isAuthenticated={isAuthenticated} />
+        <NavBar isAuthenticated={isAuthenticated} isAdmin={isAdmin} />
         {children}
         <Footer />
         <WhatsAppFloat />

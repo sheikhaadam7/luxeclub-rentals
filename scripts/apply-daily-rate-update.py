@@ -1,34 +1,64 @@
 """
 APPLY daily_rate updates to production Supabase.
 
-Combines:
-  - 17 auto-updates from fleet-search xlsx (MK x 1.10 first, VIP x 1.10 fallback)
-  - 5 manual overrides specified by the user
+Reads col O of the master sheet — the single source of truth for the site
+daily rate. Col O implements the priority chain (per user rules 2026-09-20):
+    1. LC-owned (col I winter / L summer) — highest priority
+    2. MK × 1.10 (AJ path)
+    3. VIP direct (AA / AD)
+    4. LSD direct (BC) — last fallback for cars MK+VIP don't stock
 
-Skips LuxeClub-owned cars and cars with no MK/VIP reference (except where
-overridden manually).
+Cached col O values are read first (Excel-computed). If cached is missing
+(openpyxl saved sheet without Excel re-open), a Python recompute mirroring
+push-vehicles-to-site.py:compute_daily_rate_from_master() handles the chain.
 
-Run:
-  python scripts/apply-daily-rate-update.py            # dry-run summary
-  python scripts/apply-daily-rate-update.py --apply    # actually PATCH
+Safety features:
+  - 50% sanity guard: skips updates where |new - current| / current > 0.50.
+    --force bypasses.
+  - Slug-mismatch audit: any sheet row with AS populated but no matching
+    Supabase slug is reported. --apply refuses to proceed if any exist,
+    unless --force.
+  - JSON overrides: read from scripts/manual-price-overrides.json. An entry
+    for a slug wins over anything the sheet says.
+
+Usage:
+  python scripts/apply-daily-rate-update.py                 # dry-run all
+  python scripts/apply-daily-rate-update.py --slug=<slug>   # dry-run single
+  python scripts/apply-daily-rate-update.py --apply         # PATCH all
+  python scripts/apply-daily-rate-update.py --apply --force # bypass guard
 """
 
-import os, re, sys, json, urllib.request
+import json
+import re
+import sys
+import urllib.request
 from pathlib import Path
+
 import openpyxl
 
-PROJECT = Path("C:/Users/lenovo/projects/luxeclub-rentals")
-XLSX    = Path("C:/Users/lenovo/Downloads/luxeclub-fleet-search.xlsx")
-APPLY   = "--apply" in sys.argv
+PROJECT           = Path(__file__).resolve().parent.parent
+MASTER_SHEET      = Path(r"C:/Users/lenovo/Desktop/Luxeclub price master sheet/luxeclub master price sheet.xlsx")
+OVERRIDES_FILE    = PROJECT / "scripts" / "manual-price-overrides.json"
 
-# Manual overrides — by Supabase slug
-MANUAL_OVERRIDES = {
-    "lamborghini-urus-black":  2799,
-    "lamborghini-urus-yellow": 1999,
-    "range-rover-vogue-hse":    889,
-    "audi-sq7":                 899,
-    "porsche-911-turbo-s":     3799,
-}
+APPLY   = "--apply" in sys.argv
+FORCE   = "--force" in sys.argv
+SLUG_FILTER = None
+for a in sys.argv:
+    if a.startswith("--slug="):
+        SLUG_FILTER = a.split("=", 1)[1].strip()
+
+SANITY_GUARD_RATIO = 0.50   # >50% delta triggers guard
+COL_NAME             = 1
+COL_LC_OWNED_WINTER  = 9    # I
+COL_LC_OWNED_SUMMER  = 12   # L
+COL_DAILY_O          = 15   # O
+COL_VIP_WINTER       = 27   # AA
+COL_MK_WINTER_EDIT   = 36   # AJ
+COL_SITE_SLUG        = 45   # AS
+COL_LSD_DAILY        = 55   # BC
+DATA_START_ROW       = 5
+
+# ── Supabase env ───────────────────────────────────────────────────────────
 
 env = {}
 for line in (PROJECT / ".env.local").read_text(encoding="utf-8").splitlines():
@@ -36,110 +66,238 @@ for line in (PROJECT / ".env.local").read_text(encoding="utf-8").splitlines():
     if m: env[m.group(1)] = m.group(2)
 SUPABASE_URL = env["NEXT_PUBLIC_SUPABASE_URL"].rstrip("/")
 SERVICE_KEY  = env["SUPABASE_SERVICE_ROLE_KEY"]
-HEADERS = {
+HEADERS_PATCH = {
     "apikey": SERVICE_KEY,
     "Authorization": f"Bearer {SERVICE_KEY}",
     "Content-Type": "application/json",
     "Prefer": "return=representation",
 }
+HEADERS_GET = {"apikey": SERVICE_KEY, "Authorization": f"Bearer {SERVICE_KEY}"}
 
-STRIP_TOKENS = [
-    "edition","competition","platinum","spider","spyder","mansory","black line",
-    "the ","rent a ","rent ","new ",
-    "2020","2021","2022","2023","2024","2025","2026",
-    "black","white","grey","gray","brown","blue","green","yellow","red","orange",
-    "silver","beige","purple","gold","matte","urban","lv","coupe",
-]
-def normalize(name):
-    if not name: return ""
-    n = name.lower()
-    for tok in STRIP_TOKENS:
-        n = re.sub(rf'\b{re.escape(tok)}\b', '', n)
-    return re.sub(r'\s+', ' ', n).strip()
+# ── Overrides ──────────────────────────────────────────────────────────────
 
+def load_overrides() -> dict[str, int]:
+    if not OVERRIDES_FILE.exists():
+        return {}
+    data = json.loads(OVERRIDES_FILE.read_text(encoding="utf-8"))
+    return data.get("overrides", {}) or {}
 
-# Read spreadsheet
-wb = openpyxl.load_workbook(XLSX, data_only=False)
-ws = wb["Master"]
-ss = {}
-for row in range(5, ws.max_row + 1):
-    name = ws.cell(row=row, column=1).value
-    if not name: continue
-    lc_owned = ws.cell(row=row, column=9).value     # I
-    vip_edit = ws.cell(row=row, column=27).value    # AA (VIP Edit Daily)
-    mk_edit  = ws.cell(row=row, column=36).value    # AJ (MK Edit Daily)
-    from_mk  = round(mk_edit  * 0.715) if isinstance(mk_edit,  (int,float)) and mk_edit  > 0 else None
-    from_vip = round(vip_edit * 0.715) if isinstance(vip_edit, (int,float)) and vip_edit > 0 else None
-    ss[normalize(name)] = {
-        "is_owned": isinstance(lc_owned, (int,float)) and lc_owned > 0,
-        "from_mk":  from_mk,
-        "from_vip": from_vip,
-    }
+# ── Col O recompute (mirrors push-vehicles-to-site.py) ─────────────────────
+
+def _num(v):
+    return isinstance(v, (int, float)) and v > 0
 
 
-# GET vehicles
-req = urllib.request.Request(
-    f"{SUPABASE_URL}/rest/v1/vehicles?select=slug,name,daily_rate&order=daily_rate.asc",
-    headers={"apikey": SERVICE_KEY, "Authorization": f"Bearer {SERVICE_KEY}"})
-with urllib.request.urlopen(req, timeout=30) as resp:
-    vehicles = json.loads(resp.read().decode("utf-8"))
+def recompute_col_o(ws, ws_data, row: int, season: str) -> float | None:
+    """Compute col O in Python when Excel's cache is missing.
+    Priority: LC-owned > MK×1.10 > VIP > LSD.
+    """
+    lc_winter = (ws_data.cell(row=row, column=COL_LC_OWNED_WINTER).value
+                 or ws.cell(row=row, column=COL_LC_OWNED_WINTER).value)
+    lc_summer = ws_data.cell(row=row, column=COL_LC_OWNED_SUMMER).value
+    aj = ws.cell(row=row, column=COL_MK_WINTER_EDIT).value
+    aa = ws.cell(row=row, column=COL_VIP_WINTER).value
+    bc = ws.cell(row=row, column=COL_LSD_DAILY).value
 
-
-# Build the change list
-changes = []   # (slug, name, current, new, source)
-for v in vehicles:
-    slug = v["slug"]; name = v["name"]; current = v["daily_rate"]
-    # Manual override beats everything
-    if slug in MANUAL_OVERRIDES:
-        new = MANUAL_OVERRIDES[slug]
-        changes.append((slug, name, current, new, "MANUAL"))
-        continue
-    entry = ss.get(normalize(name))
-    if entry is None or entry["is_owned"]:
-        continue
-    if entry["from_mk"] is not None:
-        new, source = entry["from_mk"], "MK"
-    elif entry["from_vip"] is not None:
-        new, source = entry["from_vip"], "VIP"
+    if season == "Summer":
+        if _num(lc_summer): return round(lc_summer)
+        if _num(lc_winter): return round(lc_winter * 0.65)
+        if _num(aj):        return round(aj * 0.65 * 1.10)
+        if _num(aa):        return round(aa * 0.65)
+        if _num(bc):        return round(bc)
     else:
-        continue
-    if current is not None and int(round(float(current))) == int(new):
-        continue   # no-op
-    changes.append((slug, name, current, new, source))
+        if _num(lc_winter): return round(lc_winter)
+        if _num(aj):        return round(aj * 0.65 * 1.35)
+        if _num(aa):        return round(aa)
+        if _num(bc):        return round(bc)
+    return None
 
 
-# Report
-print(f"\n{'Source':<8} {'Car':<40} {'Current':>9} {'New':>9} {'Delta':>7}")
-print("-" * 78)
-for slug, name, current, new, source in changes:
-    cur = int(current) if current is not None else 0
-    delta = f"{(new - cur) / cur * 100:+.0f}%" if cur else "n/a"
-    print(f"{source:<8} {name[:40]:<40} {cur:>9} {new:>9} {delta:>7}")
-print("-" * 78)
-print(f"Total updates: {len(changes)}")
+def read_col_o(ws, ws_data, row: int, season: str) -> tuple[float | None, str]:
+    """Return (price, source_tag). Source tag helps diagnose 'no-price' outcomes."""
+    cached = ws_data.cell(row=row, column=COL_DAILY_O).value
+    if _num(cached):
+        return round(cached), "cached-O"
+    recomputed = recompute_col_o(ws, ws_data, row, season)
+    if recomputed is not None:
+        return recomputed, "recomputed"
+    # No source at all
+    return None, "no-price"
 
-if not APPLY:
-    print("\nDRY-RUN. Re-run with --apply to write to Supabase.")
-    sys.exit(0)
+# ── Main ───────────────────────────────────────────────────────────────────
 
-# APPLY
-print(f"\n=== APPLYING {len(changes)} updates to production Supabase ===")
-ok = 0; fail = 0
-for slug, name, current, new, source in changes:
-    body = json.dumps({"daily_rate": new}).encode("utf-8")
+def main():
+    if not MASTER_SHEET.exists():
+        print(f"! Master sheet not found: {MASTER_SHEET}"); sys.exit(1)
+
+    overrides = load_overrides()
+    print(f"Loaded {len(overrides)} manual overrides from {OVERRIDES_FILE.name}")
+
+    wb   = openpyxl.load_workbook(MASTER_SHEET, data_only=False)
+    ws   = wb["Master"]
+    wb_d = openpyxl.load_workbook(MASTER_SHEET, data_only=True)
+    ws_d = wb_d["Master"]
+
+    season_cell = ws["B1"].value
+    season = str(season_cell).strip() if season_cell else "Summer"
+    if season not in ("Summer", "Winter"): season = "Summer"
+    print(f"Sheet season toggle: {season}")
+
+    # Build slug -> {price, source, row, name} from the sheet
+    sheet_by_slug: dict[str, dict] = {}
+    no_price_rows = []
+    for row in range(DATA_START_ROW, ws.max_row + 1):
+        name = ws.cell(row=row, column=COL_NAME).value
+        if not name: continue
+        slug_cell = ws.cell(row=row, column=COL_SITE_SLUG).value
+        if not slug_cell: continue  # benchmark row, not on site
+        slug = str(slug_cell).strip()
+        price, tag = read_col_o(ws, ws_d, row, season)
+        if price is None:
+            no_price_rows.append((row, slug, str(name)))
+            continue
+        sheet_by_slug[slug] = {"price": int(price), "source": tag, "row": row, "name": str(name)}
+
+    # Fetch Supabase vehicles
     req = urllib.request.Request(
-        f"{SUPABASE_URL}/rest/v1/vehicles?slug=eq.{slug}",
-        data=body, headers=HEADERS, method="PATCH")
-    try:
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
-            if data and len(data) > 0 and data[0].get("daily_rate") == new:
-                print(f"  OK   {slug:<38} {current} -> {new}")
-                ok += 1
-            else:
-                print(f"  WARN {slug:<38} response: {data}")
-                fail += 1
-    except Exception as e:
-        print(f"  FAIL {slug:<38} {e}")
-        fail += 1
-print(f"\nDone. {ok} succeeded, {fail} failed.")
+        f"{SUPABASE_URL}/rest/v1/vehicles?select=slug,name,daily_rate&is_active=eq.true",
+        headers=HEADERS_GET,
+    )
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        supa_vehicles = json.loads(resp.read().decode("utf-8"))
+    supa_by_slug = {v["slug"]: v for v in supa_vehicles}
+
+    # Slug-mismatch audit: sheet has slug, Supabase doesn't
+    mismatches = []
+    for slug, info in sheet_by_slug.items():
+        if slug not in supa_by_slug:
+            mismatches.append((info["row"], slug, info["name"]))
+
+    # Build change list
+    changes = []          # (slug, name, current, new, source, guarded)
+    unchanged_count = 0
+    override_slugs = set(overrides.keys())
+
+    for slug, supa in supa_by_slug.items():
+        if SLUG_FILTER and slug != SLUG_FILTER:
+            continue
+
+        current = supa["daily_rate"]
+        name = supa["name"]
+
+        # Overrides win over sheet
+        if slug in override_slugs:
+            new = int(overrides[slug])
+            source = "OVERRIDE"
+        else:
+            info = sheet_by_slug.get(slug)
+            if info is None:
+                # Supabase has the car but sheet doesn't (or AS blank) — skip.
+                continue
+            new = info["price"]
+            source = info["source"]
+
+        if current is not None and int(round(float(current))) == int(new):
+            unchanged_count += 1
+            continue
+
+        guarded = False
+        if current and current > 0:
+            ratio = abs(new - current) / current
+            if ratio > SANITY_GUARD_RATIO:
+                guarded = True
+        changes.append((slug, name, current, new, source, guarded))
+
+    # ── Report ────────────────────────────────────────────────────────────
+    print()
+    print(f"=== SUMMARY ===")
+    print(f"Sheet rows on site (AS populated):           {len(sheet_by_slug)}")
+    print(f"Rows with no price source (no-price):        {len(no_price_rows)}")
+    print(f"Supabase active vehicles:                    {len(supa_by_slug)}")
+    print(f"Slug mismatches (AS in sheet, not on site):  {len(mismatches)}")
+    print(f"Unchanged (already synced):                  {unchanged_count}")
+    print(f"Changes queued (safe):                       {sum(1 for c in changes if not c[5])}")
+    print(f"Changes SANITY-GUARDED (skipped unless --force): {sum(1 for c in changes if c[5])}")
+
+    if no_price_rows:
+        print()
+        print(f"=== NO-PRICE ROWS ({len(no_price_rows)}) ===")
+        print(f"  Row  Slug                                       Name")
+        for r, slug, name in no_price_rows[:20]:
+            print(f"  {r:>3}  {slug:<42} {name[:40]}")
+        if len(no_price_rows) > 20:
+            print(f"  ... ({len(no_price_rows)-20} more)")
+
+    if mismatches:
+        print()
+        print(f"=== SLUG MISMATCHES ({len(mismatches)}) — sheet AS not found in Supabase ===")
+        print(f"  Row  AS in sheet                                Name")
+        for r, slug, name in mismatches[:20]:
+            print(f"  {r:>3}  {slug:<42} {name[:40]}")
+        if len(mismatches) > 20:
+            print(f"  ... ({len(mismatches)-20} more)")
+
+    safe_changes = [c for c in changes if not c[5]]
+    guarded_changes = [c for c in changes if c[5]]
+
+    if safe_changes:
+        print()
+        print(f"=== {len(safe_changes)} SAFE UPDATES ===")
+        print(f"  {'Source':<10} {'Slug':<38} {'Current':>9} {'New':>9} {'Delta':>7}")
+        for slug, name, current, new, source, _ in sorted(safe_changes, key=lambda c: c[0]):
+            cur = int(current) if current is not None else 0
+            delta = f"{(new - cur) / cur * 100:+.0f}%" if cur else "n/a"
+            print(f"  {source:<10} {slug:<38} {cur:>9} {new:>9} {delta:>7}")
+
+    if guarded_changes:
+        print()
+        print(f"=== {len(guarded_changes)} SANITY-GUARDED UPDATES (>{int(SANITY_GUARD_RATIO*100)}% delta — skipped unless --force) ===")
+        print(f"  {'Source':<10} {'Slug':<38} {'Current':>9} {'New':>9} {'Delta':>7}")
+        for slug, name, current, new, source, _ in sorted(guarded_changes, key=lambda c: c[0]):
+            cur = int(current) if current is not None else 0
+            delta = f"{(new - cur) / cur * 100:+.0f}%" if cur else "n/a"
+            print(f"  {source:<10} {slug:<38} {cur:>9} {new:>9} {delta:>7}")
+
+    if not APPLY:
+        print()
+        print("=== DRY-RUN. Re-run with --apply to PATCH Supabase. ===")
+        return
+
+    # ── Apply ─────────────────────────────────────────────────────────────
+    if mismatches and not FORCE:
+        print()
+        print(f"! ABORT: {len(mismatches)} slug mismatch(es) found. Fix the sheet's AS")
+        print(f"  column to match Supabase slugs, or re-run with --force to ignore.")
+        sys.exit(2)
+
+    apply_list = changes if FORCE else safe_changes
+    skipped_guarded = 0 if FORCE else sum(1 for c in changes if c[5])
+
+    print()
+    print(f"=== APPLYING {len(apply_list)} updates to Supabase ({skipped_guarded} guarded skipped) ===")
+    ok = 0
+    fail = 0
+    for slug, name, current, new, source, _ in apply_list:
+        body = json.dumps({"daily_rate": new}).encode("utf-8")
+        req = urllib.request.Request(
+            f"{SUPABASE_URL}/rest/v1/vehicles?slug=eq.{slug}",
+            data=body, headers=HEADERS_PATCH, method="PATCH")
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+                if data and data[0].get("daily_rate") == new:
+                    print(f"  OK   {slug:<38} {current} -> {new}  ({source})")
+                    ok += 1
+                else:
+                    print(f"  WARN {slug:<38} unexpected response")
+                    fail += 1
+        except Exception as e:
+            print(f"  FAIL {slug:<38} {e}")
+            fail += 1
+
+    print()
+    print(f"Done. {ok} succeeded, {fail} failed.")
+
+
+if __name__ == "__main__":
+    main()

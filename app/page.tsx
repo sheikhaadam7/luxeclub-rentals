@@ -39,6 +39,16 @@ export default async function HomePage() {
   const { data: claimsData } = await supabase.auth.getClaims()
   const isAuthenticated = !!claimsData?.claims
 
+  let isAdmin = false
+  if (claimsData?.claims?.sub) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', claimsData.claims.sub)
+      .single()
+    isAdmin = profile?.role === 'admin'
+  }
+
   // Fetch vehicles with a 5-minute cache so the DB isn't hit on every page load
   const getFeaturedVehicles = unstable_cache(
     async () => {
@@ -88,7 +98,7 @@ export default async function HomePage() {
   return (
     <LanguageProvider>
     <CurrencyProvider>
-      <NavBar isAuthenticated={isAuthenticated} />
+      <NavBar isAuthenticated={isAuthenticated} isAdmin={isAdmin} />
       <main className="min-h-screen bg-luxury">
         {/* Hero section with video background */}
         <div className="relative flex flex-col items-center justify-center gap-6 sm:gap-10 px-4 py-24 sm:py-36">

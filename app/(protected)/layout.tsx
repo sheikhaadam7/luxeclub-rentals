@@ -23,6 +23,13 @@ export default async function ProtectedLayout({
     redirect('/sign-in')
   }
 
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', claimsData.claims.sub)
+    .single()
+  const isAdmin = profile?.role === 'admin'
+
   const cookieStore = await cookies()
   const userChoice = cookieStore.get('luxeclub-currency')?.value as Currency | undefined
   const geoGuess = cookieStore.get('geo-currency')?.value as Currency | undefined
@@ -32,7 +39,7 @@ export default async function ProtectedLayout({
   return (
     <LanguageProvider>
       <CurrencyProvider initialCurrency={initialCurrency}>
-        <NavBar />
+        <NavBar isAdmin={isAdmin} />
         {children}
         <Footer />
         <WhatsAppFloat />

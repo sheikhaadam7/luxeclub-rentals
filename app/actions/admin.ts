@@ -1,4 +1,5 @@
 'use server'
+import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
@@ -148,6 +149,8 @@ export interface FleetVehicle {
   gps_device_id: string | null
   deposit_amount: number | null
   primary_image_url: string | null
+  image_urls: string[] | null
+  updated_at: string
   availability_blocks: AvailabilityBlock[]
 }
 
@@ -184,7 +187,7 @@ export async function getFleetData(): Promise<FleetData | { error: string }> {
   const { data: vehicles, error: vehiclesError } = await admin
     .from('vehicles')
     .select(
-      'id, slug, name, category, daily_rate, weekly_rate, monthly_rate, is_available, is_active, override_notes, scraped_at, gps_device_id, deposit_amount, primary_image_url'
+      'id, slug, name, category, daily_rate, weekly_rate, monthly_rate, is_available, is_active, override_notes, scraped_at, gps_device_id, deposit_amount, primary_image_url, image_urls, updated_at'
     )
     .order('name')
 
@@ -1540,5 +1543,268 @@ export async function rejectModificationRequest(
     return { error: updateError.message }
   }
 
+  return { error: null }
+}
+
+// ── Vehicle images ─────────────────────────────────────────────────────────
+// Admin panel image management: upload, delete, reorder + set master/hover.
+// All three actions call revalidatePath so admin edits surface on the public
+// site immediately rather than after the 5-minute ISR window.
+
+const VEHICLE_IMAGES_BUCKET = 'vehicle-images'
+
+function revalidateCataloguePaths() {
+  revalidatePath('/catalogue')
+  revalidatePath('/catalogue/[slug]', 'page')
+}
+
+function extractStoragePathFromUrl(url: string): string | null {
+  const marker = `/${VEHICLE_IMAGES_BUCKET}/`
+  const i = url.indexOf(marker)
+  if (i < 0) return null
+  return url.slice(i + marker.length)
+}
+
+function dedupePrimary(primary: string | null, urls: string[]): string[] {
+  if (!primary) return urls
+  return urls.filter((u) => u !== primary)
+}
+
+/**
+ * Upload one image file to Storage and atomically append its URL to
+ * vehicles.image_urls. Uses a Postgres RPC (`append_vehicle_image_url`)
+ * so concurrent uploads from two tabs never lose an entry.
+ *
+ * Client posts FormData with:
+ *   - file: Blob (already compressed to WebP, ≤~800KB)
+ *   - vehicleId: string (UUID)
+ *   - filename: string (e.g. "hero.webp")
+ */
+export async function uploadVehicleImage(
+  slug: string,
+  formData: FormData,
+): Promise<{ error: string | null; url?: string }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error }
+
+  const file = formData.get('file')
+  const vehicleId = formData.get('vehicleId')
+  const filename = formData.get('filename')
+
+  if (!(file instanceof Blob) || typeof vehicleId !== 'string' || typeof filename !== 'string') {
+    return { error: 'Invalid upload payload' }
+  }
+
+  const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+  if (!slugPattern.test(slug)) {
+    return { error: 'Invalid slug' }
+  }
+
+  const ext = (filename.match(/\.([a-z0-9]+)$/i)?.[1] ?? 'webp').toLowerCase()
+  const uuid = crypto.randomUUID()
+  const storagePath = `${slug}/${uuid}.${ext}`
+
+  const admin = createAdminClient()
+
+  const { error: uploadError } = await admin.storage
+    .from(VEHICLE_IMAGES_BUCKET)
+    .upload(storagePath, file, {
+      contentType: file.type || 'image/webp',
+      upsert: false,
+    })
+
+  if (uploadError) {
+    console.error('uploadVehicleImage storage error:', uploadError)
+    return { error: uploadError.message }
+  }
+
+  const { data: publicData } = admin.storage
+    .from(VEHICLE_IMAGES_BUCKET)
+    .getPublicUrl(storagePath)
+  const url = publicData.publicUrl
+
+  const { error: rpcError } = await admin.rpc('append_vehicle_image_url', {
+    vehicle_id: vehicleId,
+    new_url: url,
+  })
+
+  if (rpcError) {
+    // Fallback path: RPC not installed yet (migration not applied). Log so we
+    // know we're on the fallback, but keep going with read-modify-write. Safe
+    // for single-admin usage; races only when two admins upload simultaneously.
+    const looksLikeMissingFn =
+      rpcError.message?.toLowerCase().includes('does not exist') ||
+      rpcError.message?.toLowerCase().includes('function') ||
+      rpcError.code === 'PGRST202'
+
+    if (looksLikeMissingFn) {
+      console.warn(
+        '[uploadVehicleImage] append_vehicle_image_url RPC missing — using read-modify-write fallback. Apply migration 20260919120000_admin_image_helpers.sql for atomic appends.',
+      )
+      const { data: current, error: readError } = await admin
+        .from('vehicles')
+        .select('image_urls')
+        .eq('id', vehicleId)
+        .single()
+
+      if (readError || !current) {
+        await admin.storage.from(VEHICLE_IMAGES_BUCKET).remove([storagePath])
+        return { error: `Read failed: ${readError?.message ?? 'vehicle not found'}` }
+      }
+
+      const nextUrls = [...(current.image_urls ?? []), url]
+      const { error: writeError } = await admin
+        .from('vehicles')
+        .update({ image_urls: nextUrls, updated_at: new Date().toISOString() })
+        .eq('id', vehicleId)
+
+      if (writeError) {
+        await admin.storage.from(VEHICLE_IMAGES_BUCKET).remove([storagePath])
+        return { error: `DB append failed: ${writeError.message}` }
+      }
+    } else {
+      console.error('uploadVehicleImage rpc error:', rpcError)
+      await admin.storage.from(VEHICLE_IMAGES_BUCKET).remove([storagePath])
+      return { error: `DB append failed: ${rpcError.message}` }
+    }
+  }
+
+  revalidateCataloguePaths()
+  return { error: null, url }
+}
+
+/**
+ * Delete one image from Storage and remove it from image_urls (and clear
+ * primary_image_url if it matched). Uses optimistic locking against
+ * updated_at; the client refetches and retries on conflict.
+ */
+export async function deleteVehicleImage(
+  vehicleId: string,
+  url: string,
+  lastUpdatedAt: string,
+): Promise<{ error: string | null; conflict?: boolean; latest?: { primary_image_url: string | null; image_urls: string[]; updated_at: string } }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error }
+
+  const admin = createAdminClient()
+
+  // Read current state under lastUpdatedAt filter to detect conflicts before touching storage.
+  const { data: current, error: fetchError } = await admin
+    .from('vehicles')
+    .select('primary_image_url, image_urls, updated_at')
+    .eq('id', vehicleId)
+    .single()
+
+  if (fetchError || !current) {
+    return { error: fetchError?.message ?? 'Vehicle not found' }
+  }
+
+  if (current.updated_at !== lastUpdatedAt) {
+    return {
+      error: 'Vehicle was edited elsewhere. Reloaded latest state.',
+      conflict: true,
+      latest: current as { primary_image_url: string | null; image_urls: string[]; updated_at: string },
+    }
+  }
+
+  const nextImageUrls = (current.image_urls ?? []).filter((u: string) => u !== url)
+  const nextPrimary = current.primary_image_url === url ? null : current.primary_image_url
+
+  // Update DB first, with optimistic-locking filter on updated_at, so if
+  // someone raced us between our fetch and update, we bail before deleting
+  // the storage object.
+  const { data: updated, error: updateError } = await admin
+    .from('vehicles')
+    .update({
+      image_urls: dedupePrimary(nextPrimary, nextImageUrls),
+      primary_image_url: nextPrimary,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', vehicleId)
+    .eq('updated_at', lastUpdatedAt)
+    .select('primary_image_url, image_urls, updated_at')
+    .single()
+
+  if (updateError || !updated) {
+    // Refetch so client can retry with fresh snapshot.
+    const { data: latest } = await admin
+      .from('vehicles')
+      .select('primary_image_url, image_urls, updated_at')
+      .eq('id', vehicleId)
+      .single()
+    return {
+      error: 'Vehicle was edited elsewhere. Reloaded latest state.',
+      conflict: true,
+      latest: (latest ?? undefined) as
+        | { primary_image_url: string | null; image_urls: string[]; updated_at: string }
+        | undefined,
+    }
+  }
+
+  const storagePath = extractStoragePathFromUrl(url)
+  if (storagePath) {
+    const { error: removeError } = await admin.storage
+      .from(VEHICLE_IMAGES_BUCKET)
+      .remove([storagePath])
+    if (removeError) {
+      // DB already consistent; log but don't fail the user's action.
+      console.error('deleteVehicleImage storage remove warning:', removeError)
+    }
+  }
+
+  revalidateCataloguePaths()
+  return { error: null }
+}
+
+/**
+ * Set primary_image_url and image_urls in one atomic write. Used for
+ * set-as-master, set-as-hover, and drag-reorder. Optimistic locking on
+ * updated_at prevents lost writes if two tabs race.
+ *
+ * primary_image_url is deduped OUT of image_urls on write, so the hover
+ * logic (VehicleCard.tsx: first entry of image_urls that !== primary)
+ * matches the modal's slot semantics exactly.
+ */
+export async function updateVehicleImageOrder(
+  vehicleId: string,
+  primaryUrl: string | null,
+  imageUrls: string[],
+  lastUpdatedAt: string,
+): Promise<{ error: string | null; conflict?: boolean; latest?: { primary_image_url: string | null; image_urls: string[]; updated_at: string } }> {
+  const auth = await verifyAdmin()
+  if ('error' in auth) return { error: auth.error }
+
+  const admin = createAdminClient()
+
+  const deduped = dedupePrimary(primaryUrl, imageUrls)
+
+  const { data: updated, error } = await admin
+    .from('vehicles')
+    .update({
+      primary_image_url: primaryUrl,
+      image_urls: deduped,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', vehicleId)
+    .eq('updated_at', lastUpdatedAt)
+    .select('primary_image_url, image_urls, updated_at')
+    .single()
+
+  if (error || !updated) {
+    const { data: latest } = await admin
+      .from('vehicles')
+      .select('primary_image_url, image_urls, updated_at')
+      .eq('id', vehicleId)
+      .single()
+    return {
+      error: 'Vehicle was edited elsewhere. Reloaded latest state.',
+      conflict: true,
+      latest: (latest ?? undefined) as
+        | { primary_image_url: string | null; image_urls: string[]; updated_at: string }
+        | undefined,
+    }
+  }
+
+  revalidateCataloguePaths()
   return { error: null }
 }

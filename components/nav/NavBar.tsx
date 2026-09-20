@@ -9,20 +9,23 @@ import { LanguageSelector, LanguageSelectorInline } from '@/components/nav/Langu
 import { useTranslation } from '@/lib/i18n/context'
 import { BackgroundMusic } from '@/components/ui/BackgroundMusic'
 
-export function NavBar({ isAuthenticated = true }: { isAuthenticated?: boolean }) {
+export function NavBar({ isAuthenticated = true, isAdmin = false }: { isAuthenticated?: boolean; isAdmin?: boolean }) {
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
   const { t } = useTranslation()
 
+  const baseAuthed = [
+    { href: '/catalogue', label: t('nav.cars') },
+    { href: '/guides', label: t('nav.guides') },
+    { href: '/faq', label: t('nav.faq') },
+    { href: '/bookings', label: t('nav.bookings') },
+    { href: '/account', label: t('nav.account') },
+    { href: '/contact', label: t('nav.contact') },
+  ]
   const navItems = isAuthenticated
-    ? [
-        { href: '/catalogue', label: t('nav.cars') },
-        { href: '/guides', label: t('nav.guides') },
-        { href: '/faq', label: t('nav.faq') },
-        { href: '/bookings', label: t('nav.bookings') },
-        { href: '/account', label: t('nav.account') },
-        { href: '/contact', label: t('nav.contact') },
-      ]
+    ? isAdmin
+      ? [...baseAuthed, { href: '/admin?tab=fleet', label: 'Admin' }]
+      : baseAuthed
     : [
         { href: '/catalogue', label: t('nav.cars') },
         { href: '/guides', label: t('nav.guides') },
