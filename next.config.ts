@@ -119,6 +119,25 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
 
+      // Old "mclaren-570s" → current "mclaren-570s-spider". Slug renamed
+      // 2026-09-21 — car is the Spider variant; original slug missed the
+      // "-spider" suffix. Live URL preserved via 301.
+      {
+        source: '/catalogue/mclaren-570s',
+        destination: '/catalogue/mclaren-570s-spider',
+        permanent: true,
+      },
+      {
+        source: '/garage/mclaren-570s',
+        destination: '/catalogue/mclaren-570s-spider',
+        permanent: true,
+      },
+      {
+        source: '/old-garage/mclaren-570s',
+        destination: '/catalogue/mclaren-570s-spider',
+        permanent: true,
+      },
+
       // Old "bentley-bentayga-s" → current "bentley-bentayga-black-line-edition"
       // (the white Black Line Edition — same V8 engine as standard Bentayga,
       // never was an "S" variant). Slug renamed 2026-09-18 to match the
