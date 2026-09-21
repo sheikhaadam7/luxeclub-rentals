@@ -176,6 +176,25 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
 
+      // Old "audi-r8-spyder" → current "audi-r8-v10-spyder". Slug renamed
+      // 2026-09-21 — canonical name includes the V10 engine designation.
+      // Live URL preserved via 301.
+      {
+        source: '/catalogue/audi-r8-spyder',
+        destination: '/catalogue/audi-r8-v10-spyder',
+        permanent: true,
+      },
+      {
+        source: '/garage/audi-r8-spyder',
+        destination: '/catalogue/audi-r8-v10-spyder',
+        permanent: true,
+      },
+      {
+        source: '/old-garage/audi-r8-spyder',
+        destination: '/catalogue/audi-r8-v10-spyder',
+        permanent: true,
+      },
+
       // Old "bentley-bentayga-s" → current "bentley-bentayga-black-line-edition"
       // (the white Black Line Edition — same V8 engine as standard Bentayga,
       // never was an "S" variant). Slug renamed 2026-09-18 to match the
