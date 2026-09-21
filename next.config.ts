@@ -100,6 +100,25 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
 
+      // Old "porsche-cayenne-coupe" → current "porsche-cayenne". Slug renamed
+      // 2026-09-21 — car is standard Cayenne SUV, not the Coupe variant;
+      // original slug was incorrect. Live URL preserved via 301.
+      {
+        source: '/catalogue/porsche-cayenne-coupe',
+        destination: '/catalogue/porsche-cayenne',
+        permanent: true,
+      },
+      {
+        source: '/garage/porsche-cayenne-coupe',
+        destination: '/catalogue/porsche-cayenne',
+        permanent: true,
+      },
+      {
+        source: '/old-garage/porsche-cayenne-coupe',
+        destination: '/catalogue/porsche-cayenne',
+        permanent: true,
+      },
+
       // Old "bentley-bentayga-s" → current "bentley-bentayga-black-line-edition"
       // (the white Black Line Edition — same V8 engine as standard Bentayga,
       // never was an "S" variant). Slug renamed 2026-09-18 to match the
