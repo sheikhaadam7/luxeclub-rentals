@@ -157,6 +157,25 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
 
+      // Old "ferrari-296-gts-spyder" → current "ferrari-296-gts". Slug renamed
+      // 2026-09-21 — car is the coupe/GTS variant, not the Spyder; original
+      // slug incorrectly appended "-spyder". Live URL preserved via 301.
+      {
+        source: '/catalogue/ferrari-296-gts-spyder',
+        destination: '/catalogue/ferrari-296-gts',
+        permanent: true,
+      },
+      {
+        source: '/garage/ferrari-296-gts-spyder',
+        destination: '/catalogue/ferrari-296-gts',
+        permanent: true,
+      },
+      {
+        source: '/old-garage/ferrari-296-gts-spyder',
+        destination: '/catalogue/ferrari-296-gts',
+        permanent: true,
+      },
+
       // Old "bentley-bentayga-s" → current "bentley-bentayga-black-line-edition"
       // (the white Black Line Edition — same V8 engine as standard Bentayga,
       // never was an "S" variant). Slug renamed 2026-09-18 to match the
