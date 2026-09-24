@@ -49,6 +49,7 @@ for a in sys.argv:
 
 SANITY_GUARD_RATIO = 0.50   # >50% delta triggers guard
 COL_NAME             = 1
+COL_MANUAL_F         = 6    # F  (Stage B Step 1: manual override — beats OCD tier)
 COL_LC_OWNED_WINTER  = 9    # I
 COL_LC_OWNED_SUMMER  = 12   # L
 COL_DAILY_O          = 15   # O
@@ -56,6 +57,8 @@ COL_VIP_WINTER       = 27   # AA
 COL_MK_WINTER_EDIT   = 36   # AJ
 COL_SITE_SLUG        = 45   # AS
 COL_LSD_DAILY        = 55   # BC
+COL_OCD_DAILY        = 59   # BG (Stage B Step 1: OCD median daily, top tier when BH>=3)
+COL_OCD_DAILY_N      = 60   # BH
 DATA_START_ROW       = 5
 
 # ── Supabase env ───────────────────────────────────────────────────────────
@@ -90,14 +93,32 @@ def _num(v):
 
 def recompute_col_o(ws, ws_data, row: int, season: str) -> float | None:
     """Compute col O in Python when Excel's cache is missing.
-    Priority: LC-owned > MK×1.10 > VIP > LSD.
+    Priority (Stage B Step 1, 2026-09-24):
+      0. F manual override (if numeric)
+      1. OCD × 1.10 when OCD n (BH) >= 3
+      2. LC-owned  →  3. MK × markup  →  4. VIP  →  5. LSD
     """
+    manual_f = ws.cell(row=row, column=COL_MANUAL_F).value
+    ocd_daily = ws.cell(row=row, column=COL_OCD_DAILY).value
+    ocd_n_raw = ws.cell(row=row, column=COL_OCD_DAILY_N).value
     lc_winter = (ws_data.cell(row=row, column=COL_LC_OWNED_WINTER).value
                  or ws.cell(row=row, column=COL_LC_OWNED_WINTER).value)
     lc_summer = ws_data.cell(row=row, column=COL_LC_OWNED_SUMMER).value
     aj = ws.cell(row=row, column=COL_MK_WINTER_EDIT).value
     aa = ws.cell(row=row, column=COL_VIP_WINTER).value
     bc = ws.cell(row=row, column=COL_LSD_DAILY).value
+
+    # 0. F manual override — beats everything else (matches sheet formula)
+    if _num(manual_f):
+        return round(manual_f)
+
+    # 1. OCD × 1.10 when sample is meaningful (Stage B Step 1)
+    try:
+        ocd_n = int(ocd_n_raw) if ocd_n_raw else 0
+    except (TypeError, ValueError):
+        ocd_n = 0
+    if _num(ocd_daily) and ocd_n >= 3:
+        return round(ocd_daily * 1.10)
 
     if season == "Summer":
         if _num(lc_summer): return round(lc_summer)
@@ -297,6 +318,28 @@ def main():
 
     print()
     print(f"Done. {ok} succeeded, {fail} failed.")
+
+    # Regenerate the WhatsApp customer-response playbook — it reads live
+    # Supabase, so any daily_rate change here means the playbook is stale.
+    # Non-critical: log a warning on failure but don't fail the run.
+    if ok > 0:
+        import subprocess
+        playbook_gen = Path(
+            r"C:/Users/lenovo/Desktop/Luxeclub price master sheet/scripts/generate-whatsapp-playbook.py"
+        )
+        try:
+            r = subprocess.run(
+                [sys.executable, "-X", "utf8", str(playbook_gen)],
+                capture_output=True, text=True, timeout=60,
+                encoding="utf-8", errors="replace",
+            )
+            if r.returncode == 0:
+                print("WhatsApp playbook refreshed.")
+            else:
+                print(f"! Playbook refresh failed (exit={r.returncode}): "
+                      f"{(r.stderr or r.stdout).strip()[:200]}")
+        except Exception as e:
+            print(f"! Playbook refresh crashed: {e}")
 
 
 if __name__ == "__main__":
