@@ -1291,4 +1291,334 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
       },
     ],
   },
+  'mclaren-artura': {
+    metaTitle: 'Rent McLaren Artura in Dubai — Hire from AED 1,979/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The McLaren Artura is a 3.0-litre twin-turbo V6 plus electric motor hybrid supercar — 671bhp combined, rear-wheel drive, two seats, coupé — priced from AED 1,979 per day. It covers 0-100 km/h in 3.0 seconds, tops out at 330 km/h, and marks two firsts for McLaren: their first series-production hybrid, and their first V6. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 4,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe Artura is McLaren's cleanest-sheet supercar design in a decade — the first car built on their all-new McLaren Platform Architecture (MCLA), the first with a V6 instead of the V8 that defined every McLaren since the 12C, and the first with a plug-in hybrid drivetrain. The 3.0-litre twin-turbo V6 produces 577bhp on its own; the electric motor mounted in the transmission housing adds 94bhp for the 671bhp combined output. eDrive mode lets you leave a hotel valet at silent-mode speed for up to about 30 km on electric-only power.\n\nInside is McLaren's minimalist current-generation cockpit: floating instrument binnacle, dihedral doors that lift up-and-out (still the party trick that draws attention at every valet), Alcantara throughout, and a portrait-orientation infotainment screen. Colour on this car is baby blue — one of McLaren's rarer and most distinctive specifications, and a genuinely uncommon sight at any Dubai valet.\n\nThe Artura rents to customers who want a specifically-new McLaren supercar experience — the hybrid drivetrain, the V6 character, the current-generation McLaren styling. Weekend rentals; content creators wanting a rare colour Artura for photography; enthusiasts stepping across from a Porsche 911 who want their first mid-engined McLaren. Standard Dubai destinations all work — the drive down Sheikh Zayed Road, up to Jebel Jais on a cool morning, or Marina-to-Palm loops at dusk. Minimum age is 27 (supercar tier). Book a week ahead in high season for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the McLaren 720S Spider in our fleet, the Artura is the current-generation, hybrid, V6 alternative to the 720S's V8 non-hybrid platform — smaller, lighter, coupé-only. Pick the Artura for the modern hybrid McLaren experience; pick the 720S Spider for the flagship V8 drop-top. Against the Ferrari 296 GTS (also a V6 hybrid supercar), the Artura is more affordable per day, coupé-only, and less quick on paper. Both share the direction the industry is moving; the Artura is the McLaren interpretation of that direction.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a McLaren Artura in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the Artura?',
+        answer: 'The minimum age is 27, in line with our supercar tier. Tourists need a valid International Driving Permit alongside their home-country licence.',
+      },
+      {
+        question: 'Can the Artura drive in electric-only mode?',
+        answer: 'Yes. eDrive mode uses the electric motor only — the V6 stays off. Range is around 30 km at low speeds and it is genuinely useful for early-morning hotel valet exits without waking neighbours to a supercar V6.',
+      },
+      {
+        question: 'How does the Artura compare to the Ferrari 296 GTS?',
+        answer: 'Both are current-generation V6 hybrid supercars from mid-engined heritage brands. The 296 GTS is quicker on paper, has a folding hardtop, and rents at a higher daily rate. The Artura is coupé-only, more affordable, and represents the McLaren interpretation of the hybrid supercar. Pick by the badge and cabin feel you prefer.',
+      },
+      {
+        question: 'How does the Artura compare to the McLaren 720S Spider?',
+        answer: 'The Artura is the current-generation McLaren — hybrid, V6, coupé-only. The 720S Spider is the previous-generation V8 flagship with the retractable hardtop. Pick the Artura for the newest McLaren technology; pick the 720S for the V8 flagship experience with the roof-down option.',
+      },
+      {
+        question: 'How far ahead should I book the Artura?',
+        answer: 'A week ahead in high season (November to March) for weekend Thursday-to-Saturday dates. Three to five days is usually enough in the rest of the year.',
+      },
+    ],
+  },
+  'aston-martin-vantage': {
+    metaTitle: 'Rent Aston Martin Vantage in Dubai — Hire from AED 1,800/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Aston Martin Vantage is a 4.0-litre twin-turbo V8 front-mid-engined sports coupé — 656bhp, rear-wheel drive, two seats — priced from AED 1,800 per day. It covers 0-100 km/h in 3.4 seconds, tops out at 325 km/h, and delivers the kind of driver-focused chassis feel that has made the Vantage Aston Martin's answer to the Porsche 911 Turbo since the current generation launched. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe Vantage is Aston Martin's smallest and sharpest current model — a genuine driver's sports coupé rather than the larger, more grand-touring DB12 that sits above it in the range. The 4.0-litre twin-turbo V8 is sourced from AMG (a long-standing engineering partnership) but Aston Martin's calibration gives it a distinctly different character from the same engine in a Mercedes-AMG car: more aggressive throttle response, a louder exhaust note in Sport and Sport+ modes, and a chassis that rewards commitment through corners in a way the AMG rivals do not.\n\nInside is the redesigned current-generation Vantage cabin: much more contemporary than the outgoing car, with a large landscape infotainment screen, tactile physical drive-mode buttons, and material quality that reads as genuine luxury rather than sports-car austere. Colour on this car is black — one of the more classical Vantage specifications and the colour that best photographs the aggressive body proportions. Two seats only; storage is limited to the front trunk and a shelf behind the seats.\n\nThe Vantage rents to a specific customer: someone who wants a genuinely different driver's car for a Dubai weekend — not a Porsche, not a Ferrari, not a Lamborghini. Aston Martin's brand character is distinct, and the Vantage attracts customers who value that. Weekend rentals; longer-stay business visitors who want a proper sports car for their whole trip; enthusiasts who want to try the AMG V8 in an Aston chassis. Standard Dubai destinations all work — the drive down Sheikh Zayed Road, up to Jebel Jais on a cool morning. Minimum age is 27 (supercar tier). Book three to five days ahead for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Aston Martin DBX 707 in our fleet, the Vantage is the two-seat sports coupé to the DBX's five-seat SUV — same brand, very different customer briefs. Pick the Vantage when you want the driver's-car experience; pick the DBX 707 for family or luggage. Against the Porsche 911 Turbo S (closest performance-tier competitor in our fleet), the Vantage is more overtly a driver's car with more distinctive brand character; the Turbo S is more usable day-to-day and quicker outright. Against the Bentley Continental GT, the Vantage is the sportier, sharper coupé at a lower daily rate; the Bentley is the larger, more luxurious grand tourer.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent an Aston Martin Vantage in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the Vantage?',
+        answer: 'The minimum age is 27, in line with our supercar tier. Tourists need a valid International Driving Permit alongside their home-country licence.',
+      },
+      {
+        question: 'How does the Vantage compare to the DBX 707 in your fleet?',
+        answer: 'Same brand, entirely different cars. The Vantage is a two-seat sports coupé; the DBX 707 is a five-seat luxury SUV. Both share Aston Martin brand character but they solve different customer briefs. Pick the Vantage for the driver-focused sports car experience; pick the DBX 707 for family or luggage or an SUV silhouette.',
+      },
+      {
+        question: 'Can I take the Vantage on Jebel Jais or long runs?',
+        answer: 'Yes — Jebel Jais is one of the drives the Vantage is genuinely happy on. Our insurance covers the entire UAE. Cars cannot leave the UAE, so no drives into Oman or Saudi Arabia.',
+      },
+      {
+        question: 'How does the Vantage compare to the Porsche 911 Turbo S?',
+        answer: "The Vantage is more overtly a driver's sports car with more distinctive brand character; the Turbo S is more usable day-to-day, all-wheel drive, and quicker outright. If the character and the badge matter, the Vantage wins. If pure pace and daily usability matter, the 911 Turbo S wins.",
+      },
+      {
+        question: 'How far ahead should I book the Vantage?',
+        answer: 'Three to five days ahead for weekend windows in most of the year. In high season (November to March), book a week ahead for Thursday-to-Saturday dates.',
+      },
+    ],
+  },
+  'porsche-911-carrera-s-spyder': {
+    metaTitle: 'Rent Porsche 911 Carrera S Cabriolet in Dubai — Hire from AED 1,500/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Porsche 911 Carrera S Cabriolet is a 3.0-litre twin-turbo flat-six drop-top sports car — 443bhp, rear-wheel drive, 2+2 seats, fabric folding roof — priced from AED 1,500 per day. It covers 0-100 km/h in 3.7 seconds, tops out at 308 km/h, and is arguably the most usable proper sports car in our fleet: fast enough to be genuinely quick, comfortable enough to daily-drive, roof-down capable for Dubai evenings. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe 992-generation Carrera S Cabriolet is the mid-range drop-top 911 — above the base Carrera, below the Turbo S and the GT3 track cars. The 3.0-litre twin-turbo flat-six sits behind the rear axle in the classic 911 layout, drives the rear wheels through the eight-speed PDK dual-clutch, and delivers the throttle response and mid-range shove that has made the 911 platform the benchmark rear-engined sports car for six decades. What sets the S Cabriolet apart from the base Carrera is the tuning: more power, adaptive suspension, PASM sports-tuned dampers, and Sport Chrono package with the drive-mode dial on the steering wheel.\n\nInside is Porsche's current-generation 911 cabin — clean, driver-focused, with the analogue rev-counter still centre-stage in the driver's instrument binnacle. The fabric folding roof cycles in about 12 seconds and can be operated up to around 50 km/h — you can drop or raise it at slow city speeds without pulling over. Colour on this car is black. The 2+2 rear seats are strictly for children or luggage — not for adults on any distance.\n\nThe Carrera S Cabriolet rents to customers who want a proper 911 drop-top experience without stepping up to Turbo S or GT3 pricing. Weekend rentals; couples wanting a drop-top sports car for an anniversary; residents who want a Porsche for a specific evening event or Marina-loop drive. Standard Dubai destinations all work — the car is at its best roof-down at dusk on Sheikh Zayed Road or Marina-to-Palm loops. Minimum age is 24 for this variant (the base 911 line-up sits below the supercar 27+ tier that applies to GT3, GT3 RS, and Turbo S). Book three to five days ahead in season for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Porsche 911 Turbo S in our fleet, the Carrera S is the more accessible drop-top alternative — half the power, roughly half the daily rate, but the same essential 911 character and cabin. Pick the Carrera S when the drop-top experience matters more than outright pace. Against the Porsche 911 GT3, the Carrera S is a comfortable road car; the GT3 is a track-focused coupé. Against the McLaren 570S Spider (a very different but similarly-priced open-top), the Porsche is more usable and more discreet; the McLaren is more exotic and more overtly a supercar.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Porsche 911 Carrera S Cabriolet in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the Carrera S Cabriolet?',
+        answer: 'The minimum age is 24 for the Carrera S line-up. The higher-performance 911 variants in our fleet (GT3, GT3 RS, Turbo S) sit at the 27+ supercar tier. Tourists need a valid International Driving Permit alongside their home-country licence.',
+      },
+      {
+        question: 'How long does the roof take to open and close?',
+        answer: 'The fabric folding roof cycles in about 12 seconds and can be operated up to around 50 km/h — you can drop or raise it at slow city speeds without pulling over.',
+      },
+      {
+        question: 'Can the Carrera S Cabriolet seat four adults?',
+        answer: 'No — the rear seats are 2+2 in name only, sized for children or luggage rather than adult passengers. Two adults sit comfortably in the front seats; the rear is not usable for adult distance.',
+      },
+      {
+        question: 'How does the Carrera S Cabriolet compare to the 911 Turbo S?',
+        answer: 'The Carrera S is the more accessible drop-top variant — about half the power (443 vs 641 bhp), roughly half the daily rate, but the same essential 911 character. Pick the Carrera S when the drop-top experience matters and the Turbo S pace is not required.',
+      },
+      {
+        question: 'How far ahead should I book the Carrera S Cabriolet?',
+        answer: 'Three to five days ahead is comfortable for weekend windows in most of the year. In high season (November to March), a week ahead for Thursday-to-Saturday dates.',
+      },
+    ],
+  },
+  'bmw-m5-competition': {
+    metaTitle: 'Rent BMW M5 Competition in Dubai — Hire from AED 1,499/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The BMW M5 Competition is a 4.4-litre twin-turbo V8 super-saloon — 617bhp, all-wheel drive (xDrive), five seats, four-door sedan — priced from AED 1,499 per day. It covers 0-100 km/h in 3.3 seconds, tops out at 305 km/h with the M Driver package, and is one of the most complete performance saloons on the market: fast enough to embarrass most supercars in a straight line, comfortable enough to daily-drive as an executive car. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe M5 Competition is BMW's most aggressive standard M-car — 17bhp more than the base M5, retuned adaptive suspension, sports exhaust, and the option to switch the M xDrive all-wheel drive into rear-drive-only mode for enthusiasts who want the traditional M-car character. The 4.4-litre twin-turbo V8 is one of the most respected performance engines currently in production and produces its power in the classic M-car way — building progressively through the mid-range and pulling hard toward the 7,200 rpm limit.\n\nInside is BMW's M-specific cabin: heated M Sport seats with distinctive M-logo backrests, alcantara-and-carbon steering wheel with the M1 and M2 drive-mode shortcuts (programmable to your preferred combinations of engine / suspension / steering / gearbox / exhaust), M-specific gear-selector, and the current-generation curved widescreen display. Colour on this car is black. Five adult passengers fit comfortably and the boot swallows airport luggage for four.\n\nThe M5 Competition rents to a specific customer: someone who wants supercar pace with executive-car cabin and practicality. Business travellers who need to move a client team fast; families who want performance without an SUV footprint; enthusiasts who specifically want the rear-drive-mode M-car experience. Standard Dubai destinations all handle it — Sheikh Zayed Road at 120 km/h uses about a third of the capability, and it is properly quick on the Abu Dhabi run. Minimum age is 24. Book three to five days ahead in season for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Audi RS7 in our fleet, the M5 is more overtly sporting in feel — less refined, more aggressive, with the rear-drive-mode option that Audi's quattro-only setup does not offer. The RS7 is more comfortable and more elegantly styled. Both share very similar performance envelopes. Against the BMW M4 Competition (the coupé in our fleet), the M5 is the four-door alternative — same brand-character, larger, five seats, more usable for a business trip or family weekend.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a BMW M5 Competition in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the M5 Competition?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'Is the M5 four-wheel drive or rear-wheel drive?',
+        answer: 'The M5 Competition uses BMW\'s M xDrive all-wheel-drive system by default, but the drive-mode menu lets you switch it into rear-drive-only mode — a genuine feature for enthusiasts who want the traditional rear-drive M-car character. Both modes are available on the car.',
+      },
+      {
+        question: 'How does the M5 Competition compare to the Audi RS7 in your fleet?',
+        answer: 'Similar performance envelope, very different character. The M5 is more overtly sporting — sharper, more aggressive, with the rear-drive-mode option. The RS7 is more comfortable and more elegantly styled, quattro AWD only. Pick the M5 when driving engagement matters most; pick the RS7 for a smoother executive-saloon feel.',
+      },
+      {
+        question: 'How does the M5 compare to the M4 Competition in your fleet?',
+        answer: 'Same essential BMW M character, different body. The M5 is a four-door sedan — five seats, more usable for business or family. The M4 is a two-door coupé — sharper focus, four seats (2+2), lower daily rate. Pick by whether you need the four-door practicality.',
+      },
+      {
+        question: 'How far ahead should I book the M5 Competition?',
+        answer: 'Three to five days ahead for weekend windows in most of the year. In high season (November to March), a week ahead for Thursday-to-Saturday dates.',
+      },
+    ],
+  },
+  'cadillac-escalade-sports-platinum': {
+    metaTitle: 'Rent Cadillac Escalade Sports Platinum in Dubai — Hire from AED 1,300/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Cadillac Escalade Sports Platinum is a 6.2-litre V8 full-size luxury SUV — 420bhp, all-wheel drive, seven seats (or eight with the bench-second-row option), three-row body — priced from AED 1,300 per day. It is the top trim in the Escalade range and combines American full-size SUV space with the interior refinement and driver-assistance suite of a modern flagship. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe current-generation Escalade is Cadillac's answer to \"a Range Rover-competitor sized for American families.\" The 6.2-litre naturally-aspirated V8 delivers 420bhp with the effortless mid-range torque that has been the American V8 signature for decades. Ride quality is Magnetic Ride Control adaptive damping (the same technology Corvette and Camaro ZL1 use), and the third row is genuinely usable for adult passengers rather than the token perches many three-row SUVs offer.\n\nInside is where the Sports Platinum trim earns its badge: the curved 38-inch OLED dashboard display (larger than any competitor), AKG Studio 36-speaker sound system, semi-aniline leather, real wood veneer, and Super Cruise hands-free highway driving on supported UAE roads. Third-row access is via a power-folding second row, and cargo space with all seats up is genuinely usable for airport luggage for a family of five plus. Colour on this car is black — one of the classical Escalade specifications.\n\nThe Escalade rents to customers who need genuine large-family SUV space with luxury refinement. Visiting families of five to seven; corporate groups who need to move a full delegation together; residents whose regular car is too small for a specific weekend or airport trip. Standard Dubai destinations all handle it — DXB airport-to-Marina, the run out to Palm, weekend trips to Address Sky View, family day trips to Al Qudra or Hatta. Minimum age is 24. Book two to three days ahead in season for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Rolls-Royce Cullinan in our fleet, the Escalade is meaningfully cheaper per day and has genuine three-row seating — the Cullinan is a five-seat luxury SUV with more overtly premium interior. Against the Range Rover Vogue, the Escalade is larger with three-row seating; the Vogue is more compact with five seats only. Against the Audi SQ7 (another three-row luxury SUV in our fleet), the Escalade is larger, more American in character, and more overtly luxurious; the SQ7 is sharper to drive and more European in feel.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Cadillac Escalade in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the Escalade?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'How many seats does the Escalade have?',
+        answer: 'Seven seats as standard (two front + captains-chair second row + three-across third row), or eight if the second row is a bench rather than captains chairs. The third row is genuinely usable for adult passengers on airport transfers or shorter runs.',
+      },
+      {
+        question: 'How does the Escalade compare to the Audi SQ7 in your fleet?',
+        answer: 'Both are three-row luxury SUVs. The Escalade is larger, more American in interior character, and more overtly luxurious with the 38-inch OLED dashboard. The SQ7 is sharper to drive, more European in feel, and rents at a lower daily rate. Pick the Escalade when size and interior wow matter; pick the SQ7 when driving dynamics matter more.',
+      },
+      {
+        question: 'Can the Escalade handle Hatta or Jebel Jais?',
+        answer: 'Yes — the paved routes to Hatta and Jebel Jais are all in scope. Our insurance covers the entire UAE. Cars cannot leave the UAE, so no drives into Oman or Saudi Arabia.',
+      },
+      {
+        question: 'How far ahead should I book the Escalade?',
+        answer: 'Two to three days ahead for weekend windows in most of the year. In high season (November to March), a week ahead for Thursday-to-Saturday dates — the Escalade is popular with visiting family groups.',
+      },
+    ],
+  },
+  'audi-rs5': {
+    metaTitle: 'Rent Audi RS5 Sportback in Dubai — Hire from AED 1,200/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Audi RS5 Sportback is a 2.9-litre twin-turbo V6 four-door performance coupé — 444bhp, quattro all-wheel drive, five seats — priced from AED 1,200 per day. It covers 0-100 km/h in 3.9 seconds, tops out at 280 km/h with the RS Dynamic package, and is Audi RS's middle child: sharper and more focused than the RS7 flagship, more practical than the RS3 hot hatch. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe RS5 is the four-door Sportback version of the A5 platform, tuned by Audi RS with the same 2.9-litre twin-turbo V6 that powers the previous-generation Porsche Panamera 4S — a genuine performance engine with 444bhp and torque delivery from just above idle. Quattro AWD gives it the traction to launch harder than most rear-drive rivals in the segment, and the RS-specific chassis tuning keeps it flat and composed at motorway speeds.\n\nInside is Audi's current RS-specific cabin: virtual cockpit instrumentation with RS-specific display modes, Alcantara-and-leather sports seats, flat-bottom steering wheel with the RS mode button, and MMI infotainment with wireless Apple CarPlay / Android Auto. The Sportback body gives it the sedan four-door practicality with the fastback rear silhouette. Colour on this car is black. Five adults fit comfortably in the cabin; the boot is generous for the segment.\n\nThe RS5 rents to customers who want RS-badge performance in a more manageable and less overtly-fast package than the RS6 or RS7. Business visitors who want a sporty premium sedan for a longer stay; enthusiasts who want a V6 RS experience at a lower daily rate than the V8 cars; residents who want performance without needing an SUV. Standard Dubai destinations all work — Sheikh Zayed Road, Marina to Palm, the Abu Dhabi run for longer stays. Minimum age is 24. Book two to three days ahead for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Audi RS3 in our fleet, the RS5 is the larger, more mature, more powerful of the pair — five-cylinder RS3 versus V6 RS5. The RS3 is quicker to 100 but the RS5 is more usable day-to-day. Against the RS6 Avant or RS7, the RS5 is meaningfully cheaper per day but with less V8 drama; the RS6/RS7 give you a proper V8 for the extra spend. Against the BMW M4 Competition (a direct competitor in the segment), the RS5 is quattro AWD and more comfortable; the M4 is rear-drive-focused and more overtly a driver's car.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent an Audi RS5 in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the RS5?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'How does the RS5 compare to the RS6 Avant or RS7?',
+        answer: 'The RS5 is the smaller, V6-powered middle-child in the RS range at a meaningfully lower daily rate. The RS6 (estate) and RS7 (sedan) have the 4.0L V8 with 591bhp — considerably more power and V8 drama at a higher daily rate. Pick the RS5 for a manageable RS at a lower price; pick the V8 cars for the flagship RS experience.',
+      },
+      {
+        question: 'How does the RS5 compare to the BMW M4 Competition?',
+        answer: "Both are direct-segment rivals. The RS5 is quattro all-wheel drive, more comfortable, and a four-door Sportback (five seats). The M4 is rear-drive-focused, sharper and more overtly a driver's car, and a two-door coupé (four seats). Pick the RS5 for comfort and practicality; pick the M4 for driver engagement.",
+      },
+      {
+        question: 'Is the RS5 good for a longer stay?',
+        answer: 'Yes — five seats, usable boot, comfortable long-distance ride, and quattro AWD stability at motorway speeds. It is one of our more comfortable RS-badged cars for a week-plus rental.',
+      },
+      {
+        question: 'How far ahead should I book the RS5?',
+        answer: 'Two to three days ahead is comfortable for weekend windows in most of the year. In high season (November to March), book earlier for weekend Thursday-to-Saturday dates.',
+      },
+    ],
+  },
+  'audi-sq7': {
+    metaTitle: 'Rent Audi SQ7 in Dubai — Hire from AED 1,200/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Audi SQ7 is a 4.0-litre twin-turbo V8 seven-seat performance SUV — 500bhp, quattro all-wheel drive, three-row body — priced from AED 1,200 per day. It covers 0-100 km/h in 4.1 seconds, tops out at 250 km/h (electronically limited), and combines full three-row family SUV practicality with genuine V8 performance under the bonnet. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe SQ7 is the S-badged performance version of the Q7 — Audi's largest three-row SUV. The 4.0-litre twin-turbo V8 is the same engine family used in the RS6, RSQ8, Bentley Continental, and Lamborghini Urus (all VW Group cars sharing this powertrain), tuned here for smoothness and torque delivery rather than the aggressive top-end delivery of the RS-badged versions. The result is a seven-seat SUV that moves like a much smaller performance car when asked and cruises like a full-size limousine when not.\n\nInside is Audi's Q7 cabin with S-specific upgrades: dual centre-stack touchscreens, virtual cockpit with S-specific display modes, S-branded Nappa leather sports seats, and a genuine three-row layout with power-folding second row for third-row access. Third-row seats fit adult passengers on shorter runs (30-45 minutes comfortably); with the third row folded, cargo space is more than generous. Colour on this car is black. Air suspension in Comfort mode makes Dubai's parking-entry ramps a non-event.\n\nThe SQ7 rents to customers who need three-row family SUV space with genuine performance — a specific brief that only a handful of cars meet. Visiting families of six or seven; corporate groups moving together; residents who want a family car that is also entertaining to drive when the kids are dropped at school. Standard Dubai destinations all work — DXB-to-Marina, Palm loops, day trips to Al Qudra or Hatta. Minimum age is 24. Book two to three days ahead for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Cadillac Escalade Sports Platinum in our fleet, the SQ7 is meaningfully sharper to drive and more European in character; the Escalade is larger, more American in interior feel, and more overtly luxurious. Against the Audi RSQ8, the SQ7 gives you the third-row seats the RSQ8 does not have, at a lower daily rate — but with less power and less RS-badge presence. Against the Range Rover Vogue, the SQ7 has genuine seven-seat capacity; the Vogue is a five-seat luxury SUV with more overtly premium interior.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent an Audi SQ7 in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the SQ7?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'How many seats does the SQ7 have?',
+        answer: 'Seven seats across three rows. The third row fits adult passengers comfortably on shorter runs (30-45 minutes); for longer trips, adults tend to prefer the second row. With the third row folded, cargo space is generous for a large-family airport run.',
+      },
+      {
+        question: 'How does the SQ7 compare to the Cadillac Escalade in your fleet?',
+        answer: 'Both are three-row luxury SUVs. The Escalade is larger, more American in character, and more overtly luxurious with its 38-inch OLED dashboard. The SQ7 is sharper to drive, more European in feel, and rents at a lower daily rate. Pick the SQ7 when driving dynamics matter more; pick the Escalade when interior wow and outright size matter more.',
+      },
+      {
+        question: 'Can the SQ7 handle Hatta or Jebel Jais?',
+        answer: 'Yes — the paved routes to Hatta and Jebel Jais handle easily with the SQ7 quattro AWD and air suspension. Our insurance covers the entire UAE. Cars cannot leave the UAE, so no drives into Oman or Saudi Arabia.',
+      },
+      {
+        question: 'How far ahead should I book the SQ7?',
+        answer: 'Two to three days ahead is comfortable for weekend windows in most of the year. In high season (November to March), a week ahead for Thursday-to-Saturday dates.',
+      },
+    ],
+  },
+  'bmw-m4-competition': {
+    metaTitle: 'Rent BMW M4 Competition in Dubai — Hire from AED 1,016/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The BMW M4 Competition is a 3.0-litre twin-turbo inline-six performance coupé — 503bhp, rear-wheel drive (or M xDrive AWD on the xDrive variant), 4 seats, two-door — priced from AED 1,016 per day. It covers 0-100 km/h in 3.9 seconds, tops out at 250 km/h (290 with M Driver package), and is one of the sharpest driver-focused coupés in current production. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe M4 Competition is BMW's most focused two-door M-car. The 3.0-litre S58 twin-turbo inline-six is one of the most respected performance sixes currently in production — enthusiasts commonly rate it above the closely-related M3 Competition powerplant for exhaust note and top-end delivery. Six-speed manual and eight-speed automatic are both offered from the factory; our car is the eight-speed automatic for Dubai practicality.\n\nInside is BMW's M-specific cabin: heated M Sport seats with the distinctive backrest illumination, alcantara-and-carbon steering wheel with the M1 and M2 drive-mode shortcuts (programmable to your preferred combinations of engine / suspension / steering / gearbox / exhaust). Colour on this car is Sao Paulo Yellow — one of the M-division's signature specifications and immediately recognisable at any Dubai valet. Four seats — 2+2 layout, with rear seats that fit adult passengers on shorter runs.\n\nThe M4 Competition rents to a specific customer type: the driving enthusiast who wants a rear-drive-biased performance coupé for a Dubai weekend. Weekend rentals; residents who want a spirited coupé for a specific event; enthusiasts stepping up from a Porsche 718 or Audi TT who want their first proper M-car. Standard Dubai destinations all work — Sheikh Zayed Road, Marina to Palm, up to Jebel Jais where the M4 is at its best. Minimum age is 24. Book two to three days ahead for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the BMW M5 Competition in our fleet, the M4 is the two-door coupé alternative — sharper focus, four seats (2+2), lower daily rate, but less usable for a business trip or family weekend. Pick the M4 for pure driving; pick the M5 for four-door practicality. Against the Audi RS5 (a direct segment competitor), the M4 is more overtly a driver's car with the option of rear-drive-only; the RS5 is quattro AWD only, four-door Sportback, and more comfortable. Against the Porsche 911 Carrera S Cabriolet, the M4 is a coupé at a lower daily rate; the 911 is a drop-top at a slightly higher rate.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a BMW M4 Competition in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the M4 Competition?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'Is the M4 Competition rear-wheel drive or all-wheel drive?',
+        answer: 'Our car is the standard rear-wheel-drive variant — the more driver-engaging of the two options. BMW also offers an M xDrive all-wheel-drive version of the same car; if you specifically want the AWD variant, WhatsApp us to check availability.',
+      },
+      {
+        question: 'How does the M4 Competition compare to the M5 Competition?',
+        answer: 'Same brand character, different body. The M4 is a two-door coupé — sharper focus, four seats (2+2), lower daily rate. The M5 is a four-door sedan — five seats, more usable for business or family, higher daily rate. Pick the M4 for pure driving; pick the M5 for four-door practicality.',
+      },
+      {
+        question: 'How does the M4 compare to the Audi RS5 in your fleet?',
+        answer: "Both are direct-segment rivals at similar daily rates. The M4 is more overtly a driver's car with rear-wheel drive focus; the RS5 is quattro AWD, four-door Sportback, and more comfortable. Pick the M4 for driver engagement; pick the RS5 for comfort and four-door practicality.",
+      },
+      {
+        question: 'How far ahead should I book the M4 Competition?',
+        answer: 'Two to three days ahead is comfortable for weekend windows in most of the year. In high season (November to March), a week ahead for Thursday-to-Saturday dates.',
+      },
+    ],
+  },
+  'range-rover-vogue': {
+    metaTitle: 'Rent Range Rover Vogue in Dubai — Hire from AED 989/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Range Rover Vogue is a current-generation full-size luxury SUV — twin-turbo six-cylinder mild hybrid (or optional V8), all-wheel drive, five seats — priced from AED 989 per day. Depending on trim and specification, power ranges from around 395 to 530bhp; 0-100 km/h in 4.4 to 6.0 seconds depending on engine; top speed 250 km/h electronically limited. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe current-generation Range Rover Vogue (L460) is Land Rover's flagship luxury SUV — the model everyone else in the segment measures themselves against. What sets it apart from the SVR (the performance variant in our fleet) is character: this is the comfortable, quiet, refined Range Rover rather than the sports-tuned one. Air suspension in Comfort mode makes Dubai's speed bumps and parking-entry ramps genuinely a non-event; cabin isolation on Sheikh Zayed Road is closer to a limousine than to any conventional SUV.\n\nInside is Range Rover's cleanest cabin yet — minimalist design with a large central touchscreen, high-quality materials throughout, quilted leather seats with heating and ventilation, and rear-seat space that is close to first-class-airline territory. Colour on this car varies by allocation — see the specifications at the top of the page. Five seats fit comfortably with room for adult passengers front and back; the boot is generous for airport luggage.\n\nThe Vogue rents to customers who want the definitive comfortable luxury SUV experience for a Dubai stay. Business visitors who want a comfortable long-distance car; families who want a five-seat premium SUV without the performance-SUV firmness of the SVR or Bentayga; residents whose own car is off the road and want something premium as a stand-in. Standard Dubai destinations all handle it comfortably — DXB, DIFC, Downtown, Palm, weekend runs to Address Sky View or the Address Hotel at the Palm. It handles Hatta and paved Jebel Jais routes with no drama. Minimum age is 24. Book two to three days ahead for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Range Rover SVR in our fleet, the standard Vogue is the comfortable-first alternative — quieter, more efficient, lower daily rate. The SVR gives you the supercharged V8 and performance-SUV feel. Against the Bentley Bentayga (a similar segment competitor at a higher daily rate), the Vogue is more Range Rover — more traditional luxury SUV, less overtly a performance car; the Bentayga is quicker with the twin-turbo V8. Against the Range Rover Vogue Mansory, this is the standard silhouette; the Mansory is the wide-body modified variant.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Range Rover Vogue in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the Vogue?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'How does the Vogue compare to the Range Rover SVR in your fleet?',
+        answer: 'The standard Vogue is the comfortable-first Range Rover — quieter, more efficient, lower daily rate. The SVR is the performance variant with a supercharged V8. Pick the Vogue for a comfortable family or business rental; pick the SVR when the V8 experience is the point.',
+      },
+      {
+        question: 'How does the Vogue compare to the Bentley Bentayga?',
+        answer: 'Both are luxury SUVs at similar daily rates. The Vogue is more traditional luxury-SUV; the Bentayga is quicker with the twin-turbo V8 and more overtly a Bentley in interior feel. Pick the Vogue for the Range Rover experience; pick the Bentayga for a step up in interior refinement and performance at a slightly higher daily rate.',
+      },
+      {
+        question: 'Can the Vogue handle Hatta or Jebel Jais?',
+        answer: 'Yes — the Vogue is well suited to paved mountain routes and long motorway drives across the UAE. Our insurance covers the entire UAE. Cars cannot leave the UAE, so no drives into Oman or Saudi Arabia.',
+      },
+      {
+        question: 'How far ahead should I book the Vogue?',
+        answer: 'Two to three days ahead is comfortable for weekend windows in most of the year. In high season (November to March), a week ahead for Thursday-to-Saturday dates.',
+      },
+    ],
+  },
+  'porsche-cayenne': {
+    metaTitle: 'Rent Porsche Cayenne in Dubai — Hire from AED 900/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Porsche Cayenne is a 3.0-litre turbocharged V6 luxury SUV (or optional V8 in higher trims) — 335bhp in the base V6, up to 434bhp in the S variant, all-wheel drive, five seats — priced from AED 900 per day. It covers 0-100 km/h in around 4.7-6.0 seconds depending on trim, tops out at 245-273 km/h, and combines Porsche driving dynamics with genuine SUV practicality. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe Cayenne is Porsche's mainstream SUV — the model that first proved a sports-car brand could build a family-focused SUV without giving up brand character. Under the bodywork is a chassis and drivetrain that share DNA with the 911 Turbo family, adapted for higher ride height and family-carrying practicality. The result is an SUV that drives with the precision of a sports saloon and the ride quality expected at this price point.\n\nInside is Porsche's current cabin architecture: centre-console-mounted analogue clock, digital instrument cluster with the tachometer front and centre, and the touch-and-tactile blend of controls that Porsche has kept when many rivals have gone pure-touch. Colour on this car is white. Five adults fit comfortably with genuine rear-seat legroom and a boot generous enough for airport luggage for four.\n\nThe Cayenne rents most often to customers who want a Porsche experience in an SUV format — the Porsche driving feel and badge presence without stepping up to a 911. Business visitors who want a comfortable premium SUV for a longer stay; families who want SUV practicality plus the Porsche name at valet; residents who want a Porsche stand-in when their own car is off the road. Standard Dubai destinations all work — DXB, Marina, Downtown, Palm, weekend loops to Address Sky View. Minimum age is 24. Book same-day or next-day for weekday rentals in most of the year; two to three days ahead for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Porsche Macan in our fleet, the Cayenne is the larger of the two SUV models — more interior space, more powerful engines available, higher daily rate. Pick the Cayenne for family or five-adult comfort; pick the Macan for a more compact Porsche SUV at a lower rate. Against the BMW X6 (a direct segment competitor), the Cayenne is more Porsche-focused in driving feel; the X6 is more style-led with the coupé-SUV silhouette. Against the Range Rover Vogue, the Cayenne is sharper to drive and less overtly luxury-focused; the Vogue is more comfortable and more traditionally premium in cabin feel.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Porsche Cayenne in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the Cayenne?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'How does the Cayenne compare to the Porsche Macan in your fleet?',
+        answer: 'The Cayenne is the larger of the two Porsche SUVs — more interior space, more powerful engines, higher daily rate. The Macan is more compact with a lower daily rate. Pick the Cayenne when you need five-adult space and more presence; pick the Macan when a compact Porsche SUV suits your brief.',
+      },
+      {
+        question: 'How does the Cayenne compare to the Range Rover Vogue?',
+        answer: 'Both are luxury SUVs at similar daily rates. The Cayenne is sharper to drive with Porsche-specific driving dynamics; the Vogue is more comfortable and more traditionally luxury-focused. Pick the Cayenne when driving feel matters more; pick the Vogue when comfort and traditional luxury matter more.',
+      },
+      {
+        question: 'Can the Cayenne handle Hatta or Jebel Jais?',
+        answer: 'Yes — the Cayenne is well suited to paved mountain routes; the AWD system and air suspension (on trims that have it) handle Hatta and Jebel Jais easily. Our insurance covers the entire UAE. Cars cannot leave the UAE, so no drives into Oman or Saudi Arabia.',
+      },
+      {
+        question: 'How far ahead should I book the Cayenne?',
+        answer: 'Same-day or next-day is usually fine for weekday rentals. For weekend Thursday-to-Saturday windows, book two to three days ahead in most of the year; a week ahead in high season (November to March).',
+      },
+    ],
+  },
 }
