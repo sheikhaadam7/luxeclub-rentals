@@ -1621,4 +1621,334 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
       },
     ],
   },
+  'range-rover-sport': {
+    metaTitle: 'Rent Range Rover Sport in Dubai — Hire from AED 769/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Range Rover Sport is a mid-size luxury SUV — 3.0-litre mild-hybrid inline-six (~355-400bhp depending on trim), all-wheel drive, five seats — priced from AED 769 per day. It covers 0-100 km/h in around 5.5-6.0 seconds depending on engine, tops out at 250 km/h electronically limited, and combines Range Rover cabin refinement with sharper handling than the full-size Vogue. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 1,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe current-generation Range Rover Sport (L461) is the more driver-focused sibling to the flagship Vogue — same interior polish and off-road credentials, tighter dimensions and a chassis tuned for slightly firmer body control. The mild-hybrid inline-six delivers smooth mid-range torque, and the eight-speed automatic makes overtakes on Sheikh Zayed Road feel effortless.\n\nInside, the Sport gets the same clean Range Rover cabin architecture — minimalist design, large central touchscreen, quilted leather seats, and rear-seat space that is comfortable for adult passengers. Five seats fit easily; the boot handles airport luggage for four. Air suspension makes Dubai's parking-entry ramps and speed bumps a non-event.\n\nThe Range Rover Sport rents to customers who want the Range Rover experience in a more manageable size than the full-size Vogue. Business visitors who want a comfortable premium SUV; families of four to five who don't need three-row seating; residents whose own car is off the road and want something premium as a stand-in. Standard Dubai destinations all handle it comfortably — DXB, Marina, Downtown, DIFC, Palm, weekend runs to Address Sky View. It handles paved Hatta and Jebel Jais routes with no drama. Minimum age is 24. Book same-day or next-day for weekday rentals; two to three days ahead for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Range Rover Vogue in our fleet, the Sport is smaller, more manageable in city driving, and rents at a lower daily rate; the Vogue is more spacious in the rear and more overtly luxury-focused. Against the Range Rover SVR, the Sport is the comfortable-first variant without the SVR's supercharged V8. Against the BMW X6 or Porsche Macan (similar segment competitors at a similar rate), the Range Rover Sport is more traditionally luxury-focused with better off-road credentials; the X6 is more style-led with the coupé-SUV silhouette; the Macan is sharper to drive with Porsche dynamics.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Range Rover Sport in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the Range Rover Sport?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'How does the Range Rover Sport compare to the full-size Range Rover Vogue?',
+        answer: 'The Sport is smaller and more manageable in city driving, and rents at a lower daily rate. The Vogue is more spacious in the second row and more overtly luxury-focused. Pick the Sport for a more driver-friendly Range Rover; pick the Vogue when second-row space and outright presence matter more.',
+      },
+      {
+        question: 'Can the Range Rover Sport handle Hatta or Jebel Jais?',
+        answer: 'Yes — the Sport handles the paved Hatta and Jebel Jais routes with genuine ease. All-wheel drive and air suspension keep it comfortable and composed. Our insurance covers the entire UAE. Cars cannot leave the UAE, so no drives into Oman or Saudi Arabia.',
+      },
+      {
+        question: 'Is the Range Rover Sport a good family car?',
+        answer: 'Yes — five seats fit five adults, the boot handles airport luggage for four, and the ride quality is comfortable for long motorway runs. If you need three-row seating, look at the Audi SQ7 or Cadillac Escalade instead.',
+      },
+      {
+        question: 'How far ahead should I book the Range Rover Sport?',
+        answer: 'Same-day or next-day is usually fine for weekday rentals. For weekend Thursday-to-Saturday windows, two to three days ahead is comfortable; a week ahead in high season (November to March).',
+      },
+    ],
+  },
+  'bmw-x6': {
+    metaTitle: 'Rent BMW X6 in Dubai — Hire from AED 769/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The BMW X6 is a coupé-silhouette luxury SUV — 3.0-litre twin-turbo inline-six, 375bhp, xDrive all-wheel drive, five seats — priced from AED 769 per day. It covers 0-100 km/h in 5.3 seconds, tops out at 250 km/h electronically limited, and combines BMW's sports-saloon-adjacent driving feel with the higher seating and cargo capability of an SUV. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe X6 is the coupé-SUV that started the segment when BMW launched the original in 2008 — a car that took the mechanical basis of the X5 SUV and re-clothed it with a lower, more aggressive rear silhouette. The current-generation X6 xDrive40i uses BMW's B58 3.0-litre twin-turbo inline-six (one of the most respected performance sixes in current production), producing 375bhp with mild-hybrid assistance. Eight-speed automatic, xDrive AWD, and adaptive suspension deliver sharper handling than most rivals in the segment despite the coupé roofline.\n\nInside is BMW's current cabin architecture: curved widescreen display, wireless Apple CarPlay/Android Auto, quilted leather sports seats, and the raised centre-console gear-selector that BMW favours. The coupé silhouette gives up some rear-seat headroom compared to the boxier X5, but boot space remains genuinely usable and the rear seats still fit two adults comfortably. Colour on this car is blue.\n\nThe X6 rents to customers who want the SUV practicality with a more style-led silhouette than a conventional SUV. Business visitors who want a distinctive car for a longer stay; couples who want an SUV that reads more like a sports car in profile; residents who want a change from a traditional SUV silhouette. Standard Dubai destinations all handle it — DXB, Marina, Downtown, Palm loops. Minimum age is 24. Book same-day or next-day for weekday rentals; two to three days ahead for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Range Rover Sport (similar segment and price), the X6 is more style-led with the coupé-SUV silhouette; the Range Rover is more traditionally luxury-focused with more traditional SUV proportions. Pick the X6 for the distinctive shape; pick the Range Rover for the more classical luxury-SUV experience. Against the Porsche Macan, the X6 is larger with a more powerful engine; the Macan is more compact and sharper to drive. Against the Mercedes GLE 350, the X6 is more overtly sporting in feel; the GLE is more comfortable and traditionally luxury-focused.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a BMW X6 in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the BMW X6?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'How does the X6 compare to the Range Rover Sport?',
+        answer: 'Both are mid-size luxury SUVs at similar daily rates. The X6 is more style-led with the coupé-SUV silhouette and BMW-typical sports-saloon driving feel; the Range Rover is more traditionally luxury-focused with better off-road credentials. Pick by the silhouette you prefer and whether driving feel or comfort matters more.',
+      },
+      {
+        question: 'Does the coupé silhouette compromise rear-seat space?',
+        answer: 'Slightly — the lower roofline reduces rear-seat headroom compared to the X5 or a conventional SUV. Two adults sit comfortably in the back; three across is a squeeze. Boot space is still genuinely usable for airport luggage for four.',
+      },
+      {
+        question: 'Can I take the X6 on longer runs to Abu Dhabi or Hatta?',
+        answer: 'Yes — the X6 is comfortable on long motorway drives and handles the paved routes to Hatta and Jebel Jais without drama. Our insurance covers the entire UAE. Cars cannot leave the UAE, so no drives into Oman or Saudi Arabia.',
+      },
+      {
+        question: 'How far ahead should I book the X6?',
+        answer: 'Same-day or next-day is usually fine for weekday rentals. Two to three days ahead for weekend windows in most of the year; a week ahead in high season (November to March).',
+      },
+    ],
+  },
+  'porsche-macan': {
+    metaTitle: 'Rent Porsche Macan in Dubai — Hire from AED 750/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Porsche Macan is a compact luxury SUV — turbocharged four-cylinder or V6 depending on trim, all-wheel drive, five seats — priced from AED 750 per day. It covers 0-100 km/h in around 4.5-6.2 seconds depending on engine, and combines Porsche driving dynamics with a compact SUV footprint that suits Dubai's city driving. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe Macan is Porsche's compact SUV and the more manageable of the two Porsche SUVs (the Cayenne is the larger sibling). It shares chassis DNA with sports-car-adjacent Porsche models and drives with the precision that has made the brand's mainstream cars feel distinctly different from mainstream German rivals. The result is a compact SUV that steers with more feedback and stays flatter through Sheikh Zayed Road interchanges than most in the segment.\n\nInside is Porsche's SUV cabin: analogue tachometer front and centre in the driver's binnacle, centre-console-mounted clock, and Porsche's blend of touch-and-tactile controls. Five adults fit with reasonable comfort — the Macan is compact by SUV standards, so rear passengers get modest legroom rather than limousine-adjacent. Colour on this car is black. Boot is generous for the segment; folding rear seats extend cargo capacity for weekend trips.\n\nThe Macan rents to customers who want a Porsche experience in a compact SUV format. Business visitors who need something more distinctive than a mainstream premium SUV; couples who want the Porsche badge for a longer stay without stepping into a 911 daily rate; residents who want a compact premium SUV as a stand-in for their own car. Standard Dubai destinations all work — DXB, Marina, Downtown, DIFC valet, weekend runs to Address Sky View. Minimum age is 24. Book same-day or next-day for weekday rentals; two to three days ahead for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Porsche Cayenne in our fleet, the Macan is the smaller and more affordable Porsche SUV — same brand character in a more compact package. Pick the Macan for city-focused Porsche driving; pick the Cayenne when you need more space, more power, or higher status. Against the BMW X6 (similar segment competitor), the Macan is more compact and sharper to drive; the X6 is larger and more style-led with the coupé silhouette. Against the Mercedes GLE 350, the Macan is more overtly sporting; the GLE is more comfortable and traditionally luxury-focused.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Porsche Macan in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the Macan?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'How does the Macan compare to the Cayenne in your fleet?',
+        answer: 'The Macan is the smaller, more affordable Porsche SUV — more compact for city driving, lower daily rate. The Cayenne is larger with more interior space and more powerful engines available. Pick the Macan when compact size matters; pick the Cayenne when you need more space or more presence.',
+      },
+      {
+        question: 'How does the Macan compare to the BMW X6?',
+        answer: 'The Macan is more compact and sharper to drive with Porsche-specific dynamics; the X6 is larger, more style-led with the coupé-SUV silhouette. Pick the Macan for city-focused driving feel; pick the X6 for the distinctive shape and larger cabin.',
+      },
+      {
+        question: 'Is the Macan good for a family trip?',
+        answer: 'For a small family or a couple, yes — five seats fit comfortably and the boot handles airport luggage for two-to-three. If you need generous rear-seat legroom for adults or space for four large cases, the Cayenne or a mid-size Range Rover Sport is a better fit.',
+      },
+      {
+        question: 'How far ahead should I book the Macan?',
+        answer: 'Same-day or next-day is usually fine for weekday rentals. Two to three days ahead for weekend windows in most of the year.',
+      },
+    ],
+  },
+  'mercedes-gle-350': {
+    metaTitle: 'Rent Mercedes-Benz GLE 350 in Dubai — Hire from AED 714/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Mercedes-Benz GLE 350 is a mid-size luxury SUV — 2.0-litre turbocharged four-cylinder mild hybrid (or 3.0-litre inline-six on higher trims), 4Matic all-wheel drive, five seats — priced from AED 714 per day. It covers 0-100 km/h in around 6.5 seconds, tops out at 240 km/h, and combines Mercedes cabin refinement with the practicality of a genuine five-seat SUV. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe GLE is Mercedes's mid-size luxury SUV — one segment above the GLC and one below the GLS in the current model range. The 350 trim is the well-specified mid-tier with the balance of daily comfort, cabin space, and running costs that suits a longer-stay rental. 4Matic all-wheel drive gives it composure on Sheikh Zayed Road and enough traction for confident driving in the rare rain windows Dubai gets from November through February.\n\nInside is Mercedes's current cabin architecture: dual MBUX widescreen displays, capacitive controls on the steering wheel, and the tactile quality that separates the brand from mainstream competitors. Rear-seat space fits two adults comfortably with real legroom; the boot handles airport luggage for four. Five seats — no third row on the 350 in our fleet.\n\nThe GLE 350 rents to customers who want a proper Mercedes SUV for a longer Dubai stay — business visitors, families, or residents whose regular car is off the road. Standard Dubai destinations all handle it — DXB, Marina, Downtown, DIFC, Palm, and weekend runs to Address Sky View or the Address Hotel at the Palm. Minimum age is 24. Book same-day or next-day for weekday rentals; two to three days ahead for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Range Rover Sport (similar segment and price), the GLE is more comfortable and traditionally luxury-focused; the Range Rover is more traditionally SUV-styled with better off-road credentials. Against the BMW X6, the GLE is more comfortable; the X6 is sharper to drive and more style-led. Against the Porsche Macan (smaller compact-SUV competitor), the GLE is larger with more rear-seat and cargo space; the Macan is more overtly sporting to drive.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Mercedes GLE 350 in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the GLE 350?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'How does the GLE 350 compare to the Range Rover Sport?',
+        answer: 'Both are mid-size luxury SUVs at similar daily rates. The GLE is more comfortable and traditionally luxury-focused in cabin feel; the Range Rover Sport is more classically SUV-styled with better off-road credentials. Pick by the brand and driving feel you prefer.',
+      },
+      {
+        question: 'Is the GLE 350 a good family car?',
+        answer: 'Yes — five seats fit five adults comfortably, rear-seat legroom is generous for the segment, and the boot handles airport luggage for four. It is one of the more comfortable long-distance family SUVs at this price point in our fleet.',
+      },
+      {
+        question: 'Can the GLE handle Hatta or Jebel Jais?',
+        answer: 'Yes — the paved routes to Hatta and Jebel Jais handle easily with 4Matic AWD. Our insurance covers the entire UAE. Cars cannot leave the UAE, so no drives into Oman or Saudi Arabia.',
+      },
+      {
+        question: 'How far ahead should I book the GLE 350?',
+        answer: 'Same-day or next-day is usually fine for weekday rentals. Two to three days ahead for weekend windows in most of the year.',
+      },
+    ],
+  },
+  'land-rover-defender': {
+    metaTitle: 'Rent Land Rover Defender in Dubai — Hire from AED 659/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Land Rover Defender is a modern luxury off-road-capable SUV — 3.0-litre mild-hybrid inline-six (or optional V8 in higher trims), all-wheel drive with genuine off-road hardware, five seats — priced from AED 659 per day. It combines the distinctive silhouette that has defined the Defender since the original in 1948 with a modern cabin, on-road comfort, and the electronics to make its off-road credentials actually accessible to normal drivers. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 1,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe current-generation Defender (L663) is Land Rover's modern reinterpretation of the iconic original. Under the boxy body is a genuinely modern platform with air suspension (on higher trims), sophisticated Terrain Response 2 off-road electronics, and the fuel efficiency of any modern premium SUV. The 3.0-litre inline-six with mild-hybrid assistance produces the smooth torque delivery Land Rover has always specialised in; the eight-speed automatic and permanent AWD make daily-driver operation as easy as any other premium SUV.\n\nInside, the Defender's cabin is deliberately different from the Range Rover — more upright, more utilitarian in feel (exposed screw heads on the door pulls are a design choice, not an oversight), while still using genuinely premium materials throughout. Five seats fit comfortably and the boot is generous. The Defender's high hip point and upright seating position make it easy to see out of, which matters in Dubai's traffic.\n\nThe Defender rents to customers who want a distinctive premium SUV — someone who chose it specifically because they didn't want a Range Rover Vogue silhouette. Business visitors who want something recognisable; families who want a real-family SUV without step-up-to-Bentley pricing; residents who want a Defender for a specific weekend trip. Standard Dubai destinations all work — DXB, Marina, Downtown, Palm, and it particularly earns its keep on the run out to Hatta or up to Jebel Jais where the off-road credentials become genuinely useful. Minimum age is 24. Book same-day or next-day for weekday rentals; two to three days ahead for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Range Rover Sport (similar segment, higher rate), the Defender is more distinctive-silhouette and more overtly off-road-capable; the Sport is more comfortable on the daily commute and more luxury-focused. Pick the Defender for the character and the off-road credentials; pick the Sport for a more polished daily driver. Against the Nissan Patrol, the Defender is more premium in cabin feel at a higher daily rate; the Patrol is larger and cheaper.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Land Rover Defender in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the Defender?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'Can I take the Defender on off-road tracks in the UAE?',
+        answer: 'The Defender is genuinely off-road-capable but we ask that you keep our cars on paved routes. Hatta, Jebel Jais, and the standard scenic destinations are perfect for the Defender on-road. Serious desert or unmade-track use requires a specific arrangement — WhatsApp us on +971 58 808 6137 before your dates.',
+      },
+      {
+        question: 'How does the Defender compare to the Range Rover Sport?',
+        answer: 'The Defender is more distinctive in silhouette and more overtly off-road-capable; the Range Rover Sport is more comfortable on the daily commute and more polished as a pure luxury SUV. Pick the Defender for the character and off-road credentials; pick the Sport for a more refined daily driver.',
+      },
+      {
+        question: 'Is the Defender good for a family trip?',
+        answer: 'Yes — five seats fit five adults with generous headroom (the upright silhouette helps), and the high hip point makes rear passengers feel less cramped than in most SUVs. Boot space is genuinely usable for airport luggage for four.',
+      },
+      {
+        question: 'How far ahead should I book the Defender?',
+        answer: 'Same-day or next-day is usually fine for weekday rentals. Two to three days ahead for weekend windows in most of the year.',
+      },
+    ],
+  },
+  'nissan-patrol': {
+    metaTitle: 'Rent Nissan Patrol in Dubai — Hire from AED 495/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Nissan Patrol is a full-size body-on-frame SUV — 5.6-litre naturally-aspirated V8, 400bhp, all-wheel drive, seven or eight seats depending on trim — priced from AED 495 per day. It combines the boxy silhouette that has defined the Patrol since the 1990s with modern electronics, and remains one of the most popular full-size family SUVs in the UAE for a reason: the combination of space, capability, and running cost is genuinely hard to beat. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 1,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe Patrol is Nissan's flagship SUV globally, and specifically the model most closely associated with the Gulf region — you'll see them everywhere in Dubai for a reason. The 5.6-litre V8 delivers the effortless mid-range torque needed to move a genuinely large SUV without any drama, and the body-on-frame construction gives it the durability that has made Patrols the desert-run car of choice for decades.\n\nInside, the current-generation Patrol is a full three-row family SUV — front two seats, second row for three adults, third row for three more (usable for adult passengers on shorter runs). Cargo space with all seats up is limited (the third row eats most of it); with the third row folded, cargo space is genuinely useful for airport luggage for six. Colour varies by allocation — see the specifications at the top of the page.\n\nThe Patrol rents most often to visiting family groups who need genuine full-size SUV capacity, and to residents who need a full-size SUV as a stand-in when their own car is off the road. Standard Dubai destinations all handle it — DXB (particularly popular for airport pickups where large luggage matters), Marina, Downtown, Palm, family day trips out to Al Qudra or Hatta. Minimum age is 24. Book two to three days ahead for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Cadillac Escalade or Audi SQ7 in our fleet, the Patrol is meaningfully cheaper per day and equally spacious inside; the American and German rivals have more premium interior materials and higher-tier tech. Pick the Patrol when practicality and running cost matter more than badge; pick the Escalade or SQ7 when the interior wow matters. Against the GMC Yukon and Chevrolet Tahoe (similar full-size body-on-frame SUVs in our fleet), the Patrol is the Middle-Eastern favourite of the trio; the Yukon and Tahoe are the American equivalents at similar daily rates.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Nissan Patrol in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the Patrol?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'How many seats does the Patrol have?',
+        answer: 'Seven or eight depending on trim — either captains chairs in the second row plus a three-across third row (7 total), or a bench second row plus three-across third (8 total). The third row is usable for adult passengers on airport runs and shorter trips.',
+      },
+      {
+        question: 'How does the Patrol compare to the Cadillac Escalade?',
+        answer: 'Both are full-size three-row SUVs. The Escalade is meaningfully more premium in interior materials and tech (38-inch OLED dashboard, AKG sound) at a higher daily rate. The Patrol is more practical and running-cost-friendly. Pick the Patrol when space and value matter; pick the Escalade for the premium cabin.',
+      },
+      {
+        question: 'Is the Patrol good for airport transfers?',
+        answer: 'Yes — the Patrol is one of the most-requested airport transfer cars in the segment specifically because it swallows large luggage for six or seven passengers with genuine ease. Both DXB and Al Maktoum airport runs handle without a second thought.',
+      },
+      {
+        question: 'How far ahead should I book the Patrol?',
+        answer: 'Two to three days ahead is comfortable for most windows. In high season (November to March), a week ahead if you specifically need a Patrol on Thursday-to-Saturday dates.',
+      },
+    ],
+  },
+  'mercedes-glc-200-coupe': {
+    metaTitle: 'Rent Mercedes-Benz GLC 200 Coupe in Dubai — Hire from AED 479/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Mercedes-Benz GLC 200 Coupe is a compact luxury SUV with the coupé-SUV silhouette — 2.0-litre turbocharged four-cylinder mild hybrid, 204bhp, 4Matic all-wheel drive, five seats — priced from AED 479 per day. It combines Mercedes cabin polish with the more style-led lower roofline of the Coupe body variant. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe GLC Coupe is Mercedes's answer to the BMW X4 — the coupé-silhouette compact luxury SUV — and shares its mechanical basis with the boxier standard GLC. The 200 trim is the entry engine option: a 2.0-litre turbocharged four-cylinder with mild-hybrid assistance, producing 204bhp with fuel economy that suits longer rentals better than a bigger engine. 4Matic AWD gives it composure on the motorway and confident traction in Dubai's rare rain.\n\nInside is Mercedes's current cabin architecture: MBUX infotainment, portrait-orientation touchscreen, and material quality that reads distinctly premium at this price point. Five seats fit comfortably in the front; rear-seat headroom is slightly reduced by the coupé roofline versus the standard GLC but still comfortable for adult passengers. Boot space is generous for the segment.\n\nThe GLC 200 Coupe rents to customers who want a compact Mercedes SUV with a more style-led silhouette. Business visitors who want a Mercedes badge for a longer stay at an accessible daily rate; couples who want a compact premium SUV with distinctive proportions; residents who want a Mercedes stand-in when their own car is off the road. Standard Dubai destinations all work — DXB, Marina, Downtown, Palm loops. Minimum age is 21 for the GLC 200 line-up (one of our more accessible cars for younger visiting drivers). Book same-day or next-day for weekday rentals. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the standard Mercedes GLE 350 (a larger Mercedes SUV in our fleet), the GLC 200 Coupe is more compact, more affordable, and has the coupé silhouette. Pick the GLC Coupe for the smaller footprint and lower rate; pick the GLE when you need more space. Against the BMW X6 (a larger coupé-SUV rival at a higher daily rate), the GLC Coupe is meaningfully smaller and more accessible. Against the Mercedes C200 (also in our fleet), the GLC Coupe is the SUV version at the same broad price point — pick the C200 for a sedan, pick the GLC Coupe for the higher-seated SUV feel.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Mercedes GLC 200 Coupe in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the GLC 200 Coupe?',
+        answer: 'The minimum age is 21, one of the more accessible cars in our fleet alongside the Audi A3, Audi Q3, and Mercedes C200. Tourists need a valid International Driving Permit alongside their home-country licence.',
+      },
+      {
+        question: 'How does the GLC 200 Coupe compare to the standard GLE 350?',
+        answer: 'The GLC 200 Coupe is smaller, more affordable per day, and has the coupé-SUV silhouette. The GLE 350 is larger with more rear-seat and cargo space, and rents at a higher daily rate. Pick the GLC Coupe for a compact-SUV footprint; pick the GLE when you need more space.',
+      },
+      {
+        question: 'How does the GLC Coupe compare to the Mercedes C200 sedan?',
+        answer: 'Same broad price point, different body. The GLC 200 Coupe is the higher-seated compact SUV with 4Matic AWD; the C200 is the compact sedan with rear-wheel drive and a lower silhouette. Pick by whether you want an SUV or a sedan.',
+      },
+      {
+        question: 'Does the coupé silhouette compromise rear-seat space?',
+        answer: 'Slightly — the sloping roofline reduces rear-seat headroom compared to the standard boxier GLC. Two adults sit comfortably in the back for shorter distances; long-distance rear-seat passengers would be more comfortable in the boxier GLE 350.',
+      },
+      {
+        question: 'How far ahead should I book the GLC 200 Coupe?',
+        answer: 'Same-day or next-day is usually fine. Two to three days ahead for weekend windows in high season (November to March).',
+      },
+    ],
+  },
+  'chevrolet-tahoe': {
+    metaTitle: 'Rent Chevrolet Tahoe in Dubai — Hire from AED 451/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Chevrolet Tahoe is a full-size body-on-frame American SUV — 5.3-litre V8, 355bhp, all-wheel drive, seven or eight seats depending on trim — priced from AED 451 per day. It shares the GM full-size SUV platform with the GMC Yukon and the Cadillac Escalade, delivering the same genuine three-row family capacity at a meaningfully lower daily rate. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 1,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe current-generation Tahoe is Chevrolet's answer to \"a genuine full-size American family SUV.\" The 5.3-litre naturally-aspirated V8 delivers the smooth mid-range torque that has been the American V8 signature for decades, and the ten-speed automatic keeps the engine in the right part of its rev range without drama. Ride quality is good for the segment; Magnetic Ride Control adaptive damping (available on higher trims) smooths out Dubai's more uneven connector roads.\n\nInside is a genuinely full-size cabin — three rows, seven or eight seats, and space in the back row for adult passengers rather than the token perches many three-row SUVs offer. Cargo space with all seats up is limited (the third row eats most of it); with the third row folded, cargo capacity is enormous. Colour varies by allocation — see the specifications at the top of the page.\n\nThe Tahoe rents most often to visiting family groups who need genuine full-size SUV capacity, and to residents who need a full-size SUV as a stand-in for a specific weekend or airport trip. It is one of the most-requested airport-transfer cars in the fleet specifically for its ability to swallow six or seven passengers plus their luggage. Standard Dubai destinations all handle it — DXB, Marina, Downtown, Palm, family day trips to Al Qudra or Hatta. Minimum age is 24. Book two to three days ahead for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the GMC Yukon in our fleet, the Tahoe is essentially the same car with different exterior styling and a slightly lower daily rate — both are built on GM's full-size body-on-frame SUV platform. Against the Cadillac Escalade (also on the same platform), the Tahoe and Yukon are the less-premium siblings — same capability at a meaningfully lower daily rate, without the Escalade's 38-inch OLED dashboard or AKG sound. Against the Nissan Patrol, the Tahoe and Patrol both offer full-size three-row SUV capacity at similar daily rates; the Patrol is the Middle-Eastern favourite of the segment.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Chevrolet Tahoe in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the Tahoe?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'How many seats does the Tahoe have?',
+        answer: 'Seven or eight depending on trim — either captains chairs in the second row plus a three-across third row (7 total), or a bench second row plus three-across third (8 total). Third row fits adult passengers on shorter runs.',
+      },
+      {
+        question: 'How does the Tahoe compare to the GMC Yukon and Cadillac Escalade?',
+        answer: 'All three are built on the same GM full-size body-on-frame SUV platform. The Tahoe (Chevrolet) and Yukon (GMC) are near-identical mechanically at similar daily rates — different exterior styling. The Escalade (Cadillac) is the premium sibling with a much more premium interior (38-inch OLED dashboard, AKG sound) at a meaningfully higher daily rate.',
+      },
+      {
+        question: 'Is the Tahoe good for airport transfers?',
+        answer: 'Yes — the Tahoe is one of our most-requested airport-transfer cars specifically because it swallows large luggage for six or seven passengers. Both DXB and Al Maktoum airport pickups handle without a second thought.',
+      },
+      {
+        question: 'How far ahead should I book the Tahoe?',
+        answer: 'Two to three days ahead is comfortable for most windows. In high season (November to March), a week ahead if you specifically need a Tahoe on Thursday-to-Saturday dates.',
+      },
+    ],
+  },
+  'mercedes-c200': {
+    metaTitle: 'Rent Mercedes-Benz C200 in Dubai — Hire from AED 442/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Mercedes-Benz C200 is a compact luxury sedan — 2.0-litre turbocharged four-cylinder mild hybrid, 204bhp, rear-wheel drive, five seats — priced from AED 442 per day. It combines Mercedes cabin refinement with the compact executive footprint that suits Dubai city driving, and is one of the most-rented cars in our fleet for business visitors and longer stays. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe C200 is Mercedes's compact executive sedan and the model that has been the brand's mainstream volume car for four decades. The current-generation W206 platform brought a completely redesigned interior with the portrait-orientation MBUX touchscreen borrowed from the flagship S-Class, along with the 2.0-litre turbocharged four-cylinder mild-hybrid drivetrain that delivers 204bhp with the fuel efficiency of a mainstream compact.\n\nInside is Mercedes's cleanest current cabin — minimalist design, large portrait touchscreen, MBUX voice control, quilted leather seats with heating and ventilation, and ambient lighting that customises to your preferred mood. Rear-seat space is genuine for a compact executive sedan — two adults fit comfortably. Colour on this car varies by allocation.\n\nThe C200 rents most often to business visitors who want a proper Mercedes for a longer Dubai stay without stepping up to a full-size S-Class or E-Class daily rate. Younger visiting drivers (age 21 minimum) who want an actual Mercedes as their first Dubai rental rather than a mainstream compact; residents whose own car is off the road. Standard Dubai destinations all work — DXB, Marina, Downtown, DIFC, Palm loops. Minimum age is 21, one of the more accessible in our fleet alongside the Audi A3, Audi Q3, and Mercedes GLC 200 Coupe. Book same-day or next-day for weekday rentals. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Audi A3 in our fleet, the C200 is at a similar daily rate and similar entry-premium position — the A3 is the direct German competitor sedan. Pick by the brand you prefer. Against the Mercedes GLC 200 Coupe (also in our fleet at a similar price point), the C200 is the sedan alternative; the GLC Coupe is the higher-seated SUV. Against the BMW M4 Competition or higher-tier Mercedes, the C200 is meaningfully cheaper per day and better as a comfortable-first business rental rather than a performance-focused pick.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Mercedes C200 in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the C200?',
+        answer: 'The minimum age is 21, one of the more accessible cars in our fleet. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'How does the C200 compare to the Audi A3?',
+        answer: 'Same broad segment, similar daily rate, similar entry-premium position. The C200 is the Mercedes compact executive sedan; the A3 is the Audi equivalent. Pick by the brand and cabin feel you prefer — both are genuine premium compacts at accessible daily rates.',
+      },
+      {
+        question: 'How does the C200 compare to the Mercedes GLC 200 Coupe?',
+        answer: 'Same broad price point, different body. The C200 is the compact sedan (lower silhouette, rear-wheel drive); the GLC 200 Coupe is the higher-seated compact SUV with 4Matic AWD and the coupé-SUV roofline. Pick by whether you want a sedan or an SUV.',
+      },
+      {
+        question: 'Is the C200 a good business-visitor rental?',
+        answer: 'Yes — it is one of the most-requested cars in this class for four-to-seven-day corporate visits. It arrives at DIFC and Downtown valet looking right, the ride is comfortable for the daily commute, and at this daily rate it is easy to justify against taxis or ride-hailing.',
+      },
+      {
+        question: 'How far ahead should I book the C200?',
+        answer: 'Same-day or next-day is usually fine. Two to three days ahead for weekend windows in high season (November to March).',
+      },
+    ],
+  },
+  'gmc-yukon': {
+    metaTitle: 'Rent GMC Yukon in Dubai — Hire from AED 439/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The GMC Yukon is a full-size body-on-frame American SUV — 5.3-litre V8, 355bhp, all-wheel drive, seven or eight seats depending on trim — priced from AED 439 per day. It shares the GM full-size SUV platform with the Chevrolet Tahoe and the Cadillac Escalade, delivering the same genuine three-row family capacity at the lowest daily rate of the three siblings. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 1,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe current-generation Yukon is GMC's take on the full-size American family SUV — mechanically identical to the Chevrolet Tahoe (same 5.3-litre V8, same ten-speed automatic, same three-row platform) but with GMC-specific exterior styling and interior trim details. The result is a genuinely full-size family SUV with the smooth mid-range torque delivery that American V8s do particularly well.\n\nInside, the Yukon is a full three-row family SUV with the same essential layout as the Tahoe and Escalade — front two, second row for three, third row for three (usable for adult passengers on shorter runs). Cargo space is limited with the third row up; enormous with it folded. Colour varies by allocation — see the specifications at the top of the page.\n\nThe Yukon rents most often to visiting family groups who need genuine full-size SUV capacity at the most accessible daily rate in the segment, and to residents who need a full-size SUV as a stand-in for a specific weekend or airport trip. Airport transfers where six or seven passengers plus their luggage need to move together are the classic use case. Standard Dubai destinations all handle it — DXB, Marina, Downtown, Palm, family day trips out to Al Qudra or Hatta. Minimum age is 24. Book two to three days ahead for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Chevrolet Tahoe in our fleet, the Yukon is essentially the same car mechanically with different exterior styling at a similar daily rate — pick by the badge you prefer or by whichever is available on your dates. Against the Cadillac Escalade (the premium sibling on the same platform), the Yukon is meaningfully cheaper per day without the Escalade's premium cabin (no 38-inch OLED dashboard, no AKG sound) but the same essential mechanical package and interior space. Against the Nissan Patrol (similar full-size body-on-frame SUV in our fleet), the Yukon is the American alternative to the Middle-Eastern favourite; both offer genuine three-row capacity at similar rates.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a GMC Yukon in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the Yukon?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'How many seats does the Yukon have?',
+        answer: 'Seven or eight depending on trim — either captains chairs in the second row plus a three-across third row (7 total), or a bench second row plus three-across third (8 total). Third row fits adult passengers on shorter runs.',
+      },
+      {
+        question: 'How does the Yukon compare to the Chevrolet Tahoe?',
+        answer: 'Mechanically the same car — same 5.3L V8, same ten-speed automatic, same platform. Different exterior styling and interior trim details. Rents at a similar daily rate. Pick by the badge you prefer or whichever is available on your dates.',
+      },
+      {
+        question: 'Is the Yukon good for airport transfers?',
+        answer: 'Yes — the Yukon is one of the most-requested airport transfer cars in our fleet specifically because it swallows large luggage for six or seven passengers. Both DXB and Al Maktoum airport runs handle without a second thought.',
+      },
+      {
+        question: 'How far ahead should I book the Yukon?',
+        answer: 'Two to three days ahead is comfortable for most windows. In high season (November to March), a week ahead if you specifically need a Yukon on Thursday-to-Saturday dates.',
+      },
+    ],
+  },
 }
