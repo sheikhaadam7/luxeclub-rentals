@@ -82,7 +82,7 @@ const PACKAGES: ProtectionPackage[] = [
   {
     id: 'inclusive',
     name: 'All Inclusive Protection',
-    ageRequirement: 'Minimum age 25',
+    ageRequirement: 'Requires driver age 25+',
     stars: 3,
     excessAed: null,
     excessHighlight: 'green',

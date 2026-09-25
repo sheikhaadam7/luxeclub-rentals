@@ -88,7 +88,7 @@ export function BookingOverview({ form, vehicle: _vehicle, rentalDays }: Booking
         </Item>
 
         {protectionPackage === 'inclusive' && (
-          <Item>All Inclusive Protection (Minimum age 25) — No excess</Item>
+          <Item>All Inclusive Protection (requires driver age 25+) — No excess</Item>
         )}
 
         {deliveryLabel && <Item>{deliveryLabel}</Item>}

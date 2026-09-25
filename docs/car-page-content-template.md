@@ -146,7 +146,7 @@ Prices change with season, demand, duration, and negotiation. Any specific numbe
 - **Delivery fee: AED 110 within Dubai**
 - **Deposit tiers: AED 2,500 / 4,500 / 5,000**
 - **Mileage included: 250 km per day**
-- **Minimum age: 23 / 25 / 27**
+- **Minimum age tiers: 21 / 24 / 27** (base / mid / supercars)
 
 **What is NOT OK to state as fixed anywhere except the opener anchor:**
 - Daily rate (once, in the opener, with "from")

@@ -725,7 +725,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
                 <li>• Valid passport</li>
                 <li>• Home-country driving licence</li>
                 <li>• International Driving Permit (IDP)</li>
-                <li>• Minimum age 25 (some cars 21+, exotics 27+)</li>
+                <li>• Minimum age 21 (some cars 24+, supercars 27+)</li>
               </ul>
             </div>
             <div className="bg-white/[0.03] border border-white/[0.08] p-6 space-y-3">
@@ -736,7 +736,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
               <ul className="space-y-2 text-sm text-white/70 leading-relaxed">
                 <li>• Valid UAE driving licence</li>
                 <li>• Emirates ID (front + back)</li>
-                <li>• Minimum age 25 (some cars 21+, exotics 27+)</li>
+                <li>• Minimum age 21 (some cars 24+, supercars 27+)</li>
                 <li>• Insurance included, deposit varies by car</li>
               </ul>
             </div>
