@@ -146,48 +146,68 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
     ],
   },
   'porsche-911-gt3-rs': {
-    metaTitle: 'Rent Porsche 911 GT3 RS in Dubai — Hire from AED 1,999/day',
+    metaTitle: 'Rent Porsche 911 GT3 RS in Dubai — Hire from AED 3,300/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
     description:
-      "The Porsche 911 GT3 RS is the most extreme road-legal 911 ever built — a 518bhp naturally-aspirated flat-six that revs to 9,000 rpm, active DRS-style rear wing, race-derived suspension, and the most distinctive aero ever fitted to a 911. It is, by any objective measure, one of the best driver's cars in the world.\n\nPorsche 911 GT3 RS car rental in Dubai is AED 1,999 per day. Weekly and monthly rentals are priced case by case — message us on WhatsApp (+971 58 808 6137) for a personalised quote. Insurance, delivery, and 24/7 support are included. The handover walkthrough covers the active aero system, the DRS rear wing, the chassis settings, and the launch control.\n\nThe GT3 RS is the car for experienced drivers who appreciate Porsche's most focused engineering. It is not a comfortable cruiser — the ride is firm, the cabin is loud, and the car demands your attention. In return it delivers a driving feel that nothing else in the fleet can match. Take it to Jebel Jais at sunrise for the views and photos.",
+      "The Porsche 911 GT3 RS is the most track-focused road-legal 911 ever built — a 4.0-litre naturally-aspirated flat-six producing 518bhp, rear-wheel drive, two seats, and the most aggressive aerodynamic package fitted to a production 911 (including an active DRS-style rear wing) — priced from AED 3,300 per day. It covers 0-100 km/h in 3.2 seconds and tops out at 296 km/h; aerodynamics limit the top speed because downforce is the whole point. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 5,000. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe 992-generation GT3 RS shares its 4.0-litre naturally-aspirated flat-six with the base GT3 (same 9,000 rpm limit — the highest of any current road car) but adds 16bhp, race-derived double-wishbone front suspension (unique to the RS, not shared with the base GT3), and aerodynamics that generate more downforce at 200 km/h than any road-going Porsche in history. The active rear wing has drag-reduction capability — it flattens on straights to reduce drag and pitches to maximum angle in corners for downforce. The system is automatic in most modes and can also be manually toggled from the steering-wheel controls; the handover walkthrough on pickup covers this.\n\nInside is minimal by design: full bucket seats, exposed roll structure, four-point harness mounts (we run belt-only for road use), Alcantara throughout. The infotainment is present but pared back — Porsche has consciously stripped out weight that a road-focused 911 would keep. Colour on this car is green. This is not a comfortable long-distance grand tourer; it is a driver's tool that happens to be road-legal.\n\nThe GT3 RS rents to a specific customer type: the driving enthusiast who wants to experience one of the most focused street-legal Porsches ever made, on Dubai's clean tarmac. Typical brief is a track day at Yas Marina or Dubai Autodrome (available with prior arrangement — WhatsApp us before your dates and we will walk through the insurance conditions), followed by a road drive up to Jebel Jais at sunrise for photographs. Standard Dubai destinations work but this car is intended for the drive itself, not the commute. Minimum age is 27 (supercar tier). Book a week ahead in high season for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the base 911 GT3 in our fleet, the RS is the harder, louder, more aero-focused of the pair — more downforce, more track-focused suspension, less street polish. The base GT3 keeps the same 9,000 rpm engine character but is more usable day-to-day at a lower daily rate. Pick the RS if you specifically want the track-day experience or the aggressive aerodynamic silhouette; pick the base GT3 if you want the naturally-aspirated flat-six experience for a road weekend. Against the Ferrari 296 GTS, the GT3 RS is naturally aspirated and rear-drive (no hybrid, no AWD) — analogue in a way the 296 is not; the 296 is quicker on paper but a very different character.",
     faqs: [
       {
         question: 'How much does it cost to rent a Porsche 911 GT3 RS in Dubai?',
-        answer: 'The Porsche 911 GT3 RS rents for AED 1,999 per day. Weekly and monthly rentals are priced case by case — message us on WhatsApp (+971 58 808 6137) for a personalised quote. All rates include comprehensive insurance and 24/7 support. Delivery across Dubai is free on monthly rentals; daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge.',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the GT3 RS?',
+        answer: 'The minimum age is 27, in line with our supercar tier. Tourists need a valid International Driving Permit alongside their home-country licence.',
+      },
+      {
+        question: 'Can I take the GT3 RS on track at Yas Marina or Dubai Autodrome?',
+        answer: 'Yes — track use is possible with prior arrangement. WhatsApp us on +971 58 808 6137 before your dates and we will walk through the insurance conditions and any additional deposit required for the track session. Jebel Jais road drives are covered under the standard rental.',
+      },
+      {
+        question: 'How does the GT3 RS compare to the base GT3?',
+        answer: 'Same 4.0L naturally-aspirated flat-six, same 9,000 rpm limit. The RS adds 16bhp, race-derived double-wishbone front suspension, much more aggressive aerodynamics with an active DRS-style rear wing, and a stripped-out interior. The base GT3 is more usable day-to-day and rents at a lower daily rate. Pick the RS for the track-day experience; pick the base GT3 for a road-focused weekend.',
       },
       {
         question: 'Is the GT3 RS comfortable for daily driving?',
-        answer: "Honestly, no — the GT3 RS is a track-focused car with a firm ride, loud cabin, and demanding driving character. It's extraordinary on mountain roads and highway blasts but not the right choice for a week of comfortable daily driving. If you want the 911 experience with daily comfort, the 911 Turbo S or 911 Carrera S Cabriolet are better choices. The GT3 RS is for enthusiasts who want a specific, intense driving experience.",
+        answer: "Honestly, no. The RS has firm race-derived suspension, minimal sound-deadening, and buckets that are not intended for long commutes. It's extraordinary on Jebel Jais or on a track lap; it is not the right pick if you want a Porsche you can use as a daily for a week. For that, the base GT3 is meaningfully more comfortable, and the 911 Turbo S line-up is more comfortable again.",
       },
       {
-        question: 'Can I take the GT3 RS on Jebel Jais?',
-        answer: "Yes — Jebel Jais is a beautiful scenic destination for a day out in the GT3 RS. Smooth tarmac, panoramic viewpoints, and a summit restaurant at 1,700 m for lunch or coffee. Get there at sunrise for the best light and the quietest roads. Allow 3–4 hours round-trip. The scenery and the photos are the point — drive at a relaxed pace within the posted limits.",
-      },
-      {
-        question: 'What does the DRS rear wing do?',
-        answer: "The GT3 RS's rear wing has an active DRS (drag reduction system) mode — similar to what Formula 1 cars use. On straights the wing flattens to reduce drag, and in corners it extends to maximum angle for downforce. The system is automatic but can be overridden in the drive modes. We'll demonstrate all of this during the handover walkthrough at pickup.",
+        question: 'What does the DRS rear wing actually do?',
+        answer: "The active rear wing has drag-reduction (DRS) capability similar to Formula 1: on straights it flattens to reduce aerodynamic drag; in corners it pitches to maximum angle for downforce. Mode logic is automatic in most drive modes; steering-wheel controls let you override manually. Everything is covered in the pickup walkthrough.",
       },
     ],
   },
   'ferrari-sf90-stradale': {
-    metaTitle: 'Rent Ferrari SF90 in Dubai — Hire from AED 3,999/day',
+    metaTitle: 'Rent Ferrari SF90 Stradale in Dubai — Hire from AED 6,999/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
     description:
-      "The Ferrari SF90 Stradale is the fastest production Ferrari ever built — a plug-in hybrid V8 producing 986bhp combined from a twin-turbo V8 and three electric motors, 0-100 in 2.5 seconds, and the most technologically advanced car in the Ferrari lineup. It bridges the gap between supercar and hypercar.\n\nFerrari SF90 Stradale car rental in Dubai is AED 3,999 per day. Weekly and monthly rentals are priced case by case — message us on WhatsApp (+971 58 808 6137) for a personalised quote. Insurance, delivery, and 24/7 support are included. The handover walkthrough covers the hybrid drivetrain modes (eDrive for electric-only, Hybrid for combined, Performance and Qualify for maximum power).\n\nThe SF90 is for customers who want Ferrari's absolute best — the technology, the badge presence, and the most advanced car in the Prancing Horse stable. At AED 3,999/day it sits between the mainstream Ferrari range and the Lamborghini Revuelto, making it the value choice for customers who want near-hypercar presence without the AED 8,999/day Revuelto price.",
+      "The Ferrari SF90 Stradale is Ferrari's plug-in hybrid flagship coupé — a 3.9-litre twin-turbo V8 plus three electric motors producing 986bhp combined, all-wheel drive via the front electric motor pair, two seats — priced from AED 6,999 per day. It covers 0-100 km/h in 2.5 seconds, tops out at 340 km/h, and represents the current technological ceiling of the Ferrari mainstream range. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 5,000. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe SF90 is Ferrari's first road-going PHEV and the first mid-engined all-wheel-drive Ferrari — a genuine architectural first for the brand. Under the rear engine cover sits a 3.9-litre 90-degree twin-turbo V8 producing 769bhp on its own. Between the engine and the eight-speed dual-clutch transmission is one electric motor; at the front axle, two more electric motors drive the front wheels — giving the SF90 electric-only all-wheel drive at low speed and torque-vector assist at higher speeds. The combined output is 986bhp — the most any Ferrari has produced short of the LaFerrari.\n\nInside is Ferrari's most heavily digital cabin yet: capacitive touch controls on the steering wheel (which take some acclimatisation), a curved 16-inch driver display, and a nearly-buttonless centre stack. The eManettino selector for hybrid modes sits under your thumb — eDrive (electric-only, up to about 135 km/h), Hybrid (blends engine and electric automatically), Performance (V8 always on for immediate response), and Qualify (all systems delivering peak output). Colour on this car is red. The car is coupé-only; there is no SF90 Spider in our fleet.\n\nThe SF90 rents to a specific customer type: someone who wants Ferrari's current flagship coupé experience, understands what a modern hybrid supercar drives like, and books ahead. Weekend rentals; corporate signings where the brief is \"the newest Ferrari in the fleet\"; content creators wanting the current-generation Ferrari for photography. Standard Dubai destinations all work — Sheikh Zayed Road down to Abu Dhabi, the Marina and Palm loops, and up to Jebel Jais when you want to use the powertrain. eDrive is genuinely useful for early-morning valet exits from hotels without waking neighbours. Minimum age is 27 (supercar tier). Book a week ahead in high season (November to March) for weekend windows — the SF90 is one of the tightest-availability cars in the fleet. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Lamborghini Revuelto in our fleet, the SF90 is a V8-plus-three-motors hybrid; the Revuelto is a V12-plus-three-motors hybrid. The Revuelto is louder, more theatrical, and Italian in a more overt way; the SF90 is more surgical and technology-led at a lower daily rate. Against the Ferrari 296 GTS, the SF90 is more powerful, all-wheel drive, and coupé-only; the 296 is lighter, roof-down-capable, and rear-drive-plus-hybrid-torque-fill. Against the Ferrari Purosangue (also a hybrid AWD Ferrari), the SF90 is a mid-engined two-seat supercar; the Purosangue is a four-seat super-SUV. Pick the SF90 when you specifically want the flagship coupé experience.",
     faqs: [
       {
         question: 'How much does it cost to rent a Ferrari SF90 Stradale in Dubai?',
-        answer: 'The Ferrari SF90 Stradale rents for AED 3,999 per day. Weekly and monthly rentals are priced case by case — message us on WhatsApp (+971 58 808 6137) for a personalised quote. All rates include comprehensive insurance and 24/7 support. Delivery across Dubai is free on monthly rentals; daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge.',
-      },
-      {
-        question: 'Can the SF90 drive in electric-only mode?',
-        answer: "Yes — the SF90 has an eDrive mode that runs on electric motors only for up to 25 km. It's surprisingly smooth and quiet in this mode, and useful for early-morning hotel departures or parking garages. The hybrid mode blends both power sources automatically for the best balance of performance and efficiency.",
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
       },
       {
         question: 'What is the minimum age to rent the SF90?',
-        answer: 'The minimum age is 27 for the SF90 Stradale. Tourists also need a valid International Driving Permit alongside their home-country licence.',
+        answer: 'The minimum age is 27, in line with our supercar tier. Tourists need a valid International Driving Permit alongside their home-country licence.',
+      },
+      {
+        question: 'Can the SF90 drive in electric-only mode?',
+        answer: "Yes. eDrive mode uses only the electric motors — the V8 stays off. You get around 25 km of range at speeds up to about 135 km/h. It is genuinely useful for early-morning hotel or residential-building exits without waking anyone, and for slow crawls through Downtown or DIFC. Once the battery depletes the V8 seamlessly takes over.",
       },
       {
         question: 'How does the SF90 compare to the Lamborghini Revuelto?',
-        answer: 'Both are hybrid hypercars but they feel very different. The SF90 has a V8 + three electric motors (986bhp) while the Revuelto has a V12 + three electric motors (1,001bhp). The SF90 feels more surgical and technology-led; the Revuelto is more theatrical. The SF90 at AED 3,999/day is meaningfully cheaper than the Revuelto at AED 8,999/day, making it the value hypercar choice.',
+        answer: 'Both are hybrid flagships. The SF90 has a V8 plus three electric motors (986bhp); the Revuelto has a V12 plus three electric motors (over 1,000bhp) and rents at a meaningfully higher daily rate. The SF90 is more surgical and technology-led; the Revuelto is louder and more overtly theatrical. Pick the SF90 when you want the current-generation Ferrari flagship coupé; pick the Revuelto when you want the V12 experience and the Lamborghini badge.',
+      },
+      {
+        question: 'How does the SF90 compare to the Ferrari 296 GTS?',
+        answer: 'Both are hybrid Ferraris. The SF90 is coupé-only, all-wheel drive (via the front electric motors), and more powerful. The 296 is lighter, roof-down-capable, and rear-drive with hybrid torque fill. Pick the SF90 for the flagship coupé experience; pick the 296 GTS if you want the roof-down and lighter Ferrari.',
+      },
+      {
+        question: 'How far ahead should I book the SF90?',
+        answer: 'A week ahead in high season (November to March) for weekend Thursday-to-Saturday dates — the SF90 is one of our tightest-availability supercars. Three to five days is usually enough in the rest of the year.',
       },
     ],
   },
@@ -389,6 +409,390 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
       {
         question: 'How far ahead should I book the Bentayga Black Line Edition?',
         answer: 'Two to three days ahead is comfortable for most windows; longer in high season (November to March) if you specifically want this Black Line variant. The standard Bentaygas in black or brown have more availability if your dates are tight.',
+      },
+    ],
+  },
+  'lamborghini-urus-black': {
+    metaTitle: 'Rent Lamborghini Urus in Dubai — Hire from AED 2,419/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Lamborghini Urus is a 4.0-litre twin-turbo V8 super-SUV — 641bhp, all-wheel drive, five seats — priced from AED 2,419 per day. It covers 0-100 km/h in 3.6 seconds, tops out at 305 km/h, and produces the sort of throttle response and exhaust note that make its Audi RSQ8 sibling feel understated. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThis is the black car in the pair — the yellow variant is a separate listing at the same daily rate. The Urus is Lamborghini's translation of \"supercar experience in an SUV body\": every mechanical piece is tuned for immediate response rather than SUV comfort. The 4.0-litre V8 is shared with the RSQ8 and the Porsche Cayenne Turbo, but Lamborghini's calibration turns it into a different animal — quicker throttle mapping, a louder exhaust (especially in Corsa mode), and damping that keeps the 2.2-tonne body flat through corners in a way most SUVs cannot manage.\n\nInside, the cockpit borrows heavily from the Aventador and Huracán: the flip-cover Start Engine button, hexagon-motif screens, flat-bottom steering wheel, and the drive-mode selector labelled with Lamborghini's own ANIMA names — STRADA (road), SPORT, CORSA (track feel), NEVE (snow), TERRA (light off-road), SABBIA (sand). STRADA is the default in Dubai traffic; SPORT wakes the exhaust and firms the ride; CORSA is intentionally sharp. Five seats fit five actual adults with real rear-seat space, and the boot swallows airport luggage for four. Panoramic sunroof, 22-inch wheels, and the driver-assistance suite you'd expect at this price.\n\nThe Urus is the fleet's most-rented super-SUV, and the customer base is broad: visiting families who want a Lamborghini they can put four adults in without compromise; Downtown or Marina professionals who want the presence of a super at valet on a weekend; corporate customers who want the badge for a business trip without the impracticality of a two-seat coupé. Standard Dubai destinations are all in scope — airport-to-Marina, Marina-to-Palm, day trips to Abu Dhabi or Al Qudra, weekend runs to Address Sky View or FIVE Jumeirah Village. Chauffeur customers pick it for events where a G63 feels too common and a Rolls too sedate. Minimum age is 24 with the standard performance-car documentation requirements. Book three to five days ahead in season for weekend dates — the Urus is one of our tightest-availability cars during high season (November to March). Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Audi RSQ8, which shares the same VW Group platform and a very similar V8, the Urus is louder, more theatrical, and carries the Lamborghini badge — the pick when the badge and the presence are the point rather than the drive alone. Against the Bentley Bentayga, the Urus is quicker and sharper; the Bentayga is quieter and better for chauffeur use. Against the Rolls-Royce Cullinan, the Urus is faster and less than half the daily rate; the Cullinan is calmer, larger inside, and more suited to being driven for you. Our Lamborghini Urus vs Audi RSQ8 guide at /guides/lamborghini-urus-vs-audi-rsq8-dubai goes deeper on the RSQ8 comparison.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Lamborghini Urus in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the Urus?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'Can I drive the Urus to Abu Dhabi, Hatta, or Jebel Jais?',
+        answer: 'Yes — the Urus handles Abu Dhabi, Al Ain, Hatta, and Jebel Jais comfortably; our insurance covers the entire UAE. Cars cannot leave the UAE, so no drives into Oman or Saudi Arabia.',
+      },
+      {
+        question: 'How does the Urus compare to the Audi RSQ8?',
+        answer: "They share the same VW Group platform and a very similar V8. On paper the Urus has more power (641 vs 591 bhp); on real Dubai roads the two feel closer than the numbers suggest. Where they diverge is the daily rate — the RSQ8 sits in a meaningfully lower price tier. Pick the Urus when the Lamborghini badge and the exhaust note are the point; pick the RSQ8 when you'd rather have the driving experience without paying for the badge.",
+      },
+      {
+        question: "What's the difference between the black and yellow Urus?",
+        answer: "Same underlying car — same 641bhp V8, same specification, same daily rate. The two listings exist because we operate both colours; you're choosing the exterior finish. The black car is the more understated of the two; the yellow is a Verde Mantis / Giallo Auge shade that's essentially unmissable.",
+      },
+      {
+        question: 'How far ahead should I book the Urus?',
+        answer: 'Three to five days ahead is comfortable for weekend windows in most of the year; in high season (November to March) book a week ahead if you specifically want the Urus on Thursday-to-Saturday dates. It is one of our highest-demand cars.',
+      },
+    ],
+  },
+  'lamborghini-urus-yellow': {
+    metaTitle: 'Rent Lamborghini Urus Yellow in Dubai — Hire from AED 2,419/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The yellow Lamborghini Urus is mechanically identical to the black car — 4.0-litre twin-turbo V8, 641bhp, all-wheel drive, five seats, 0-100 in 3.6 seconds, top speed 305 km/h — priced from AED 2,419 per day. The reason it's a separate listing is the exterior: this is Lamborghini's high-visibility yellow (Giallo Auge / Verde Mantis family, depending on the exact allocation), and it's the choice for customers who want the car to be recognised as a Lamborghini from a block away rather than blend in. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500.\n\nFor the full drive character, cabin details, and ANIMA drive-mode notes, the black Urus entry covers the same car. This entry focuses on when the yellow specifically is the right pick. In practice it comes down to two customer types. The first is content creators, event guests, and social occasions where being visibly in a Lamborghini is the point — the yellow photographs distinctly in a way that black does not. The second is repeat customers who've already had the black car and want to try the pair — colour is the only meaningful difference in feel.\n\nEverything else that applies to the black Urus applies here: same rental terms, same 24 minimum age, same insurance coverage across the UAE, same three-to-five-days-ahead booking guidance in high season. Standard Dubai destinations — airport, Marina, Palm, Downtown, DIFC, Address Sky View, FIVE Jumeirah Village, Abu Dhabi, Al Qudra, Jebel Jais — are all in scope. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates.\n\nIf you're picking between the two, the yellow rents faster on weekend windows because it's the more Instagram-friendly of the pair; if you want more availability flexibility on tight dates, the black car often has an open slot when the yellow doesn't. Both cost the same. See the Urus black listing at /catalogue/lamborghini-urus-black for the full drive-character write-up.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent the yellow Lamborghini Urus in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page — same rate as the black Urus. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: "What is the difference between the yellow and black Urus?",
+        answer: "Mechanically nothing — same 641bhp V8, same drivetrain, same spec, same daily rate. The listings are separate because the two cars are separate physical vehicles in different colours. The yellow is the higher-visibility choice; the black is the more understated. Availability and booking speed differ between them.",
+      },
+      {
+        question: 'What is the minimum age to rent the yellow Urus?',
+        answer: 'The minimum age is 24 — same as the black Urus. Tourists need a valid International Driving Permit alongside their home-country licence.',
+      },
+      {
+        question: 'Is the yellow Urus a good choice for content or events?',
+        answer: "Yes — the yellow is the choice when the point is for the car to read as a Lamborghini in photos and videos, or to be recognised at a valet or an event entrance. Black is more discreet; yellow is not.",
+      },
+      {
+        question: 'How far ahead should I book the yellow Urus?',
+        answer: 'For weekend Thursday-to-Saturday windows in high season (November to March), a week ahead is safer — the yellow is our tightest-availability Urus. For weekday rentals, three to five days is usually enough.',
+      },
+    ],
+  },
+  'rolls-royce-cullinan': {
+    metaTitle: 'Rent Rolls-Royce Cullinan in Dubai — Hire from AED 3,409/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Rolls-Royce Cullinan is a 6.75-litre twin-turbo V12 super-luxury SUV — 563bhp, all-wheel drive, four or five seats depending on the interior configuration — priced from AED 3,409 per day. It covers 0-100 km/h in 5.2 seconds, is electronically limited to 250 km/h, and does it all with the quietest cabin of any SUV on the road. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 5,000. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe Cullinan is Rolls-Royce's answer to \"an SUV, but done our way.\" The V12 is the same architecture that powers the Ghost and Phantom, and it makes its power the way Rolls has always made power — from low revs, without ever raising its voice. What that translates to from the driver's seat is a car that never feels stressed, no matter what you ask of it: overtakes on Sheikh Zayed Road happen with a small squeeze of throttle rather than a downshift and a lunge, and the ride quality on Dubai's connector roads is smoother than anything else in the segment.\n\nInside is where the Cullinan really justifies the price. Everything you touch is real — the leather, the wood or the piano-black veneer depending on trim, the metal switchgear. The Starlight Headliner (hundreds of individual fibre-optic points in the roof) is the detail every customer stops to look at on collection. Rear-seat space is genuine limousine territory: two adults sit in armchairs with limousine-grade legroom, and the ride from the back seat is closer to a Phantom than to any other SUV.\n\nThe Cullinan rents to two customer types who rarely overlap. The first is chauffeur-driven — a VIP visit, a business delegation, a wedding — where the person actually paying wants to be seen arriving in the correct car, and the driver's seat is somebody else's problem. Weddings and corporate events are the most common brief. The second is the resident driver who wants the Cullinan experience for a specific occasion: an anniversary weekend, a family trip out to the Palm, a long lunch at One&Only Royal Mirage where the valet queue is worth doing properly. Standard Dubai destinations all handle it — DXB, Marina, Downtown, DIFC, Palm, Business Bay, and the drives out to Abu Dhabi or Al Ain that show off the cabin isolation. Minimum age is 24. The Cullinan is a specific-occasion booking; book five to seven days ahead in high season if your dates are fixed. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Bentley Bentayga, the Cullinan is quieter, more spacious in the back, and better as a chauffeur car; the Bentayga is quicker to drive yourself and better as a driver's SUV. Against the Cullinan Mansory in our fleet, the standard Cullinan is more subtle — the Mansory is a heavily-styled body kit variant for a different sort of customer entirely. If chauffeur-first is the brief, this Cullinan is the pick. If you want to drive it yourself and enjoy the process, the Bentayga is more engaging without giving up much presence.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Rolls-Royce Cullinan in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates, duration, and whether you need chauffeur service. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the Cullinan?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'Is chauffeur service available for the Cullinan?',
+        answer: 'Yes — a large share of Cullinan rentals include a professional chauffeur, particularly for weddings, VIP airport transfers, and corporate events. WhatsApp us on +971 58 808 6137 with your dates and use case; we quote chauffeur pricing per day based on the hours involved.',
+      },
+      {
+        question: 'How does the Cullinan compare to the Bentley Bentayga?',
+        answer: "The Cullinan is quieter, larger in the second row, and better as a car to be driven in — it is the closer match to a Phantom-in-SUV-form. The Bentayga is quicker, sharper to drive yourself, and about 40% less per day. If the brief is chauffeur or VIP arrivals, the Cullinan is the pick. If you want to drive it yourself and enjoy it, the Bentayga is more engaging.",
+      },
+      {
+        question: 'Can I take the Cullinan on longer runs to Abu Dhabi?',
+        answer: 'Yes — the Cullinan is at its best on longer motorway runs. The cabin isolation makes Abu Dhabi and Al Ain feel like short hops. Our insurance covers the entire UAE. Cars cannot leave the UAE, so no drives into Oman or Saudi Arabia.',
+      },
+      {
+        question: 'How far ahead should I book the Cullinan?',
+        answer: 'For chauffeur bookings (weddings, corporate events), a week or two ahead is comfortable and lets us confirm the driver. For self-drive weekend rentals, three to five days is usually enough outside high season; in November to March, book a week ahead if your dates are fixed.',
+      },
+    ],
+  },
+  'bentley-bentayga': {
+    metaTitle: 'Rent Bentley Bentayga in Dubai — Hire from AED 1,402/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Bentley Bentayga is a 4.0-litre twin-turbo V8 luxury SUV — 542bhp, all-wheel drive, five seats — priced from AED 1,402 per day. It covers 0-100 km/h in 4.5 seconds, tops out at 290 km/h, and does it all inside one of the quietest cabins in the segment. This listing is the black car — the brown variant is a separate listing at the same daily rate, and the Black Line Edition (a factory blacked-out styling pack finished in white) is a third listing. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe Bentayga is Bentley's answer to what an SUV should feel like when the manufacturer's baseline is a Continental GT. The V8 is the same 4.0-litre twin-turbo used across the modern Bentley range and by the Audi RSQ8 and Lamborghini Urus — but Bentley's tuning trades some of the Lambo's edge for smoothness. The result is torque that arrives from just above idle and never runs out, an eight-speed automatic you rarely notice, and air suspension that makes Dubai's speed bumps and parking-entry ramps a genuine non-event.\n\nInside is the full Bentley experience: quilted diamond-stitched leather, real wood veneer (or piano-black, depending on trim), infotainment driven through knurled aluminium switchgear that feels much more expensive than the pure-touch screens fitted to most modern cars. Rear-seat space is genuine — two adults sit comfortably with abundant legroom — and the ride quality from the back seat is closer to a chauffeur-driven saloon than a typical SUV. Five seats, four doors, panoramic sunroof, and one of the quietest cabins on the road at motorway speed. Colour on this car is black.\n\nThe Bentayga rents most often to two customer types. The first is the visiting family or business group who want the presence of a Bentley without the impracticality of the Continental GT (a coupé, not a family car) — arriving at a hotel valet or a business meeting in a Bentayga sets a tone a Range Rover doesn't quite match. The second is a resident driver who wants a comfortable long-distance car for weekends: airport-to-Marina, Marina-to-Palm, day trips out to Abu Dhabi or to the beach at Palm Jumeirah. Chauffeur customers use it for corporate events and airport pickups where a Cullinan is too much car and a Range Rover isn't enough. Minimum age is 24. Standard Dubai destinations all handle it comfortably — DXB, DIFC, Downtown, Address Sky View, FIVE Jumeirah Village, or the Address Hotel at Palm Jumeirah. Book two to three days ahead in season for weekend dates. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Rolls-Royce Cullinan, the Bentayga is quicker, sharper, and more engaging to drive yourself; the Cullinan is quieter, larger in the back, and better for chauffeur use — at a meaningfully higher daily rate. Against the Lamborghini Urus (which shares this V8), the Bentayga is calmer and more comfortable; the Urus is louder and more theatrical. Against our own Bentayga Black Line Edition, this is the classic chrome-trimmed silhouette; the Black Line Edition swaps the chrome for gloss-black trim on a white body. Same mechanical package on all three Bentayga listings — pick by colour and by daily rate.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Bentley Bentayga in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the Bentayga?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'How does the Bentayga compare to the Rolls-Royce Cullinan?',
+        answer: 'The Bentayga is quicker, sharper, and more engaging as a car to drive yourself; the Cullinan is quieter, more spacious in the second row, and better as a chauffeur car — at a meaningfully higher daily rate. If chauffeur or VIP arrivals are the brief, the Cullinan is the pick. If you want to drive it yourself and enjoy the process, the Bentayga is the better call.',
+      },
+      {
+        question: "What's the difference between the black Bentayga, the brown Bentayga, and the Black Line Edition?",
+        answer: 'All three are mechanically identical — same 4.0L twin-turbo V8, same air suspension, same interior spec. This listing is the classic chrome-trimmed Bentayga in black; the brown listing is the same car in a warmer chocolate exterior; the Black Line Edition is a white car with the factory Black Line pack that swaps every chrome exterior detail for gloss-black trim. Pick by the exterior look you prefer.',
+      },
+      {
+        question: 'Can I take the Bentayga on longer runs to Abu Dhabi or Hatta?',
+        answer: 'Yes. The Bentayga is at its best on longer motorway drives — the cabin refinement and adaptive air suspension make Abu Dhabi and the drive to Hatta genuinely relaxing. Our insurance covers the entire UAE. Cars cannot leave the UAE, so no drives into Oman or Saudi Arabia.',
+      },
+      {
+        question: 'Is chauffeur service available for the Bentayga?',
+        answer: 'Yes — Bentayga chauffeur bookings are common for corporate airport transfers and events. WhatsApp us on +971 58 808 6137 with your dates and the hours involved; we quote chauffeur pricing per day.',
+      },
+    ],
+  },
+  'bentley-bentayga-brown': {
+    metaTitle: 'Rent Bentley Bentayga Brown in Dubai — Hire from AED 1,402/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The brown Bentley Bentayga is mechanically identical to the black car — 4.0-litre twin-turbo V8, 542bhp, all-wheel drive, five seats, 0-100 in 4.5 seconds — priced from AED 1,402 per day. This listing exists because we operate the car in a second colour: a deep chocolate exterior that reads warmer and more classical than the black car, and photographs particularly well against Dubai's beige and cream architecture. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500.\n\nEverything mechanical, everything about the cabin, everything about how the car drives is covered in the black Bentayga entry. This one focuses on when the brown is specifically the right pick. In practice it comes down to two things. Photography and events — the brown reads noticeably richer against neutral backgrounds (hotel valet queues at Emirates Palace, Address Sky View, One&Only Royal Mirage) and is often the choice for wedding and corporate booking briefs where the whole car needs to be visible in colour photography without the flat matte read a black car gives. Personal preference — some customers just prefer warm tones to cool ones, and this is the fleet's warmest Bentley.\n\nEverything else that applies to the black Bentayga applies here: same 24 minimum age, same UAE-wide insurance coverage, same two-to-three-day booking lead time, same standard Dubai destinations, same AED 110 delivery. Chauffeur service is available on the same terms. WhatsApp us on +971 58 808 6137 for weekly and monthly rates.\n\nIf you're picking between the two, the black is the more classic and understated of the pair; the brown is warmer, more distinctive, and photographs better for events. Both cost the same and drive identically. See the black Bentayga listing at /catalogue/bentley-bentayga for the full drive-character and cabin write-up; see the Bentayga Black Line Edition listing for a third option with the factory Black Line styling pack in white.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent the brown Bentley Bentayga in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page — same rate as the black Bentayga. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the difference between the brown and black Bentayga?',
+        answer: 'Mechanically nothing — same 4.0L twin-turbo V8, same 542bhp, same air suspension, same interior spec, same daily rate. The listings are separate because they are separate physical cars in different colours. The brown is the warmer, more classical of the two; the black is more understated. The Black Line Edition (a third listing) is a white car with a factory blacked-out styling pack.',
+      },
+      {
+        question: 'What is the minimum age to rent the brown Bentayga?',
+        answer: 'The minimum age is 24 — same as the black Bentayga. Tourists need a valid International Driving Permit alongside their home-country licence.',
+      },
+      {
+        question: 'Is the brown Bentayga a good choice for weddings and events?',
+        answer: 'Yes — the brown reads particularly well in colour photography against neutral hotel and event backgrounds, and it is often the preferred colour for wedding briefs. Chauffeur service is available; WhatsApp us on +971 58 808 6137 for chauffeur pricing.',
+      },
+      {
+        question: 'How far ahead should I book the brown Bentayga?',
+        answer: 'Two to three days ahead is comfortable for most windows. In high season (November to March), book a week ahead for weekend Thursday-to-Saturday dates or for chauffeur-with-driver bookings.',
+      },
+    ],
+  },
+  'rolls-royce-ghost': {
+    metaTitle: 'Rent Rolls-Royce Ghost in Dubai — Hire from AED 2,419/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Rolls-Royce Ghost is a 6.75-litre twin-turbo V12 super-luxury saloon — 563bhp, all-wheel drive, four to five seats depending on interior configuration — priced from AED 2,419 per day. It covers 0-100 km/h in 4.8 seconds, is electronically limited to 250 km/h, and does all of this without letting the cabin know. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 4,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe Ghost is Rolls's answer to \"a modern luxury saloon done properly.\" It sits between the Cullinan (the SUV) and the Phantom (the larger, more ceremonial saloon) — smaller than the Phantom, faster to drive yourself than either, and more contemporary in feel than the classical Phantom silhouette. What that means in practice is a car that photographs as unmistakably Rolls-Royce but drives with the ease and quietness of a modern executive car, not a museum piece.\n\nInside, the material selection is the full Rolls treatment: leather that is genuinely different from what any other manufacturer offers, real wood veneer, and the Starlight Headliner (thousands of fibre-optic points in the ceiling) that is the detail every customer stops to notice on collection. The Ghost is designed to be enjoyed from either front or rear seats — many customers alternate between chauffeur mode for arrivals and self-drive mode for the drive itself. Rear-seat space is limousine grade; front-seat driving position is high, commanding, and quiet.\n\nThe Ghost rents to two customer types. The first is chauffeur-driven, for weddings, corporate airport transfers, and VIP arrivals where the person being driven wants to be seen arriving in the correct car. The second is self-drive: a customer who wants a Rolls for a weekend but wants to drive it themselves — anniversary weekends, long lunches at Bab Al Shams or the Palm, evening drives around the Marina. Standard Dubai destinations all handle it — DXB airport transfers, DIFC and Downtown valets, the run out to Abu Dhabi where the cabin isolation genuinely shines. Minimum age is 24. Book five to seven days ahead in high season if your dates are fixed. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly, monthly, and chauffeur rates that fit your dates.\n\nAgainst the Rolls-Royce Cullinan, the Ghost is a saloon rather than an SUV — lower, more traditionally elegant, and slightly quicker to drive yourself. Both are the same V12; the Cullinan is more spacious in the back and better for luggage. Against the Bentley Continental GTC, the Ghost is quieter and more formal; the Continental is a two-door drop-top that is a very different sort of car. If the brief is \"the most correct saloon to arrive in at a Dubai hotel or wedding,\" the Ghost is the pick.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Rolls-Royce Ghost in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly, monthly, and chauffeur quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates, duration, and whether you need a driver. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the Ghost?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'Is chauffeur service available for the Ghost?',
+        answer: 'Yes — the Ghost is one of our most-requested chauffeur cars, particularly for weddings, VIP airport transfers, and corporate events. WhatsApp us on +971 58 808 6137 with your dates and the hours involved; chauffeur pricing is quoted per day based on those hours.',
+      },
+      {
+        question: 'How does the Ghost compare to the Cullinan?',
+        answer: 'Same V12, same underlying luxury language — different body. The Ghost is a saloon: lower, more traditionally elegant, and slightly sharper to drive yourself. The Cullinan is an SUV: more spacious in the back, more usable for luggage, and higher-seated. For a wedding or a VIP arrival at a hotel valet, either works; the Ghost is the more classical of the two, the Cullinan the more modern.',
+      },
+      {
+        question: 'Can I take the Ghost on longer runs to Abu Dhabi?',
+        answer: 'Yes — the Ghost is at its best on longer motorway drives. Cabin isolation makes Abu Dhabi and Al Ain feel like short hops. Our insurance covers the entire UAE. Cars cannot leave the UAE, so no drives into Oman or Saudi Arabia.',
+      },
+      {
+        question: 'How far ahead should I book the Ghost?',
+        answer: 'For chauffeur bookings (weddings, VIP events), a week to two ahead lets us confirm the driver. For self-drive weekend rentals, three to five days is usually enough; in high season (November to March), a week ahead is safer for fixed dates.',
+      },
+    ],
+  },
+  'g63-amg': {
+    metaTitle: 'Rent Mercedes-AMG G63 in Dubai — Hire from AED 1,429/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Mercedes-AMG G63 is a 4.0-litre bi-turbo V8 luxury SUV — 577bhp, all-wheel drive with three locking differentials, five seats — priced from AED 1,429 per day. It covers 0-100 km/h in 4.5 seconds, is electronically limited to 220 km/h, and produces a V8 exhaust note that is one of the most immediately recognisable at any Dubai valet. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe G63 is the car most people picture when they picture Dubai. There is a reason: nothing else in the segment combines the boxy military silhouette, the AMG V8 pace, and the interior of a Mercedes S-Class quite like this. The engineering trick is that under the vintage-looking body is a modern platform — coil-sprung front (not the old solid axle), fully independent damping, adaptive suspension, and driver-assistance tech current with any modern AMG. So the car looks like it should be uncomfortable and unwieldy in city traffic; it isn't.\n\nInside, the cabin is unmistakably modern-Mercedes: dual widescreen displays, Burmester sound, quilted Nappa leather, and switchgear that would be at home in an S-Class. Rear-seat space is generous for a 4x4 of this footprint, and the boot handles airport luggage for four comfortably. Standard equipment on our car includes the 360-degree camera (useful — the G is boxy and taller than it looks from the driver's seat), adaptive cruise, and the AMG Performance exhaust that lets you dial the V8's voice up or down. Colour on this car is black.\n\nThe G63 is the fleet's most-requested \"presence car.\" It rents to visiting families who want a car large enough for four adults plus luggage without stepping up to a Cullinan; to Downtown couples who want the drama of the V8 for a weekend without a supercar's practicality trade-off; to corporate customers who want the badge for airport transfers and hotel arrivals. Standard Dubai destinations all handle it — airport-to-Marina, Marina-to-Palm, DIFC and Downtown valets, weekend runs to Address Sky View or the Address Hotel at the Palm. It handles Hatta and the paved Jebel Jais route comfortably. Minimum age is 24. Book three to five days ahead in season for weekend windows — the G63 is one of our tightest-availability cars during high season (November to March). Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Bentley Bentayga (similar V8, similar price band), the G63 has more visual presence and more of a driver's-car exhaust note; the Bentayga is quieter and more refined. Against the Range Rover SVR, the G63 is more distinctive and typically the more valet-recognised of the two; the SVR is quicker in a straight line and cheaper per day. Against the Rolls-Royce Cullinan, the G63 is more youthful and considerably cheaper; the Cullinan is quieter and more suited to chauffeur use. Pick the G63 when the badge, the silhouette, and the V8 exhaust are the point.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Mercedes-AMG G63 in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the G63?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'Can I take the G63 to Hatta, Jebel Jais, or Abu Dhabi?',
+        answer: 'Yes — the G63 handles Abu Dhabi, Hatta, and the paved Jebel Jais route comfortably; our insurance covers the entire UAE. The three locking differentials and low-range gearbox exist for a reason but we ask that you keep the car on paved routes. Cars cannot leave the UAE, so no drives into Oman or Saudi Arabia.',
+      },
+      {
+        question: 'How does the G63 compare to the Range Rover SVR?',
+        answer: 'The G63 has more visual presence, a more distinctive exhaust note, and is the more valet-recognised of the two. The Range Rover SVR is quicker in a straight line, has a more comfortable ride, and rents at a meaningfully lower daily rate. Pick the G63 when the badge and the silhouette are the point; pick the SVR when you want the SUV performance without the theatre.',
+      },
+      {
+        question: 'Is the G63 a good family car?',
+        answer: 'Yes — five seats fit five adults, the boot handles airport luggage for four, and the ride quality is more comfortable than the boxy silhouette suggests. Its main practical trade-off is width in tight multi-storey car parks; the 360-degree camera makes that manageable.',
+      },
+      {
+        question: 'How far ahead should I book the G63?',
+        answer: 'Three to five days ahead is comfortable for weekend windows in most of the year. In high season (November to March), book a week ahead for Thursday-to-Saturday dates — the G63 is one of our highest-demand cars year-round.',
+      },
+    ],
+  },
+  'mercedes-g63': {
+    metaTitle: 'Rent Mercedes G63 in Dubai — Hire from AED 1,429/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Mercedes G63 is our second live listing for the AMG G63 — same 4.0-litre bi-turbo V8, same 577bhp, same all-wheel drive with three locking differentials, same five-seat cabin, same daily rate from AED 1,429. This listing exists as a separate SEO surface because customers search both \"Mercedes G63\" and \"Mercedes-AMG G63\" — the car is the same either way, but the two search terms lead to two catalogue entries so both patterns find us. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nFor the full drive character, cabin details, and AMG Performance exhaust notes, the AMG G63 entry at /catalogue/g63-amg covers the same car. Everything mechanical, everything about how the car handles Dubai traffic, everything about the interior — it's the same G63 either way. The two listings run in parallel to give us two distinct search-result pages for the same physical vehicle stock.\n\nEverything else that applies to the G63 AMG applies here: same 24 minimum age, same UAE-wide insurance coverage, same three-to-five-day booking lead time in most of the year (a week ahead in high season November to March), same standard Dubai destinations from airport-to-Marina through DIFC valet arrivals and out to Hatta or Jebel Jais on paved routes. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates.\n\nIf you have arrived here directly and want the full write-up of what the G63 is like to drive, how it compares to the Bentley Bentayga and Range Rover SVR, and what the AMG Performance exhaust does in the different drive modes — the g63-amg listing covers all of that. Same car, same booking terms, same daily rate.",
+    faqs: [
+      {
+        question: 'Is the Mercedes G63 the same car as the Mercedes-AMG G63?',
+        answer: "Yes — both listings on our site are for the AMG G63 (the 4.0L bi-turbo V8, 577bhp variant). The two listings exist because customers search both spellings, and having two catalogue pages means both search patterns find us. The physical car, the daily rate, and the rental terms are identical.",
+      },
+      {
+        question: 'How much does it cost to rent a Mercedes G63 in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page — same rate as the AMG G63 listing. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the G63?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'Can I take the G63 to Hatta, Jebel Jais, or Abu Dhabi?',
+        answer: 'Yes — the G63 handles Abu Dhabi, Hatta, and the paved Jebel Jais route comfortably; our insurance covers the entire UAE. We ask that you keep the car on paved routes. Cars cannot leave the UAE, so no drives into Oman or Saudi Arabia.',
+      },
+      {
+        question: 'How far ahead should I book the G63?',
+        answer: 'Three to five days ahead is comfortable for weekend windows in most of the year. In high season (November to March), a week ahead for Thursday-to-Saturday dates — the G63 is one of our highest-demand cars year-round.',
+      },
+    ],
+  },
+  'range-rover-svr': {
+    metaTitle: 'Rent Range Rover Sport SVR in Dubai — Hire from AED 824/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Range Rover Sport SVR is a 5.0-litre supercharged V8 performance SUV — 575bhp, all-wheel drive, five seats — priced from AED 824 per day. It covers 0-100 km/h in 4.3 seconds, tops out at 283 km/h, and does all of it with the ride comfort and cabin isolation of a standard Range Rover Sport. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe SVR is what happens when Jaguar Land Rover's Special Vehicle Operations division is let loose on a Range Rover Sport. The 5.0-litre supercharged V8 is shared with the Jaguar F-Type R and the previous-generation F-Type SVR — a legitimately fast supercar engine dropped into an SUV that looks, from ten metres, like a standard Sport. The result is one of the best-kept secrets in the Dubai luxury rental market: comparable pace to a Bentayga at roughly 60% of the daily rate, with a proper V8 exhaust and a chassis that stays composed at speed.\n\nInside, the SVR gets the tighter Windsor-leather seats, the flat-bottomed steering wheel, aluminium paddles, and the driver-focused sports interior that separates it from a regular Sport. The infotainment is the current Pivi Pro system — clean, fast, wireless CarPlay and Android Auto. Air suspension in Comfort mode is remarkably comfortable for a car with SVR's chassis capability; Dynamic mode firms it up and drops the ride height a little. Standard equipment on this car includes the panoramic sunroof, 22-inch wheels, Meridian sound, and the SVR-specific quad-exit exhaust that changes voice with the drive mode.\n\nThe SVR rents most often to customers who want the performance of a Bentayga or Cullinan-adjacent SUV without paying that daily rate. Residents grabbing something spirited for a weekend; visiting business travellers who want a genuinely fast SUV that isn't obvious about it; families who want an SUV they can also enjoy driving. Standard Dubai destinations are all in scope — airport-to-Marina, Marina-to-Palm, DIFC and Downtown valets, weekend runs to Address Sky View or FIVE Jumeirah Village. It's fine on Jebel Jais and Hatta with the all-wheel drive and air suspension. Minimum age is 24. Book two to three days ahead for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Bentley Bentayga, the SVR gives up cabin quietness and outright luxury but is quicker in a straight line and roughly 40% less per day — the value pick for someone who wants performance SUV pace without stretching to full Bentley pricing. Against the Mercedes-AMG G63, the SVR is quicker, more comfortable on long drives, and lower-profile at valet; the G63 has more presence and the more distinctive silhouette. Against the standard Range Rover Sport in our fleet, this is the performance variant — the base Sport is quieter, cheaper, and more suited to daily-driver rentals; the SVR is the one to pick when you want the V8 experience.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Range Rover SVR in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the SVR?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'Can I take the SVR on longer runs to Abu Dhabi or Jebel Jais?',
+        answer: 'Yes — the SVR is very comfortable on long motorway runs and handles Jebel Jais, Hatta, and Abu Dhabi easily. Our insurance covers the entire UAE. Cars cannot leave the UAE, so no drives into Oman or Saudi Arabia.',
+      },
+      {
+        question: 'How does the SVR compare to the Bentley Bentayga?',
+        answer: "The SVR gives up cabin quietness and outright luxury to the Bentayga, but is quicker in a straight line and rents at roughly 60% of the Bentayga's daily rate. If the brief is chauffeur or ultra-refined arrivals, the Bentayga is the pick. If the brief is fast SUV performance without stretching to Bentley pricing, the SVR is one of the best-value fast SUVs in Dubai.",
+      },
+      {
+        question: 'How does the SVR compare to the standard Range Rover Sport in your fleet?',
+        answer: 'The SVR is the performance variant with the supercharged V8 (575bhp) and the SVR-specific chassis and interior. The standard Sport is quieter, more efficient, and cheaper per day — better as a straight comfortable-family-SUV rental. Pick the SVR when you specifically want the V8 experience.',
+      },
+      {
+        question: 'How far ahead should I book the SVR?',
+        answer: 'Two to three days is comfortable for most windows. In high season (November to March), book earlier for weekend Thursday-to-Saturday dates — the SVR is one of our most requested performance SUVs.',
+      },
+    ],
+  },
+  'porsche-911-gt3': {
+    metaTitle: 'Rent Porsche 911 GT3 in Dubai — Hire from AED 2,999/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Porsche 911 GT3 is a 4.0-litre naturally-aspirated flat-six sports car — 502bhp, rear-wheel drive, two seats — priced from AED 2,999 per day. It covers 0-100 km/h in 3.4 seconds, tops out at 320 km/h, and revs to 9,000 rpm — the highest of any current road-car engine. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe 992-generation GT3 is arguably the most driver-focused Porsche on sale — naturally aspirated, high-revving, mechanically responsive in a way turbocharged rivals cannot match. The rear-mounted flat-six sits behind the rear axle and drives the rear wheels only, through the PDK dual-clutch gearbox fitted to our car. Motor characteristics are the point of the whole thing: linear throttle response, a rising note past 6,000 rpm that most sports cars can only imitate, and a limiter that arrives at 9,000 rpm — not a common experience elsewhere.\n\nInside is minimal by Porsche standards: track-focused seats, the Alcantara-wrapped steering wheel, and the analogue rev-counter still sitting dead-centre in the instrument binnacle. Storage is limited (a small frunk, luggage space behind the seats). The car is not intended as a grand tourer; it is intended as a driver's tool that happens to also be usable on the road. Colour on this car is blue.\n\nThe GT3 rents to a specific customer type: the enthusiast who wants to experience one of the last high-revving naturally-aspirated sports cars, on the smooth Dubai tarmac that suits it best. Typical brief is a weekend rental with a Jebel Jais day-trip planned; occasionally a resident driver wanting a specific track day at Yas Marina or Dubai Autodrome (we can support track use on request, subject to insurance conditions). Standard Dubai destinations are all in scope, but the GT3 is at its best on the open highways to Abu Dhabi or up to Jais where you can actually use the rev range. Minimum age is 27 (the GT3 is in the supercar tier for insurance purposes). Book three to five days ahead in season for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the 911 GT3 RS in our fleet, this is the more usable of the two — the RS is a harder, louder, track-first variant with more aerodynamic downforce and less street polish; this base GT3 is easier to daily-drive while still delivering the naturally-aspirated flat-six experience. Against the Ferrari 488 Spyder, the GT3 is naturally aspirated (the 488 is turbocharged) and driver-focused rather than exotic-focused — pick the GT3 when engine character matters more than badge. Against the Ferrari 296 GTS, the GT3 is analogue-feeling and rear-drive; the 296 is hybrid, AWD-effective through the front electric motor, and quicker in almost every measured way but different in character.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Porsche 911 GT3 in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the GT3?',
+        answer: 'The minimum age is 27 for the GT3, in line with our supercar tier. Tourists need a valid International Driving Permit alongside their home-country licence.',
+      },
+      {
+        question: 'Can I take the GT3 to Jebel Jais or on track at Yas Marina?',
+        answer: 'Yes to Jebel Jais — our insurance covers the entire UAE and Jebel Jais is one of the drives the GT3 is specifically designed for. Track use at Yas Marina or Dubai Autodrome is possible but requires prior arrangement; WhatsApp us on +971 58 808 6137 before your dates and we will walk through the insurance conditions.',
+      },
+      {
+        question: 'How does the GT3 compare to the GT3 RS?',
+        answer: 'Same 4.0L naturally-aspirated flat-six, similar power (502 vs 518 bhp). The RS is the harder, louder, track-first variant with much more aerodynamic downforce and stiffer chassis; the base GT3 keeps the same engine character but is more usable day-to-day on Dubai roads. Pick the base GT3 for a road-focused weekend; pick the RS if you specifically want the track-car experience.',
+      },
+      {
+        question: 'Is the GT3 practical enough for a full-day rental?',
+        answer: 'Yes for the driving; less so for luggage. The GT3 has a small front boot and space behind the seats but no back seat and no rear boot. Plan around that if your day involves airport pick-ups or larger cases.',
+      },
+      {
+        question: 'How far ahead should I book the GT3?',
+        answer: 'Three to five days ahead is comfortable for weekend windows in most of the year. In high season (November to March), book a week ahead for weekend Thursday-to-Saturday dates.',
+      },
+    ],
+  },
+  'ferrari-488-spyder-white': {
+    metaTitle: 'Rent Ferrari 488 Spyder in Dubai — Hire from AED 2,749/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Ferrari 488 Spyder is a 3.9-litre twin-turbo V8 open-top supercar — 660bhp, rear-wheel drive, two seats, retractable folding hardtop — priced from AED 2,749 per day. It covers 0-100 km/h in 3.0 seconds, tops out at 325 km/h, and delivers the visceral V8 sound and roof-down experience that made the 488 Spider the definitive mid-engined convertible Ferrari of its era. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 4,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThis is the final year of the 488 (a 2020 car), the model that immediately preceded the current F8 Tributo. The 3.9-litre twin-turbo V8 was the first turbocharged mid-engined Ferrari V8 in decades, and remains one of the most convincing arguments for turbocharging: the throttle response is close to naturally-aspirated at low revs, and the top-end delivery still climbs hard toward the 8,000 rpm limit. Roof down (the folding hardtop cycles in 14 seconds and can be operated up to about 45 km/h), you get the direct V8 note above and behind you — quieter than a 458 Speciale but noticeably deeper.\n\nInside is unmistakably Ferrari: the yellow rev-counter dead centre, the manettino dial for drive modes (Wet, Sport, Race, CT-Off, ESC-Off), the paddle-shifters mounted on the column rather than the wheel. Storage is limited (a front boot for two small cases; space behind the seats for a bag). Colour on this car is white, which is a common Ferrari 488 specification and photographs particularly well roof-down against Dubai's evening skyline.\n\nThe 488 Spyder rents to customers who specifically want a drop-top Ferrari for a Dubai weekend. The typical brief is: a couple on an anniversary weekend, a photographer or content creator needing the shot, or an enthusiast who wants to experience the last turbocharged V8 Ferrari before the current hybrid-only line-up. Standard Dubai destinations all work — the drive down Sheikh Zayed Road, Marina to Palm, up to the Address Sky View, or the coast run out toward Al Sufouh. The car is at its best on smooth open roads at dusk. Minimum age is 27 (supercar tier). Book three to five days ahead in season for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Ferrari 296 GTS (also a folding-hardtop Ferrari V-engine in our fleet), the 488 is the analogue pick — twin-turbo V8, rear-drive, no hybrid assistance — while the 296 is a V6-plus-electric hybrid AWD car that is quicker in every measured way but different in character. Pick the 488 when you want the classic mid-engined turbocharged Ferrari experience. Against the SF90 Stradale, the 488 is simpler and more usable; the SF90 is the current AWD hybrid flagship. Against the Porsche 911 GT3, the 488 is louder and more theatrical; the GT3 is more analogue and driver-focused.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Ferrari 488 Spyder in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the 488 Spyder?',
+        answer: 'The minimum age is 27, in line with our supercar tier. Tourists need a valid International Driving Permit alongside their home-country licence.',
+      },
+      {
+        question: 'How does the 488 Spyder compare to the Ferrari 296 GTS?',
+        answer: 'Both are folding-hardtop Ferraris with V-engines behind the driver. The 488 is the analogue pick — twin-turbo V8, rear-drive, no hybrid assistance, the definitive pre-hybrid Ferrari Spider. The 296 is a V6-plus-electric hybrid with all-wheel-drive traction from the front electric motor — quicker in every measured way but a different character entirely. Pick the 488 for the classic mid-engined turbocharged Ferrari experience.',
+      },
+      {
+        question: 'Can I take the 488 Spyder on longer runs to Abu Dhabi?',
+        answer: 'Yes — Abu Dhabi and Al Ain are comfortable in the 488. Our insurance covers the entire UAE. Cars cannot leave the UAE, so no drives into Oman or Saudi Arabia. Luggage space is limited; plan for hand-luggage-only if you are travelling.',
+      },
+      {
+        question: 'How long does the roof take to open and close?',
+        answer: 'The folding hardtop cycles in about 14 seconds and can be operated up to around 45 km/h — you can put the roof up or down while moving in traffic without needing to pull over. It stows behind the rear firewall and does not intrude on luggage space.',
+      },
+      {
+        question: 'How far ahead should I book the 488 Spyder?',
+        answer: 'Three to five days ahead is comfortable for weekend windows in most of the year. In high season (November to March), book a week ahead for weekend Thursday-to-Saturday dates.',
+      },
+    ],
+  },
+  'ferrari-296-gts': {
+    metaTitle: 'Rent Ferrari 296 GTS in Dubai — Hire from AED 2,969/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Ferrari 296 GTS is a 3.0-litre twin-turbo V6 plus electric-motor hybrid supercar — 819bhp combined, hybrid all-wheel-effect (electric motor drives the rear via the transmission), two seats, retractable folding hardtop — priced from AED 2,969 per day. It covers 0-100 km/h in 2.9 seconds, tops out at 330 km/h, and can drive short distances on electric power alone. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 4,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe 296 is Ferrari's first road-going V6 supercar since the 246 Dino, and the first mid-engined production Ferrari to use a hybrid V6 — a genuine architectural shift for the brand. The 3.0-litre 120-degree twin-turbo V6 produces 654bhp on its own; the axial-flux electric motor mounted between the engine and the gearbox adds another 165bhp for a combined 819bhp. In practice this delivers pure electric drive at parking-lot speeds (silent creep out of a valet), instant torque fill when you get on the throttle, and a top-end that pulls hard past 8,000 rpm.\n\nInside is Ferrari's latest cabin architecture: touch-capacitive steering wheel controls (which take some acclimatisation), full digital cockpit, the classic manettino for drive modes plus a new eManettino for hybrid modes (eDrive electric-only, Hybrid, Performance, Qualify). Colour on this car is red. The folding hardtop cycles in 14 seconds and can be operated up to about 45 km/h — same mechanism, same convenience as the 488 Spyder, with the added trick of accompanying that with silent electric-only running.\n\nThe 296 GTS rents to two customer types. The first is the enthusiast who wants to experience the current-generation Ferrari — hybrid, V6, the direction the brand has taken. The second is the customer who wants a Ferrari that is genuinely usable for a full weekend in Dubai: eDrive lets you leave a hotel or a residential building at 6 AM without a V6 waking anyone; hybrid mode gives you comfortable long-distance cruising with the fuel economy of a mainstream car; Performance and Qualify modes deliver the full 819bhp on demand. Standard Dubai destinations are all in scope. Minimum age is 27 (supercar tier). Book a week ahead in high season for weekend windows — the 296 is one of our tightest-availability supercars during November to March. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Ferrari 488 Spyder in our fleet, the 296 is quicker, hybrid, and current-generation; the 488 is analogue, turbocharged V8, the classic pre-hybrid drop-top Ferrari. Against the Ferrari SF90 Stradale, both are hybrid Ferraris but the SF90 is the AWD flagship with three electric motors and a V8 (986bhp combined) — heavier, more expensive, and coupé-only. The 296 is lighter, roof-down-capable, and more usable day-to-day. Against the Porsche 911 GT3, the 296 is far quicker but a very different character — turbocharged and electrified rather than the GT3's naturally-aspirated flat-six.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Ferrari 296 GTS in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the 296 GTS?',
+        answer: 'The minimum age is 27, in line with our supercar tier. Tourists need a valid International Driving Permit alongside their home-country licence.',
+      },
+      {
+        question: 'Can I drive the 296 in fully electric mode?',
+        answer: "Yes. eDrive mode uses only the electric motor for the first ~25 km at speeds up to about 130 km/h. It's genuinely useful — leaving a hotel or residential building early morning without waking neighbours to a V6, or crawling through Downtown traffic in near-silence. Once the battery depletes the V6 seamlessly takes over.",
+      },
+      {
+        question: 'How does the 296 GTS compare to the Ferrari 488 Spyder?',
+        answer: 'The 296 is quicker in every measured way and represents the current direction of Ferrari (hybrid, V6). The 488 is the classic analogue Spider — turbocharged V8, rear-drive, no hybrid assistance. If you want the modern hybrid Ferrari experience, pick the 296; if you want the last-generation turbo-V8 mid-engine Ferrari drop-top, pick the 488.',
+      },
+      {
+        question: 'How does the 296 compare to the SF90 Stradale?',
+        answer: 'Both are hybrid Ferraris. The SF90 is the AWD flagship (three electric motors, V8, 986bhp combined) and coupé-only; the 296 is lighter, roof-down-capable, and more usable day-to-day at a lower daily rate. Pick the SF90 for the flagship coupé experience; pick the 296 GTS for the roof-down, more usable hybrid Ferrari.',
+      },
+      {
+        question: 'How far ahead should I book the 296 GTS?',
+        answer: 'A week ahead in high season (November to March) for weekend Thursday-to-Saturday dates — the 296 is one of our tightest-availability supercars. Three to five days is usually enough in the rest of the year.',
       },
     ],
   },
