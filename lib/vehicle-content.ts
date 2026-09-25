@@ -16,6 +16,17 @@ export interface VehicleContent {
   description: string
   /** FAQ accordion items — also emitted as FAQPage JSON-LD */
   faqs: VehicleFaq[]
+  /**
+   * ISO date (YYYY-MM-DD) when this content was last hand-edited.
+   * Feeds dateModified in Vehicle JSON-LD as a freshness signal.
+   * Optional — when absent, page falls back to Supabase vehicles.updated_at.
+   */
+  updatedAt?: string
+  /**
+   * Editorial author for FAQPage JSON-LD (E-E-A-T signal).
+   * Optional — page defaults to "LuxeClub Editorial" when absent.
+   */
+  author?: string
 }
 
 export const vehicleContentMap: Record<string, VehicleContent> = {
@@ -228,24 +239,34 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
   },
   'audi-rsq8': {
     metaTitle: 'Rent Audi RSQ8 in Dubai — Hire from AED 899/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
     description:
-      "The Audi RSQ8 is a 4.0-litre twin-turbo V8 performance SUV producing 591bhp — making it as quick as a Lamborghini Urus in most real-world driving scenarios despite the lower headline power figure, because of the chassis tuning and quattro all-wheel-drive system. 0-100 in 3.8 seconds, a top speed of 305 km/h, and a cabin that feels like a luxury saloon rather than an SUV.\n\nAudi RSQ8 car rental in Dubai is AED 899 per day. Weekly and monthly rentals are priced case by case — message us on WhatsApp (+971 58 808 6137) for a personalised quote. Insurance, delivery, and 24/7 support are included.\n\nThe RSQ8 is the performance SUV for customers who want serious presence without sacrificing practicality. It seats five adults comfortably, has a proper boot, and handles Dubai traffic with the kind of effortless torque that makes rush-hour driving feel safe rather than dramatic. At AED 899/day it's also one of the best-value performance SUVs in the whole Dubai rental market — substantially cheaper than the Urus (AED 2,499) while offering comparable on-road feel.",
+      "The Audi RSQ8 is a five-seat performance SUV built around Audi's 4.0-litre twin-turbo V8, producing 591bhp with quattro all-wheel drive and adaptive air suspension. It covers 0-100 km/h in 3.8 seconds, tops out at 305 km/h, and does it all with a cabin quiet enough for a business call at motorway speed. Priced from AED 899 per day, the RSQ8 is our first choice when someone wants Urus-level performance without either the theatre or the price tag — the two cars share a chassis, but the RSQ8 keeps its show reserved for the tarmac. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe RSQ8 does two things exceptionally well. The first is delivering pace that feels genuinely unusual for a 2.3-tonne SUV: throttle response from the twin-turbo V8 is immediate, the eight-speed transmission stays a beat ahead of what you're asking of it, and the four-wheel steering rotates the car through a corner with a lightness that reminds you Audi's RS division has been doing this for a long time. Get on it out of a slow corner on Sheikh Zayed Road and it moves in a way most sports saloons can't match — surprising even people who've driven the mechanically related Lamborghini Urus.\n\nThe second is that it isolates you completely from what it's doing. Air suspension in Comfort mode makes Dubai's speed bumps and parking-entry ramps genuinely comfortable. Active noise cancellation keeps the V8 out of the cabin unless you want to hear it. A panoramic roof, quilted Valcona leather, three-zone climate, and rear seats with real legroom for tall adults mean four people arriving in the RSQ8 will step out feeling less tired than they'd feel out of a Range Rover Sport SVR. Drive modes — Comfort, Auto, Dynamic, RS1, RS2, Efficiency — make the character selectable; RS1 and RS2 are user-programmable, and most of our regulars leave Comfort as the default and toggle to Dynamic when they get onto the E11 toward Abu Dhabi. Colour on this car is grey.\n\nThe RSQ8 rents most often to two customer types. The first is a resident driver who wants an occasional weekend break from a Range Rover — Downtown couples heading out to Al Qudra or Hatta for the day, or Business Bay families wanting something more entertaining than their daily. The second is a visiting business traveller landing at DXB who wants presence at valet without the attention a G63 draws in Downtown or DIFC. Both groups tend to book for three to seven days. Standard Dubai destinations handle it easily: airport-to-Marina, Marina-to-Palm, out to Address Sky View or FIVE Jumeirah Village for the weekend, or the drive east to Jebel Jais on a cool morning. The air suspension raises 30 mm at low speed for parking-entry ramps, which matters more in Dubai than most cities. Minimum age to rent is 23, one of the more accessible in our high-performance line-up. Book two to three days ahead in season for weekend dates. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nTwo comparisons are worth thinking about before you book. Against the Lamborghini Urus, the RSQ8 offers most of the same on-road pace and the same underlying VW Group platform, and sits in a meaningfully lower price tier — the value pick when the badge isn't the point. Against the Bentley Bentayga, the RSQ8 is quicker, sharper, and firmer; the Bentayga is quieter, more spacious in the second row, and better suited to chauffeur use, at a broadly comparable daily rate. If comparison-shopping is where you're at, our Lamborghini Urus vs Audi RSQ8 guide at /guides/lamborghini-urus-vs-audi-rsq8-dubai goes deeper.",
     faqs: [
       {
         question: 'How much does it cost to rent an Audi RSQ8 in Dubai?',
-        answer: 'The Audi RSQ8 rents for AED 899 per day. Weekly and monthly rentals are priced case by case — message us on WhatsApp (+971 58 808 6137) for a personalised quote. All rates include comprehensive insurance and 24/7 support. Delivery across Dubai is free on monthly rentals; daily and weekly rentals carry a flat AED 110 delivery + AED 110 pickup surcharge.',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the RSQ8?',
+        answer: 'The minimum age is 23 — younger than most of our high-performance rentals. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'Can I drive the RSQ8 to Jebel Jais or Abu Dhabi?',
+        answer: 'Yes. Our insurance covers the entire UAE. Jebel Jais is a three-hour round trip from Dubai Marina and one of the country\'s most enjoyable drives; Abu Dhabi and Al Ain are also fine. Cars cannot leave the UAE, so no drives into Oman or Saudi Arabia.',
       },
       {
         question: 'How does the RSQ8 compare to the Lamborghini Urus?',
-        answer: "The RSQ8 and Urus share the same Volkswagen Group platform and similar twin-turbo V8 engines. The Urus has more power on paper (641bhp vs 591bhp) but the RSQ8's chassis tuning makes it faster in many real-world scenarios. The RSQ8 also costs AED 1,400/day versus AED 3,000/day for the Urus — roughly half the price for ~90% of the performance. If you want the Lamborghini badge, rent the Urus. If you want the best-value performance SUV in Dubai, rent the RSQ8.",
+        answer: 'The RSQ8 shares its platform and V8 with the Urus. On paper the Urus makes more power (641 vs 591 bhp); on real Dubai roads the two feel closer than the numbers suggest. Where they diverge is the daily rate — the RSQ8 sits in a meaningfully lower price tier, which makes it the smart pick when you want the driving experience without paying for the Lamborghini badge. If you specifically want the badge or the more theatrical exhaust note, the Urus is the pick.',
       },
       {
-        question: 'Is the RSQ8 good for families?',
-        answer: 'Yes — the RSQ8 seats five adults comfortably with a practical boot. It combines genuine supercar-level performance (0-100 in 3.8 seconds) with everyday SUV usability. The ride quality is firmer than a Range Rover but still comfortable for long drives.',
+        question: 'Is the RSQ8 good for a family trip?',
+        answer: "Yes. Five adults fit comfortably with real rear legroom for tall passengers, the boot swallows airport luggage for four, and the air suspension keeps the ride relaxed even on Dubai's rougher connector roads. It's noticeably more entertaining to drive than a Range Rover Sport or Bentley Bentayga, without giving up much day-to-day usability.",
       },
       {
-        question: 'What is the minimum age to rent an RSQ8?',
-        answer: 'The minimum age is 23. Tourists also need a valid International Driving Permit alongside their home-country licence.',
+        question: 'How far ahead should I book the RSQ8?',
+        answer: 'For weekday rentals, same-day or next-day is usually fine. For Thursday-to-Saturday windows in high season (November to March), book two to three days ahead — the RSQ8 is one of our more popular repeats and weekend availability tightens up.',
       },
     ],
   },

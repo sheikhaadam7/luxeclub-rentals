@@ -416,6 +416,22 @@ export default async function VehicleDetailPage({ params }: PageProps) {
       }
     vehicleJsonLd.vehicleEngine = engine
   }
+  // Freshness signals for Google + AI-search citation. Prefer the editorial
+  // updatedAt on the seoContent entry (ISO YYYY-MM-DD); otherwise use the
+  // Supabase row's updated_at timestamp so every car page still emits a real
+  // dateModified.
+  const editorialDate = seoContent?.updatedAt
+  const supabaseDate = vehicle.updated_at
+    ? String(vehicle.updated_at).slice(0, 10)
+    : undefined
+  const dateModified = editorialDate ?? supabaseDate
+  if (dateModified) {
+    vehicleJsonLd.dateModified = dateModified
+    // datePublished defaults to the same date when we don't track a separate
+    // first-publish date; consistent with Google's guidance to always emit
+    // both when either is present.
+    vehicleJsonLd.datePublished = dateModified
+  }
   // Strip undefined so JSON stays clean.
   for (const k of Object.keys(vehicleJsonLd)) {
     if (vehicleJsonLd[k] === undefined) delete vehicleJsonLd[k]
@@ -425,6 +441,12 @@ export default async function VehicleDetailPage({ params }: PageProps) {
     ? {
         '@context': 'https://schema.org',
         '@type': 'FAQPage',
+        // Editorial attribution — E-E-A-T signal per Google Search guidance.
+        author: {
+          '@type': 'Organization',
+          name: seoContent.author ?? 'LuxeClub Editorial',
+        },
+        ...(dateModified ? { dateModified, datePublished: dateModified } : {}),
         mainEntity: seoContent.faqs.map((f) => ({
           '@type': 'Question',
           name: f.question,
