@@ -796,4 +796,499 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
       },
     ],
   },
+  'mclaren-765lt': {
+    metaTitle: 'Rent McLaren 765LT in Dubai — Hire from AED 5,000/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The McLaren 765LT is the track-focused Longtail evolution of the 720S — a 4.0-litre twin-turbo V8 producing 755bhp, rear-wheel drive, two seats, priced from AED 5,000 per day. It covers 0-100 km/h in 2.8 seconds, tops out at 330 km/h, and delivers the sharpest chassis and most aggressive aero of the McLaren mainstream range short of the Senna. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 4,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe 765LT (\"Longtail\") is McLaren's track-focused sharpening of the 720S. Extra 45bhp from a revised turbo setup, ~80kg lighter through carbon body panels and thinner glass, a longer active rear wing that generates significantly more downforce, and quad-exit titanium exhausts sitting where the 720S has the number plate. The engineering brief was to deliver Senna-adjacent circuit pace in a car you can still drive on the road. In Dubai terms: on Jebel Jais or a track lap at Yas Marina it is transformative; on the Sheikh Zayed Road commute it is uncompromising.\n\nInside is stripped: Alcantara everywhere, carbon-shell bucket seats, no glovebox, no door cards (fabric loops for pulls instead), a lightweight audio system that you can delete entirely if you want. The dihedral doors and the low sills mean getting in and out takes practice — this is a serious car and it lets you know. Colour on this car is McLaren Papaya orange, the brand's signature and one of the most photogenic colours in our fleet at any Dubai valet.\n\nThe 765LT rents to a specific customer: an enthusiast or collector who wants to experience one of the most focused road-legal McLarens ever built. Typical brief is a weekend track day at Yas Marina (available with prior arrangement — WhatsApp us for the insurance conditions), followed by a road drive up to Jebel Jais at sunrise for photographs. Standard Dubai destinations work but this is a car for the drive itself, not the daily commute. Minimum age is 27 (supercar tier). Book a week to two ahead in high season for weekend windows — the 765LT is one of our tightest-availability cars. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly, monthly, and track-day rates that fit your dates.\n\nAgainst the McLaren 720S Spider in our fleet, the 765LT is harder, more aero-focused, and coupé-only — less versatile for a road weekend but transformative on track. Against the Ferrari SF90 Stradale, the 765LT is analogue (no hybrid, RWD only) where the SF90 is AWD hybrid — a very different character; pick the 765LT for the pure McLaren V8 experience. Against the Lamborghini Huracán STO (the closest matched competitor), both are track-focused NA/turbo V-engined RWD coupés at a similar daily rate — the 765LT is turbocharged and more overtly aggressive in style; the STO is naturally aspirated and more classical.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a McLaren 765LT in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly, monthly, and track-day quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates, duration, and whether track use is included. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the 765LT?',
+        answer: 'The minimum age is 27, in line with our supercar tier. Tourists need a valid International Driving Permit alongside their home-country licence.',
+      },
+      {
+        question: 'Can I take the 765LT on track at Yas Marina or Dubai Autodrome?',
+        answer: 'Yes — track use is possible with prior arrangement. WhatsApp us on +971 58 808 6137 before your dates and we will walk through the insurance conditions and any additional deposit required for the session. Jebel Jais road drives are covered under standard rental.',
+      },
+      {
+        question: 'How does the 765LT compare to the McLaren 720S Spider?',
+        answer: 'The 765LT is the track-focused Longtail sharpening of the 720S platform — around 45bhp more, ~80kg lighter, much more aggressive aero, coupé-only. The 720S Spider is more versatile — quicker retracting roof for open-top runs down Sheikh Zayed Road, more usable day-to-day. Pick the 765LT if the drive is the point; pick the 720S Spider for a weekend with the roof down.',
+      },
+      {
+        question: 'How does the 765LT compare to the Lamborghini Huracán STO?',
+        answer: 'Both are track-focused RWD supercar coupés at a similar daily rate. The 765LT is turbocharged (4.0L V8) and more overtly aggressive in style; the STO is naturally aspirated (5.2L V10) with the classical Lamborghini soundtrack. Both handle Jebel Jais and track days well. Choose by the engine character and the badge you prefer.',
+      },
+      {
+        question: 'How far ahead should I book the 765LT?',
+        answer: 'A week to two ahead in high season (November to March) for weekend Thursday-to-Saturday dates or for track-day bookings. Three to five days is usually enough in the rest of the year.',
+      },
+    ],
+  },
+  'mclaren-720s-spider': {
+    metaTitle: 'Rent McLaren 720S Spider in Dubai — Hire from AED 4,399/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The McLaren 720S Spider is a 4.0-litre twin-turbo V8 open-top supercar — 710bhp, rear-wheel drive, two seats, retractable folding hardtop — priced from AED 4,399 per day. It covers 0-100 km/h in 2.9 seconds, tops out at 325 km/h roof-up (320 roof-down), and does it all with the McLaren carbon-fibre Monocage II chassis that keeps torsional rigidity uncompromised despite the folding roof. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 4,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe 720S is what McLaren spent a decade of Formula One knowledge translating into a road car. The 4.0-litre twin-turbo V8 is one of the most responsive turbocharged engines ever built — throttle mapping and boost delivery are calibrated to feel close to naturally aspirated at low revs and then pull hard toward the 8,000 rpm limit. The Spider adds the retractable folding hardtop (cycles in 11 seconds, operable up to about 50 km/h) without adding meaningful weight — McLaren's carbon Monocage architecture was designed for the convertible from day one, so the Spider doesn't need the reinforcement penalty that catches out other brands.\n\nInside is minimalist and driver-focused — floating instrument cluster, dihedral doors that lift up-and-out (making valet arrivals uniquely photogenic), and the Proactive Chassis Control adaptive damping that flips between comfortable Comfort mode and track-hard Track mode on demand. Colour on this car is McLaren Papaya orange — the signature and the colour the model looks most correct in.\n\nThe 720S Spider rents to two customer types. The first is a visiting supercar enthusiast who wants a specific McLaren experience for a Dubai weekend — the retractable roof, the dihedral doors, the pace. The second is a Downtown or Marina resident who wants a memorable convertible supercar for an anniversary weekend or a specific evening event. Standard Dubai destinations all work — the drive down Sheikh Zayed Road at dusk, Marina-to-Palm loops, up to the Address Sky View for coffee. Roof down at dusk is the point of the car. Minimum age is 27 (supercar tier). Book a week ahead in high season for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the McLaren 765LT in our fleet, the 720S Spider is more versatile — the retractable roof, less aggressive aero, more usable day-to-day — where the 765LT is track-focused and coupé-only. Against the Ferrari 488 Spyder, the 720S is quicker, sharper, and more modern; the 488 is the more classic Ferrari V8 experience. Against the Ferrari F8 Tributo Spider, the 720S is meaningfully more powerful (710 vs 710bhp) and has the McLaren-specific chassis feel — the F8 is more Ferrari in character.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a McLaren 720S Spider in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the 720S Spider?',
+        answer: 'The minimum age is 27, in line with our supercar tier. Tourists need a valid International Driving Permit alongside their home-country licence.',
+      },
+      {
+        question: 'How long does the roof take to open and close?',
+        answer: 'The folding hardtop cycles in about 11 seconds and can be operated up to around 50 km/h — you can drop or raise the roof while moving in traffic without pulling over. It stows behind the rear firewall and does not intrude on the mid-mounted engine bay or the modest luggage compartment.',
+      },
+      {
+        question: 'How does the 720S Spider compare to the McLaren 570S Spider?',
+        answer: 'The 720S is the current-generation McLaren Super Series and the 570S is the previous-generation Sports Series — 148bhp more power, more sophisticated chassis, more modern cabin, at a similar daily rate. Pick the 720S for the flagship McLaren V8 experience; pick the 570S if you specifically prefer the older-generation feel or want an alternative colour.',
+      },
+      {
+        question: 'How does the 720S Spider compare to the Ferrari 488 Spyder?',
+        answer: 'Both are turbocharged mid-engined open-top supercars, similar output, similar era. The 720S is McLaren\'s carbon-monocoque chassis (torsionally stiffer, more precise steering feel); the 488 is the more classic Ferrari V8 emotional experience — different character, similar objective performance. Pick by the badge and cabin feel you prefer.',
+      },
+      {
+        question: 'How far ahead should I book the 720S Spider?',
+        answer: 'A week ahead in high season (November to March) for weekend Thursday-to-Saturday dates. Three to five days is usually enough in the rest of the year.',
+      },
+    ],
+  },
+  'mclaren-570s-spider': {
+    metaTitle: 'Rent McLaren 570S Spider in Dubai — Hire from AED 4,399/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The McLaren 570S Spider is a 3.8-litre twin-turbo V8 open-top sports car — 562bhp, rear-wheel drive, two seats, retractable folding hardtop — priced from AED 4,399 per day. It covers 0-100 km/h in 3.2 seconds, tops out at 328 km/h, and represents the previous-generation McLaren Sports Series in convertible form — a car built to make the McLaren driving experience accessible without stepping straight up to Super Series (720S / 765LT) pricing. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 4,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe 570S was McLaren's answer to \"what does a Porsche 911 Turbo alternative look like from Woking?\" — a genuine mid-engined supercar at a price closer to a top-spec 911 than to a Ferrari. The 3.8-litre V8 is the same engine architecture that powered the earlier 12C and the 650S, and produces 562bhp — plenty for the 1,486kg dry weight. The Spider adds the retractable folding hardtop with no meaningful chassis reinforcement penalty; the carbon MonoCell II chassis was designed from the outset to accept the convertible variant.\n\nInside is unmistakably McLaren: floating instrument binnacle, dihedral doors that lift up-and-out (which draws attention at every valet), Alcantara and leather trim, and the vertical portrait-orientation infotainment screen unique to the Sports Series. Colour on this car is red — the alternative to the 720S Spider's Papaya orange in our McLaren pair. Storage is limited (front trunk plus a small shelf behind the seats), which is the trade-off for the mid-engined layout.\n\nThe 570S Spider rents to enthusiasts who want the McLaren driving experience without the 720S price tag, and to customers who specifically want the red car in our McLaren pair rather than the orange 720S. Standard brief is a weekend rental with roof-down drives at dusk down Sheikh Zayed Road, up to the Address Sky View, or a loop through Marina and out to Palm. It is not intended as a track weapon (the 720S and 765LT are the track-focused pair); the 570S is happier as a road-first supercar. Minimum age is 27 (supercar tier). Book a week ahead in high season for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the McLaren 720S Spider in our fleet, the 570S is the previous-generation car — less power, less advanced chassis electronics, but the same essential McLaren feel and a very close daily rate. Choose the 720S when you want the flagship experience; choose the 570S if you specifically prefer the red car or the earlier-generation cabin. Against the Ferrari 488 Spyder, the 570S is more precise and less overtly theatrical; the 488 has the Ferrari V8 soundtrack and badge presence. Against the Porsche 911 Turbo S, the 570S is more exotic and less usable day-to-day; the Turbo S is more of an everyday supercar.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a McLaren 570S Spider in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the 570S Spider?',
+        answer: 'The minimum age is 27, in line with our supercar tier. Tourists need a valid International Driving Permit alongside their home-country licence.',
+      },
+      {
+        question: 'How does the 570S Spider compare to the 720S Spider?',
+        answer: 'The 570S is the previous-generation McLaren Sports Series; the 720S is the current-generation Super Series. The 720S has 148bhp more, a more advanced chassis, and a more modern cabin. Both share a very similar daily rate in our fleet. Pick the 720S for the flagship experience; pick the 570S if you specifically prefer the red car in our pair or the earlier-generation cabin feel.',
+      },
+      {
+        question: 'How long does the roof take to open and close?',
+        answer: 'The folding hardtop cycles in around 15 seconds and can be operated up to about 40 km/h — you can drop or raise the roof at slow city speeds without pulling over. Storage of the stowed roof does not intrude on the mid-mounted engine bay.',
+      },
+      {
+        question: 'Is the 570S Spider comfortable enough for a full weekend rental?',
+        answer: "Yes for road use — the 570S is one of McLaren's more comfortable Sports Series cars, with a genuine Comfort mode on the adaptive suspension. Storage is limited (front trunk and a shelf behind the seats), so plan around hand-luggage-only if your weekend involves flights.",
+      },
+      {
+        question: 'How far ahead should I book the 570S Spider?',
+        answer: 'A week ahead in high season (November to March) for weekend Thursday-to-Saturday dates. Three to five days in the rest of the year.',
+      },
+    ],
+  },
+  'porsche-911-turbo-s': {
+    metaTitle: 'Rent Porsche 911 Turbo S in Dubai — Hire from AED 3,000/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Porsche 911 Turbo S is a 3.7-litre twin-turbo flat-six supercar-in-daily-driver-form — 641bhp, all-wheel drive, 2+2 seats (small rear jump seats), coupé — priced from AED 3,000 per day. It covers 0-100 km/h in 2.7 seconds, tops out at 330 km/h, and is arguably the most usable supercar in the current 911 range: as fast in a straight line as most mid-engined exotics, as comfortable on the daily commute as any 911 Carrera. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe 992-generation Turbo S is Porsche's answer to \"how fast can we make the 911 without touching the GT-car formula?\" The twin-turbo flat-six mounted in the rear puts down 641bhp through all four wheels via the PDK eight-speed dual-clutch and the active AWD system that shifts torque forward when the rear tyres start to slip. The result is a car that launches with the drama of a supercar (2.7 seconds is genuinely startling on the first attempt) but drives with the poise and comfort of a well-set-up sports saloon in normal use.\n\nInside is Porsche's current-generation 911 cabin — clean, driver-focused, with the analogue rev-counter still centre-stage in the instrument binnacle. Standard equipment on this car includes the 360-degree camera, adaptive cruise, wireless Apple CarPlay/Android Auto, PDLS+ headlights, and the Sport Chrono package with the drive-mode dial on the steering wheel. Colour on this car is black — one of the most classic Turbo S specs. The rear seats are notionally 2+2 but realistically for children or luggage rather than adults.\n\nThe 911 Turbo S rents to the customer who wants a real supercar that is also a genuine daily-usable car. Business visitors landing at DXB who want something quicker than a G63 but that they can also park at the DIFC valet without drama; Downtown couples wanting a weekend car that is fast without being visually loud (the Turbo S is understated by supercar standards); enthusiasts who specifically want the Turbo S experience — a Porsche that draws almost no attention until you touch the throttle. Standard Dubai destinations are all in scope — airport-to-Marina, Marina-to-Palm, DIFC and Downtown valets, weekend runs to Address Sky View or up to Jebel Jais. Minimum age is 27 (supercar tier). Book three to five days ahead in season for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Porsche 911 GT3 in our fleet, the Turbo S is quicker in a straight line, all-wheel drive, quieter, and much more usable day-to-day — the GT3 is the track-focused naturally-aspirated sibling for enthusiasts who want the flat-six revving to 9,000 rpm. Against the McLaren 720S Spider, the Turbo S is less exotic and less overtly a supercar but arguably better as a daily rental; the McLaren is roof-down and more dramatic. Against the Audi RSQ8 (a very different segment), the Turbo S is a two-door sports car; the RSQ8 is a five-seat SUV — both are AWD twin-turbo but they solve very different customer problems.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Porsche 911 Turbo S in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the 911 Turbo S?',
+        answer: 'The minimum age is 27, in line with our supercar tier. Tourists need a valid International Driving Permit alongside their home-country licence.',
+      },
+      {
+        question: 'Can the Turbo S seat four adults?',
+        answer: "The Turbo S has 2+2 seating — the front seats are full-sized and comfortable; the rear seats are jump seats intended for children, short trips, or extra luggage. Two adults will not sit in the back for any distance without folding themselves in.",
+      },
+      {
+        question: 'How does the Turbo S compare to the 911 GT3?',
+        answer: "The Turbo S is quicker in a straight line, all-wheel drive, and much more usable day-to-day — it's the supercar-that-can-be-a-daily. The GT3 is the track-focused naturally-aspirated sibling: rear-wheel drive, 9,000 rpm redline, more engaging on a scenic Jebel Jais drive but less usable for commuting or airport pickups. Pick the Turbo S for pace-with-comfort; pick the GT3 for the driver's-tool experience.",
+      },
+      {
+        question: 'Is the Turbo S good for a business trip?',
+        answer: 'Yes — the Turbo S is one of the more discreet cars at this speed level. It looks like a well-specified 911 to most people at valet; only enthusiasts recognise the specific Turbo S details. The cabin quietness and adaptive suspension make DXB-to-Downtown transfers genuinely comfortable, and it draws less attention than a Lamborghini or a Ferrari.',
+      },
+      {
+        question: 'How far ahead should I book the 911 Turbo S?',
+        answer: 'Three to five days ahead is comfortable for weekend windows in most of the year. In high season (November to March), book a week ahead for Thursday-to-Saturday dates.',
+      },
+    ],
+  },
+  'maserati-mc20': {
+    metaTitle: 'Rent Maserati MC20 in Dubai — Hire from AED 2,999/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Maserati MC20 is a 3.0-litre twin-turbo V6 mid-engined supercar — 621bhp, rear-wheel drive, two seats, priced from AED 2,999 per day. It covers 0-100 km/h in 2.9 seconds, tops out at 325 km/h, and marks Maserati's return to genuine supercar production after nearly two decades away. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe MC20 is arguably the most technically interesting new supercar in our fleet. The 3.0-litre \"Nettuno\" V6 is Maserati's first entirely in-house designed engine in decades — a 90-degree twin-turbo unit with pre-chamber combustion technology derived from Formula One (borrowed from the pre-chamber ignition systems the F1 turbo era developed). The result is a genuinely different engine character: 621bhp from just 3.0 litres, a redline at 8,000 rpm, and throttle response that reads closer to naturally-aspirated than to most modern twin-turbos.\n\nInside is minimalist and driver-focused — carbon-fibre monocoque chassis (rare at this price point; usually the preserve of McLarens and top-end Ferraris), butterfly doors that lift up-and-forward, and a cabin that reads distinctly Italian rather than trying to copy the German or English competition. Colour on this car is blue (typically Blu Infinito, Maserati's flagship blue). Storage is limited (small front trunk plus a shelf behind the seats).\n\nThe MC20 rents to a specific customer type: someone who wants a genuinely different supercar for a Dubai weekend. Not the Ferrari most people book, not the Lamborghini everyone has driven — a rare Italian mid-engined V6 with an F1-derived engine and butterfly doors. Content creators particularly like it for the same reason. Standard Dubai destinations work — Sheikh Zayed Road down to Abu Dhabi, Marina to Palm, up to Jebel Jais to actually use the powertrain. Minimum age is 27 (supercar tier). Book a week ahead in high season for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Ferrari 296 GTS (the other current-generation V6 supercar in our fleet), the MC20 is naturally aspirated on the throttle response (the 296 is a hybrid with electric motor torque fill), coupé-only, and a rarer sight in Dubai. The 296 is quicker and offers eDrive electric-only running. Against the McLaren 720S Spider, the MC20 is less overtly exotic and more Italian in character; the McLaren is faster and roof-down capable. Pick the MC20 when you want a supercar that is not the obvious choice.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Maserati MC20 in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the MC20?',
+        answer: 'The minimum age is 27, in line with our supercar tier. Tourists need a valid International Driving Permit alongside their home-country licence.',
+      },
+      {
+        question: "What is Maserati's Nettuno engine?",
+        answer: "Nettuno is Maserati's first entirely in-house designed engine in decades — a 3.0-litre twin-turbo V6 with pre-chamber combustion technology derived from Formula One. It produces 621bhp with a redline at 8,000 rpm, and delivers throttle response that reads closer to a naturally-aspirated engine than a typical twin-turbo. It is the technical showpiece of the car.",
+      },
+      {
+        question: 'How does the MC20 compare to the Ferrari 296 GTS?',
+        answer: 'Both are current-generation V6 supercars from Italian marques. The MC20 is coupé-only, twin-turbo without hybrid assistance, rear-drive, and a much rarer sight in Dubai — a genuinely different supercar. The 296 GTS has a hybrid drivetrain with electric torque fill, is quicker in every measured way, and has a folding hardtop. Pick the MC20 when you want the less-obvious Italian supercar; pick the 296 when you want the current Ferrari with the roof-down option.',
+      },
+      {
+        question: 'Is the MC20 rare in Dubai?',
+        answer: 'Yes — MC20 populations in Dubai are still counted in the low double digits; it is a much less common sight at valet than a Ferrari or Lamborghini. This is part of the appeal for customers who specifically want a car that stands out.',
+      },
+      {
+        question: 'How far ahead should I book the MC20?',
+        answer: 'A week ahead in high season (November to March) for weekend Thursday-to-Saturday dates — the MC20 is one of our rarer supercars and availability is limited. Three to five days is usually enough in the rest of the year.',
+      },
+    ],
+  },
+  'ferrari-f8-tributo-spyder-yellow': {
+    metaTitle: 'Rent Ferrari F8 Tributo Spider in Dubai — Hire from AED 2,970/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Ferrari F8 Tributo Spider is a 3.9-litre twin-turbo V8 mid-engined open-top supercar — 710bhp, rear-wheel drive, two seats, retractable folding hardtop — priced from AED 2,970 per day. It covers 0-100 km/h in 2.9 seconds, tops out at 340 km/h, and represents Ferrari's final flowering of the 488 platform before the 296 GTS took over as the current mid-engined open-top Ferrari. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 4,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe F8 Tributo Spider is Ferrari's tribute (hence the name — Tributo) to the last-generation naturally-aspirated V8 mid-engined Ferraris before turbocharging became the mainstream approach. The 3.9-litre twin-turbo V8 is a lightly revised version of the 488 Pista's engine, producing 710bhp — 40 more than the 488 Spider it replaced. The chassis and aero were sharpened at the same time: revised front bumper for more downforce, S-Duct integrated into the nose for cleaner airflow, and the same active rear diffuser that made the 488 Pista so effective at high speed.\n\nInside the cabin is unmistakably Ferrari — yellow rev counter centre-stage in the driver's instrument binnacle, the manettino for drive modes on the steering wheel (Wet, Sport, Race, CT-Off, ESC-Off), paddle-shifters mounted on the column not the wheel. Colour on this car is Giallo Modena — Ferrari's signature yellow, which is arguably the definitive Ferrari colour and one of the most recognisable at any Dubai valet. Storage is limited (small front trunk and a small shelf behind the seats).\n\nThe F8 Tributo Spider rents to customers who specifically want the last-generation turbocharged V8 open-top Ferrari — before the current 296 GTS moved Ferrari to V6 hybrid. Typical brief is a couple's weekend, a photography session where the yellow drop-top is the point, or an enthusiast who wants a mid-engined turbo V8 Ferrari experience while these cars are still current-fleet. Standard Dubai destinations all work at their best roof-down at dusk — Sheikh Zayed Road, Marina to Palm, up to the Address Sky View. Minimum age is 27 (supercar tier). Book a week ahead in high season for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Ferrari 488 Spyder in our fleet, the F8 is the direct successor — 40bhp more, sharper aero, more modern cabin electronics; the 488 is the earlier car and is finished in white rather than yellow. Against the Ferrari 296 GTS, the F8 is the analogue turbocharged predecessor (no hybrid); the 296 is the current V6-plus-electric hybrid at a slightly higher daily rate. Against the McLaren 720S Spider, the F8 is more Ferrari (louder, more theatrical, the yellow colour); the McLaren is more precise and more overtly high-tech.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Ferrari F8 Tributo Spider in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the F8 Tributo Spider?',
+        answer: 'The minimum age is 27, in line with our supercar tier. Tourists need a valid International Driving Permit alongside their home-country licence.',
+      },
+      {
+        question: 'How does the F8 Tributo Spider compare to the Ferrari 488 Spyder?',
+        answer: 'The F8 is the direct successor to the 488 — same fundamental platform, but 40bhp more (710 vs 670), sharper aerodynamics with the S-Duct nose, and more modern cabin electronics. The 488 in our fleet is finished in white; the F8 is finished in Giallo Modena yellow. Pick by the specific colour and generation you prefer — both deliver the same essential turbocharged mid-engined V8 open-top Ferrari experience.',
+      },
+      {
+        question: 'How does the F8 compare to the current Ferrari 296 GTS?',
+        answer: 'The F8 is the last-generation Ferrari V8 (twin-turbo, no hybrid); the 296 GTS is the current-generation V6 plus electric motor hybrid. The 296 is quicker in every measured way, offers electric-only driving via eDrive, and rents at a slightly higher daily rate. Pick the F8 when you want the pre-hybrid Ferrari V8 turbocharged experience; pick the 296 when you want the current-generation hybrid Ferrari.',
+      },
+      {
+        question: 'How long does the roof take to open and close?',
+        answer: 'The folding hardtop cycles in about 14 seconds and can be operated up to around 45 km/h — you can put the roof up or down at slow city speeds without needing to pull over.',
+      },
+      {
+        question: 'How far ahead should I book the F8 Tributo Spider?',
+        answer: 'A week ahead in high season (November to March) for weekend Thursday-to-Saturday dates. Three to five days is usually enough in the rest of the year.',
+      },
+    ],
+  },
+  'lamborghini-huracan-sto': {
+    metaTitle: 'Rent Lamborghini Huracán STO in Dubai — Hire from AED 2,749/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Lamborghini Huracán STO (Super Trofeo Omologata) is a 5.2-litre naturally-aspirated V10 track-focused supercar — 631bhp, rear-wheel drive (unusual for a modern Huracán), two seats, coupé — priced from AED 2,749 per day. It covers 0-100 km/h in 3.0 seconds, tops out at 310 km/h, and delivers the sharpest, most track-honed Huracán ever built for road use. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 4,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe STO is Lamborghini's homologation of their Super Trofeo racing car for road use — the letters stand for \"Super Trofeo Omologata,\" which means \"Super Trofeo approved [for road use].\" What sets it apart from the standard Huracán EVO is the deliberate removal of comfort features and the addition of race-derived hardware: rear-wheel drive only (the standard Huracán EVO is AWD), race-derived carbon-fibre body panels making up about 75% of the bodywork, a massive rear wing generating serious downforce, and the signature louvred rear engine cover ventilating the 5.2-litre naturally-aspirated V10.\n\nThat V10 is the point of the whole car. It revs to 8,500 rpm, produces its power at the top of the range, and delivers the naturally-aspirated Italian supercar soundtrack that turbocharged rivals cannot match — no whoosh, no boost delay, just direct throttle-to-noise response as the revs climb. Inside is stripped Lamborghini: Alcantara everywhere, thin race-shell seats, a lightweight audio setup, and the classic centre-console flip cover for the Start Engine button. Colour on this car is Verde Scandal green — one of the STO's signature specifications and immediately recognisable at any Dubai valet.\n\nThe STO rents to a specific customer: an enthusiast or collector who wants to experience a naturally-aspirated V10 rear-drive supercar on Dubai tarmac before this configuration disappears from Lamborghini's line-up entirely (the current Temerario is a hybrid V8; the STO is one of the last road-legal Huracáns). Typical brief is a weekend rental with a Jebel Jais day trip planned, or a track day at Yas Marina (available with prior arrangement — WhatsApp us for the insurance conditions). Standard Dubai destinations work but this is intended as a driver's tool rather than a daily. Minimum age is 27 (supercar tier). Book a week ahead in high season for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly, monthly, and track-day rates that fit your dates.\n\nAgainst the Lamborghini Huracán EVO Coupe in our fleet, the STO is the harder, track-focused, rear-drive version — meaningfully sharper on a mountain road or a track lap but noticeably firmer and louder on a commute. The EVO is the more usable all-wheel-drive Huracán. Against the McLaren 765LT, both are track-focused RWD supercar coupés at a similar daily rate — the STO is naturally aspirated V10 with the classical Lamborghini soundtrack; the 765LT is twin-turbo V8 and more overtly aggressive in style. Against the Porsche 911 GT3 RS, the STO is exotic where the GT3 RS is precise — same road-legal-track-car intent, very different execution.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Lamborghini Huracán STO in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly, monthly, and track-day quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates, duration, and whether track use is included. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the Huracán STO?',
+        answer: 'The minimum age is 27, in line with our supercar tier. Tourists need a valid International Driving Permit alongside their home-country licence.',
+      },
+      {
+        question: 'Can I take the STO on track at Yas Marina or Dubai Autodrome?',
+        answer: 'Yes — track use is possible with prior arrangement. WhatsApp us on +971 58 808 6137 before your dates and we will walk through the insurance conditions and any additional deposit required. Jebel Jais road drives are covered under standard rental.',
+      },
+      {
+        question: 'How does the STO compare to the Huracán EVO Coupe?',
+        answer: 'The STO is the harder, track-focused, rear-wheel-drive version of the Huracán — meaningfully sharper on Jebel Jais or a track lap, but noticeably firmer and louder day-to-day. The EVO Coupe is the more usable all-wheel-drive variant, better as a road weekender. Pick the STO for the track-day or serious mountain drive; pick the EVO for the weekend supercar experience without the compromise.',
+      },
+      {
+        question: 'How does the STO compare to the McLaren 765LT?',
+        answer: 'Both are track-focused rear-wheel-drive supercar coupés at similar daily rates. The STO is naturally aspirated V10 with the classical Lamborghini soundtrack; the 765LT is twin-turbo V8 and more overtly aggressive in styling. Both handle Jebel Jais and track days well. Choose by engine character and the badge you prefer.',
+      },
+      {
+        question: 'How far ahead should I book the Huracán STO?',
+        answer: 'A week to two ahead in high season (November to March) for weekend Thursday-to-Saturday dates or track-day bookings — the STO is one of our tighter-availability track-focused cars.',
+      },
+    ],
+  },
+  'ferrari-portofino': {
+    metaTitle: 'Rent Ferrari Portofino in Dubai — Hire from AED 2,420/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Ferrari Portofino is a 3.9-litre twin-turbo V8 grand tourer with a retractable folding hardtop — 592bhp, rear-wheel drive, 2+2 seats — priced from AED 2,420 per day. It covers 0-100 km/h in 3.5 seconds, tops out at 320 km/h, and is Ferrari's entry-point to the current range: the drop-top GT for customers who want the badge and the experience without stepping straight into the 296 or SF90 mid-engined pricing. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe Portofino is Ferrari's grand-touring convertible — a front-mid-engined 2+2 with a folding hardtop, direct successor to the California T. The 3.9-litre twin-turbo V8 is a variant of the same engine family that powers the F8 Tributo, tuned here for smoother mid-range delivery and comfortable long-distance use rather than the F8's peak-focused calibration. The result is a Ferrari that is genuinely enjoyable to drive at legal Dubai speeds without needing to explore the top of the rev range to feel special.\n\nInside is Ferrari's grand-tourer cabin — proper 2+2 seating (rear seats are small but usable for shorter trips or extra cargo), a more digital and less button-heavy dashboard than the F8, and the retractable hardtop cycles in about 14 seconds at up to about 40 km/h. Colour on this car is white — the classic and most requested Portofino specification. Boot space is genuinely useful for a Ferrari (272 litres with the roof up, less with the roof stowed), which makes weekend luggage manageable.\n\nThe Portofino rents to customers who specifically want a Ferrari that is also a comfortable long-distance grand tourer. Business visitors on longer stays who want a proper Ferrari for the whole trip rather than a single weekend; couples on anniversary weekends who want the drop-top and the badge but don't need mid-engined supercar pace; residents who want a Ferrari weekend rental that isn't punishing on the return commute. Standard Dubai destinations all work, and the Portofino is at its best on longer runs — DXB airport to Marina, Marina to Palm, Dubai to Abu Dhabi. Minimum age is 27 (supercar tier). Book three to five days ahead in season. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Ferrari 488 Spyder or Ferrari F8 Tributo Spider (both mid-engined Ferrari drop-tops in our fleet), the Portofino is the grand-touring alternative — front-mid-engined, 2+2 seating, more comfortable long-distance, more usable boot, less overtly a supercar. Pick the Portofino when comfort and versatility matter more than mid-engined drama. Against the Ferrari Roma Spyder (a similar 2+2 GT format in our fleet), the two are close cousins — see the Roma Spyder listing for the direct comparison. Against the Bentley Continental GTC, the Portofino is quicker and more Italian; the Bentley is quieter and more traditionally luxurious at a similar price.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Ferrari Portofino in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the Portofino?',
+        answer: 'The minimum age is 27, in line with our supercar tier. Tourists need a valid International Driving Permit alongside their home-country licence.',
+      },
+      {
+        question: 'Is the Portofino a good choice for a longer trip?',
+        answer: 'Yes — the Portofino is Ferrari\'s grand tourer, designed for longer distances. The 2+2 seating means the rear seats can carry short-trip passengers or extra luggage; the folding hardtop stows tidily; boot space is genuinely usable (272 litres with the roof up). It handles Abu Dhabi and Al Ain runs comfortably.',
+      },
+      {
+        question: 'How does the Portofino compare to the Ferrari 488 Spyder or F8 Tributo Spider?',
+        answer: "The Portofino is Ferrari's grand-touring drop-top; the 488 and F8 are mid-engined supercars with folding hardtops. The Portofino is more comfortable long-distance, has 2+2 seating and a real boot, and doesn't feel like a supercar to drive at normal Dubai speeds. The mid-engined pair are more overtly supercar-focused, two-seat only, and less usable for a longer trip. Pick the Portofino when comfort matters as much as the badge.",
+      },
+      {
+        question: 'How does the Portofino compare to the Bentley Continental GTC?',
+        answer: 'Both are open-top V8 grand tourers at similar daily rates. The Portofino is quicker, sharper, and unmistakably Italian; the Bentley is quieter, more traditionally luxurious, and heavier in feel. Pick by the badge and the character you prefer — different flavours of the same broad customer brief.',
+      },
+      {
+        question: 'How far ahead should I book the Portofino?',
+        answer: 'Three to five days ahead is comfortable for weekend windows in most of the year. In high season (November to March), a week ahead for weekend Thursday-to-Saturday dates.',
+      },
+    ],
+  },
+  'ferrari-roma-spyder': {
+    metaTitle: 'Rent Ferrari Roma Spyder in Dubai — Hire from AED 2,419/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Ferrari Roma Spyder is a 3.9-litre twin-turbo V8 front-mid-engined grand tourer — 612bhp, rear-wheel drive, 2+2 seats, folding soft-top convertible — priced from AED 2,419 per day. It covers 0-100 km/h in 3.4 seconds, tops out at 320 km/h, and represents Ferrari's most contemporary GT design language yet: minimalist, understated, and deliberately different from the aggressive supercar aesthetic of the mid-engined range. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 4,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe Roma is Ferrari's answer to \"what does a modern Ferrari GT look like when we stop trying to look like a race car?\" The 3.9-litre twin-turbo V8 is a variant of the same engine used in the F8 Tributo and Portofino, retuned here for smoother mid-range delivery. What makes the Roma distinct is the shape and the interior — the exterior deliberately borrows from 1960s Ferrari GT proportions (long bonnet, short deck, simple lines), and the cabin is Ferrari's cleanest and most digital, closer in feel to a modern Aston Martin than to a traditional Ferrari cockpit.\n\nThe Spyder variant swaps the Roma coupé's fixed roof for a fabric folding soft-top — a departure from Ferrari's usual folding hardtop preference (see the Portofino), chosen here for weight distribution, styling, and the more classical GT feel. The roof cycles in 13.5 seconds and can be operated up to about 60 km/h. Colour on this car is red (Rosso Corsa) — the definitive Ferrari colour and the specification the Roma looks most correct in. Rear seats are 2+2, usable for shorter passengers or extra cargo.\n\nThe Roma Spyder rents to a specific customer type: someone who wants a genuinely modern Ferrari with the drop-top and the 2+2 practicality of a proper GT, but doesn't want the more overtly supercar aesthetic of a mid-engined 296 or 488. Anniversary weekends, longer-stay business visitors, couples who want the Ferrari experience for a Dubai loop at dusk. Standard Dubai destinations all work — Sheikh Zayed Road down to Abu Dhabi is where the Roma Spyder is at its best. Minimum age is 27 (supercar tier). Book three to five days ahead in season for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Ferrari Portofino in our fleet, the Roma Spyder is the more modern of the pair — cleaner exterior lines, more digital cabin, soft-top vs the Portofino's folding hardtop. Both are 2+2 GTs at very similar daily rates; pick the Roma for the current-generation aesthetic, pick the Portofino for the hardtop practicality. Against the Bentley Continental GTC, the Roma is quicker, sharper, and unmistakably Italian; the Bentley is quieter and more traditionally luxurious. Against the mid-engined Ferrari 488 Spyder, the Roma is the more usable long-distance car — 2+2 seating, front-mid-engine layout, more comfortable ride — where the 488 is more overtly supercar-focused.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Ferrari Roma Spyder in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the Roma Spyder?',
+        answer: 'The minimum age is 27, in line with our supercar tier. Tourists need a valid International Driving Permit alongside their home-country licence.',
+      },
+      {
+        question: 'How does the Roma Spyder compare to the Ferrari Portofino?',
+        answer: 'Both are 2+2 front-mid-engined Ferrari V8 grand tourers at very similar daily rates. The Roma is the more modern design — cleaner exterior lines, more digital cabin, and a folding soft-top rather than the Portofino\'s folding hardtop. Pick the Roma for the current-generation aesthetic; pick the Portofino for the hardtop and slightly greater cabin quietness with the roof up.',
+      },
+      {
+        question: 'Is the Roma Spyder usable for a longer trip?',
+        answer: 'Yes — the Roma is a proper grand tourer. The 2+2 seating carries shorter passengers or extra luggage, the boot is genuinely usable, and the ride quality is comfortable enough for the Abu Dhabi or Al Ain run. Roof-down at dusk down Sheikh Zayed Road is where the car is at its best.',
+      },
+      {
+        question: 'How long does the soft-top take to open and close?',
+        answer: 'The fabric folding soft-top cycles in about 13.5 seconds and can be operated up to around 60 km/h — you can drop or raise the roof at slow city speeds without pulling over.',
+      },
+      {
+        question: 'How far ahead should I book the Roma Spyder?',
+        answer: 'Three to five days ahead is comfortable for weekend windows in most of the year. In high season (November to March), book a week ahead for Thursday-to-Saturday dates.',
+      },
+    ],
+  },
+  'lamborghini-huracan-evo-coupe': {
+    metaTitle: 'Rent Lamborghini Huracán EVO Coupe in Dubai — Hire from AED 2,391/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Lamborghini Huracán EVO Coupe is a 5.2-litre naturally-aspirated V10 supercar — 631bhp, all-wheel drive, two seats — priced from AED 2,391 per day. It covers 0-100 km/h in 2.9 seconds, tops out at 325 km/h, and delivers the naturally-aspirated V10 soundtrack that has become one of the most distinctive engine notes on the road. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 4,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe Huracán EVO is the mid-life update of the Huracán — the more livable, all-wheel-drive supercar in the range (the STO in our fleet is the harder rear-wheel-drive track-focused variant). What makes the EVO specifically worth choosing is the combination of Lamborghini's most usable supercar drivetrain (Quattro AWD, seven-speed dual-clutch) with the naturally-aspirated 5.2-litre V10 that revs to 8,500 rpm and delivers the classical Italian supercar throttle response — direct, immediate, unassisted by turbochargers.\n\nInside is Lamborghini's cockpit at its most theatrical: the flip-cover Start Engine button, hexagon-motif screens and vents, flat-bottom steering wheel with drive-mode selector, and the ANIMA controller with STRADA (road), SPORT (weekend), and CORSA (track) modes plus the newer AWD-torque-vector adjustments EVO added on top of the standard Huracán. Colour on this car is orange (Arancio Borealis is common) — one of the more photogenic Lamborghini colours. Coupé-only in this listing — no folding roof.\n\nThe EVO Coupe rents to customers who want the Lamborghini Huracán experience without the STO's track-focused compromises. Weekend rentals; anniversary trips; enthusiasts who specifically want the naturally-aspirated V10 experience before Lamborghini's line-up transitions fully to hybrid V8 (the Temerario has replaced the Huracán at the top of the brand's mid-engined range). Standard Dubai destinations work — Sheikh Zayed Road, Marina to Palm, up to Jebel Jais where the V10 makes the most sense to use. Minimum age is 27 (supercar tier). Book a week ahead in high season for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Lamborghini Huracán STO in our fleet, the EVO is the more usable of the pair — all-wheel drive, less aggressive aero, more comfortable ride. The STO is track-focused and rear-drive only. Pick the EVO for a weekend supercar without compromises; pick the STO for a track day or a serious mountain drive. Against the Ferrari 488 Spyder, the EVO is naturally aspirated and coupé-only; the 488 is turbocharged and roof-down capable — very different character. Against the Audi R8 V10 Spyder (which shares the same V10 engine), the Huracán is more Italian in cabin feel and exterior drama; the R8 is more restrained and drop-top capable at a very similar daily rate.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Lamborghini Huracán EVO Coupe in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the Huracán EVO?',
+        answer: 'The minimum age is 27, in line with our supercar tier. Tourists need a valid International Driving Permit alongside their home-country licence.',
+      },
+      {
+        question: 'How does the Huracán EVO Coupe compare to the STO?',
+        answer: 'The EVO is the more usable, all-wheel-drive Huracán — better as a road weekender, less aggressive aero, more comfortable ride. The STO is the track-focused rear-wheel-drive variant with race-derived carbon body panels and a much more aggressive setup. Pick the EVO for a supercar weekend; pick the STO for a track day or a serious mountain drive.',
+      },
+      {
+        question: 'How does the Huracán compare to the Audi R8 V10 Spyder?',
+        answer: 'The two cars share the same 5.2L naturally-aspirated V10 engine and platform architecture — Audi and Lamborghini are part of the same VW Group. The Huracán is more overtly Italian in exterior styling and cabin drama; the R8 is more restrained and available roof-down (Spyder body). Both rent at very similar daily rates. Pick by the badge and the exterior look you prefer; pick the R8 specifically if you want the drop-top.',
+      },
+      {
+        question: 'Can I take the Huracán on Jebel Jais or on a track day?',
+        answer: 'Yes to Jebel Jais — the drive is exactly what the V10 was made for. Track use at Yas Marina or Dubai Autodrome is possible with prior arrangement; WhatsApp us on +971 58 808 6137 for the insurance conditions.',
+      },
+      {
+        question: 'How far ahead should I book the Huracán EVO?',
+        answer: 'A week ahead in high season (November to March) for weekend Thursday-to-Saturday dates. Three to five days is usually enough in the rest of the year.',
+      },
+    ],
+  },
+  'bentley-continental-gtc': {
+    metaTitle: 'Rent Bentley Continental GTC in Dubai — Hire from AED 2,200/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Bentley Continental GTC is a 4.0-litre twin-turbo V8 open-top grand tourer — 542bhp, all-wheel drive, 2+2 seats, folding fabric roof — priced from AED 2,200 per day. It covers 0-100 km/h in 4.0 seconds, tops out at 318 km/h, and does it all with the cabin quietness roof-up of a fully insulated luxury saloon. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe Continental GTC is Bentley's convertible grand tourer, and one of the definitive cars of the modern luxury drop-top segment. The 4.0-litre twin-turbo V8 is the same architecture used in the Bentayga and shared with the Audi RSQ8 and Lamborghini Urus — Bentley's calibration trades some of the Lambo's edge for smoothness and long-distance comfort. The result is a car that arrives at a Dubai valet with the roof down looking exactly correct, and that also handles the two-hour Abu Dhabi run without asking the driver or passenger to raise their voice.\n\nInside is the full Bentley cabin experience: quilted diamond-stitched leather, real wood veneer (piano-black or open-pore, depending on trim), the rotating three-face display (touchscreen, wooden veneer, or three analogue dials — Bentley's signature party trick) on the centre console, and knurled aluminium switchgear that feels distinctly more expensive than pure touch controls. The fabric folding roof cycles in about 19 seconds and can be operated up to around 50 km/h. Colour on this car is black. The 2+2 rear seating is more usable than most drop-top rivals — genuine short-trip space for two adult passengers rather than the token perches fitted to many convertibles.\n\nThe Continental GTC rents to customers who want the roof-down experience of a modern V8 GT with Bentley cabin refinement and the badge presence at every hotel valet. Anniversary weekends; longer-stay business visitors who want a distinctive car; wedding and chauffeur-adjacent bookings where the roof-down photograph is part of the brief. Standard Dubai destinations all work — the car is at its best on longer runs where the cabin isolation genuinely shines: Sheikh Zayed Road, Abu Dhabi Corniche, Palm Jumeirah. Minimum age is 24. Book three to five days ahead in season for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Bentley Continental GT in our fleet, this is the drop-top version — same drivetrain, same interior, folding fabric roof instead of the coupé's fixed roof. Choose the GTC for roof-down; choose the GT for slightly greater cabin quietness at motorway speeds and a more classical GT silhouette. Against the Ferrari Portofino or Roma Spyder, the Continental GTC is more traditional luxury and quieter, with the AWD advantage; the Ferraris are quicker and more overtly sporting. Against the Bentley Bentayga, the GTC is the two-door drop-top GT; the Bentayga is the SUV.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Bentley Continental GTC in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the Continental GTC?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'How does the Continental GTC compare to the coupé Continental GT?',
+        answer: 'Same drivetrain, same interior, same rental terms. The GTC has the folding fabric roof; the GT has the fixed coupé roof. Pick the GTC for roof-down driving; pick the GT for slightly greater cabin quietness at motorway speeds and the more classical GT coupé silhouette.',
+      },
+      {
+        question: 'How does the Continental GTC compare to the Ferrari Portofino?',
+        answer: 'Both are 2+2 open-top V8 grand tourers at similar daily rates. The Bentley is quieter, more traditionally luxurious, and all-wheel drive; the Ferrari is quicker, sharper, and unmistakably Italian in cabin feel. Pick by the badge and character you prefer — different flavours of the same broad customer brief.',
+      },
+      {
+        question: 'Is chauffeur service available for the Continental GTC?',
+        answer: 'Yes — Continental GTC chauffeur bookings are common for weddings, corporate events, and airport transfers where roof-down photographs are part of the brief. WhatsApp us on +971 58 808 6137 with your dates and the hours involved; chauffeur pricing is quoted per day.',
+      },
+      {
+        question: 'How far ahead should I book the Continental GTC?',
+        answer: 'Three to five days ahead is comfortable for weekend windows in most of the year. In high season (November to March), a week ahead for Thursday-to-Saturday dates or for chauffeur-with-driver bookings.',
+      },
+    ],
+  },
+  'bentley-continental-gt': {
+    metaTitle: 'Rent Bentley Continental GT in Dubai — Hire from AED 2,199/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Bentley Continental GT is a 4.0-litre twin-turbo V8 luxury grand tourer coupé — 542bhp, all-wheel drive, 2+2 seats — priced from AED 2,199 per day. It covers 0-100 km/h in 4.0 seconds, tops out at 318 km/h, and is one of the definitive modern GT coupés — comfortable enough to cross a continent, quick enough to make short work of the Sheikh Zayed Road run to Abu Dhabi. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe Continental GT is Bentley's grand-touring coupé — a car built for long distances at high pace without ever asking the driver or passengers to raise their voice. The 4.0-litre twin-turbo V8 is the same architecture across the modern Bentley range (also fitted to the Bentayga and shared with Audi and Lamborghini), tuned here for smoothness and torque delivery. The result is a car that never feels stressed at any legal speed and has the reserves to cover the long Dubai motorway distances without either the driver or passengers noticing the effort.\n\nInside is the full Bentley cabin: quilted diamond-stitched Nappa leather, real wood veneer, the rotating three-face display (touchscreen or wooden veneer or three analogue dials — Bentley's signature centre-console flourish), and knurled aluminium switchgear that reads as more expensive than any pure-touch alternative. Colour on this car is white — one of the most classical Continental GT specifications. The 2+2 rear seats are more usable than most GT coupés — genuine short-trip space for two adult passengers.\n\nThe Continental GT rents to customers who specifically want the coupé rather than the convertible, or who want the slightly quieter cabin at motorway speeds. Longer-stay business visitors; couples who want a proper GT for the entire Dubai stay; enthusiasts who prefer the coupé silhouette to the drop-top. Standard Dubai destinations all work at their best on longer runs — Sheikh Zayed Road, Abu Dhabi, the drive out to Al Ain. Minimum age is 24. Book three to five days ahead in season for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Bentley Continental GTC in our fleet, the GT is the fixed-roof coupé — same drivetrain, same interior, quieter at motorway speeds, slightly more classical silhouette. Choose the GT for the coupé; choose the GTC for roof-down driving. Against the Ferrari Roma or Portofino, the Bentley is quieter, heavier in feel, more traditionally luxurious; the Ferraris are quicker and more overtly sporting at similar daily rates. Against the Aston Martin Vantage in our fleet, the Continental GT is the larger, more luxurious grand tourer; the Vantage is a sharper, smaller, more driver-focused sports coupé.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Bentley Continental GT in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the Continental GT?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'How does the coupé Continental GT compare to the GTC convertible?',
+        answer: 'Same drivetrain, same interior, same rental terms. The GT has the fixed coupé roof — quieter at motorway speeds, slightly more classical silhouette. The GTC has the folding fabric roof for roof-down driving. Pick the GT if you prefer the coupé; pick the GTC for the drop-top experience.',
+      },
+      {
+        question: 'Is the Continental GT good for a longer trip?',
+        answer: 'Yes — the Continental GT is arguably the ideal Dubai grand tourer. Cabin isolation makes the Abu Dhabi or Al Ain run genuinely relaxing, the 2+2 seating carries short-trip passengers or extra luggage, and the boot is meaningfully bigger than most GT coupés.',
+      },
+      {
+        question: 'How does the Continental GT compare to the Aston Martin Vantage?',
+        answer: 'Different segment. The Continental GT is the larger, more luxurious grand tourer — 2+2 seating, AWD, and more cabin refinement. The Vantage is a smaller, sharper, more driver-focused sports coupé — pure two-seater, rear-wheel drive, more overtly sporting in feel. Pick the Bentley for a comfortable long-distance grand tourer; pick the Vantage for a sharper driver\'s coupé.',
+      },
+      {
+        question: 'How far ahead should I book the Continental GT?',
+        answer: 'Three to five days ahead is comfortable for weekend windows in most of the year. In high season (November to March), a week ahead for Thursday-to-Saturday dates.',
+      },
+    ],
+  },
+  'audi-rs7': {
+    metaTitle: 'Rent Audi RS7 Sportback in Dubai — Hire from AED 2,199/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Audi RS7 Sportback is a 4.0-litre twin-turbo V8 performance saloon — 591bhp, quattro all-wheel drive, five seats, four-door fastback — priced from AED 2,199 per day. It covers 0-100 km/h in 3.6 seconds, tops out at 305 km/h, and combines supercar-adjacent pace with the practicality of a full five-seat luxury saloon. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe RS7 Sportback is Audi RS's grand-touring fastback — the sedan-body sibling to the RS6 Avant estate. The 4.0-litre twin-turbo V8 is shared with the RS6, the RSQ8, the Bentley Continental range, and the Lamborghini Urus (all Volkswagen Group cars sharing this engine family), tuned here for smooth mid-range delivery and long-distance comfort. The result is a car that seats five adults, holds four suitcases, and dispatches the Abu Dhabi run at any legal speed without breaking sweat.\n\nInside is Audi's current-generation cabin: full digital cockpit, dual centre-stack touchscreens (upper for infotainment, lower for climate), aluminium and carbon-fibre trim, four-zone climate, and Bang & Olufsen sound. The four-door fastback silhouette gives it noticeably more elegant proportions than the RS6 estate while keeping most of the practicality — rear legroom is limousine-adjacent, and the fastback boot is genuinely usable. Colour on this car is black — one of the most classical RS7 specifications.\n\nThe RS7 rents to customers who want the fastest sedan in our fleet without an SUV footprint. Business visitors who need a properly quick car that also seats a client team; families who want performance without stepping into an SUV; enthusiasts who specifically want the four-door fastback silhouette rather than the RS6 estate or the RSQ8 SUV. Standard Dubai destinations all work — Sheikh Zayed Road at 120 km/h uses about half the car's capability, and it is at its best on longer motorway runs. Minimum age is 24. Book three to five days ahead in season for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Audi RS6 Avant in our fleet, the RS7 is the sedan-fastback version — same drivetrain, same performance, more elegant silhouette, slightly less boot space than the estate. Pick the RS7 for the sedan proportions; pick the RS6 for the maximum-practicality estate body. Against the Audi RSQ8, the RS7 shares the V8 but sits lower — the RSQ8 is the SUV for higher seating and family passengers; the RS7 is the sedan for driving-first customers. Against the BMW M5 Competition (a similar-segment competitor in our fleet), the RS7 is more comfortable and more luxurious; the M5 is more overtly sporting.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent an Audi RS7 in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the RS7?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'How does the RS7 compare to the RS6 Avant?',
+        answer: 'Same drivetrain (4.0L twin-turbo V8, 591bhp, quattro), same performance, same interior. The RS7 is the sedan-fastback body with more elegant proportions and slightly less boot space; the RS6 is the estate body with maximum practicality. Pick the RS7 for the sedan silhouette; pick the RS6 for the estate practicality.',
+      },
+      {
+        question: 'How does the RS7 compare to the RSQ8?',
+        answer: 'Same underlying platform and V8. The RS7 sits lower and is more of a driving-focused fastback sedan; the RSQ8 is the SUV with a higher seating position and more upright silhouette. Pick the RS7 for driving-first; pick the RSQ8 for family passengers or if you prefer the higher seat.',
+      },
+      {
+        question: 'Is the RS7 good for a family trip?',
+        answer: 'Yes — five seats comfortably fit five adults, rear legroom is limousine-adjacent, and the fastback boot is genuinely usable. Ride quality is comfortable enough for the Abu Dhabi run without complaints from rear passengers.',
+      },
+      {
+        question: 'How far ahead should I book the RS7?',
+        answer: 'Three to five days ahead is comfortable for weekend windows in most of the year. In high season (November to March), book a week ahead for Thursday-to-Saturday dates.',
+      },
+    ],
+  },
+  'audi-r8-v10-spyder': {
+    metaTitle: 'Rent Audi R8 V10 Spyder in Dubai — Hire from AED 2,199/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Audi R8 V10 Spyder is a 5.2-litre naturally-aspirated V10 mid-engined open-top supercar — 570bhp (Performance model up to 611bhp), all-wheel drive via quattro, two seats, folding fabric roof — priced from AED 2,199 per day. It covers 0-100 km/h in around 3.5 seconds, tops out at 324 km/h, and delivers the same V10 soundtrack as the Lamborghini Huracán at a meaningfully lower daily rate. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nThe R8 V10 is Audi's supercar — a mid-engined, aluminium-and-carbon-fibre-chassis two-seater that shares its 5.2-litre V10 engine and platform architecture with the Lamborghini Huracán. Same V10, same 8,500 rpm redline, same immediate throttle response, same intoxicating high-rev soundtrack. What Audi did differently was the exterior styling and the cabin: where the Huracán is overtly Italian and dramatic, the R8 is Germanic and restrained — the same performance envelope wrapped in a car that draws less attention at valet.\n\nThe Spyder body adds the folding fabric roof (cycles in about 20 seconds at up to 50 km/h), turning what is already an accessible supercar into an open-top Dubai weekend car. Interior is Audi's current-generation supercar cabin — virtual cockpit instrumentation, flat-bottom steering wheel with drive-mode selector, and the seven-speed S tronic dual-clutch that Lamborghini also fits to the Huracán. Colour on this car is black — one of the more understated R8 specifications.\n\nThe R8 V10 Spyder rents to customers who want the mid-engined V10 supercar experience with less overt drama than a Huracán, and roof-down capability that the Huracán EVO Coupe in our fleet does not offer. Enthusiasts who value the R8's Germanic feel; couples wanting a drop-top supercar weekend without paying Ferrari or McLaren rates; anyone stepping up from a Porsche 911 who wants their first mid-engined supercar. Standard Dubai destinations work at their best roof-down at dusk — Sheikh Zayed Road, Marina to Palm, up to Jebel Jais where the V10 sound genuinely justifies the drive. Minimum age is 27 (supercar tier). Book a week ahead in high season for weekend windows. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the Lamborghini Huracán EVO Coupe (which shares the same V10), the R8 is more restrained in exterior styling and cabin drama, and available with the folding roof — the Huracán is more theatrical and coupé-only in our fleet. Pick the R8 for the drop-top and the less overt look; pick the Huracán for the Lamborghini badge and cabin. Against the Ferrari 488 Spyder or 720S Spider, the R8 is naturally aspirated and less overtly a supercar; the Italian and British rivals are more dramatic and quicker but at meaningfully higher daily rates.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent an Audi R8 V10 Spyder in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the R8 V10 Spyder?',
+        answer: 'The minimum age is 27, in line with our supercar tier. Tourists need a valid International Driving Permit alongside their home-country licence.',
+      },
+      {
+        question: 'How does the R8 compare to the Lamborghini Huracán?',
+        answer: 'Same 5.2L naturally-aspirated V10 engine, same platform architecture, similar performance. The R8 is more Germanic in styling and cabin feel — restrained, less overtly dramatic. The Huracán is more Italian — theatrical exterior, more aggressive cabin. The R8 in our fleet is Spyder (roof-down); the Huracán in our fleet is Coupé. Pick by the badge and body style you prefer.',
+      },
+      {
+        question: 'How long does the roof take to open and close?',
+        answer: 'The fabric folding roof cycles in about 20 seconds and can be operated up to around 50 km/h — you can drop or raise it at slow city speeds without pulling over.',
+      },
+      {
+        question: 'Is the R8 practical enough for a full weekend?',
+        answer: 'For the driving, yes. For luggage, less so — the R8 has a small front trunk (112 litres) plus a shelf behind the seats. Plan around hand-luggage-only if the weekend involves flights or larger cases.',
+      },
+      {
+        question: 'How far ahead should I book the R8 V10 Spyder?',
+        answer: 'A week ahead in high season (November to March) for weekend Thursday-to-Saturday dates. Three to five days is usually enough in the rest of the year.',
+      },
+    ],
+  },
+  'range-rover-vogue-mansory': {
+    metaTitle: 'Rent Range Rover Vogue Mansory in Dubai — Hire from AED 2,000/day',
+    updatedAt: '2026-09-25',
+    author: 'LuxeClub Editorial',
+    description:
+      "The Range Rover Vogue Mansory is a Range Rover Vogue with the full Mansory bodykit and interior treatment — priced from AED 2,000 per day. Under the modified body is the current-generation Range Rover Vogue (typically the 4.4-litre twin-turbo V8), five seats, all-wheel drive; on top is Mansory's aggressive custom wide-body, custom wheels, quad-exit exhausts, and a completely bespoke interior with contrasting stitching, unique carbon-fibre trim, and Mansory-branded switchgear. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nMansory is a German aftermarket tuning house that takes already-luxurious cars and rebuilds them into more overt, more visually aggressive statements. The Range Rover Vogue Mansory keeps the underlying Range Rover mechanicals intact — the V8, the air suspension, the cabin refinement, the AWD system — while wrapping them in a wide-body kit with flared arches, custom lower splitters, unique tail-light treatments, and 24-inch Mansory-forged wheels. Inside, the standard Range Rover cabin is retrimmed with Mansory's signature diamond-stitched leather in contrasting colours, custom carbon-fibre inserts, and rebadged switchgear. Colour on this car is white — a common Mansory specification that shows off the wide-body proportions most clearly.\n\nThe Mansory Vogue is a specific-taste car. If a standard Range Rover Vogue is too discreet, the Mansory version is the answer — it draws attention at any Dubai valet in a way the standard car cannot. Most customers rent it for exactly that reason: content creation, events where being visibly in the Mansory car is the brief, or Downtown / Marina residents who specifically want the modified aesthetic. If you want the Range Rover luxury experience without the modified look, the standard Range Rover Sport or the Range Rover Vogue HSE (elsewhere in our fleet) are the alternatives at lower daily rates.\n\nStandard Dubai destinations all handle it — DXB airport, DIFC and Downtown valets, weekend runs to Address Sky View or the Palm. The wide-body means it takes slightly more space in tight multi-storeys; the 360-degree camera and parking sensors handle that. Minimum age is 24. Book three to five days ahead in season for weekend windows; longer in high season (November to March) if you specifically want the Mansory car rather than the standard alternatives. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates that fit your dates.\n\nAgainst the standard Range Rover Sport or the Range Rover Vogue HSE in our fleet, the Mansory version is the modified aesthetic pick — same underlying luxury experience, much more visually aggressive. Choose the Mansory when the modified look is the point; choose the standard Range Rovers when you want the classic silhouette and a lower daily rate. Against the Rolls-Royce Cullinan Mansory (which is a Mansory-treated Cullinan), the Range Rover Vogue Mansory is meaningfully cheaper per day and represents the Mansory aesthetic at a more approachable price point.",
+    faqs: [
+      {
+        question: 'How much does it cost to rent a Range Rover Vogue Mansory in Dubai?',
+        answer: 'The current daily rate is shown at the top of this page. For weekly and monthly quotes, WhatsApp us on +971 58 808 6137 — we tailor pricing to your dates and duration. Every rental includes comprehensive insurance and Salik/Darb toll integration. Delivery is AED 110 anywhere within Dubai.',
+      },
+      {
+        question: 'What is the minimum age to rent the Vogue Mansory?',
+        answer: 'The minimum age is 24. Tourists need a valid International Driving Permit alongside their home-country licence; UAE residents just need their Emirates driving licence.',
+      },
+      {
+        question: 'What exactly does Mansory change about the car?',
+        answer: 'Mansory is a German aftermarket tuning house that rebuilds the exterior body of already-luxury cars into wider, more visually aggressive statements. On this Range Rover: wide-body kit with flared arches, custom lower splitters, unique tail-light treatment, 24-inch Mansory-forged wheels, and quad-exit exhausts. Inside: retrimmed leather with Mansory diamond stitching in contrasting colours, custom carbon-fibre trim, and rebadged switchgear. The underlying mechanicals — V8 engine, air suspension, AWD system, cabin electronics — are the standard Range Rover.',
+      },
+      {
+        question: 'How does the Vogue Mansory compare to the standard Range Rover Vogue HSE?',
+        answer: 'Same underlying Range Rover mechanicals and cabin refinement, very different visual character. The Vogue HSE is the classic Range Rover silhouette at a lower daily rate; the Mansory is the wide-body modified aesthetic at a higher rate. Pick the standard car for the classic look; pick the Mansory for the modified statement.',
+      },
+      {
+        question: 'Is the Mansory Vogue suitable for a family trip?',
+        answer: 'Yes — mechanically it is a Range Rover Vogue, so five seats fit comfortably with genuine rear-seat space and a proper boot. The main practical trade-off is the width of the modified body in tight multi-storey car parks; the 360-degree camera handles that.',
+      },
+      {
+        question: 'How far ahead should I book the Vogue Mansory?',
+        answer: 'Three to five days ahead is comfortable for weekend windows in most of the year. In high season (November to March), book a week ahead for Thursday-to-Saturday dates — the Mansory Vogue is a specific-request car with tighter availability than the standard Range Rovers.',
+      },
+    ],
+  },
 }
