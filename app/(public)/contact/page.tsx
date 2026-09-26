@@ -9,6 +9,8 @@ import {
   WHATSAPP_BASE_URL,
   whatsappUrl,
 } from '@/lib/contact'
+import { SOCIAL_PLATFORMS } from '@/lib/social'
+import { SocialIcon } from '@/components/ui/SocialIcon'
 
 export default function ContactPage() {
   const { t } = useTranslation()
@@ -73,6 +75,27 @@ export default function ContactPage() {
             <p className="text-lg text-white leading-relaxed">
               {t('contact.addressText')}
             </p>
+          </div>
+        </div>
+
+        {/* Follow us */}
+        <div className="bg-white/[0.04] border border-white/[0.08] rounded-2xl p-8 space-y-4">
+          <p className="text-sm text-white/50 font-medium">Follow us</p>
+          <div className="flex flex-wrap gap-6">
+            {SOCIAL_PLATFORMS.map((platform) => (
+              <a
+                key={platform.key}
+                href={platform.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={platform.ariaLabel}
+                className="text-lg text-white hover:text-brand-cyan transition-colors duration-300 flex items-center gap-2"
+              >
+                <SocialIcon platformKey={platform.key} className="w-5 h-5 shrink-0" />
+                <span>{platform.label}</span>
+                <span className="text-white/40 text-base">{platform.handle}</span>
+              </a>
+            ))}
           </div>
         </div>
 

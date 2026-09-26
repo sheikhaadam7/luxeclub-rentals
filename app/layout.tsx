@@ -3,6 +3,7 @@ import Script from 'next/script'
 import { Playfair_Display, Inter } from 'next/font/google'
 import { Providers } from './providers'
 import { PHONE_CALL_E164 } from '@/lib/contact'
+import { socialSameAs } from '@/lib/social'
 import './globals.css'
 
 const GA_ID = 'G-CS2EKLJYJ5'
@@ -124,9 +125,7 @@ const jsonLd = {
     closes: '23:59',
   },
   priceRange: '$$$',
-  sameAs: [
-    'https://www.instagram.com/luxeclubrentals/',
-  ],
+  sameAs: socialSameAs(),
   // aggregateRating intentionally omitted until verifiable via Google Reviews API.
   // Google Rich Results flags fabricated review counts as deceptive structured data.
 }
