@@ -1,8 +1,18 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { VehicleCard } from './VehicleCard'
 import { useTranslation } from '@/lib/i18n/context'
+
+// URL slug helpers. "Rolls Royce" -> "rolls-royce"; "SUV" -> "suv"; "7-Seater"
+// already contains a hyphen so lowercasing preserves it. Round-trip via fromSlug
+// picks the canonical BRANDS / CAR_TYPES value back out.
+const toSlug = (s: string) => s.toLowerCase().replace(/\s+/g, '-')
+function fromSlug<T extends readonly string[]>(slug: string | null | undefined, list: T): T[number] | null {
+  if (!slug) return null
+  return list.find((item) => toSlug(item) === slug) ?? null
+}
 
 interface Vehicle {
   slug: string
@@ -69,6 +79,7 @@ const BRANDS = [
  * breadth (Luxury, Supercar, Van, 7-Seater, Modified). Monthly/Budget skipped
  * — those are pricing filters, not vehicle types.
  */
+// Mirrored in master-sheet scripts/_name_matching.py:CANONICAL_CATEGORIES — keep in sync.
 const CAR_TYPES = [
   'Luxury',
   'Sports',
@@ -161,12 +172,30 @@ function PillFilter({ options, selected, onSelect, availableOptions }: PillFilte
 
 export function VehicleGrid({ vehicles, initialBrand, initialCategory }: VehicleGridProps) {
   const { t } = useTranslation()
-  const [selectedBrand, setSelectedBrand] = useState<string | null>(
-    BRANDS.find((b) => b.toLowerCase() === initialBrand?.toLowerCase()) ?? null
-  )
-  const [selectedType, setSelectedType] = useState<string | null>(
-    CAR_TYPES.find((c) => c.toLowerCase() === initialCategory?.toLowerCase()) ?? null
-  )
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  // Filter state is derived from the URL — single source of truth so back/forward
+  // buttons and shared links work naturally. The server-side initialBrand /
+  // initialCategory props are the first-render fallback in case useSearchParams
+  // returns null before hydration completes.
+  const brandParam = searchParams?.get('brand') ?? initialBrand ?? null
+  const categoryParam = searchParams?.get('category') ?? initialCategory ?? null
+  const selectedBrand = fromSlug(brandParam, BRANDS)
+  const selectedType = fromSlug(categoryParam, CAR_TYPES)
+
+  // Sync a filter change to the URL without a full page reload.
+  const updateFilter = (kind: 'brand' | 'category', value: string | null) => {
+    const params = new URLSearchParams(searchParams?.toString() ?? '')
+    if (value) {
+      params.set(kind, toSlug(value))
+    } else {
+      params.delete(kind)
+    }
+    const query = params.toString()
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false })
+  }
 
   // Pre-compute brand for each vehicle. Categories come straight from the DB array.
   // Brand: prefer the explicit DB column (set via the fleet spreadsheet); fall
@@ -232,7 +261,7 @@ export function VehicleGrid({ vehicles, initialBrand, initialCategory }: Vehicle
             <PillFilter
               options={BRANDS}
               selected={selectedBrand}
-              onSelect={setSelectedBrand}
+              onSelect={(value) => updateFilter('brand', value)}
               availableOptions={availableBrands}
             />
           </div>
@@ -243,7 +272,7 @@ export function VehicleGrid({ vehicles, initialBrand, initialCategory }: Vehicle
             <PillFilter
               options={CAR_TYPES}
               selected={selectedType}
-              onSelect={setSelectedType}
+              onSelect={(value) => updateFilter('category', value)}
               availableOptions={availableTypes}
             />
           </div>
