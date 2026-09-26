@@ -11,6 +11,7 @@ import { FaqAccordion } from '@/components/ui/FaqAccordion'
 import { T } from '@/components/ui/T'
 import { vehicleContentMap } from '@/lib/vehicle-content'
 import { guides } from '@/lib/guides'
+import { PHONE_CALL_E164, whatsappUrl as buildWhatsappUrl } from '@/lib/contact'
 
 // Map vehicle slug -> related guide slugs (priority vehicles only).
 // Keep concise: 1-2 highly relevant guides per vehicle so the block stays scannable.
@@ -200,8 +201,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-const WHATSAPP_NUMBER = '971588086137'
-
 export default async function VehicleDetailPage({ params }: PageProps) {
   const { slug } = await params
   const supabase = createAdminClient()
@@ -266,8 +265,8 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
   const specs = vehicle.specs as Record<string, string> | null
   const carType = (vehicle.categories as string[] | null)?.[0] ?? vehicle.category ?? null
-  const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Hi, I'm interested in renting the ${vehicle.name}.`)}`
-  const callUrl = `tel:+${WHATSAPP_NUMBER}`
+  const whatsappUrl = buildWhatsappUrl(`Hi, I'm interested in renting the ${vehicle.name}.`)
+  const callUrl = `tel:${PHONE_CALL_E164}`
 
   const seoContent = vehicleContentMap[slug]
 
@@ -355,7 +354,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
       '@type': 'AutoRental',
       name: 'LuxeClub Rentals',
       url: 'https://luxeclubrentals.com',
-      telephone: '+971588086137',
+      telephone: PHONE_CALL_E164,
       email: 'bookings@luxeclubrentals.com',
       address: {
         '@type': 'PostalAddress',

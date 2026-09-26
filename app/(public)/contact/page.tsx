@@ -2,8 +2,13 @@
 
 import { useState } from 'react'
 import { useTranslation } from '@/lib/i18n/context'
-
-const WHATSAPP_NUMBER = '971588086137'
+import {
+  PHONE_CALL_DISPLAY,
+  PHONE_CALL_E164,
+  PHONE_WHATSAPP_DISPLAY,
+  WHATSAPP_BASE_URL,
+  whatsappUrl,
+} from '@/lib/contact'
 
 export default function ContactPage() {
   const { t } = useTranslation()
@@ -16,10 +21,7 @@ export default function ContactPage() {
     e.preventDefault()
     // Build WhatsApp message with form data
     const message = `Name: ${name}\nEmail: ${email}\nQuestion: ${question}`
-    window.open(
-      `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`,
-      '_blank'
-    )
+    window.open(whatsappUrl(message), '_blank')
     setSubmitted(true)
   }
 
@@ -49,10 +51,18 @@ export default function ContactPage() {
                 bookings@luxeclubrentals.com
               </a>
               <a
-                href={`tel:+${WHATSAPP_NUMBER}`}
+                href={`tel:${PHONE_CALL_E164}`}
                 className="block text-lg text-white hover:text-brand-cyan transition-colors duration-300"
               >
-                +971 588086137
+                Call {PHONE_CALL_DISPLAY}
+              </a>
+              <a
+                href={WHATSAPP_BASE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-lg text-white hover:text-brand-cyan transition-colors duration-300"
+              >
+                WhatsApp {PHONE_WHATSAPP_DISPLAY}
               </a>
             </div>
           </div>

@@ -8,6 +8,9 @@ import { guides } from '@/lib/guides'
 import { VehicleCard } from '@/components/catalogue/VehicleCard'
 import { FaqAccordion } from '@/components/ui/FaqAccordion'
 import { HoloIconCard } from '@/components/ui/HoloIconCard'
+import { whatsappUrl as buildWhatsappUrl } from '@/lib/contact'
+
+const GENERIC_ENQUIRY_WHATSAPP_URL = buildWhatsappUrl("Hi, I'm interested in renting a car.")
 
 // ---------------------------------------------------------------------------
 // Navigation links for cross-linking between money pages
@@ -639,7 +642,7 @@ export default async function MoneyPage({ params }: PageProps) {
             Browse Full Fleet
           </Link>
           <a
-            href="https://wa.me/971588086137?text=Hi%2C%20I%27m%20interested%20in%20renting%20a%20car."
+            href={GENERIC_ENQUIRY_WHATSAPP_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="px-8 py-3 bg-[#25D366]/20 hover:bg-[#25D366]/40 text-white font-medium text-sm transition-colors"
@@ -916,7 +919,7 @@ export default async function MoneyPage({ params }: PageProps) {
             Browse Full Fleet
           </Link>
           <a
-            href="https://wa.me/971588086137?text=Hi%2C%20I%27m%20interested%20in%20renting%20a%20car."
+            href={GENERIC_ENQUIRY_WHATSAPP_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="px-8 py-3 bg-[#25D366]/20 hover:bg-[#25D366]/40 text-white font-medium text-sm transition-colors"

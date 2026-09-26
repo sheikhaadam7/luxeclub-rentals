@@ -1,3 +1,5 @@
+import { whatsappUrl } from './contact'
+
 export interface MoneyPageSection {
   /** Rendered as H2 with an anchor id derived from the text */
   heading: string
@@ -1505,10 +1507,10 @@ export const moneyPages: MoneyPage[] = [
       {
         heading: 'Ready to Book a No-Deposit Luxury Rental',
         content:
-          "Browse the fleet below — every car on the list is available under the no-deposit model. Pick your dates, pay AED 495 to guarantee your booking today, and choose the deposit option (or not) at pickup.\n\nFor direct help, call or WhatsApp **+971 58 808 6137** or email **bookings@luxeclubrentals.com**. The team operates 24/7 for active rentals and until late evening for new bookings.\n\nOffice: Binary Tower, 32 Marasi Drive, Business Bay, Dubai.",
+          "Browse the fleet below — every car on the list is available under the no-deposit model. Pick your dates, pay AED 495 to guarantee your booking today, and choose the deposit option (or not) at pickup.\n\nFor direct help — Call: **+971 50 610 1375** · WhatsApp: **+971 58 808 6137** · Email: **bookings@luxeclubrentals.com**. The team operates 24/7 for active rentals and until late evening for new bookings.\n\nOffice: Binary Tower, 32 Marasi Drive, Business Bay, Dubai.",
         whatsapp: {
           label: 'Chat on WhatsApp',
-          href: 'https://wa.me/971588086137?text=Hi%2C%20I%27d%20like%20to%20book%20a%20luxury%20rental%20with%20the%20no-deposit%20option.',
+          href: whatsappUrl("Hi, I'd like to book a luxury rental with the no-deposit option."),
         },
       },
       {

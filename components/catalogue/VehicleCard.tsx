@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useCurrency } from '@/lib/currency/context'
 import { useTranslation } from '@/lib/i18n/context'
+import { whatsappUrl as buildWhatsappUrl } from '@/lib/contact'
 import { MinimumRentalBadge } from './MinimumRentalBadge'
 
 interface VehicleCardProps {
@@ -17,8 +18,6 @@ interface VehicleCardProps {
   weekly_rate: number | null
   monthly_rate: number | null
 }
-
-const WHATSAPP_NUMBER = '971588086137'
 
 export function VehicleCard({
   slug,
@@ -33,7 +32,7 @@ export function VehicleCard({
   const { formatPrice } = useCurrency()
   const { t } = useTranslation()
   const [isHovered, setIsHovered] = useState(false)
-  const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Hi, I'm interested in renting the ${name}.`)}`
+  const whatsappUrl = buildWhatsappUrl(`Hi, I'm interested in renting the ${name}.`)
 
   const secondaryImage = image_urls && image_urls.length > 1
     ? image_urls.find((url) => url !== primary_image_url) ?? null

@@ -6,6 +6,7 @@ import {
   rentalTermsSections,
 } from '@/lib/rental-terms'
 import { CloseTabButton } from '@/components/ui/CloseTabButton'
+import { WHATSAPP_BASE_URL } from '@/lib/contact'
 
 export const metadata: Metadata = {
   title: 'Rental Information & Terms',
@@ -142,7 +143,7 @@ export default function RentalTermsPage() {
           <p className="text-sm text-white/50 leading-relaxed">
             Questions before you book? Message us on{' '}
             <a
-              href="https://wa.me/971588086137"
+              href={WHATSAPP_BASE_URL}
               className="text-brand-cyan underline underline-offset-4 hover:text-white transition-colors"
             >
               WhatsApp

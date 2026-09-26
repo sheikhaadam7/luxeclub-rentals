@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { PHONE_CALL_E164 } from '@/lib/contact'
 
 export const metadata: Metadata = {
   title: 'Contact Us',
@@ -24,7 +25,7 @@ const jsonLd = {
   mainEntity: {
     '@type': 'LocalBusiness',
     name: 'LuxeClub Rentals',
-    telephone: '+971588086137',
+    telephone: PHONE_CALL_E164,
     email: 'bookings@luxeclubrentals.com',
     address: {
       '@type': 'PostalAddress',

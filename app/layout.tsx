@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Script from 'next/script'
 import { Playfair_Display, Inter } from 'next/font/google'
 import { Providers } from './providers'
+import { PHONE_CALL_E164 } from '@/lib/contact'
 import './globals.css'
 
 const GA_ID = 'G-CS2EKLJYJ5'
@@ -102,7 +103,7 @@ const jsonLd = {
   url: SITE_URL,
   image: `${SITE_URL}/opengraph-image`,
   logo: `${SITE_URL}/apple-icon.png`,
-  telephone: '+971588086137',
+  telephone: PHONE_CALL_E164,
   email: 'bookings@luxeclubrentals.com',
   address: {
     '@type': 'PostalAddress',

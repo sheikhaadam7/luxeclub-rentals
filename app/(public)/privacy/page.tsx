@@ -83,7 +83,8 @@ export default function PrivacyPolicyPage() {
           </p>
           <div className="pl-4 border-l border-white/15 space-y-1 text-sm text-white/60">
             <p><strong className="text-white/80">Registered address:</strong> Binary Tower, 32 Marasi Drive, Business Bay, Dubai, UAE</p>
-            <p><strong className="text-white/80">Phone / WhatsApp:</strong> +971 58 808 6137</p>
+            <p><strong className="text-white/80">Call:</strong> +971 50 610 1375</p>
+            <p><strong className="text-white/80">WhatsApp:</strong> +971 58 808 6137</p>
             <p><strong className="text-white/80">Email:</strong> <a className="underline underline-offset-4 hover:text-white" href="mailto:bookings@luxeclubrentals.com">bookings@luxeclubrentals.com</a></p>
             <p><strong className="text-white/80">Data protection contact:</strong> <a className="underline underline-offset-4 hover:text-white" href="mailto:privacy@luxeclubrentals.com">privacy@luxeclubrentals.com</a></p>
           </div>
@@ -264,7 +265,8 @@ export default function PrivacyPolicyPage() {
             <p>LuxeClub Rentals</p>
             <p>Binary Tower, 32 Marasi Drive, Business Bay, Dubai, UAE</p>
             <p>Email: <a className="underline underline-offset-4 hover:text-white" href="mailto:privacy@luxeclubrentals.com">privacy@luxeclubrentals.com</a></p>
-            <p>Phone / WhatsApp: +971 58 808 6137</p>
+            <p>Call: +971 50 610 1375</p>
+            <p>WhatsApp: +971 58 808 6137</p>
           </div>
         </section>
 

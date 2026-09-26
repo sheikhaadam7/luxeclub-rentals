@@ -6,6 +6,7 @@ import { UseFormReturn } from 'react-hook-form'
 import { BookingFormValues } from '@/lib/validations/booking'
 import { useTranslation } from '@/lib/i18n/context'
 import { useCurrency } from '@/lib/currency/context'
+import { whatsappUrl } from '@/lib/contact'
 
 interface StepPaymentMethodProps {
   form: UseFormReturn<BookingFormValues>
@@ -319,9 +320,9 @@ interface CryptoComingSoonModalProps {
   onClose: () => void
 }
 
-const CRYPTO_WHATSAPP_URL =
-  'https://wa.me/971588086137?text=' +
-  encodeURIComponent("Hi, I'd like to book a car and pay in crypto. Can you help me through the process?")
+const CRYPTO_WHATSAPP_URL = whatsappUrl(
+  "Hi, I'd like to book a car and pay in crypto. Can you help me through the process?"
+)
 
 function CryptoComingSoonModal({ open, onClose }: CryptoComingSoonModalProps) {
   const [mounted, setMounted] = useState(false)
