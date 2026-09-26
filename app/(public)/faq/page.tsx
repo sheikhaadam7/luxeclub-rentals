@@ -34,7 +34,7 @@ const faqsForSchema = [
   },
   {
     q: 'What is the security deposit?',
-    a: "AED 495 is taken at booking to confirm your reservation and lock the price for pay-on-collection rentals. It comes off the rental total when you collect the car — it isn't an additional cost. If you cancel more than 24 hours before pickup, the AED 495 is refunded in full to your original payment method.\n\nA no-deposit option is available to drivers who have held a full driving licence for more than 5 years. Many of our customers qualify — just let our team know at booking and we'll arrange it.\n\nIf a deposit does apply, the amount varies by car and is shown on each vehicle's page. It's held as a refundable pre-authorisation at collection and released back to your card after the vehicle is returned and inspected — usually within five working days.\n\nDrivers under 23 always pay AED 5,000 regardless of the car or licence-held duration.",
+    a: 'A refundable hold placed on your card to cover potential damages. The amount varies by vehicle. You can opt out for a small surcharge.',
   },
   {
     q: 'What is the cancellation policy?',
@@ -46,7 +46,7 @@ const faqsForSchema = [
   },
   {
     q: 'What type of driving license do I need to rent a car in the UAE?',
-    a: 'If you are looking to rent a car in Dubai or any other Emirate, you will be asked to provide a valid UAE driving license or an international driving license depending on if you are a resident or a visitor.\n\nIf your driving license is from the following countries, you are lucky, as it is valid in the UAE: Australia, Bahrain, Belgium, Canada (Quebec*), Croatia, Denmark, Finland, Germany, Greece, Ireland, Japan*, Lithuania, Malta, Netherlands, Norway, Austria, Belgium, Brazil*, China, Cyprus, Estonia, France, Great Britain, Hong Kong, Italy, Kuwait, Luxembourg, Malaysia, New Zealand, Oman.\n\nIf your country is not listed, please make sure to have a valid International Driving Permit (IDP).\n\nLuxeClub Car Rentals has a great solution for those who want to rent a car but don\'t have a driver\'s license. Our professional drivers will ensure that the driving experience is memorable and safe no matter what car you rent. So you can relax and enjoy the views while cruising around the city.',
+    a: 'If you are looking to rent a car in Dubai or any other Emirate, you will be asked to provide a valid UAE driving license or an international driving license depending on if you are a resident or a visitor.\n\nIf your driving license is from the following countries, you are lucky, as it is valid in the UAE: Australia, Bahrain, Belgium, Canada (Quebec*), Croatia, Denmark, Finland, Germany, Greece, Ireland, Japan*, Lithuania, Malta, Netherlands, Norway, Austria, Belgium, Brazil*, China, Cyprus, Estonia, France, Great Britain, Hong Kong, Italy, Kuwait, Luxembourg, Malaysia, New Zealand, Oman.\n\nIf your country is not listed, please make sure to have a valid International Driving Permit (IDP).\n\nLuxeClub Rentals has a great solution for those who want to rent a car but don\'t have a driver\'s license. Our professional drivers will ensure that the driving experience is memorable and safe no matter what car you rent. So you can relax and enjoy the views while cruising around the city.',
   },
 ]
 

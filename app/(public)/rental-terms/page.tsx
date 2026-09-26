@@ -11,7 +11,7 @@ import { WHATSAPP_BASE_URL } from '@/lib/contact'
 export const metadata: Metadata = {
   title: 'Rental Information & Terms',
   description:
-    'LuxeClub Car Rentals UAE rental terms — documents, deposits, age, insurance, cross-border, fuel, cancellation and the rest of what applies to every booking.',
+    'LuxeClub Rentals UAE rental terms — documents, deposits, age, insurance, cross-border, fuel, cancellation and the rest of what applies to every booking.',
   openGraph: {
     title: 'Rental Information & Terms — LuxeClub Rentals Dubai',
     description:

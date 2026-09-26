@@ -113,7 +113,7 @@ export async function createCryptoInvoice(
       price_currency: process.env.NOWPAYMENTS_SANDBOX === 'true' ? 'usd' : 'aed',
       ipn_callback_url: `${SITE_URL}/api/webhooks/nowpayments`,
       order_id: bookingId,
-      order_description: `LuxeClub Rental — ${vehicleName}`,
+      order_description: `LuxeClub Rentals — ${vehicleName}`,
       success_url: successUrl,
       cancel_url: cancelUrl,
     })
