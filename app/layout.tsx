@@ -69,7 +69,7 @@ export const metadata: Metadata = {
     siteName: 'LuxeClub Rentals',
     title: 'LuxeClub Rentals — Luxury Car Rental in Dubai',
     description:
-      'Rent luxury and sports cars in Dubai. Lamborghini, Ferrari, Rolls-Royce, Bentley and more. Insurance included, delivery all over Dubai, 24/7 concierge.',
+      'Rent premium and luxury cars in Dubai — Bentley, Audi, Range Rover, Porsche, plus Ferrari and Lamborghini. Insurance included, delivery across Dubai.',
     images: [
       {
         url: `${SITE_URL}/opengraph-image`,
@@ -83,7 +83,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'LuxeClub Rentals — Luxury Car Rental in Dubai',
     description:
-      'Rent luxury and sports cars in Dubai. Insurance included, delivery all over Dubai, 24/7 concierge.',
+      'Rent premium and luxury cars in Dubai — Bentley, Audi, Range Rover, Porsche, plus Ferrari and Lamborghini. Insurance included, delivery across Dubai.',
     images: [`${SITE_URL}/opengraph-image`],
   },
   robots: {

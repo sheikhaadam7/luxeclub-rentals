@@ -26,7 +26,7 @@ import { getGoogleReviews } from '@/lib/google/reviews'
 export const metadata: Metadata = {
   title: 'LuxeClub Rentals — Luxury Car Rental in Dubai',
   description:
-    "Rent a Lamborghini, Ferrari, Rolls-Royce, Bentley or Range Rover in Dubai from AED 350/day. 47-car fleet, insurance included, delivery across Dubai. Booked entirely on WhatsApp.",
+    "Rent premium and luxury cars in Dubai — Bentley Bentayga, Audi Q3 S Line and RSQ8, Range Rover, Porsche, plus Ferrari and Lamborghini for the weekend. 61-car fleet, insurance included, delivered across Dubai.",
   alternates: { canonical: 'https://luxeclubrentals.com' },
 }
 
@@ -77,7 +77,7 @@ export default async function HomePage() {
   // priority. Bentayga Black Line Edition leads (honeymoon hero shot),
   // RSQ8 second (power SUV at value daily rate), Q3 S Line third (entry).
   const OWNED_SLUGS_PRIORITY = [
-    'bentley-bentayga-s',     // Black Line Edition (white + gloss black)
+    'bentley-bentayga-black-line-edition',     // white + gloss black
     'audi-rsq8',
     'audi-q3',
     'bentley-bentayga',       // standard black
@@ -88,12 +88,12 @@ export default async function HomePage() {
   const ownedAvailable = OWNED_SLUGS_PRIORITY
     .map((slug) => all.find((v) => v.slug === slug))
     .filter((v): v is NonNullable<typeof v> => Boolean(v))
-  // Take up to 3 from the priority list; if fewer than 3 owned cars are
+  // Take up to 4 from the priority list; if fewer than 4 owned cars are
   // currently available, fill remaining slots with other available vehicles.
   const fillers = all
     .filter((v) => !OWNED_SLUGS_PRIORITY.includes(v.slug))
-    .slice(0, Math.max(0, 3 - ownedAvailable.length))
-  const shuffled = [...ownedAvailable.slice(0, 3), ...fillers]
+    .slice(0, Math.max(0, 4 - ownedAvailable.length))
+  const shuffled = [...ownedAvailable.slice(0, 4), ...fillers]
 
   return (
     <LanguageProvider>
@@ -384,7 +384,7 @@ export default async function HomePage() {
                 <T k="home.featuredVehiclesSubtitle" />
               </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {shuffled.map((vehicle, i) => (
                 <div
                   key={vehicle.slug}

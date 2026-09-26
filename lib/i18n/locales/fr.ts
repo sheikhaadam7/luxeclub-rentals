@@ -30,7 +30,7 @@ const fr: Record<string, string> = {
   // Home page
   'home.heroTitle1': 'Location de Voitures de Luxe',
   'home.heroTitle2': 'à Dubaï',
-  'home.heroSubtitle': 'Conduisez une Lamborghini à travers Dubai Marina. Une Ferrari sur Sheikh Zayed Road. Nous livrons. Vous conduisez.',
+  'home.heroSubtitle': "De l'Audi Q3 et de la Bentley Bentayga à une Ferrari sur la Corniche — des voitures premium et de luxe livrées à votre adresse à Dubaï.",
   'home.exploreFleet': 'Voir les Voitures Disponibles',
   'home.bookToday': 'Réservez Votre Voiture — Livraison Aujourd\'hui',
   'home.fleetSize': '47',

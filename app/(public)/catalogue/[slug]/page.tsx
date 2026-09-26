@@ -27,7 +27,7 @@ const CATALOGUE_GUIDE_LINKS: Record<string, string[]> = {
   ],
   'bentley-bentayga': ['lamborghini-urus-vs-bentley-bentayga-dubai'],
   'bentley-bentayga-brown': ['lamborghini-urus-vs-bentley-bentayga-dubai'],
-  'bentley-bentayga-s': ['lamborghini-urus-vs-bentley-bentayga-dubai'],
+  'bentley-bentayga-black-line-edition': ['lamborghini-urus-vs-bentley-bentayga-dubai'],
   'porsche-911-turbo-s': ['porsche-911-turbo-s-why-its-the-ultimate-rental'],
   'audi-q3': [
     'first-time-renting-luxury-car-dubai',

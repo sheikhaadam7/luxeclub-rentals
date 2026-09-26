@@ -30,7 +30,7 @@ const zh: Record<string, string> = {
   // Home page
   'home.heroTitle1': '豪华车租赁',
   'home.heroTitle2': '在迪拜',
-  'home.heroSubtitle': '驾驶兰博基尼穿越迪拜码头。驾驶法拉利驰骋谢赫扎耶德大道。我们送车——您负责驾驶。',
+  'home.heroSubtitle': '从奥迪 Q3、宾利添越到海滨大道上的法拉利——高端与豪华车型直接送达您在迪拜的地址。',
   'home.exploreFleet': '查看现有车辆',
   'home.bookToday': '立即预订 — 今日送达',
   'home.fleetSize': '47',

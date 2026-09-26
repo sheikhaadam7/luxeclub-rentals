@@ -30,7 +30,7 @@ const ar: Record<string, string> = {
   // Home page
   'home.heroTitle1': 'تأجير سيارات فاخرة',
   'home.heroTitle2': 'في دبي',
-  'home.heroSubtitle': 'قُد لامبورغيني عبر مارينا دبي. وفيراري على شارع الشيخ زايد. نحن نوصّل — وأنت تقود.',
+  'home.heroSubtitle': 'من أودي كيو 3 وبنتلي بينتايجا إلى فيراري على الكورنيش — سيارات راقية وفاخرة تُوصَّل إلى عنوانك في دبي.',
   'home.exploreFleet': 'شاهد السيارات المتاحة الآن',
   'home.bookToday': 'احجز سيارتك — التوصيل اليوم',
   'home.fleetSize': '47',

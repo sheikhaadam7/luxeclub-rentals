@@ -30,7 +30,7 @@ const nl: Record<string, string> = {
   // Home page
   'home.heroTitle1': 'Luxe Autoverhuur',
   'home.heroTitle2': 'in Dubai',
-  'home.heroSubtitle': 'Rijd een Lamborghini door Dubai Marina. Een Ferrari over Sheikh Zayed Road. Wij leveren. U rijdt.',
+  'home.heroSubtitle': "Van de Audi Q3 en Bentley Bentayga tot een Ferrari op de Corniche — premium en luxe auto's bij u thuis in Dubai afgeleverd.",
   'home.exploreFleet': 'Bekijk Beschikbare Auto\'s',
   'home.bookToday': 'Boek Uw Auto — Vandaag Bezorgd',
   'home.fleetSize': '47',

@@ -30,7 +30,7 @@ const en: Record<string, string> = {
   // Home page
   'home.heroTitle1': 'Luxury Car Rental',
   'home.heroTitle2': 'in Dubai',
-  'home.heroSubtitle': 'Drive a Lamborghini through Dubai Marina. A Ferrari along Sheikh Zayed Road. We deliver. You drive.',
+  'home.heroSubtitle': 'From the Audi Q3 and Bentley Bentayga to a Ferrari on the Corniche — premium and luxury cars delivered to your address in Dubai.',
   'home.exploreFleet': 'See Available Cars Now',
   'home.bookToday': 'Book Your Car — Delivery Today',
   'home.fleetSize': '47',

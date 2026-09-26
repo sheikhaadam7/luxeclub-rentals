@@ -30,7 +30,7 @@ const es: Record<string, string> = {
   // Home page
   'home.heroTitle1': 'Alquiler de Coches de Lujo',
   'home.heroTitle2': 'en Dubái',
-  'home.heroSubtitle': 'Conduce un Lamborghini por Dubai Marina. Un Ferrari por Sheikh Zayed Road. Nosotros entregamos. Tú conduces.',
+  'home.heroSubtitle': 'Del Audi Q3 y el Bentley Bentayga a un Ferrari por la Corniche — coches premium y de lujo entregados en tu dirección en Dubái.',
   'home.exploreFleet': 'Ver Coches Disponibles',
   'home.bookToday': 'Reserva Tu Coche — Entrega Hoy',
   'home.fleetSize': '47',

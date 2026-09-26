@@ -30,7 +30,7 @@ const ru: Record<string, string> = {
   // Home page
   'home.heroTitle1': 'Аренда Люксовых Авто',
   'home.heroTitle2': 'в Дубае',
-  'home.heroSubtitle': 'За рулём Lamborghini по Dubai Marina. Ferrari по Sheikh Zayed Road. Мы доставляем — вы едете.',
+  'home.heroSubtitle': 'От Audi Q3 и Bentley Bentayga до Ferrari на Корниш — премиальные и роскошные автомобили с доставкой по вашему адресу в Дубае.',
   'home.exploreFleet': 'Смотреть Доступные Авто',
   'home.bookToday': 'Забронировать — Доставка Сегодня',
   'home.fleetSize': '47',

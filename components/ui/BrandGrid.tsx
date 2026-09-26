@@ -4,17 +4,17 @@ import { useRef, useCallback } from 'react'
 import Link from 'next/link'
 
 const BRANDS = [
-  { name: 'Lamborghini', logo: '/logos/brands/lamborghini.svg', href: '/rent-lamborghini-in-dubai', h: 125 },
-  { name: 'Ferrari', logo: '/logos/brands/ferrari.svg', href: '/rent-ferrari-in-dubai', h: 125 },
-  { name: 'Rolls Royce', logo: '/logos/brands/rolls-royce.svg', href: '/rent-rolls-royce-in-dubai', h: 110 },
   { name: 'Bentley', logo: '/logos/brands/bentley.svg', href: '/rent-bentley-in-dubai', h: 119 },
+  { name: 'Audi', logo: '/logos/brands/audi.svg', href: '/rent-audi-in-dubai', h: 94 },
+  { name: 'Range Rover', logo: '/logos/brands/range-rover.svg', href: '/rent-range-rover-in-dubai', h: 79 },
+  { name: 'Rolls Royce', logo: '/logos/brands/rolls-royce.svg', href: '/rent-rolls-royce-in-dubai', h: 110 },
   { name: 'Porsche', logo: '/logos/brands/porsche.svg', href: '/rent-porsche-in-dubai', h: 124 },
   { name: 'Mercedes', logo: '/logos/brands/mercedes.svg', href: '/rent-mercedes-in-dubai', h: 100 },
-  { name: 'Range Rover', logo: '/logos/brands/range-rover.svg', href: '/rent-range-rover-in-dubai', h: 79 },
-  { name: 'McLaren', logo: '/logos/brands/mclaren.svg', href: '/rent-mclaren-in-dubai', h: 113 },
-  { name: 'Aston Martin', logo: '/logos/brands/aston-martin.svg', href: '/rent-aston-martin-in-dubai', h: 125 },
   { name: 'BMW', logo: '/logos/brands/bmw.svg', href: '/rent-bmw-in-dubai', h: 100 },
-  { name: 'Audi', logo: '/logos/brands/audi.svg', href: '/rent-audi-in-dubai', h: 94 },
+  { name: 'Aston Martin', logo: '/logos/brands/aston-martin.svg', href: '/rent-aston-martin-in-dubai', h: 125 },
+  { name: 'Lamborghini', logo: '/logos/brands/lamborghini.svg', href: '/rent-lamborghini-in-dubai', h: 125 },
+  { name: 'Ferrari', logo: '/logos/brands/ferrari.svg', href: '/rent-ferrari-in-dubai', h: 125 },
+  { name: 'McLaren', logo: '/logos/brands/mclaren.svg', href: '/rent-mclaren-in-dubai', h: 113 },
   { name: 'Maserati', logo: '/logos/brands/maserati.svg', href: '/rent-maserati-in-dubai', h: 125 },
   { name: 'Cadillac', logo: '/logos/brands/cadillac.svg', href: '/rent-cadillac-in-dubai', h: 135 },
 ] as const

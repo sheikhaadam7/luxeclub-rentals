@@ -30,7 +30,7 @@ const de: Record<string, string> = {
   // Home page
   'home.heroTitle1': 'Luxusautovermietung',
   'home.heroTitle2': 'in Dubai',
-  'home.heroSubtitle': 'Mit einem Lamborghini durch Dubai Marina. Mit einem Ferrari über die Sheikh Zayed Road. Wir liefern. Sie fahren.',
+  'home.heroSubtitle': 'Vom Audi Q3 und Bentley Bentayga bis zum Ferrari an der Corniche — Premium- und Luxusfahrzeuge, direkt zu Ihrer Adresse in Dubai geliefert.',
   'home.exploreFleet': 'Verfügbare Autos ansehen',
   'home.bookToday': 'Auto buchen — Lieferung heute',
   'home.fleetSize': '47',
