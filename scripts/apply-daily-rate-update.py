@@ -335,6 +335,9 @@ def main():
             )
             if r.returncode == 0:
                 print("WhatsApp playbook refreshed.")
+                print("  Re-copy `whatsapp-response-playbook-prices.md` over your PRICES note on iPhone.")
+                print("  (FAQ note stays as-is — no re-import needed.)")
+                print("  Location: C:\\Users\\lenovo\\Desktop\\Luxeclub price master sheet\\scripts\\")
             else:
                 print(f"! Playbook refresh failed (exit={r.returncode}): "
                       f"{(r.stderr or r.stdout).strip()[:200]}")
