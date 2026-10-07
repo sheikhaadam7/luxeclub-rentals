@@ -119,6 +119,43 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
 
+      // Old "g63-amg" / "mercedes-g63" slugs renamed 2026-10-08 to the
+      // colour-based pattern. The two listings represent the two colour
+      // variants of our G63 fleet: mercedes-g63-black (previously g63-amg)
+      // and mercedes-g63-white (previously mercedes-g63). Preserve any
+      // Google-indexed URLs via 301 across all three legacy URL patterns.
+      {
+        source: '/catalogue/g63-amg',
+        destination: '/catalogue/mercedes-g63-black',
+        permanent: true,
+      },
+      {
+        source: '/garage/g63-amg',
+        destination: '/catalogue/mercedes-g63-black',
+        permanent: true,
+      },
+      {
+        source: '/old-garage/g63-amg',
+        destination: '/catalogue/mercedes-g63-black',
+        permanent: true,
+      },
+      {
+        source: '/catalogue/mercedes-g63',
+        destination: '/catalogue/mercedes-g63-white',
+        permanent: true,
+      },
+      {
+        source: '/garage/mercedes-g63',
+        destination: '/catalogue/mercedes-g63-white',
+        permanent: true,
+      },
+      {
+        source: '/old-garage/mercedes-g63',
+        destination: '/catalogue/mercedes-g63-white',
+        permanent: true,
+      },
+
+
       // Old "mclaren-570s" → current "mclaren-570s-spider". Slug renamed
       // 2026-09-21 — car is the Spider variant; original slug missed the
       // "-spider" suffix. Live URL preserved via 301.

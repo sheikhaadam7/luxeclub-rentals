@@ -602,7 +602,7 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
       },
     ],
   },
-  'g63-amg': {
+  'mercedes-g63-black': {
     metaTitle: 'Rent Mercedes-AMG G63 in Dubai — Hire from AED 1,429/day',
     updatedAt: '2026-09-25',
     author: 'LuxeClub Editorial',
@@ -635,12 +635,12 @@ export const vehicleContentMap: Record<string, VehicleContent> = {
       },
     ],
   },
-  'mercedes-g63': {
+  'mercedes-g63-white': {
     metaTitle: 'Rent Mercedes G63 in Dubai — Hire from AED 1,429/day',
     updatedAt: '2026-09-25',
     author: 'LuxeClub Editorial',
     description:
-      "The Mercedes G63 is our second live listing for the AMG G63 — same 4.0-litre bi-turbo V8, same 577bhp, same all-wheel drive with three locking differentials, same five-seat cabin, same daily rate from AED 1,429. This listing exists as a separate SEO surface because customers search both \"Mercedes G63\" and \"Mercedes-AMG G63\" — the car is the same either way, but the two search terms lead to two catalogue entries so both patterns find us. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nFor the full drive character, cabin details, and AMG Performance exhaust notes, the AMG G63 entry at /catalogue/g63-amg covers the same car. Everything mechanical, everything about how the car handles Dubai traffic, everything about the interior — it's the same G63 either way. The two listings run in parallel to give us two distinct search-result pages for the same physical vehicle stock.\n\nEverything else that applies to the G63 AMG applies here: same 24 minimum age, same UAE-wide insurance coverage, same three-to-five-day booking lead time in most of the year (a week ahead in high season November to March), same standard Dubai destinations from airport-to-Marina through DIFC valet arrivals and out to Hatta or Jebel Jais on paved routes. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates.\n\nIf you have arrived here directly and want the full write-up of what the G63 is like to drive, how it compares to the Bentley Bentayga and Range Rover SVR, and what the AMG Performance exhaust does in the different drive modes — the g63-amg listing covers all of that. Same car, same booking terms, same daily rate.",
+      "The Mercedes G63 is our second live listing for the AMG G63 — same 4.0-litre bi-turbo V8, same 577bhp, same all-wheel drive with three locking differentials, same five-seat cabin, same daily rate from AED 1,429. This listing exists as a separate SEO surface because customers search both \"Mercedes G63\" and \"Mercedes-AMG G63\" — the car is the same either way, but the two search terms lead to two catalogue entries so both patterns find us. Available for rent in Dubai with delivery to your address, hotel, or DXB airport within Dubai limits. Deposit is AED 2,500. The first 250 km per day are included; the current daily rate is shown at the top of this page.\n\nFor the full drive character, cabin details, and AMG Performance exhaust notes, the AMG G63 entry at /catalogue/mercedes-g63-black covers the same car. Everything mechanical, everything about how the car handles Dubai traffic, everything about the interior — it's the same G63 either way. The two listings run in parallel to give us two distinct search-result pages for the same physical vehicle stock.\n\nEverything else that applies to the G63 AMG applies here: same 24 minimum age, same UAE-wide insurance coverage, same three-to-five-day booking lead time in most of the year (a week ahead in high season November to March), same standard Dubai destinations from airport-to-Marina through DIFC valet arrivals and out to Hatta or Jebel Jais on paved routes. Delivery is AED 110 anywhere within Dubai. WhatsApp us on +971 58 808 6137 for weekly and monthly rates.\n\nIf you have arrived here directly and want the full write-up of what the G63 is like to drive, how it compares to the Bentley Bentayga and Range Rover SVR, and what the AMG Performance exhaust does in the different drive modes — the mercedes-g63-black listing covers all of that. Same car, same booking terms, same daily rate.",
     faqs: [
       {
         question: 'Is the Mercedes G63 the same car as the Mercedes-AMG G63?',
