@@ -15,10 +15,13 @@ import { useTranslation } from '@/lib/i18n/context'
 import { createCryptoInvoice } from '@/app/actions/crypto-payment'
 import { PriceDetailsModal } from '@/components/booking/PriceDetailsModal'
 import type { BookingPriceBreakdown } from '@/lib/pricing/calculator'
+import { RESERVATION_FEE_AED } from '@/lib/pricing/constants'
 
-// Cash holding-deposit amount charged today. Matches RESERVATION_FEE_AED in
-// lib/pricing/constants.ts (495 today). If you change one, change the other.
-const CASH_HOLDING_DEPOSIT_AED = 495
+// Charged today when paying cash on collection. Reads the constant
+// rather than copying it -- the previous version held its own 495 and
+// a comment asking a human to keep the two in sync, which is how the
+// site came to charge 495 while Amanda quoted 450.
+const CASH_HOLDING_DEPOSIT_AED = RESERVATION_FEE_AED
 
 // Shown on Step 6 only when the customer is viewing a non-AED currency —
 // avoids "why does my email say AED 1,800 when I paid £400?" support tickets.
@@ -90,7 +93,7 @@ function RentersNameNotice() {
 function ImportantInfoCollapsible() {
   const [open, setOpen] = useState(true)
   const { formatPrice } = useCurrency()
-  const cancellationFee = formatPrice(495, { exact: true })
+  const cancellationFee = formatPrice(RESERVATION_FEE_AED, { exact: true })
   return (
     <div className="border-t border-b border-zinc-200 py-3">
       <button
@@ -185,7 +188,7 @@ function TermsAcknowledgement() {
 }
 
 interface PaymentSummaryProps {
-  /** Big amount shown today (Card: totalDue, Cash: AED 495) */
+  /** Big amount shown today (Card: totalDue, Cash: RESERVATION_FEE_AED) */
   payNowAmount: number
   /** Sub-line under the amount. Card: "Amount you will pay". Cash: balance split. */
   amountSubLabel: string
@@ -553,7 +556,7 @@ function CashCardForm({
       {!cardSaved && <RentersNameNotice />}
 
       {/* Summary + policy block — same structure as Card flow, just different
-          totals: today the customer is charged AED 495 holding deposit, the
+          totals: today the customer is charged RESERVATION_FEE_AED, the
           balance is paid in cash at delivery. */}
       {!cardSaved && (
         <PaymentSummaryAndPolicies

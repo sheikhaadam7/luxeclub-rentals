@@ -11,7 +11,7 @@
  * If a booking total is less than this amount, the reservation fee is
  * capped at the booking total (the customer never pays more than owed).
  */
-export const RESERVATION_FEE_AED = 495
+export const RESERVATION_FEE_AED = 450
 
 /**
  * Daily mileage allowance included in every rental — matches the figure

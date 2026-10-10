@@ -7,6 +7,7 @@ import { BookingFormValues } from '@/lib/validations/booking'
 import { useTranslation } from '@/lib/i18n/context'
 import { useCurrency } from '@/lib/currency/context'
 import { whatsappUrl } from '@/lib/contact'
+import { RESERVATION_FEE_AED } from '@/lib/pricing/constants'
 
 interface StepPaymentMethodProps {
   form: UseFormReturn<BookingFormValues>
@@ -67,8 +68,8 @@ const PAYMENT_OPTIONS = [
 export function StepPaymentMethod({ form, navButtons, onBack }: StepPaymentMethodProps) {
   const { t } = useTranslation()
   const paymentMethod = form.watch('paymentMethod')
-  /** The 'cash' option requires explicit acknowledgement of the AED 495 deposit
-      before the selection is committed. */
+  /** The 'cash' option requires explicit acknowledgement of the holding
+      deposit (RESERVATION_FEE_AED) before the selection is committed. */
   const [cashPopupOpen, setCashPopupOpen] = useState(false)
   /** Crypto end-to-end isn't wired yet — the click opens a popup pointing the
       customer to WhatsApp instead of selecting the method. */
@@ -177,7 +178,7 @@ export function StepPaymentMethod({ form, navButtons, onBack }: StepPaymentMetho
 
 // ---------------------------------------------------------------------------
 // Confirmation modal for the 'cash' option — forces explicit acknowledgement of
-// the AED 495 holding deposit before the selection is committed.
+// the holding deposit (RESERVATION_FEE_AED) before the selection is committed.
 // Kept inline (one-off use, not exported).
 // ---------------------------------------------------------------------------
 
@@ -190,7 +191,7 @@ interface CashConfirmModalProps {
 function CashConfirmModal({ open, onCancel, onConfirm }: CashConfirmModalProps) {
   const [mounted, setMounted] = useState(false)
   const { formatPrice } = useCurrency()
-  const holdingDeposit = formatPrice(495, { exact: true })
+  const holdingDeposit = formatPrice(RESERVATION_FEE_AED, { exact: true })
   useEffect(() => setMounted(true), [])
 
   // Body scroll lock + Esc close
