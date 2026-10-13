@@ -25,6 +25,7 @@ const ru: Record<string, string> = {
   'footer.contact': 'Контакты',
   'footer.followUs': 'Подписывайтесь',
   'footer.rights': 'Все права защищены.',
+  'footer.legalEntity': 'LuxeClub Rentals — торговое наименование компании LuxeClub Car Rental LLC SOC.',
   'footer.location': 'Бизнес Бей, Дубай, ОАЭ',
 
   // Home page

@@ -25,6 +25,7 @@ const nl: Record<string, string> = {
   'footer.contact': 'Contact',
   'footer.followUs': 'Volg Ons',
   'footer.rights': 'Alle rechten voorbehouden.',
+  'footer.legalEntity': 'LuxeClub Rentals is een handelsnaam van LuxeClub Car Rental LLC SOC.',
   'footer.location': 'Business Bay, Dubai, VAE',
 
   // Home page
