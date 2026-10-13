@@ -25,7 +25,7 @@ const ar: Record<string, string> = {
   'footer.contact': 'التواصل',
   'footer.followUs': 'تابعنا',
   'footer.rights': 'جميع الحقوق محفوظة.',
-  'footer.legalEntity': '« LuxeClub Rentals » اسم تجاري لشركة LuxeClub Car Rental LLC SOC.',
+  'footer.legalEntity': '« LuxeClub Rentals » اسم تجاري لشركة LuxeClub Car Rental CO. L.L.C S.O.C',
   'footer.location': 'الخليج التجاري، دبي، الإمارات',
 
   // Home page
