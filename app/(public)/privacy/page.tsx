@@ -82,7 +82,7 @@ export default function PrivacyPolicyPage() {
             and vehicle rental operations.
           </p>
           <div className="pl-4 border-l border-white/15 space-y-1 text-sm text-white/60">
-            <p><strong className="text-white/80">Legal entity:</strong> LuxeClub Car Rental LLC SOC, trading as LuxeClub Rentals</p>
+            <p><strong className="text-white/80">Legal entity:</strong> LuxeClub Car Rental CO. L.L.C S.O.C, trading as LuxeClub Rentals</p>
             <p><strong className="text-white/80">Registered address:</strong> Binary Tower, 32 Marasi Drive, Business Bay, Dubai, UAE</p>
             <p><strong className="text-white/80">Call:</strong> +971 50 610 1375</p>
             <p><strong className="text-white/80">WhatsApp:</strong> +971 58 808 6137</p>
@@ -263,7 +263,7 @@ export default function PrivacyPolicyPage() {
             Questions, requests, or complaints about this Privacy Policy or how we handle your personal data:
           </p>
           <div className="pl-4 border-l border-white/15 space-y-1 text-sm text-white/60">
-            <p>LuxeClub Car Rental LLC SOC, trading as LuxeClub Rentals</p>
+            <p>LuxeClub Car Rental CO. L.L.C S.O.C, trading as LuxeClub Rentals</p>
             <p>Binary Tower, 32 Marasi Drive, Business Bay, Dubai, UAE</p>
             <p>Email: <a className="underline underline-offset-4 hover:text-white" href="mailto:privacy@luxeclubrentals.com">privacy@luxeclubrentals.com</a></p>
             <p>Call: +971 50 610 1375</p>

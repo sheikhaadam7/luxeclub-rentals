@@ -171,7 +171,7 @@ export function Footer() {
           <p className="text-xs text-white/25">
             &copy; {new Date().getFullYear()} LuxeClub Rentals. {t('footer.rights')}
             {/* Legal entity disclosure. "LuxeClub Rentals" is the trading
-                name; the licensed entity is LuxeClub Car Rental LLC SOC.
+                name; the licensed entity is LuxeClub Car Rental CO. L.L.C S.O.C.
                 Meta compares the legal name on a verification document
                 against the business details LITERALLY, and a trading name
                 alone reads as a different business. Showing both bridges
