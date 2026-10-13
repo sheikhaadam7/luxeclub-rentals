@@ -25,6 +25,7 @@ const zh: Record<string, string> = {
   'footer.contact': '联系方式',
   'footer.followUs': '关注我们',
   'footer.rights': '版权所有。',
+  'footer.legalEntity': 'LuxeClub Rentals 是 LuxeClub Car Rental LLC SOC 的商号。',
   'footer.location': '商业湾，迪拜，阿联酋',
 
   // Home page

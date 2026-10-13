@@ -170,6 +170,16 @@ export function Footer() {
         <div className="mt-10 pt-6 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-white/25">
             &copy; {new Date().getFullYear()} LuxeClub Rentals. {t('footer.rights')}
+            {/* Legal entity disclosure. "LuxeClub Rentals" is the trading
+                name; the licensed entity is LuxeClub Car Rental LLC SOC.
+                Meta compares the legal name on a verification document
+                against the business details LITERALLY, and a trading name
+                alone reads as a different business. Showing both bridges
+                them. The entity name itself is a proper noun and is NOT
+                translated. */}
+            <span className="block mt-1 text-white/20">
+              {t('footer.legalEntity')}
+            </span>
           </p>
           <div className="flex items-center gap-4 text-xs text-white/25">
             <Link href="/privacy" className="hover:text-white/60 transition-colors duration-300">Privacy Policy</Link>
