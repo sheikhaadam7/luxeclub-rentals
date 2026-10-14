@@ -40,6 +40,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:12p
 .scan .att{margin-top:10px;display:flex;gap:6px;align-items:center;color:#444}
 #zoom{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:20;display:flex;align-items:center;justify-content:center;cursor:zoom-out}
 #zoom img{max-width:94vw;max-height:94vh}
+#zoom.terms{overflow:auto;align-items:flex-start;padding:10px 0}#zoom.terms img{max-width:none;max-height:none;width:min(1000px,100%)}
 
 /* page */
 .page{width:794px;min-height:1123px;margin:16px auto 40px;background:var(--paper);box-shadow:0 10px 40px rgba(0,0,0,.12);display:flex;flex-direction:column}
@@ -124,6 +125,64 @@ select[data-lock]{appearance:none;-webkit-appearance:none}
 body.cust .staff{display:none!important}
 body:not(.cust) .custonly{display:none!important}
 
+/* online agreements – staff */
+.badge{display:inline-block;min-width:18px;padding:1px 6px;border-radius:9px;background:#c0392b;color:#fff;font-size:11px;margin-left:4px;line-height:16px}
+.onbar{max-width:794px;margin:12px auto 0;background:#faf6ee;border:1px solid var(--gold);border-radius:10px;padding:10px 14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;font-size:13px;line-height:1.4}
+.onbar button{font:500 13px var(--sans);border:1px solid #ccc;background:#fff;padding:7px 12px;border-radius:6px;cursor:pointer;margin:2px 0 2px 4px}
+.onbar button.pri{background:var(--gold);border-color:var(--gold)}
+.inlist{margin-top:12px;max-height:55vh;overflow:auto}
+.in-it{display:grid;grid-template-columns:1fr auto;gap:6px 10px;padding:10px 2px;border-bottom:1px solid #eee;font-size:13px;align-items:center}
+.in-it b{font-size:14px}.in-it small{display:block;color:#888;margin-top:2px}
+.chip{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;margin-top:4px;background:#eee;color:#555}
+.chip.n{background:#fff1cf;color:#8a5a00;font-weight:600}.chip.s{background:#e3eefc;color:#1d4f91}.chip.d{background:#dff3e5;color:#1b7a3a}
+.in-it button{font:500 12px var(--sans);border:1px solid #ccc;background:#fff;padding:6px 10px;border-radius:5px;cursor:pointer;margin:2px 0 2px 4px}
+.in-it button.op{background:var(--gold);border-color:var(--gold)}.in-it button.del{color:#a33}
+#inbox .empty{color:#777;padding:18px 2px;text-align:center;font-size:14px}
+
+/* online agreements – customer steps */
+#flow{max-width:560px;margin:0 auto;padding:18px 16px 48px}
+#flow section{display:none}#flow section.on{display:block}
+#flow p{font-size:15px;line-height:1.55;margin:6px 0}
+.fl-step{font:600 11px var(--sans)!important;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-d);margin:6px 0 4px!important}
+.fl-h{font:500 28px var(--serif);margin:0 0 8px;letter-spacing:.01em;text-transform:none;color:var(--ink);border:0;padding:0;display:block}
+.fl-muted{color:#666}
+.fl-kind{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 6px}
+.fl-kind button{font:600 14px var(--sans);text-align:left;padding:12px;border:1.5px solid #ddd;border-radius:10px;background:#fff;color:#111;cursor:pointer}
+.fl-kind button small{display:block;font-weight:400;color:#777;font-size:12px;margin-top:3px}
+.fl-kind button.on{border-color:var(--gold);background:#faf6ee}
+.fl-doc{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid #e3e0d8;border-radius:12px;padding:12px;margin:10px 0}
+.fl-doc .ph{width:72px;height:54px;border-radius:6px;background:#f2efe8 center/cover no-repeat;flex:0 0 72px;display:flex;align-items:center;justify-content:center;color:#b9b0a0;font-size:24px}
+.fl-doc .tx{flex:1;min-width:0}.fl-doc b{display:block;font-size:15px}
+.fl-doc .st{display:block;font-size:12.5px;color:#777;margin-top:2px;line-height:1.35}
+.fl-doc .st.ok{color:#1b7a3a}.fl-doc .st.warn{color:#a0661a}.fl-doc .st.err{color:#a33}
+.fl-doc label{font:600 13px var(--sans);background:#111;color:#fff;border:1px solid #111;border-radius:8px;padding:9px 12px;cursor:pointer;white-space:nowrap}
+.fl-doc label input{display:none}
+.fl-doc.done label{background:#fff;color:#111;border-color:#ccc}
+.fl-go{display:block;width:100%;font:600 16px var(--sans);background:var(--gold);color:#111;border:0;border-radius:10px;padding:15px;margin-top:18px;cursor:pointer}
+.fl-go:disabled{opacity:.45;cursor:default}
+.fl-back,.fl-add{display:block;width:100%;font:500 14px var(--sans);background:#fff;color:#111;border:1px solid #ddd;border-radius:10px;padding:12px;margin-top:10px;cursor:pointer}
+.fl-add small{color:#888;font-weight:400}
+.fl-form label{display:block;margin:12px 0}
+.fl-form label span{display:block;font-size:12.5px;color:#666;margin-bottom:4px}
+.fl-form input{display:block;width:100%;margin:0;font:16px var(--sans);padding:11px 12px;border:1px solid #d9d4c9;border-radius:8px;background:#fff;min-height:46px}
+.fl-form input.filled{background:#fff4c9!important}
+.fl-yel{background:#fff4c9;padding:0 4px;border-radius:3px}
+.fl-card{background:#fff;border:1px solid #e3e0d8;border-radius:12px;padding:12px 14px;margin:12px 0}
+.fl-card h3{font:600 11px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--gold-d);margin:0 0 6px}
+.fl-row{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px dashed #eee;font-size:14px}.fl-row:last-child{border:0}
+.fl-row span{color:#777}.fl-row b{font-weight:500;text-align:right}.fl-row.tot b{font-weight:700}
+.fl-auth{font-size:13px!important;color:#555}
+.fl-agree{display:flex;gap:10px;align-items:flex-start;font-size:14px;margin:14px 0;line-height:1.45}
+.fl-agree input{width:22px;height:22px;flex:0 0 22px;margin:0}
+.fl-sig{position:relative;height:130px;background:#fff;border:1.5px dashed #cfc6b4;border-radius:12px;cursor:pointer}
+.fl-sig canvas{width:100%;height:100%;display:block}
+.fl-sig span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#b0a690;font-size:15px;pointer-events:none}
+.fl-ok{width:56px;height:56px;border-radius:50%;background:#1b7a3a;color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;margin:24px 0 12px}
+.fl-small{font-size:12px!important;color:#888;margin-top:14px!important}
+body.flow .tip,body.flow .scan,body.flow .page,body.flow #bPdf{display:none!important}
+body.flow.pdfmode .page{display:flex!important}
+body.flow.pdfmode #flow{display:none!important}
+
 /* phones and narrow windows (the PDF always uses the A4 layout) */
 @media (max-width:820px){
   .bar{position:static;padding:8px 10px;gap:6px}.bar .t{font-size:14px;width:100%}
@@ -153,12 +212,44 @@ body:not(.cust) .custonly{display:none!important}
   <span class="t">LuxeClub · Your Rental Agreement</span>
   <button id="bHist" class="staff">Previous agreements</button>
   <button id="bNew" class="staff">New agreement</button>
-  <button id="bLink" class="staff" title="Send this agreement to the customer to fill in and sign on their phone">Customer link</button>
+  <button id="bOnline" class="staff" title="Customer links: they upload documents, you add the price, they sign">Online agreements<span id="onBadge" class="badge" hidden></span></button>
+  <button id="bLink" hidden title="Send this agreement to the customer to fill in and sign on their phone">Customer link</button>
   <button id="bPrint" class="staff">Print</button>
   <button id="bPdf" class="pri"><span class="staff">Download PDF</span><span class="custonly">Finish &amp; send PDF</span></button>
 </div>
+<main id="flow" hidden>
+  <section data-step="load"><p class="fl-muted">Loading…</p></section>
+  <section data-step="err"><h2 class="fl-h">Sorry</h2><p id="flErr"></p></section>
+  <section data-step="docs">
+    <p class="fl-step">Step 1 of 2</p><h2 class="fl-h">Your documents</h2>
+    <p class="fl-muted">Take a clear photo of each document – flat, in focus, with the whole document in the frame. We fill in your details from them.</p>
+    <div class="fl-kind"><button data-kind="ind">Visitor / tourist<small>Passport + driving licence</small></button><button data-kind="b2b">Business<small>Emirates ID + trade licence</small></button></div>
+    <div id="flDocs"></div>
+    <button class="fl-add" id="flAddOther">+ Add another photo <small>(back of a licence, additional driver…)</small></button>
+    <button class="fl-go" id="flToCheck" disabled>Continue</button>
+  </section>
+  <section data-step="check">
+    <p class="fl-step">Step 2 of 2</p><h2 class="fl-h">Check your details</h2>
+    <p class="fl-muted"><span class="fl-yel">Yellow</span> boxes were read from your photos – please check them and fill in anything missing.</p>
+    <div id="flFields" class="fl-form"></div>
+    <button class="fl-go" id="flSend">Send to LuxeClub</button>
+    <button class="fl-back" id="flBack">Back</button>
+    <p class="fl-small">Your details and photos are sent securely to LuxeClub and are only used for your rental agreement.</p>
+  </section>
+  <section data-step="wait"><div class="fl-ok">✓</div><h2 class="fl-h">Thank you</h2><p>We have your documents. We'll prepare your rental agreement and send it to you on WhatsApp – you'll use this same link to sign it.</p><button class="fl-back" id="flRefresh">Check again</button></section>
+  <section data-step="sign">
+    <p class="fl-step">Ready to sign</p><h2 class="fl-h">Your rental agreement</h2>
+    <div id="flSummary"></div>
+    <button class="fl-add" id="flTerms">Read the terms and conditions</button>
+    <p class="fl-auth" style="margin-top:14px">I authorise LuxeClub Car Rentals to charge my credit/debit card for rental charges, security deposit, fines, damages or any other dues arising under this agreement.</p>
+    <label class="fl-agree"><input type="checkbox" id="flAgree"> <span>I have read and agree to the terms and conditions and the payment authorisation above.</span></label>
+    <div class="fl-sig" id="flSig"><canvas></canvas><span>Tap here to sign</span></div>
+    <button class="fl-go" id="flSign" disabled>Sign agreement</button>
+  </section>
+  <section data-step="done"><div class="fl-ok">✓</div><h2 class="fl-h">Signed – thank you</h2><p id="flDoneTxt"></p><button class="fl-go" id="flPdf">Download your copy (PDF)</button></section>
+</main>
 <p class="tip custonly">Please fill in your details, add photos of your documents (this fills in the details for you – check them), and sign in the boxes at the bottom by tapping them. Then tap <b>Finish &amp; send PDF</b> and send it to LuxeClub on WhatsApp. Your details stay on your phone until you send the PDF.</p>
-<p class="tip staff">Click any text to fill it in – it saves automatically on this computer. Use <b>Read documents</b> to fill details from photos of the customer's passport, Emirates ID, driving licence or trade licence: anything filled in automatically is highlighted yellow – check it against the photo. Customers can sign in the boxes at the bottom with a mouse or finger, or sign the printed copy. <b>Customer link</b> sends the customer a link with the car and charges already filled in, so they can add their details and sign on their own phone. <b>Download PDF</b> makes a locked PDF with the terms and conditions as page 2.</p>
+<p class="tip staff">Click any text to fill it in – it saves automatically on this computer. Use <b>Read documents</b> to fill details from photos of the customer's passport, Emirates ID, driving licence or trade licence: anything filled in automatically is highlighted yellow – check it against the photo. Customers can sign in the boxes at the bottom with a mouse or finger, or sign the printed copy. <b>Online agreements</b> sends the customer a link: they upload their documents, you add the car and price, then they sign on their phone with the same link (you need to be logged in to the website). <b>Download PDF</b> makes a locked PDF with the terms and conditions as page 2.</p>
 
 <section class="scan" id="scan">
   <h3>Read documents</h3>
@@ -175,6 +266,7 @@ body:not(.cust) .custonly{display:none!important}
   <label class="att"><input type="checkbox" id="attach" checked style="width:auto;margin:0"> Attach copies of these documents to the PDF (after the terms page)</label>
 </section>
 
+<div class="onbar staff noprint" id="onBar" hidden><span id="onTxt"></span><span><button id="onSend" class="pri">Send to customer to sign</button><button id="onLink">Customer link</button><button id="onClose">Close</button></span></div>
 <div class="page" id="page">
   <div class="head">
     <div class="mark"><div class="w">LUXECLUB</div><div class="s">RENTALS</div><div class="l">LuxeClub Car Rental Co. L.L.C S.O.C · Dubai, United Arab Emirates</div></div>
@@ -281,9 +373,15 @@ body:not(.cust) .custonly{display:none!important}
 </dialog>
 <dialog id="linkDlg" class="dlg">
   <div class="hh"><b>Customer link</b><button class="xclose" id="linkX" title="Close">×</button></div>
-  <div class="area"><p>Send this link to the customer. It opens the agreement on their phone with the car and charges below already filled in (they cannot change them). They add their own details and documents, sign, and send you the PDF. They cannot see any other agreements.</p>
+  <div class="area"><p id="linkInfo">Send this link to the customer. It opens the agreement on their phone with the car and charges below already filled in (they cannot change them). They add their own details and documents, sign, and send you the PDF. They cannot see any other agreements.</p>
     <input id="linkTxt" readonly><p id="linkNote"></p></div>
   <div class="acts"><button id="linkCopy">Copy link</button><a id="linkWa" class="wa" target="_blank" rel="noopener">WhatsApp</a><button id="linkShare" class="pri">Share…</button></div>
+</dialog>
+<dialog id="inbox" class="dlg staff">
+  <div class="hh"><b>Online agreements</b><button class="xclose" id="inX" title="Close">×</button></div>
+  <div class="area"><p>Send a customer a link: they upload their documents (their details fill in automatically), you add the car and price here, then they sign on their phone with the same link.</p>
+    <button id="inNew" class="fl-go" style="margin-top:8px">+ New customer link</button>
+    <div id="inList" class="inlist"></div></div>
 </dialog>
 <dialog id="hist" class="staff">
   <div class="hh"><b>Previous agreements</b><button class="xclose" id="hClose">×</button></div>
@@ -716,7 +814,8 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
 (function () {
   var $ = function (s, r) { return (r || document).querySelector(s); }, $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var MODE = 'customer'; // build.js sets 'customer' for the customer page
-  var CUSTOMER = MODE === 'customer'; if (CUSTOMER) document.body.classList.add('cust');
+  var CUSTOMER = MODE === 'customer';
+  var TOKEN = (/[?&]t=([A-Za-z0-9_-]{24,64})/.exec(location.search) || [])[1] || '', FLOW = CUSTOMER && !!TOKEN; if (CUSTOMER) document.body.classList.add('cust');
   var KEY = CUSTOMER ? 'luxeSign.draft' : 'luxeContract.draft', SEQ = 'luxeContract.seq', CUST = 'luxeContract.customers', HIST = 'luxeContract.history', CARS = 'luxeContract.cars';
   var store = { get: function (k, d) { try { var v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }, set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
   var num = function (v) { var n = parseFloat(String(v || '').replace(/[^0-9.\-]/g, '')); return isNaN(n) ? 0 : n; };
@@ -760,7 +859,9 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
   function openSig(p) { sKey = p.dataset.sig; $('#sigTitle').textContent = 'Signature – ' + $('.lab', p.parentNode).textContent.toLowerCase(); sigDlg.showModal(); sigSetup(); }
   $('#sigClr').onclick = function () { sx.clearRect(0, 0, sc.width, sc.height); sInk = false; };
   $('#sigCancel').onclick = $('#sigX').onclick = function () { sigDlg.close(); };
-  $('#sigOk').onclick = function () { var u = sInk ? trimInk(sc) : null; if (u) sigs[sKey] = u; sigDlg.close(); drawPad($('.pad[data-sig="' + sKey + '"]')); calc(); save(); };
+  $('#sigOk').onclick = function () { var u = sInk ? trimInk(sc) : null; if (u) sigs[sKey] = u; sigDlg.close(); drawPad($('.pad[data-sig="' + sKey + '"]')); calc(); save(); if (onSigDone) onSigDone(sKey); };
+  var onSigDone = null;
+  function openSigKey(k, label) { sKey = k; $('#sigTitle').textContent = label; sigDlg.showModal(); sigSetup(); }
   $$('.pad').forEach(function (p) {
     if (CUSTOMER && p.hasAttribute('data-staffonly')) { $('.hint', p).textContent = 'signed by LuxeClub'; $('.clr', p).remove(); p.style.cursor = 'default'; p._size = function () {}; return; }
     $('.hint', p).textContent = 'tap to sign';
@@ -902,6 +1003,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
 
   /* ---------- buttons ---------- */
   $('#bNew').onclick = function () {
+    if (ON.token && !confirm('Close the online agreement you have open?')) return; closeOnline();
     if (!confirm('Start a new agreement? The current one is kept under Previous agreements.')) return;
     keep(collect(true)); var branch = F('branch').value, xkm = F('cXkm').value, km = F('vKm').value;
     $$('[data-k]').forEach(function (el) { el.value = ''; }); F('branch').value = branch; F('cXkm').value = xkm; F('vKm').value = km; F('hType').value = 'ind'; F('cPer').value = 'Daily';
@@ -960,7 +1062,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
     var canShare = !!(navigator.canShare && navigator.canShare({ files: [file] }));
     if (!canShare && !CUSTOMER) { pdf.save(fileName()); return; }
     $('#pdfShare').hidden = !canShare;
-    $('#pdfMsg').innerHTML = CUSTOMER ? (canShare ? 'Tap <b>Send / share…</b>, choose <b>WhatsApp</b> and send it to LuxeClub (+971 50 610 1375).' : 'Tap <b>Download</b>, then send the PDF to LuxeClub on WhatsApp (+971 50 610 1375).') : 'Download it, or send it straight to the customer on WhatsApp.';
+    $('#pdfMsg').innerHTML = FLOW ? 'Your signed rental agreement. Tap <b>Download</b> to save it' + (canShare ? ', or <b>Send / share…</b> to keep it in WhatsApp or Files.' : '.') : CUSTOMER ? (canShare ? 'Tap <b>Send / share…</b>, choose <b>WhatsApp</b> and send it to LuxeClub (+971 50 610 1375).' : 'Tap <b>Download</b>, then send the PDF to LuxeClub on WhatsApp (+971 50 610 1375).') : 'Download it, or send it straight to the customer on WhatsApp.';
     $('#pdfDlg').showModal();
   }
   $('#pdfDl').onclick = function () { if (lastPdf) lastPdf.pdf.save(fileName()); };
@@ -985,6 +1087,169 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
   $('#linkShare').onclick = function () { navigator.share({ title: 'LuxeClub rental agreement', text: 'Please fill in your details and sign your LuxeClub rental agreement:', url: $('#linkTxt').value }).catch(function () {}); };
   $('#linkX').onclick = function () { $('#linkDlg').close(); };
 
+  /* ---------- online agreements: shared bits ---------- */
+  var CKEYS = ['hType', 'hName', 'hPhone', 'hEmail', 'hNat', 'hDob', 'hAddr', 'hPass', 'hPassIss', 'hPassExp', 'hDl', 'hDlIss', 'hDlExp', 'hEid', 'hEidIss', 'hEidExp', 'hTl', 'hTlIss', 'hTlExp', 'aName', 'aNat', 'aId', 'aIdExp', 'aDl', 'aDlIss', 'aDlExp', 'aPhone', 'aAddr'];
+  var BKEYS = ['agNo', 'agDate', 'branch', 'vCar', 'vPlate', 'vColour', 'vKm', 'vOut', 'vIn', 'vMOut', 'vMIn', 'vFOut', 'vFIn', 'cPer', 'cRate', 'cQty', 'cCdw', 'cDel', 'cOthD', 'cOth', 'cFuel', 'cXkm', 'cDep', 'cPaid'];
+  function grab(keys) { var o = {}; keys.forEach(function (k) { var el = F(k); if (el && String(el.value).trim()) o[k] = el.value; }); return o; }
+  function apiCall(path, opt) { opt = opt || {}; opt.credentials = 'same-origin'; opt.cache = 'no-store';
+    return fetch('/api/agreements' + path, opt).then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) {
+      if (r.status === 401) { var e = new Error('login'); e.login = true; throw e; } if (!r.ok) throw new Error(j.error || 'Something went wrong – please try again.'); return j; }); }); }
+  function signUrl(t) { return (/^https?:/.test(location.protocol) ? location.origin + '/forms/sign.html' : CUST_URL) + '?t=' + t; }
+  function fmtD(v) { if (!v) return ''; var a = String(v).split('T'), p = a[0].split('-'); return (p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : a[0]) + (a[1] ? ', ' + a[1].slice(0, 5) : ''); }
+  function blankForm() { var branch = F('branch').value || 'Business Bay', xkm = F('cXkm').value || '10', km = F('vKm').value || '250 km';
+    $$('[data-k]').forEach(function (el) { el.value = ''; el.classList.remove('filled'); }); F('branch').value = branch; F('cXkm').value = xkm; F('vKm').value = km; F('hType').value = 'ind'; F('cPer').value = 'Daily';
+    sigs = {}; docs = []; $('#thumbs').innerHTML = ''; }
+
+  /* ---------- online agreements: staff ---------- */
+  var ON = { token: null, data: null };
+  var ST = { awaiting_documents: ['Waiting for documents', 'w'], details_received: ['Documents in – add car & price', 'n'], ready_to_sign: ['Sent – waiting for signature', 's'], signed: ['Signed ✓', 'd'] };
+  function loadInbox() {
+    if (CUSTOMER) return Promise.resolve();
+    if (!/^https?:/.test(location.protocol)) { $('#inList').innerHTML = '<div class="empty">Online agreements work on the website version: luxeclubrentals.com/forms/agreement.html</div>'; $('#inNew').hidden = true; return Promise.resolve(); }
+    return apiCall('').then(function (j) { var list = j.agreements || [], n = list.filter(function (a) { return a.status === 'details_received'; }).length;
+      $('#onBadge').textContent = n; $('#onBadge').hidden = !n; $('#inNew').hidden = false; renderInbox(list); })
+      .catch(function (e) { $('#onBadge').hidden = true; $('#inNew').hidden = !!e.login;
+        $('#inList').innerHTML = '<div class="empty">' + (e.login ? 'Log in to the website with your staff account to use online agreements.<br><br><a href="/sign-in?redirectTo=/forms/agreement.html">Log in</a>' : esc(e.message)) + '</div>'; });
+  }
+  function renderInbox(list) {
+    $('#inList').innerHTML = list.length ? list.map(function (a) { var st = ST[a.status] || [a.status, ''];
+      return '<div class="in-it" data-t="' + esc(a.token) + '" data-s="' + esc(a.status) + '"><div><b>' + esc(a.name || 'New customer') + '</b><small>' + esc([a.agNo, a.car, 'updated ' + fmtD(a.updated.slice(0, 16))].filter(Boolean).join(' · ')) + '</small><span class="chip ' + st[1] + '">' + esc(st[0]) + '</span></div>' +
+        '<div>' + (a.status === 'awaiting_documents' ? '' : '<button class="op">Open</button>') + '<button class="lk">Link</button><button class="del">Delete</button></div></div>'; }).join('')
+      : '<div class="empty">No online agreements yet.</div>';
+  }
+  function showLink(t, status) {
+    var url = signUrl(t), ready = status === 'ready_to_sign';
+    var msg = ready ? 'Your LuxeClub rental agreement is ready – please check it and sign here: ' : 'Welcome to LuxeClub! Please upload your documents for your rental agreement here: ';
+    $('#linkInfo').textContent = ready ? 'The agreement is ready. Send the customer this link to check it and sign – it is the same link they used for their documents.' : 'Send the customer this link. They take photos of their documents (their details fill in automatically) and send them to you. Their details then appear under Online agreements, where you add the car and price.';
+    $('#linkTxt').value = url; $('#linkWa').href = 'https://wa.me/?text=' + encodeURIComponent(msg + url); $('#linkShare').hidden = !navigator.share; $('#linkNote').textContent = '';
+    $('#linkShare').onclick = function () { navigator.share({ title: 'LuxeClub rental agreement', text: msg, url: url }).catch(function () {}); };
+    $('#linkDlg').showModal(); $('#linkTxt').select();
+  }
+  function closeOnline() { ON.token = null; ON.data = null; $('#onBar').hidden = true; }
+  function showOnBar() {
+    var a = ON.data; if (!a) return; var nm = a.customer.hName || 'customer';
+    $('#onTxt').innerHTML = '<b>Online agreement – ' + esc(nm) + '</b><br>' + (a.status === 'signed' ? 'Signed by the customer on ' + esc(fmtD(a.signedAt.slice(0, 16))) + '. Use Download PDF for the signed copy.' : a.status === 'ready_to_sign' ? 'Sent for signing – you can still change it and resend.' : 'Check their details and documents, add the car and charges, sign as company representative, then send it to them to sign.');
+    $('#onSend').hidden = a.status === 'signed'; $('#onSend').textContent = a.status === 'ready_to_sign' ? 'Save & resend' : 'Send to customer to sign';
+    $('#onBar').hidden = false;
+  }
+  function openOnline(t) {
+    apiCall('/' + t + '?staff=1').then(function (j) { var a = j.agreement;
+      keep(collect(true)); blankForm();
+      var o = Object.assign({}, a.customer, a.booking); o.sigs = Object.assign({}, a.sigs || {}); if (a.coSig) o.sigs.sCo = a.coSig;
+      fill(o); if (!F('agNo').value) F('agNo').value = nextNo(); if (!F('agDate').value) F('agDate').value = today();
+      (j.docUrls || []).forEach(function (du) { if (!du.url) return; var d = { type: du.type, who: du.who, url: du.url, img: new Image() }; d.img.crossOrigin = 'anonymous'; d.img.src = du.url; docs.push(d); addThumb(d); status(d, 'ok', 'From the customer'); });
+      ON.token = t; ON.data = a; showOnBar(); calc(); save(); $('#inbox').close(); window.scrollTo(0, 0);
+    }).catch(function (e) { alert(e.login ? 'Please log in to the website first.' : e.message); });
+  }
+  $('#bOnline').onclick = function () { $('#inbox').showModal(); loadInbox(); };
+  $('#inX').onclick = function () { $('#inbox').close(); };
+  $('#inNew').onclick = function () { var b = this; b.disabled = true; apiCall('', { method: 'POST' }).then(function (j) { showLink(j.token, 'awaiting_documents'); loadInbox(); })
+    .catch(function (e) { alert(e.login ? 'Please log in to the website first.' : e.message); }).then(function () { b.disabled = false; }); };
+  $('#inList').addEventListener('click', function (e) { var row = e.target.closest('.in-it'); if (!row) return; var t = row.dataset.t;
+    if (e.target.classList.contains('op')) openOnline(t);
+    if (e.target.classList.contains('lk')) showLink(t, row.dataset.s);
+    if (e.target.classList.contains('del') && confirm('Delete this online agreement and the customer\'s document photos? (Download the PDF first if you need it.)')) apiCall('/' + t, { method: 'DELETE' }).then(function () { if (ON.token === t) closeOnline(); loadInbox(); }).catch(function (er) { alert(er.message); }); });
+  $('#onLink').onclick = function () { if (ON.token) showLink(ON.token, ON.data.status); };
+  $('#onClose').onclick = closeOnline;
+  $('#onSend').onclick = function () { if (!ON.token) return; remember();
+    var b = grab(BKEYS); if (!b.vCar || !b.cRate) { alert('Add the car and the rate first.'); return; }
+    if (!sigs.sCo && !confirm('You have not signed as company representative yet. Send it anyway?')) return;
+    var btn = this; btn.disabled = true;
+    apiCall('/' + ON.token, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ customer: grab(CKEYS), booking: b, coSig: sigs.sCo || null, status: 'ready_to_sign' }) })
+      .then(function (j) { ON.data = j.agreement; showOnBar(); loadInbox(); keep(collect(true)); showLink(ON.token, 'ready_to_sign'); })
+      .catch(function (e) { alert(e.login ? 'Please log in to the website first.' : e.message); }).then(function () { btn.disabled = false; });
+  };
+
+  /* ---------- online agreements: customer steps ---------- */
+  var flKind = 'ind', flDocs = [], flData = null, cards = {};
+  var DOCSET = { ind: [['passport', 'Passport', 'The photo page'], ['dl', 'Driving licence', 'The front of the licence']], b2b: [['eid', 'Emirates ID', 'The back of the card (with the <<< lines)'], ['tl', 'Trade licence', 'The page with the licence number']] };
+  var FIELDS = {
+    ind: [['hName', 'Full name (as on your passport)'], ['hPhone', 'Mobile / WhatsApp number', 'tel'], ['hEmail', 'Email', 'email'], ['hNat', 'Nationality'], ['hDob', 'Date of birth', 'date'], ['hAddr', 'Hotel or address in the UAE'], ['hPass', 'Passport number'], ['hPassExp', 'Passport expiry date', 'date'], ['hDl', 'Driving licence number'], ['hDlIss', 'Licence issue date', 'date'], ['hDlExp', 'Licence expiry date', 'date']],
+    b2b: [['hName', 'Company name'], ['hPhone', 'Mobile / WhatsApp number', 'tel'], ['hEmail', 'Email', 'email'], ['hAddr', 'Company address'], ['hEid', 'Emirates ID number'], ['hEidExp', 'Emirates ID expiry date', 'date'], ['hNat', 'Nationality'], ['hDob', 'Date of birth', 'date'], ['hTl', 'Trade licence number'], ['hTlIss', 'Trade licence issue date', 'date'], ['hTlExp', 'Trade licence expiry date', 'date']] };
+  function step(n) { $$('#flow section').forEach(function (x) { x.classList.toggle('on', x.dataset.step === n); }); window.scrollTo(0, 0); }
+  function flApi(path, opt) { return apiCall('/' + TOKEN + path, opt); }
+  function makeCard(type, title, hint) {
+    var el = document.createElement('div'); el.className = 'fl-doc';
+    el.innerHTML = '<div class="ph">＋</div><div class="tx"><b></b><span class="st"></span></div><label><span class="lb">Add photo</span><input type="file" accept="image/*"></label>';
+    $('b', el).textContent = title; $('.st', el).textContent = hint;
+    $('input', el).addEventListener('change', function () { var f = this.files[0]; this.value = ''; if (f) addFlowDoc(el, type, f); });
+    return el;
+  }
+  function addFlowDoc(el, type, file) {
+    if (el._d) flDocs.splice(flDocs.indexOf(el._d), 1);
+    var d = { type: type, who: 'h', url: URL.createObjectURL(file), img: new Image(), el: el }; el._d = d; flDocs.push(d);
+    $('.ph', el).style.backgroundImage = 'url(' + d.url + ')'; $('.ph', el).textContent = ''; el.classList.add('done'); $('.lb', el).textContent = 'Change';
+    status(d, '', type === 'other' ? 'Added' : 'Reading your details…');
+    d.img.onload = function () { read(d); }; d.img.onerror = function () { status(d, 'err', 'That photo could not be opened – try another'); }; d.img.src = d.url; updDocs();
+  }
+  function setKind(k) { flKind = k; F('hType').value = k; $$('.fl-kind button').forEach(function (b) { b.classList.toggle('on', b.dataset.kind === k); });
+    Object.keys(cards).forEach(function (t) { cards[t].hidden = !DOCSET[k].some(function (d) { return d[0] === t; }); }); updDocs(); save(); }
+  function updDocs() { $('#flToCheck').disabled = !DOCSET[flKind].every(function (d) { return cards[d[0]]._d; }); }
+  function renderCheck() { var box = $('#flFields'); box.innerHTML = '';
+    FIELDS[flKind].forEach(function (f) { var l = document.createElement('label'); l.innerHTML = '<span></span><input>'; $('span', l).textContent = f[1];
+      var i = $('input', l), src = F(f[0]); i.type = f[2] || 'text'; i.value = src.value; if (f[2] === 'tel') i.inputMode = 'tel'; if (src.classList.contains('filled') && src.value) i.classList.add('filled');
+      i.addEventListener('input', function () { src.value = i.value; i.classList.remove('filled'); src.classList.remove('filled'); save(); }); box.appendChild(l); }); }
+  function shrink(img) { var sc = Math.min(1, 1800 / Math.max(img.naturalWidth, img.naturalHeight)), c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth * sc); c.height = Math.round(img.naturalHeight * sc);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); return new Promise(function (ok) { c.toBlob(ok, 'image/jpeg', 0.85); }); }
+  function fillFrom(j) { blankForm(); var o = Object.assign({}, j.customer || {}, j.booking || {}); o.sigs = Object.assign({}, j.sigs || {}); if (j.coSig) o.sigs.sCo = j.coSig; fill(o); }
+  function row(label, v, cls) { return v ? '<div class="fl-row' + (cls ? ' ' + cls : '') + '"><span>' + esc(label) + '</span><b>' + esc(v) + '</b></div>' : ''; }
+  function card(title, rows) { return rows ? '<div class="fl-card"><h3>' + esc(title) + '</h3>' + rows + '</div>' : ''; }
+  function aed(k) { var v = F(k).value; return String(v).trim() ? money(num(v)) : ''; }
+  function renderSummary() { var V = function (k) { return F(k).value; }, per = { Daily: 'day', Weekly: 'week', Monthly: 'month' }[V('cPer')] || 'day';
+    var qty = V('cQty').trim() || '1';
+    $('#flSummary').innerHTML =
+      card('Agreement', row('Agreement no.', V('agNo')) + row('Date', fmtD(V('agDate'))) + row('Branch', V('branch'))) +
+      card('Hirer', row('Name', V('hName')) + row('Mobile', V('hPhone')) + row('Email', V('hEmail')) + row('Passport', V('hPass')) + row('Emirates ID', V('hEid')) + row('Driving licence', V('hDl')) + row('Trade licence', V('hTl'))) +
+      card('Additional driver', row('Name', V('aName')) + row('ID', V('aId')) + row('Driving licence', V('aDl'))) +
+      card('Car', row('Car', V('vCar')) + row('Plate', V('vPlate')) + row('Colour', V('vColour')) + row('Collection', fmtD(V('vOut'))) + row('Return', fmtD(V('vIn'))) + row('Km allowance', V('vKm') ? V('vKm') + ' per day' : '') + row('Extra km', V('cXkm') ? 'AED ' + V('cXkm') + ' per km' : '')) +
+      card('Charges', row('Rate', aed('cRate') ? aed('cRate') + ' per ' + per + ' × ' + qty : '') + row('Delivery', aed('cDel')) + row(V('cOthD') || 'Other charges', aed('cOth')) + row('Fuel', aed('cFuel')) + row('Total', $('#tTot').textContent, 'tot') + row('Paid', aed('cPaid')) + row('Balance', $('#tBal').textContent, 'tot') + row('Security deposit', aed('cDep')) + row('Insurance excess (CDW)', aed('cCdw')));
+  }
+  function drawFlowSig() { var box = $('#flSig'), c = $('canvas', box), r = box.getBoundingClientRect(); c.width = r.width * 2; c.height = r.height * 2; var x = c.getContext('2d'), im = sigImg('sHirer');
+    $('span', box).textContent = im ? '' : 'Tap here to sign'; if (!im) return;
+    var go = function () { var k = Math.min((c.width - 40) / im.naturalWidth, (c.height - 30) / im.naturalHeight); x.clearRect(0, 0, c.width, c.height); x.drawImage(im, (c.width - im.naturalWidth * k) / 2, (c.height - im.naturalHeight * k) / 2, im.naturalWidth * k, im.naturalHeight * k); };
+    if (im.complete && im.naturalWidth) go(); else im.onload = go; }
+  function updSign() { $('#flSign').disabled = !($('#flAgree').checked && sigs.sHirer); }
+  function showDone(j) { $('#flDoneTxt').textContent = 'You signed your rental agreement' + (j.signedAt ? ' on ' + fmtD(j.signedAt.slice(0, 16)) : '') + '. LuxeClub has a copy – download yours below and keep it.'; step('done'); }
+  function loadFlow() {
+    step('load');
+    flApi('').then(function (j) { flData = j;
+      if (j.status === 'awaiting_documents') { setKind(F('hType').value === 'b2b' ? 'b2b' : 'ind'); step('docs'); loadTess().catch(function () {}); }
+      else if (j.status === 'details_received') step('wait');
+      else if (j.status === 'ready_to_sign') { fillFrom(j); delete sigs.sHirer; delete sigs.sCard; renderSummary(); step('sign'); drawFlowSig(); updSign(); }
+      else if (j.status === 'signed') { fillFrom(j); showDone(j); }
+    }).catch(function (e) { $('#flErr').textContent = /not found|not valid/i.test(e.message) ? 'This link is not valid – please ask LuxeClub to send you a new one.' : e.message; step('err'); });
+  }
+  function initFlow() {
+    document.body.classList.add('flow'); $('#flow').hidden = false;
+    DOCSET.ind.concat(DOCSET.b2b).forEach(function (d) { cards[d[0]] = makeCard(d[0], d[1], d[2]); $('#flDocs').appendChild(cards[d[0]]); });
+    $$('.fl-kind button').forEach(function (b) { b.onclick = function () { setKind(b.dataset.kind); }; });
+    $('#flAddOther').onclick = function () { if (flDocs.length >= 8) { alert('That is the most photos you can add.'); return; } var el = makeCard('other', 'Extra photo', 'Optional'); $('#flDocs').appendChild(el); $('input', el).click(); };
+    $('#flToCheck').onclick = function () { renderCheck(); step('check'); };
+    $('#flBack').onclick = function () { step('docs'); };
+    $('#flRefresh').onclick = loadFlow;
+    $('#flSend').onclick = function () {
+      if (!F('hName').value.trim() || !F('hPhone').value.trim()) { alert('Please add your name and mobile number.'); return; }
+      var btn = this, list = flDocs.filter(function (d) { return !d.sent && d.img.naturalWidth; }), i = 0; btn.disabled = true;
+      var next = function () { if (i >= list.length) return Promise.resolve(); var d = list[i++]; btn.textContent = 'Sending photo ' + i + ' of ' + list.length + '…';
+        return shrink(d.img).then(function (blob) { var fd = new FormData(); fd.append('file', blob, 'document.jpg'); fd.append('type', d.type); fd.append('who', d.who); return flApi('/documents', { method: 'POST', body: fd }); }).then(function () { d.sent = true; return next(); }); };
+      next().then(function () { btn.textContent = 'Sending your details…'; return flApi('/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ customer: grab(CKEYS) }) }); })
+        .then(function () { step('wait'); store.set(KEY, null); })
+        .catch(function (e) { alert(e.message); }).then(function () { btn.disabled = false; btn.textContent = 'Send to LuxeClub'; });
+    };
+    $('#flTerms').onclick = function () { var z = $('#zoom'); $('img', z).src = $('#termsImg').src; z.classList.add('terms'); z.hidden = false; z.scrollTop = 0; };
+    $('#zoom').addEventListener('click', function () { this.classList.remove('terms'); });
+    $('#flAgree').onchange = updSign;
+    $('#flSig').onclick = function () { onSigDone = function () { onSigDone = null; drawFlowSig(); updSign(); }; openSigKey('sHirer', 'Your signature'); };
+    $('#flSign').onclick = function () { var btn = this; btn.disabled = true; btn.textContent = 'Signing…';
+      flApi('/sign', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ agree: true, sHirer: sigs.sHirer }) })
+        .then(function (j) { flData = j; fillFrom(j); showDone(j); })
+        .catch(function (e) { alert(e.message); btn.disabled = false; }).then(function () { btn.textContent = 'Sign agreement'; });
+    };
+    $('#flPdf').onclick = function () { if (flData) fillFrom(flData); $('#attach').checked = false; $('#bPdf').onclick(); };
+    window.addEventListener('resize', function () { if ($('#flSig').offsetParent) drawFlowSig(); });
+    loadFlow();
+  }
+
   /* ---------- previous agreements ---------- */
   var dlg = $('#hist');
   function fmtDate(v) { if (!v) return ''; var p = v.split('-'); return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : v; }
@@ -997,7 +1262,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
   $('#hClose').onclick = function () { dlg.close(); };
   $('#hFind').addEventListener('input', listHist);
   $('#hList').addEventListener('click', function (e) { var row = e.target.closest('.it'); if (!row) return; var no = row.dataset.no, h = store.get(HIST, {});
-    if (e.target.classList.contains('op')) { keep(collect(true)); fill(h[no].data); docs = []; $('#thumbs').innerHTML = ''; store.set(KEY, collect(true)); dlg.close(); window.scrollTo(0, 0); }
+    if (e.target.classList.contains('op')) { closeOnline(); keep(collect(true)); fill(h[no].data); docs = []; $('#thumbs').innerHTML = ''; store.set(KEY, collect(true)); dlg.close(); window.scrollTo(0, 0); }
     if (e.target.classList.contains('del')) { if (no === $('#agNo').value.trim()) { alert('This agreement is open now – open a different one first.'); return; } if (confirm('Delete agreement ' + no + '?')) { delete h[no]; store.set(HIST, h); listHist(); } } });
   $('#hBackup').onclick = function () { keep(collect(true)); var blob = new Blob([JSON.stringify({ app: 'LuxeClub Agreement', saved: new Date().toISOString(), history: store.get(HIST, {}), customers: store.get(CUST, {}), cars: store.get(CARS, {}), seq: store.get(SEQ, 0) })], { type: 'application/json' });
     var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'LuxeClub agreements backup ' + today() + '.json'; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500); };
@@ -1013,7 +1278,8 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
 
   /* start */
   refreshLists(); fit();
-  var d0 = store.get(KEY, null);
+  if (FLOW) KEY = 'luxeSign.flow';
+  var d0 = FLOW ? null : store.get(KEY, null);
   var bk = CUSTOMER && /[#&]b=([^&]+)/.test(location.hash) ? b64.dec(/[#&]b=([^&]+)/.exec(location.hash)[1]) : null;
   if (d0 && bk && (d0.agNo || '') !== (bk.agNo || '')) d0 = null; // a different booking: start clean
   if (d0) fill(d0); else { $('#agNo').value = CUSTOMER ? '' : nextNo(); $('#agDate').value = today(); calc(); }
@@ -1021,6 +1287,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
   if (CUSTOMER) { LOCK.concat(['agNo', 'agDate', 'branch']).forEach(function (k) { var el = F(k); if (!el) return; el.setAttribute('data-lock', ''); el.tabIndex = -1; if (el.tagName === 'SELECT') el.disabled = true; else el.readOnly = true; }); $('#agNo').placeholder = ''; }
   store.set(KEY, collect(true));
   window.addEventListener('load', redrawSigs);
+  if (FLOW) initFlow(); else if (!CUSTOMER) { loadInbox(); if (/^https?:/.test(location.protocol)) setInterval(loadInbox, 120000); }
 })();
 </script>
 </body>
