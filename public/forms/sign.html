@@ -183,6 +183,22 @@ body.flow .tip,body.flow .scan,body.flow .page,body.flow #bPdf{display:none!impo
 body.flow.pdfmode .page{display:flex!important}
 body.flow.pdfmode #flow{display:none!important}
 
+/* document photos beside the form (staff) */
+#docSide{position:fixed;top:64px;right:12px;bottom:12px;width:min(640px,calc(100vw - 794px - 48px));min-width:340px;background:#fff;border:1px solid #ddd;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.14);display:flex;flex-direction:column;z-index:4}
+#docSide .ds-h{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 14px;background:#111;color:#fff;border-radius:10px 10px 0 0;font:500 15px var(--serif)}
+#docSide .ds-h small{font:400 11px var(--sans);color:#aaa;display:block}
+#docSide button,#dsShow{font:500 12px var(--sans);border:1px solid #555;background:#1c1c1c;color:#fff;padding:6px 10px;border-radius:6px;cursor:pointer}
+#dsList{overflow:auto;padding:12px;flex:1}
+.ds-it{margin-bottom:16px}.ds-it b{display:block;font:600 12px var(--sans);margin-bottom:5px;color:#333}
+.ds-it .vw{overflow:auto;border:1px solid #e6e2d8;border-radius:6px;max-height:72vh;cursor:zoom-in;background:#f6f4ef}
+.ds-it .vw img{display:block;width:100%}
+.ds-it .vw.z{cursor:zoom-out}.ds-it .vw.z img{width:230%;max-width:none}
+#dsShow{position:fixed;right:12px;bottom:12px;z-index:4;background:var(--gold);border-color:var(--gold);color:#111;padding:9px 14px;font-size:13px;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+@media (min-width:1180px){body.side .page,body.side .tip,body.side .scan,body.side .onbar{margin-left:16px;margin-right:auto}}
+@media (max-width:820px){#docSide{top:auto;left:8px;right:8px;width:auto;min-width:0;height:44vh}body.side .page{margin-bottom:46vh}}
+body.pdfmode #docSide,body.pdfmode #dsShow{display:none!important}
+@media print{#docSide,#dsShow{display:none!important}}
+
 /* phones and narrow windows (the PDF always uses the A4 layout) */
 @media (max-width:820px){
   .bar{position:static;padding:8px 10px;gap:6px}.bar .t{font-size:14px;width:100%}
@@ -222,15 +238,15 @@ body.flow.pdfmode #flow{display:none!important}
   <section data-step="err"><h2 class="fl-h">Sorry</h2><p id="flErr"></p></section>
   <section data-step="docs">
     <p class="fl-step">Step 1 of 2</p><h2 class="fl-h">Your documents</h2>
-    <p class="fl-muted">Take a clear photo of each document – flat, in focus, with the whole document in the frame. We fill in your details from them.</p>
+    <p class="fl-muted">Take a clear photo of each document – flat, in good light, no glare, with the whole document in the frame and all the writing easy to read.</p>
     <div class="fl-kind"><button data-kind="ind">Visitor / tourist<small>Passport + driving licence</small></button><button data-kind="b2b">Business<small>Emirates ID + trade licence</small></button></div>
     <div id="flDocs"></div>
     <button class="fl-add" id="flAddOther">+ Add another photo <small>(back of a licence, additional driver…)</small></button>
     <button class="fl-go" id="flToCheck" disabled>Continue</button>
   </section>
   <section data-step="check">
-    <p class="fl-step">Step 2 of 2</p><h2 class="fl-h">Check your details</h2>
-    <p class="fl-muted"><span class="fl-yel">Yellow</span> boxes were read from your photos – please check them and fill in anything missing.</p>
+    <p class="fl-step">Step 2 of 2</p><h2 class="fl-h">Your contact details</h2>
+    <p class="fl-muted">So we can prepare your agreement and send it to you.</p>
     <div id="flFields" class="fl-form"></div>
     <button class="fl-go" id="flSend">Send to LuxeClub</button>
     <button class="fl-back" id="flBack">Back</button>
@@ -267,6 +283,8 @@ body.flow.pdfmode #flow{display:none!important}
 </section>
 
 <div class="onbar staff noprint" id="onBar" hidden><span id="onTxt"></span><span><button id="onSend" class="pri">Send to customer to sign</button><button id="onLink">Customer link</button><button id="onClose">Close</button></span></div>
+<aside id="docSide" class="staff noprint" hidden><div class="ds-h"><span>Customer's documents<small>Click a photo to zoom in, click again to zoom out</small></span><button id="dsHide">Hide</button></div><div id="dsList"></div></aside>
+<button id="dsShow" class="staff noprint" hidden>Show documents</button>
 <div class="page" id="page">
   <div class="head">
     <div class="mark"><div class="w">LUXECLUB</div><div class="s">RENTALS</div><div class="l">LuxeClub Car Rental Co. L.L.C S.O.C · Dubai, United Arab Emirates</div></div>
@@ -379,7 +397,7 @@ body.flow.pdfmode #flow{display:none!important}
 </dialog>
 <dialog id="inbox" class="dlg staff">
   <div class="hh"><b>Online agreements</b><button class="xclose" id="inX" title="Close">×</button></div>
-  <div class="area"><p>Send a customer a link: they upload their documents (their details fill in automatically), you add the car and price here, then they sign on their phone with the same link.</p>
+  <div class="area"><p>Send a customer a link: they send photos of their documents and their contact details, you type in the document details and add the car and price here, then they sign on their phone with the same link.</p>
     <button id="inNew" class="fl-go" style="margin-top:8px">+ New customer link</button>
     <div id="inList" class="inlist"></div></div>
 </dialog>
@@ -1120,7 +1138,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
   function showLink(t, status) {
     var url = signUrl(t), ready = status === 'ready_to_sign';
     var msg = ready ? 'Your LuxeClub rental agreement is ready – please check it and sign here: ' : 'Welcome to LuxeClub! Please upload your documents for your rental agreement here: ';
-    $('#linkInfo').textContent = ready ? 'The agreement is ready. Send the customer this link to check it and sign – it is the same link they used for their documents.' : 'Send the customer this link. They take photos of their documents (their details fill in automatically) and send them to you. Their details then appear under Online agreements, where you add the car and price.';
+    $('#linkInfo').textContent = ready ? 'The agreement is ready. Send the customer this link to check it and sign – it is the same link they used for their documents.' : 'Send the customer this link. They take photos of their documents and send them to you with their contact details. Their details then appear under Online agreements, where you add the car and price.';
     $('#linkTxt').value = url; $('#linkWa').href = 'https://wa.me/?text=' + encodeURIComponent(msg + url); $('#linkShare').hidden = !navigator.share; $('#linkNote').textContent = '';
     $('#linkShare').onclick = function () { navigator.share({ title: 'LuxeClub rental agreement', text: msg, url: url }).catch(function () {}); };
     $('#linkDlg').showModal(); $('#linkTxt').select();
@@ -1128,7 +1146,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
   function closeOnline() { ON.token = null; ON.data = null; $('#onBar').hidden = true; }
   function showOnBar() {
     var a = ON.data; if (!a) return; var nm = a.customer.hName || 'customer';
-    $('#onTxt').innerHTML = '<b>Online agreement – ' + esc(nm) + '</b><br>' + (a.status === 'signed' ? 'Signed by the customer on ' + esc(fmtD(a.signedAt.slice(0, 16))) + '. Use Download PDF for the signed copy.' : a.status === 'ready_to_sign' ? 'Sent for signing – you can still change it and resend.' : 'Check their details and documents, add the car and charges, sign as company representative, then send it to them to sign.');
+    $('#onTxt').innerHTML = '<b>Online agreement – ' + esc(nm) + '</b><br>' + (a.status === 'signed' ? 'Signed by the customer on ' + esc(fmtD(a.signedAt.slice(0, 16))) + '. Use Download PDF for the signed copy.' : a.status === 'ready_to_sign' ? 'Sent for signing – you can still change it and resend.' : 'Tap each document photo to see it full size and type in the passport / licence details, add the car and charges, sign as company representative, then send it to them to sign.');
     $('#onSend').hidden = a.status === 'signed'; $('#onSend').textContent = a.status === 'ready_to_sign' ? 'Save & resend' : 'Send to customer to sign';
     $('#onBar').hidden = false;
   }
@@ -1160,12 +1178,35 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
       .catch(function (e) { alert(e.login ? 'Please log in to the website first.' : e.message); }).then(function () { btn.disabled = false; });
   };
 
+  /* document photos beside the form */
+  var sideHidden = false;
+  function renderSide() {
+    if (CUSTOMER) return;
+    var list = docs.filter(function (d) { return d.url; });
+    $('#dsList').innerHTML = '';
+    list.forEach(function (d) {
+      var it = document.createElement('div'); it.className = 'ds-it';
+      it.innerHTML = '<b></b><div class="vw"><img alt=""></div>';
+      $('b', it).textContent = ({ passport: 'Passport', eid: 'Emirates ID', dl: 'Driving licence', tl: 'Trade licence', other: 'Other photo' }[d.type] || 'Document') + (d.who === 'a' ? ' – additional driver' : '');
+      $('img', it).src = d.url; $('.vw', it).onclick = function () { this.classList.toggle('z'); };
+      $('#dsList').appendChild(it);
+    });
+    var show = list.length > 0;
+    $('#docSide').hidden = !show || sideHidden; $('#dsShow').hidden = !show || !sideHidden;
+    document.body.classList.toggle('side', show && !sideHidden);
+  }
+  if (!CUSTOMER) {
+    new MutationObserver(renderSide).observe($('#thumbs'), { childList: true });
+    $('#dsHide').onclick = function () { sideHidden = true; renderSide(); };
+    $('#dsShow').onclick = function () { sideHidden = false; renderSide(); };
+  }
+
   /* ---------- online agreements: customer steps ---------- */
   var flKind = 'ind', flDocs = [], flData = null, cards = {};
   var DOCSET = { ind: [['passport', 'Passport', 'The photo page'], ['dl', 'Driving licence', 'The front of the licence']], b2b: [['eid', 'Emirates ID', 'The back of the card (with the <<< lines)'], ['tl', 'Trade licence', 'The page with the licence number']] };
   var FIELDS = {
-    ind: [['hName', 'Full name (as on your passport)'], ['hPhone', 'Mobile / WhatsApp number', 'tel'], ['hEmail', 'Email', 'email'], ['hNat', 'Nationality'], ['hDob', 'Date of birth', 'date'], ['hAddr', 'Hotel or address in the UAE'], ['hPass', 'Passport number'], ['hPassExp', 'Passport expiry date', 'date'], ['hDl', 'Driving licence number'], ['hDlIss', 'Licence issue date', 'date'], ['hDlExp', 'Licence expiry date', 'date']],
-    b2b: [['hName', 'Company name'], ['hPhone', 'Mobile / WhatsApp number', 'tel'], ['hEmail', 'Email', 'email'], ['hAddr', 'Company address'], ['hEid', 'Emirates ID number'], ['hEidExp', 'Emirates ID expiry date', 'date'], ['hNat', 'Nationality'], ['hDob', 'Date of birth', 'date'], ['hTl', 'Trade licence number'], ['hTlIss', 'Trade licence issue date', 'date'], ['hTlExp', 'Trade licence expiry date', 'date']] };
+    ind: [['hName', 'Full name (as on your passport)'], ['hPhone', 'Mobile / WhatsApp number', 'tel'], ['hEmail', 'Email', 'email'], ['hAddr', 'Hotel or address in the UAE']],
+    b2b: [['hName', 'Company name'], ['hPhone', 'Mobile / WhatsApp number', 'tel'], ['hEmail', 'Email', 'email'], ['hAddr', 'Company address']] };
   function step(n) { $$('#flow section').forEach(function (x) { x.classList.toggle('on', x.dataset.step === n); }); window.scrollTo(0, 0); }
   function flApi(path, opt) { return apiCall('/' + TOKEN + path, opt); }
   function makeCard(type, title, hint) {
@@ -1179,8 +1220,8 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
     if (el._d) flDocs.splice(flDocs.indexOf(el._d), 1);
     var d = { type: type, who: 'h', url: URL.createObjectURL(file), img: new Image(), el: el }; el._d = d; flDocs.push(d);
     $('.ph', el).style.backgroundImage = 'url(' + d.url + ')'; $('.ph', el).textContent = ''; el.classList.add('done'); $('.lb', el).textContent = 'Change';
-    status(d, '', type === 'other' ? 'Added' : 'Reading your details…');
-    d.img.onload = function () { read(d); }; d.img.onerror = function () { status(d, 'err', 'That photo could not be opened – try another'); }; d.img.src = d.url; updDocs();
+    status(d, 'ok', 'Photo added ✓');
+    d.img.onload = function () {}; d.img.onerror = function () { status(d, 'err', 'That photo could not be opened – try another'); }; d.img.src = d.url; updDocs();
   }
   function setKind(k) { flKind = k; F('hType').value = k; $$('.fl-kind button').forEach(function (b) { b.classList.toggle('on', b.dataset.kind === k); });
     Object.keys(cards).forEach(function (t) { cards[t].hidden = !DOCSET[k].some(function (d) { return d[0] === t; }); }); updDocs(); save(); }
@@ -1213,7 +1254,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
   function loadFlow() {
     step('load');
     flApi('').then(function (j) { flData = j;
-      if (j.status === 'awaiting_documents') { setKind(F('hType').value === 'b2b' ? 'b2b' : 'ind'); step('docs'); loadTess().catch(function () {}); }
+      if (j.status === 'awaiting_documents') { setKind(F('hType').value === 'b2b' ? 'b2b' : 'ind'); step('docs'); }
       else if (j.status === 'details_received') step('wait');
       else if (j.status === 'ready_to_sign') { fillFrom(j); delete sigs.sHirer; delete sigs.sCard; renderSummary(); step('sign'); drawFlowSig(); updSign(); }
       else if (j.status === 'signed') { fillFrom(j); showDone(j); }
