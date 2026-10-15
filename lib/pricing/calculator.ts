@@ -26,7 +26,7 @@ export const ADDON_PRICES = {
  * (Business Bay / Downtown Dubai) is free.
  */
 export const DELIVERY_ZONE_FEES: Record<string, number> = {
-  within_dubai: 100,
+  within_dubai: 220,
   al_maktoum_airport: 200,
   sharjah_airport: 200,
   sharjah_city: 200,

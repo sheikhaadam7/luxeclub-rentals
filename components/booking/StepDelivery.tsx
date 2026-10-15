@@ -10,6 +10,7 @@ import { DeliveryZonePickerOverlay } from '@/components/booking/DeliveryZonePick
 import { SignInModal } from '@/components/booking/SignInModal'
 import { getLatestBookingForUser } from '@/app/actions/bookings'
 import { useCurrency } from '@/lib/currency/context'
+import { DELIVERY_ZONE_FEES as CHARGED_ZONE_FEES } from '@/lib/pricing/calculator'
 
 // Delivery zones — label + AED fee. Fee covers both delivery and collection.
 type ZoneKey =
@@ -23,17 +24,26 @@ type ZoneKey =
   | 'fujairah'
   | 'ras_al_khaimah'
 
-const DELIVERY_ZONE_OPTIONS: { value: ZoneKey; label: string; fee: number }[] = [
-  { value: 'within_dubai', label: 'Address within Dubai', fee: 100 },
-  { value: 'al_maktoum_airport', label: 'Al Maktoum Airport', fee: 200 },
-  { value: 'sharjah_airport', label: 'Sharjah Airport', fee: 200 },
-  { value: 'sharjah_city', label: 'Sharjah City', fee: 200 },
-  { value: 'ajman', label: 'Ajman', fee: 500 },
-  { value: 'abu_dhabi', label: 'Abu Dhabi', fee: 1000 },
-  { value: 'al_ain', label: 'Al Ain', fee: 1000 },
-  { value: 'fujairah', label: 'Fujairah', fee: 1000 },
-  { value: 'ras_al_khaimah', label: 'Ras Al Khaimah', fee: 1000 },
+// Labels only. The fee is READ from the pricing calculator below -- the
+// picker must never carry its own copy of a number the customer is
+// charged, or the two drift apart silently.
+const DELIVERY_ZONE_LABEL_LIST: { value: ZoneKey; label: string }[] = [
+  { value: 'within_dubai', label: 'Dubai Delivery & Collection Fee' },
+  { value: 'al_maktoum_airport', label: 'Al Maktoum Airport' },
+  { value: 'sharjah_airport', label: 'Sharjah Airport' },
+  { value: 'sharjah_city', label: 'Sharjah City' },
+  { value: 'ajman', label: 'Ajman' },
+  { value: 'abu_dhabi', label: 'Abu Dhabi' },
+  { value: 'al_ain', label: 'Al Ain' },
+  { value: 'fujairah', label: 'Fujairah' },
+  { value: 'ras_al_khaimah', label: 'Ras Al Khaimah' },
 ]
+
+const DELIVERY_ZONE_OPTIONS: { value: ZoneKey; label: string; fee: number }[] =
+  DELIVERY_ZONE_LABEL_LIST.map((o) => ({
+    ...o,
+    fee: CHARGED_ZONE_FEES[o.value] ?? 0,
+  }))
 
 const DELIVERY_ZONE_LABELS: Record<ZoneKey, string> = Object.fromEntries(
   DELIVERY_ZONE_OPTIONS.map((o) => [o.value, o.label]),
