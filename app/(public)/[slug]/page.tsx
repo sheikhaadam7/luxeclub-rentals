@@ -46,7 +46,6 @@ const KEYWORD_LINKS = [
   { label: 'Luxury Cars', slug: 'rent-luxury-car-in-dubai' },
   { label: 'Supercars', slug: 'rent-supercar-in-dubai' },
   { label: 'Exotic Cars', slug: 'rent-exotic-car-in-dubai' },
-  { label: 'No Deposit', slug: 'luxury-car-rental-no-deposit-dubai' },
   { label: 'Affordable', slug: 'rent-cheap-car-in-dubai' },
 ] as const
 
@@ -243,6 +242,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       images: [{ url: `${SITE_URL}/opengraph-image`, width: 1200, height: 630, alt: page.metaTitle }],
     },
     alternates: { canonical: `${SITE_URL}/${page.slug}` },
+    // Only set when flagged. A page-level robots object REPLACES the
+    // root one, so a default here would drop max-image-preview on all
+    // money pages.
+    ...(page.noindex ? { robots: { index: false, follow: true } } : {}),
   }
 }
 

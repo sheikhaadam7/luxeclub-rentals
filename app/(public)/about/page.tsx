@@ -4,7 +4,7 @@ import { T } from '@/components/ui/T'
 export const metadata: Metadata = {
   title: 'About Us',
   description:
-    'LuxeClub Rentals — Dubai\'s premium luxury car rental service. 500+ happy clients, curated fleet of 47 luxury vehicles with 24/7 concierge.',
+    'LuxeClub Rentals — Dubai\'s premium luxury car rental service. 500+ happy clients, curated fleet of 47 luxury vehicles with 24/7 support during your rental.',
   openGraph: {
     title: 'About LuxeClub Rentals — Dubai Luxury Car Hire',
     description:
@@ -22,7 +22,7 @@ const jsonLd = {
   '@type': 'AboutPage',
   name: 'About LuxeClub Rentals',
   description:
-    "Dubai's premium luxury car rental service. 3+ years of experience, 500+ happy clients, curated fleet of luxury vehicles with 24/7 concierge.",
+    "Dubai's premium luxury car rental service. 3+ years of experience, 500+ happy clients, curated fleet of luxury vehicles with 24/7 support during your rental.",
   url: 'https://luxeclubrentals.com/about',
   mainEntity: {
     '@type': 'Organization',

@@ -45,7 +45,6 @@ export const metadata: Metadata = {
     'car rental Dubai',
     'rent a car Dubai',
     'exotic car rental Dubai',
-    'luxury car rental Dubai no deposit',
     'SUV car rental Dubai',
     'Mercedes rental Dubai',
     'BMW rental Dubai',
