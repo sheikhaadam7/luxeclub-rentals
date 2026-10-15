@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import { BookingPaymentInfo } from '@/components/booking/BookingPaymentInfo'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { AvailabilityCalendar } from '@/components/ui/AvailabilityCalendar'
 import { ImageGallery } from '@/components/catalogue/ImageGallery'
@@ -573,12 +574,15 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
               {/* Book Now */}
               {vehicle.is_available ? (
-                <Link
-                  href={`/book/${vehicle.slug}`}
-                  className="block w-full text-center bg-brand-cyan text-white font-semibold py-3.5 hover:bg-brand-cyan-hover shadow-[0_0_20px_rgba(201,169,110,0.15)] hover:shadow-[0_0_30px_rgba(201,169,110,0.25)] transition-all duration-300"
-                >
-                  <T k="vehicle.bookNow" />
-                </Link>
+                <div className="relative">
+                  <Link
+                    href={`/book/${vehicle.slug}`}
+                    className="block w-full text-center px-9 bg-brand-cyan text-white font-semibold py-3.5 hover:bg-brand-cyan-hover shadow-[0_0_20px_rgba(201,169,110,0.15)] hover:shadow-[0_0_30px_rgba(201,169,110,0.25)] transition-all duration-300"
+                  >
+                    <T k="vehicle.bookNow" />
+                  </Link>
+                  <BookingPaymentInfo className="absolute right-3 top-1/2 -translate-y-1/2 text-white" />
+                </div>
               ) : (
                 <p className="text-center text-sm text-brand-muted py-2">
                   <T k="vehicle.currentlyUnavailable" />

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { BookingPaymentInfo } from '@/components/booking/BookingPaymentInfo'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useCurrency } from '@/lib/currency/context'
@@ -102,12 +103,15 @@ export function VehicleCard({
 
       {/* Buttons — full width, joined, monochrome */}
       <div className="flex border-t border-white/10">
-        <Link
-          href={`/book/${slug}`}
-          className="flex-1 text-center py-6 sm:py-4 text-white/80 text-base sm:text-sm font-medium hover:text-white hover:bg-[#C9A96E]/50 hover:backdrop-blur-xl transition-all duration-300 book-now-shimmer"
-        >
-          {t('catalogue.bookNow')}
-        </Link>
+        <div className="relative flex flex-1">
+          <Link
+            href={`/book/${slug}`}
+            className="flex-1 text-center pr-9 py-6 sm:py-4 text-white/80 text-base sm:text-sm font-medium hover:text-white hover:bg-[#C9A96E]/50 hover:backdrop-blur-xl transition-all duration-300 book-now-shimmer"
+          >
+            {t('catalogue.bookNow')}
+          </Link>
+          <BookingPaymentInfo className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70" />
+        </div>
         <a
           href={whatsappUrl}
           target="_blank"
