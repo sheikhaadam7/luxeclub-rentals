@@ -76,8 +76,8 @@ export function BookingPaymentInfo({ className = '' }: BookingPaymentInfoProps) 
               />
               {/* Bottom sheet on mobile, centred card from sm up — same shape
                   as the delivery-zone picker so the flow feels consistent. */}
-              <div className="absolute inset-x-0 bottom-0 sm:inset-0 sm:flex sm:items-center sm:justify-center sm:p-6">
-                <div className="relative bg-white rounded-t-2xl sm:rounded-2xl sm:max-w-[560px] sm:w-full shadow-2xl max-h-[88vh] overflow-y-auto">
+              <div className="absolute inset-x-0 bottom-0 w-full max-w-full sm:inset-0 sm:flex sm:items-center sm:justify-center sm:p-6">
+                <div className="relative w-full max-w-full bg-white rounded-t-2xl sm:rounded-2xl sm:max-w-[560px] shadow-2xl max-h-[88vh] overflow-y-auto overflow-x-hidden">
                   <div className="sticky top-0 bg-white flex justify-end px-4 pt-4">
                     <button
                       type="button"
@@ -91,13 +91,13 @@ export function BookingPaymentInfo({ className = '' }: BookingPaymentInfoProps) 
                     </button>
                   </div>
 
-                  <div className="px-6 pb-8 pt-1 sm:px-8">
-                    <p className="font-body text-base sm:text-lg font-bold text-zinc-900 leading-snug">
+                  <div className="px-5 pb-8 pt-1 sm:px-8">
+                    <p className="font-body text-[15px] sm:text-lg font-bold text-zinc-900 leading-snug break-words">
                       You will be asked to provide a valid payment instrument, in order to
                       complete the booking.
                     </p>
 
-                    <ul className="mt-5 space-y-3 list-disc pl-5 text-sm sm:text-base text-zinc-700 leading-[1.7]">
+                    <ul className="mt-5 space-y-3 list-disc pl-5 text-sm sm:text-base text-zinc-700 leading-[1.7] break-words">
                       <li>
                         <span className="font-semibold text-zinc-900">{fee}</span> is taken at
                         the end of the booking steps to reserve your car on your dates.
