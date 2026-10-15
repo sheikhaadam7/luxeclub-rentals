@@ -62,7 +62,7 @@ export default function OGImage() {
         >
           <span>Insurance Included</span>
           <span>Delivery All Over Dubai</span>
-          <span>24/7 Concierge</span>
+          <span>Rated 4.9</span>
         </div>
       </div>
     ),

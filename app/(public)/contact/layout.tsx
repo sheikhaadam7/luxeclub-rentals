@@ -4,7 +4,7 @@ import { PHONE_CALL_E164 } from '@/lib/contact'
 export const metadata: Metadata = {
   title: 'Contact Us',
   description:
-    'Get in touch with LuxeClub Rentals Dubai. Call, WhatsApp, or visit us at Binary Tower, Business Bay. 24/7 concierge support for luxury car rentals.',
+    'Get in touch with LuxeClub Rentals Dubai. Call, WhatsApp, or visit us at Binary Tower, Business Bay. 24/7 support during your rental.',
   openGraph: {
     title: 'Contact LuxeClub Rentals — Dubai Luxury Car Hire',
     description:

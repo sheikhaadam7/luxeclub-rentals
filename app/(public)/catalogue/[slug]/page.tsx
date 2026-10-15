@@ -5,7 +5,6 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { AvailabilityCalendar } from '@/components/ui/AvailabilityCalendar'
 import { ImageGallery } from '@/components/catalogue/ImageGallery'
 import { PriceDisplay } from '@/components/catalogue/PriceDisplay'
-import { NoDepositBadge } from '@/components/catalogue/NoDepositBadge'
 import { VehicleCard } from '@/components/catalogue/VehicleCard'
 import { FaqAccordion } from '@/components/ui/FaqAccordion'
 import { T } from '@/components/ui/T'
@@ -501,8 +500,6 @@ export default async function VehicleDetailPage({ params }: PageProps) {
                 </p>
               )}
 
-              {/* No-deposit badge */}
-              <NoDepositBadge />
 
               {/* Info badges */}
               <div className="space-y-1.5">
@@ -617,8 +614,8 @@ export default async function VehicleDetailPage({ params }: PageProps) {
         <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           {[
             { icon: '🛡️', label: 'Insurance included' },
-            { icon: '🚗', label: 'Free delivery in Dubai' },
-            { icon: '💳', label: 'No-deposit option' },
+            { icon: '🚗', label: 'Delivery across Dubai' },
+            { icon: '🛣️', label: '250 km a day included' },
             { icon: '₿', label: 'Crypto accepted' },
             { icon: '💬', label: 'WhatsApp support' },
             { icon: '⭐', label: '4.9 Google rating' },

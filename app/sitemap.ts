@@ -52,12 +52,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   ]
 
-  const moneyPageEntries: MetadataRoute.Sitemap = moneyPages.map((p) => ({
-    url: `${base}/${p.slug}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly',
-    priority: 0.8,
-  }))
+  const moneyPageEntries: MetadataRoute.Sitemap = moneyPages
+    .filter((p) => !p.noindex)
+    .map((p) => ({
+      url: `${base}/${p.slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    }))
 
   return [...staticPages, ...vehiclePages, ...guidePages, ...moneyPageEntries]
 }
