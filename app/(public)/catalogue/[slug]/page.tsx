@@ -611,10 +611,11 @@ export default async function VehicleDetailPage({ params }: PageProps) {
         </div>
 
         {/* Trust badges strip — sits below the pricing card, above the specs */}
-        <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           {[
             { icon: '🛡️', label: 'Insurance included' },
             { icon: '🚗', label: 'Delivery across Dubai' },
+            { icon: '🛣️', label: '250 km a day included' },
             { icon: '₿', label: 'Crypto accepted' },
             { icon: '💬', label: 'WhatsApp support' },
             { icon: '⭐', label: '4.9 Google rating' },
