@@ -6,6 +6,7 @@ import { differenceInDays } from 'date-fns'
 import { BookingFormValues } from '@/lib/validations/booking'
 import { Vehicle } from '@/components/booking/BookingWizard'
 import { ADDON_PRICES, noDepositTierFee } from '@/lib/pricing/calculator'
+import { NO_DEPOSIT_OPTION_ENABLED } from '@/lib/pricing/constants'
 import { useCurrency } from '@/lib/currency/context'
 
 interface StepAddonsProps {
@@ -192,7 +193,11 @@ export function StepAddons({ form, vehicle: _vehicle, navButtons, onBack }: Step
       </div>
 
       <div className="space-y-3">
-        {ADDONS.map((addon) => {
+        {/* Filtered by id, never by position -- nothing else here may
+            assume a fixed row count or ordering. */}
+        {ADDONS.filter(
+          (a) => a.id !== 'noDeposit' || NO_DEPOSIT_OPTION_ENABLED,
+        ).map((addon) => {
           const on = isOn(addon.id)
           const disabled = addon.id === 'noDeposit' && underTwentyFour
           const expanded = expandedId === addon.id

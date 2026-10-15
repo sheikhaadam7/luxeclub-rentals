@@ -1452,10 +1452,10 @@ export const moneyPages: MoneyPage[] = [
     metaDescription:
       'Rent luxury cars in Dubai with no deposit. AED 450 reserves your booking, balance paid at pickup. Insurance included, no hidden charges.',
     heading: 'Luxury Car Rental Dubai — No Deposit, No Hassle',
-    subheading: 'A no-deposit option is available for eligible drivers.',
+    subheading: 'Your deposit is held as a pre-authorisation, never charged to your card.',
     sectionsBeforeGrid: true,
     content:
-      "Experience luxury car rental in Dubai — without the deposit headache. Imagine landing in Dubai and stepping straight into a Lamborghini, a Bentley, or a Range Rover that matches your style — no heavy hold tying up your card, no paperwork stack, no awkward surprises at pickup.\n\nLuxeClub Rentals isn't just another rental company. We're your gateway to the most exotic and prestigious cars in the city, with a booking process built around speed, transparency, and trust. Whether you're here for business, a holiday, or a milestone celebration, our fleet — from the Lamborghini Revuelto to the Audi RSQ8 — turns every drive into part of the experience.\n\nA no-deposit option is available to eligible drivers. Read on for exactly how it works.",
+      "**Please note:** the no-deposit option is not currently available. Every rental uses our standard deposit, which is held as a pre-authorisation on your card and released once the car is back with us. The money never leaves your account.\n\nExperience luxury car rental in Dubai — without the deposit headache. Imagine landing in Dubai and stepping straight into a Lamborghini, a Bentley, or a Range Rover that matches your style — no heavy hold tying up your card, no paperwork stack, no awkward surprises at pickup.\n\nLuxeClub Rentals isn't just another rental company. We're your gateway to the most exotic and prestigious cars in the city, with a booking process built around speed, transparency, and trust. Whether you're here for business, a holiday, or a milestone celebration, our fleet — from the Lamborghini Revuelto to the Audi RSQ8 — turns every drive into part of the experience.\n\nA no-deposit option is available to eligible drivers. Read on for exactly how it works.",
     sections: [
       {
         heading: 'No Deposit Rental — How It Works',
