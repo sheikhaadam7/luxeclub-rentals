@@ -9,7 +9,7 @@ const KM_PER_DAY = 250
 const EXTRA_KM_RATE_AED = 2.55
 
 const DELIVERY_ZONE_LABELS: Record<string, string> = {
-  within_dubai: 'Address within Dubai',
+  within_dubai: 'Dubai Delivery & Collection Fee',
   al_maktoum_airport: 'Al Maktoum Airport',
   sharjah_airport: 'Sharjah Airport',
   sharjah_city: 'Sharjah City',
