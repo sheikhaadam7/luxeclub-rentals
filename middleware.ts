@@ -124,11 +124,12 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization)
      * - favicon.ico, and common image/font extensions
+     * - forms/ (static rental agreement + invoice pages in public/forms, opened by customers from WhatsApp)
      *
      * NOTE: Route group folders like (protected) are stripped from URLs.
      * The URL /dashboard is NOT /(protected)/dashboard.
      * This matcher protects ALL routes including /dashboard, /catalogue, etc.
      */
-    '/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|webm|mp4|mp3|woff2?)$).*)',
+    '/((?!_next/static|_next/image|favicon\\.ico|forms/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|webm|mp4|mp3|woff2?)$).*)',
   ],
 }
