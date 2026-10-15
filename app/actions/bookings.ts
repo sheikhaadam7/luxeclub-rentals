@@ -252,7 +252,7 @@ export async function createBooking(
   }
 
   // 6b. Cash path — create SetupIntent for card-on-file guarantee. The
-  //     495 AED reservation fee is collected in person / via bank transfer
+  //     450 AED reservation fee is collected in person / via bank transfer
   //     and marked received by an admin; the card-on-file is retained so
   //     the reservation fee can be charged if the customer no-shows.
   if (formData.paymentMethod === 'cash') {
