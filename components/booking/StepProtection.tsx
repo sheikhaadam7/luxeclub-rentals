@@ -65,7 +65,6 @@ interface ProtectionPackage {
   /** AED amount per day, or null for "Included" (no extra charge) */
   priceAedPerDay: number | null
   priceSubtext?: string
-  depositChoice: 'deposit' | 'no_deposit'
 }
 
 const PACKAGES: ProtectionPackage[] = [
@@ -77,7 +76,6 @@ const PACKAGES: ProtectionPackage[] = [
     excessHighlight: 'red',
     included: { ldw: true, tyres: false, interior: false, roadside: false },
     priceAedPerDay: null,
-    depositChoice: 'deposit',
   },
   {
     id: 'inclusive',
@@ -89,7 +87,6 @@ const PACKAGES: ProtectionPackage[] = [
     included: { ldw: true, tyres: true, interior: true, roadside: true },
     priceAedPerDay: 72.80,
     priceSubtext: 'added to total',
-    depositChoice: 'no_deposit',
   },
 ]
 

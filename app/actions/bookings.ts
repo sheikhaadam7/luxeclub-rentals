@@ -6,6 +6,7 @@ import {
   calculateBookingTotal,
   type BookingPricingInput,
 } from '@/lib/pricing/calculator'
+import { NO_DEPOSIT_OPTION_ENABLED } from '@/lib/pricing/constants'
 import type { BookingFormValues } from '@/lib/validations/booking'
 import {
   createRentalPaymentIntent,
@@ -178,7 +179,10 @@ export async function createBooking(
     durationType: formData.durationType,
     pickupMethod: formData.pickupMethod,
     returnMethod: formData.returnMethod,
-    depositChoice: formData.depositChoice,
+    // Clamped server-side: a tab opened before the option was withdrawn
+    // still runs the old bundle with a live toggle, and the client guard
+    // cannot reach it. This is the enforcement point.
+    depositChoice: NO_DEPOSIT_OPTION_ENABLED ? formData.depositChoice : 'deposit',
     paymentMethod: formData.paymentMethod,
   }
 
@@ -206,7 +210,7 @@ export async function createBooking(
       collection_address: formData.collectionAddress ?? null,
       collection_lat: formData.collectionLat ?? null,
       collection_lng: formData.collectionLng ?? null,
-      deposit_choice: formData.depositChoice,
+      deposit_choice: NO_DEPOSIT_OPTION_ENABLED ? formData.depositChoice : 'deposit',
       deposit_amount: pricing.depositAmount,
       rental_subtotal: pricing.rentalSubtotal,
       delivery_fee: pricing.deliveryFee,

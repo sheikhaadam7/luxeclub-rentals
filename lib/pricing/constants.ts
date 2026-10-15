@@ -24,3 +24,15 @@ export const DAILY_KM_INCLUDED = 250
  * figure shown on the catalogue pages' "Additional Mileage Charge" row.
  */
 export const EXTRA_KM_RATE_AED = 20
+
+/**
+ * The No Deposit Option (skip the security deposit for a tiered
+ * surcharge) was withdrawn on 2026-10-16. The machinery is intact --
+ * flip this to `true` to bring the add-on row, the tiered fee and the
+ * under-24 gating all back.
+ *
+ * Read by StepAddons (hides the row), BookingWizard (ignores a restored
+ * `no_deposit` from sessionStorage) and createBooking (clamps the value
+ * server-side, which is the actual enforcement).
+ */
+export const NO_DEPOSIT_OPTION_ENABLED = false

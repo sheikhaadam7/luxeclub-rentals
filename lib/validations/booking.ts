@@ -53,10 +53,6 @@ export const protectionStepSchema = z.object({
 /**
  * Step 4 (was 3): Deposit — whether customer pays deposit or chooses no-deposit surcharge
  */
-export const depositStepSchema = z.object({
-  depositChoice: z.enum(['deposit', 'no_deposit']),
-})
-
 /**
  * Step 4 (guest): Contact — guest name, email, and phone
  */

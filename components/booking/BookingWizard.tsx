@@ -17,6 +17,7 @@ import { StepPaymentMethod } from '@/components/booking/StepPaymentMethod'
 import { StepAuth } from '@/components/booking/StepAuth'
 import { createBooking, updateBookingPaymentMethod } from '@/app/actions/bookings'
 import { useCurrency } from '@/lib/currency/context'
+import { NO_DEPOSIT_OPTION_ENABLED } from '@/lib/pricing/constants'
 
 const StepDelivery = dynamic(() => import('./StepDelivery').then(m => ({ default: m.StepDelivery })), { ssr: false })
 const StepPayment = dynamic(() => import('./StepPayment').then(m => ({ default: m.StepPayment })), { ssr: false })
@@ -167,7 +168,17 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
         const v = { ...saved.values }
         if (typeof v.startDate === 'string') v.startDate = new Date(v.startDate)
         if (typeof v.endDate === 'string') v.endDate = new Date(v.endDate)
-        form.reset({ ...form.getValues(), ...v })
+        // A session saved before the No Deposit Option was withdrawn can
+        // still hold 'no_deposit', with no row on screen to turn it off.
+        // Forced inside the reset payload deliberately -- a later
+        // setValue would not be ordered against the persist effect.
+        form.reset({
+          ...form.getValues(),
+          ...v,
+          depositChoice: NO_DEPOSIT_OPTION_ENABLED
+            ? (v.depositChoice ?? 'deposit')
+            : 'deposit',
+        })
       }
       // Bounds-check the saved step against the current steps array length.
       // Without this, a session saved with step=5 from a previous version
