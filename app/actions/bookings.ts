@@ -8,10 +8,11 @@ import {
 } from '@/lib/pricing/calculator'
 import { NO_DEPOSIT_OPTION_ENABLED } from '@/lib/pricing/constants'
 import type { BookingFormValues } from '@/lib/validations/booking'
-import {
-  createRentalPaymentIntent,
-  createSetupIntent,
-} from '@/app/actions/payments'
+// createSetupIntent is deliberately not imported any more: pay-on-delivery
+// now charges the reservation fee through createRentalPaymentIntent, which
+// also stores the card. The action itself is kept in payments.ts for any
+// booking created before this change.
+import { createRentalPaymentIntent } from '@/app/actions/payments'
 import { sendEmail } from '@/lib/email/send'
 import { BookingConfirmationEmail } from '@/components/email/BookingConfirmationEmail'
 
@@ -255,25 +256,31 @@ export async function createBooking(
     return { ...commonResult, rentalClientSecret: null, setupClientSecret: null }
   }
 
-  // 6b. Cash path — create SetupIntent for card-on-file guarantee. The
-  //     450 AED reservation fee is collected in person / via bank transfer
-  //     and marked received by an admin; the card-on-file is retained so
-  //     the reservation fee can be charged if the customer no-shows.
+  // 6b. Pay-on-delivery — the reservation fee is charged NOW, exactly as on
+  //     the card path; only the balance is settled in person. This used to
+  //     create a SetupIntent, which has no amount: the card was stored, no
+  //     money moved, and the booking was confirmed and emailed anyway. The
+  //     PaymentIntent also stores the card (setup_future_usage), so the
+  //     card-on-file guarantee is preserved.
   if (formData.paymentMethod === 'cash') {
     if (!process.env.STRIPE_SECRET_KEY) {
-      // Test mode — no Stripe key, skip card-on-file
+      // Test mode — no Stripe key configured
       return { ...commonResult, rentalClientSecret: null, setupClientSecret: null }
     }
 
-    const setupResult = await createSetupIntent(bookingId, userId ?? 'guest')
-    if ('error' in setupResult) {
-      return { error: `Card-on-file setup failed: ${setupResult.error}` }
+    const cashFeeResult = await createRentalPaymentIntent(
+      bookingId,
+      pricing.reservationFeeWithSurcharge,
+      userId ?? 'guest'
+    )
+    if ('error' in cashFeeResult) {
+      return { error: cashFeeResult.error }
     }
 
     return {
       ...commonResult,
-      rentalClientSecret: null,
-      setupClientSecret: setupResult.clientSecret,
+      rentalClientSecret: cashFeeResult.clientSecret,
+      setupClientSecret: null,
     }
   }
 

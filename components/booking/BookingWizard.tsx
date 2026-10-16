@@ -85,7 +85,6 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
   // Booking state — set when advancing from deposit to payment
   const [bookingId, setBookingId] = useState<string | null>(null)
   const [rentalClientSecret, setRentalClientSecret] = useState<string | null>(null)
-  const [setupClientSecret, setSetupClientSecret] = useState<string | null>(null)
   const [bookingTotalDue, setBookingTotalDue] = useState<number>(0)
   const [bookingReservationFee, setBookingReservationFee] = useState<number>(0)
   const [bookingBalanceDueOnPickup, setBookingBalanceDueOnPickup] = useState<number>(0)
@@ -226,21 +225,22 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
       //     the new method, so we have to wipe the booking state and fall
       //     through to fresh creation below.
       const currentMethod = form.getValues('paymentMethod')
+      // Pay-on-delivery now charges the reservation fee up front, so it needs
+      // a rental PaymentIntent like every other card method — it no longer
+      // uses a SetupIntent. Leaving 'cash' out of this list would make the
+      // mismatch check always true and recreate the booking on every advance.
       const needsRentalIntent =
         currentMethod === 'card' ||
         currentMethod === 'apple_pay' ||
-        currentMethod === 'google_pay'
-      const needsSetupIntent = currentMethod === 'cash'
-      const intentMismatch =
-        (needsRentalIntent && !rentalClientSecret) ||
-        (needsSetupIntent && !setupClientSecret)
+        currentMethod === 'google_pay' ||
+        currentMethod === 'cash'
+      const intentMismatch = needsRentalIntent && !rentalClientSecret
 
       if (intentMismatch) {
         // Reset booking state — the old draft row in the DB is orphaned but
         // harmless; a cleanup job can prune it later.
         setBookingId(null)
         setRentalClientSecret(null)
-        setSetupClientSecret(null)
         setBookingTotalDue(0)
         setBookingReservationFee(0)
         setBookingBalanceDueOnPickup(0)
@@ -287,7 +287,6 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
 
       setBookingId(result.bookingId)
       setRentalClientSecret(result.rentalClientSecret)
-      setSetupClientSecret(result.setupClientSecret)
       setBookingTotalDue(result.totalDue)
       setBookingReservationFee(result.reservationFee)
       setBookingBalanceDueOnPickup(result.balanceDueOnPickup)
@@ -299,7 +298,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
     } finally {
       setIsCreatingBooking(false)
     }
-  }, [bookingId, form, isAuthed, steps, vehicle.id, t, rentalClientSecret, setupClientSecret])
+  }, [bookingId, form, isAuthed, steps, vehicle.id, t, rentalClientSecret])
 
   const advance = () => {
     startTransition(async () => {
@@ -376,7 +375,6 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
     if (step === paymentMethodIndex && bookingId) {
       setBookingId(null)
       setRentalClientSecret(null)
-      setSetupClientSecret(null)
       setBookingTotalDue(0)
       setBookingReservationFee(0)
       setBookingBalanceDueOnPickup(0)
@@ -633,7 +631,6 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
             </div>
             <StepPayment
               clientSecret={rentalClientSecret}
-              setupClientSecret={setupClientSecret}
               cashSelected={form.getValues('paymentMethod') === 'cash'}
               cryptoSelected={form.getValues('paymentMethod') === 'crypto'}
               applePaySelected={form.getValues('paymentMethod') === 'apple_pay'}
