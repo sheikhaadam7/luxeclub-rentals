@@ -153,7 +153,7 @@ export default function GuestDateChangeButton({
             classNames={{
               root: 'text-white select-none',
               months: 'relative flex flex-wrap gap-6 justify-center',
-              month: 'space-y-3 w-[calc(9*2.25rem)]',
+              month: 'space-y-3 w-[calc(7*2.25rem)] max-w-full',
               month_caption: 'flex items-center pl-16',
               caption_label: 'font-display text-base font-medium text-white',
               nav: 'absolute top-0 left-0 flex items-center gap-1 z-10',
