@@ -3,7 +3,7 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import type { BookingDetail } from '@/app/actions/bookings'
 import { settleCancellation } from '@/lib/booking/cancellation'
-import { pickupInstant, hoursUntilPickup } from '@/lib/dates'
+import { pickupInstant, hoursUntilPickup, isDateKey, businessTodayKey } from '@/lib/dates'
 
 // ---------------------------------------------------------------------------
 // Shared helpers
@@ -293,21 +293,24 @@ export async function requestGuestDateModification(
   }
 
   // New dates must be valid and in the future
-  const newStart = new Date(newStartDate + 'T00:00:00Z')
-  const newEnd = new Date(newEndDate + 'T00:00:00Z')
-  const today = new Date()
-  today.setUTCHours(0, 0, 0, 0)
-
-  if (isNaN(newStart.getTime()) || isNaN(newEnd.getTime())) {
+  if (!isDateKey(newStartDate) || !isDateKey(newEndDate)) {
     return { error: 'Invalid dates provided' }
   }
 
-  if (newStart < today) {
-    return { error: 'New start date must be in the future' }
+  // Measured against Dubai's day, and against the booking's EXISTING
+  // pickup time -- this action receives dates only, so there is no new
+  // time to validate.
+  if (newStartDate < businessTodayKey()) {
+    return { error: 'That pickup date has already passed. Please choose a later date.' }
+  }
+  if (pickupInstant(newStartDate, booking.start_time) <= new Date()) {
+    return { error: 'That pickup time has already passed. Please choose a later date.' }
   }
 
-  if (newEnd < newStart) {
-    return { error: 'End date must be on or after start date' }
+  // Compared as day strings -- 'YYYY-MM-DD' sorts correctly as text.
+  // Overnight minimum, same as a new booking.
+  if (newEndDate <= newStartDate) {
+    return { error: 'A rental runs overnight — please choose a return date after your pickup date.' }
   }
 
   const { error: updateError } = await admin

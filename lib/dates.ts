@@ -127,3 +127,97 @@ export function pickupInstant(key: DateKey, time: string | null): Date {
 export function hoursUntilPickup(key: DateKey, time: string | null, now: Date = new Date()): number {
   return (pickupInstant(key, time).getTime() - now.getTime()) / (1000 * 60 * 60)
 }
+
+// ---------------------------------------------------------------------------
+// Business hours
+// ---------------------------------------------------------------------------
+
+/**
+ * When a car can actually be handed over or collected.
+ *
+ * Owner's words: "prefer to have collection and delivery between 830Am
+ * and 8.30pm unless agreed otherwise". Both ends are bounded -- a
+ * collection needs someone there just as much as a delivery does.
+ *
+ * The form offered 06:00 to 23:30 before this, selling pickups two and a
+ * half hours before anyone opens and three hours after everyone leaves.
+ *
+ * "Unless agreed otherwise" is handled by a conversation, not by code:
+ * the customer books an in-hours slot and the team arranges the real
+ * time. There is deliberately no out-of-hours path in the product.
+ */
+export const BUSINESS_OPEN = '08:30'
+export const BUSINESS_CLOSE = '20:30'
+
+/** Minutes past midnight, for comparing 'HH:MM' values. */
+function toMinutes(time: string): number {
+  const [h, m] = time.split(':').map(Number)
+  return h * 60 + (m || 0)
+}
+
+/**
+ * Selectable handover times: 08:30 to 20:30 in half-hour steps.
+ *
+ * Lives here rather than in StepDuration because that file is a client
+ * component, and the server actions need the same window to enforce it.
+ * Importing it from there would drag react-day-picker and the i18n
+ * context across the server boundary.
+ *
+ * Note the last slot IS the closing time. If that ever changes -- "last
+ * pickup 20:00 so the car is back by 20:30" -- this is the line to edit,
+ * and earliestBookableDayKey below changes meaning with it.
+ */
+export const TIME_SLOTS: { value: string; label: string }[] = (() => {
+  const out: { value: string; label: string }[] = []
+  for (let m = toMinutes(BUSINESS_OPEN); m <= toMinutes(BUSINESS_CLOSE); m += 30) {
+    const value = `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`
+    out.push({ value, label: value })
+  }
+  return out
+})()
+
+/** Is this 'HH:MM' inside the handover window? */
+export function isWithinBusinessHours(time: string | null): boolean {
+  const t = toMinutes(time || '10:00')
+  return t >= toMinutes(BUSINESS_OPEN) && t <= toMinutes(BUSINESS_CLOSE)
+}
+
+/**
+ * Can this slot still be taken on this day?
+ *
+ * Two conditions: inside the window at all, and -- if the day is today in
+ * Dubai -- not already gone.
+ *
+ * 🔴 "Already gone" is STRICTLY in the future, and the server uses the
+ * same test. Left to drift, the client would offer a slot the server then
+ * refuses; at 20:30:00 exactly, both agree the day is finished.
+ */
+export function isSlotSelectable(key: DateKey, time: string, now: Date = new Date()): boolean {
+  if (!isWithinBusinessHours(time)) return false
+  if (key < businessTodayKey(now)) return false
+  if (key > businessTodayKey(now)) return true
+  return pickupInstant(key, time).getTime() > now.getTime()
+}
+
+/**
+ * The earliest day a customer can be handed a car.
+ *
+ * Today if any slot is still ahead of us, otherwise tomorrow. At 01:14
+ * today is fine because 08:30 has not happened; at 20:31 it is not,
+ * because the last slot has gone.
+ *
+ * This is the answer to the reported bug: the cutoff comes from Dubai's
+ * clock, not from whatever timezone the customer happens to be browsing
+ * in.
+ */
+export function earliestBookableDayKey(now: Date = new Date()): DateKey {
+  const today = businessTodayKey(now)
+  if (isSlotSelectable(today, BUSINESS_CLOSE, now)) return today
+  const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000)
+  return businessTodayKey(tomorrow)
+}
+
+/** First slot still takeable on this day, or null if the day is done. */
+export function firstSelectableSlot(key: DateKey, now: Date = new Date()): string | null {
+  return TIME_SLOTS.find((s) => isSlotSelectable(key, s.value, now))?.value ?? null
+}

@@ -19,7 +19,7 @@ import { createBooking, updateBookingPaymentMethod } from '@/app/actions/booking
 import { useCurrency } from '@/lib/currency/context'
 import { NO_DEPOSIT_OPTION_ENABLED, minimumRentalDays } from '@/lib/pricing/constants'
 import { differenceInDays } from 'date-fns'
-import { toDateKey } from '@/lib/dates'
+import { toDateKey, earliestBookableDayKey } from '@/lib/dates'
 
 const StepDelivery = dynamic(() => import('./StepDelivery').then(m => ({ default: m.StepDelivery })), { ssr: false })
 const StepPayment = dynamic(() => import('./StepPayment').then(m => ({ default: m.StepPayment })), { ssr: false })
@@ -106,6 +106,15 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
   const currentStep = steps[step]
 
   const wizardRef = useRef<HTMLDivElement>(null)
+  const errorRef = useRef<HTMLDivElement>(null)
+
+  // The error block sits below the step content and the payment block, so
+  // a customer who hits a server guard presses Continue and sees nothing
+  // move -- the explanation is off-screen underneath the wizard.
+  useEffect(() => {
+    if (!bookingError) return
+    errorRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+  }, [bookingError])
 
   const scrollToTop = () => {
     setTimeout(() => {
@@ -170,6 +179,17 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
         const v = { ...saved.values }
         if (typeof v.startDate === 'string') v.startDate = new Date(v.startDate)
         if (typeof v.endDate === 'string') v.endDate = new Date(v.endDate)
+        // A session saved at 20:25 and resumed at 20:45 -- or resumed the
+        // next morning -- holds a date that can no longer be booked. The
+        // calendar would refuse it if reopened, but the form still holds
+        // it and the summary still shows it, so the first the customer
+        // hears is a rejection at the payment step. Drop it instead and
+        // let them pick again.
+        const earliest = earliestBookableDayKey()
+        if (v.startDate instanceof Date && toDateKey(v.startDate) < earliest) {
+          delete v.startDate
+          delete v.endDate
+        }
         // A session saved before the No Deposit Option was withdrawn can
         // still hold 'no_deposit', with no row on screen to turn it off.
         // Forced inside the reset payload deliberately -- a later
@@ -721,7 +741,11 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
 
         {/* Booking creation error */}
         {bookingError && (
-          <div className="rounded-lg border border-red-800 bg-red-950/40 p-4 text-sm text-red-300">
+          <div
+            ref={errorRef}
+            role="alert"
+            className="rounded-lg border border-red-800 bg-red-950/40 p-4 text-sm text-red-300"
+          >
             {bookingError}
           </div>
         )}

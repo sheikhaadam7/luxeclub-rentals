@@ -11,7 +11,14 @@ import { useTranslation } from '@/lib/i18n/context'
 import { useSearchParams } from 'next/navigation'
 import { useOverlayBackButton } from '@/lib/hooks/use-overlay-back-button'
 import { minimumRentalDays } from '@/lib/pricing/constants'
-import { fromDateKey } from '@/lib/dates'
+import {
+  fromDateKey,
+  toDateKey,
+  earliestBookableDayKey,
+  isSlotSelectable,
+  firstSelectableSlot,
+  isWithinBusinessHours,
+} from '@/lib/dates'
 import { MobileDateRangeOverlay } from '@/components/booking/MobileDateRangeOverlay'
 import { MobileTimePickerOverlay } from '@/components/booking/MobileTimePickerOverlay'
 import { MobileTimePickerStackedOverlay } from '@/components/booking/MobileTimePickerStackedOverlay'
@@ -34,14 +41,11 @@ function getDurationType(days: number): 'daily' | 'weekly' | 'monthly' {
   return 'daily'
 }
 
-// 24-hour time slots, half-hour granularity, 06:00–23:30 (36 slots)
-export const TIME_SLOTS = Array.from({ length: 36 }, (_, i) => {
-  const totalMinutes = 6 * 60 + i * 30
-  const h = Math.floor(totalMinutes / 60)
-  const m = totalMinutes % 60
-  const value = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
-  return { value, label: value }
-})
+// Handover slots now live in lib/dates beside the hours they come from,
+// because the server actions enforce the same window and cannot import
+// from a client component. Re-exported so the two time overlays keep
+// their existing import.
+export { TIME_SLOTS } from '@/lib/dates'
 
 export function StepDuration({ form, vehicle, bookedRanges, navButtons }: StepDurationProps) {
   const { t } = useTranslation()
@@ -80,18 +84,48 @@ export function StepDuration({ form, vehicle, bookedRanges, navButtons }: StepDu
   const selectedRange: DateRange | undefined =
     startDate || endDate ? { from: startDate, to: endDate } : undefined
 
-  const now = new Date()
-  const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1)
+  // { before } is EXCLUSIVE -- the earliest bookable day stays selectable.
+  // The previous version was an inclusive { from, to } range ending at
+  // "yesterday" computed from the CUSTOMER's clock, which is how a
+  // customer an hour behind Dubai was still offered a day the business
+  // had finished. Dropping the business day into that old `to:` slot
+  // would have disabled the first bookable day instead.
+  const earliestDay = fromDateKey(earliestBookableDayKey())
   const disabledMatchers = [
-    { from: new Date(2020, 0, 1), to: yesterday },
+    { before: earliestDay },
     // Converted here rather than on the server: these have to be local
     // midnight to line up with the day cells react-day-picker builds,
     // and only the browser knows the customer's timezone.
     ...bookedRanges.map((r) => ({ from: fromDateKey(r.from), to: fromDateKey(r.to) })),
   ]
 
+  /**
+   * Keep the pickup time honest for the chosen day.
+   *
+   * The default is '09:30'. A customer at 15:00 choosing today would
+   * otherwise submit a pickup five hours in the past -- and because
+   * 09:30 is inside business hours, the server's rejection message
+   * would talk about opening times and make no sense. Greying the chip
+   * in the overlay does not help: the quick chips never open it.
+   */
+  function clampTimesFor(start: Date) {
+    const key = toDateKey(start)
+    const current = form.getValues('startTime') || '09:30'
+    if (isSlotSelectable(key, current)) return
+    const first = firstSelectableSlot(key)
+    if (first) {
+      form.setValue('startTime', first, { shouldValidate: false })
+      if (!isWithinBusinessHours(form.getValues('endTime') ?? null)) {
+        form.setValue('endTime', first, { shouldValidate: false })
+      }
+    }
+  }
+
   function applyQuickDuration(days: number) {
-    const from = startDate instanceof Date ? startDate : new Date()
+    // Seeded from the business day. These chips bypass the calendar
+    // entirely, so seeding from `new Date()` reproduced the original bug
+    // through a different button with the calendar fix doing nothing.
+    const from = startDate instanceof Date ? startDate : earliestDay
     const start = new Date(from.getFullYear(), from.getMonth(), from.getDate())
     // addDays, not epoch arithmetic. Adding days * 24h lands on 23:00 the
     // previous day across a clock change -- in London, "3 days" from
@@ -100,6 +134,7 @@ export function StepDuration({ form, vehicle, bookedRanges, navButtons }: StepDu
     const end = addDays(start, days)
     form.setValue('startDate', start, { shouldValidate: true })
     form.setValue('endDate', end, { shouldValidate: true })
+    clampTimesFor(start)
   }
 
   const QUICK_DURATIONS = [
@@ -319,9 +354,14 @@ export function StepDuration({ form, vehicle, bookedRanges, navButtons }: StepDu
           // If the user only picked a pickup date, auto-fill the return date
           // as pickup + 2 days — that's the rental minimum. They can change
           // either date later by reopening the calendar.
-          const endDate = range.to ?? addDays(range.from, 2)
+          // A rental is at least overnight (owner ruling), which also
+          // removes the dead end where a 20:30 pickup had no return slot
+          // left the same day.
+          const picked = range.to ?? addDays(range.from, 2)
+          const endDate = picked > range.from ? picked : addDays(range.from, 1)
           form.setValue('startDate', range.from, { shouldValidate: true })
           form.setValue('endDate', endDate, { shouldValidate: true })
+          clampTimesFor(range.from)
           setPickerOverlay('time')
         }}
       />

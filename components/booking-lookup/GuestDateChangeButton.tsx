@@ -1,6 +1,6 @@
 'use client'
 
-import { toDateKey, formatDateKey } from '@/lib/dates'
+import { toDateKey, formatDateKey, fromDateKey, earliestBookableDayKey } from '@/lib/dates'
 
 import { useState } from 'react'
 import { DayPicker, type DateRange } from 'react-day-picker'
@@ -120,8 +120,10 @@ export default function GuestDateChangeButton({
   }
 
   function renderPicker() {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
+    // Dubai's earliest bookable day, not the browser's midnight -- a
+    // customer an hour behind would otherwise be offered a day the
+    // business has already finished.
+    const today = fromDateKey(earliestBookableDayKey())
 
     return (
       <div className="space-y-4 mt-4">

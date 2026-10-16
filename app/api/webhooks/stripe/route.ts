@@ -1,4 +1,5 @@
 import { headers } from 'next/headers'
+import { pickupInstant } from '@/lib/dates'
 import { stripe } from '@/lib/stripe/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email/send'
@@ -92,7 +93,7 @@ export async function POST(req: Request): Promise<Response> {
           // must stay 'pending_cash' — an admin marks it paid at handover.
           const { data: existing } = await admin
             .from('bookings')
-            .select('payment_method, amount_due_now')
+            .select('payment_method, amount_due_now, start_date, start_time')
             .eq('id', bookingId)
             .maybeSingle()
 
@@ -103,6 +104,19 @@ export async function POST(req: Request): Promise<Response> {
           // 'rental' branch deliberately: the same event fires for
           // deposits, and writing it unconditionally would stamp a
           // captured deposit over the rental figure.
+          // A payment can settle after the pickup has passed -- the
+          // guards upstream run minutes earlier. Nothing is rejected
+          // here, because the money has already moved and the customer
+          // must not be left in limbo; it is flagged for a human.
+          if (
+            existing?.start_date &&
+            pickupInstant(existing.start_date, existing.start_time ?? null) <= new Date()
+          ) {
+            console.error(
+              `stripe webhook: booking ${bookingId} paid for a pickup that has already passed (${existing.start_date} ${existing.start_time ?? ''})`
+            )
+          }
+
           const amountPaid = (pi.amount_received ?? 0) / 100
           const expected = Number(existing?.amount_due_now ?? 0)
           if (expected > 0 && Math.abs(expected - amountPaid) > 0.01) {

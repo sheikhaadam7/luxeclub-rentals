@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { format, isSameDay } from 'date-fns'
 import { TIME_SLOTS } from '@/components/booking/StepDuration'
+import { isSlotSelectable, toDateKey, BUSINESS_OPEN, BUSINESS_CLOSE } from '@/lib/dates'
 
 interface MobileTimePickerStackedOverlayProps {
   open: boolean
@@ -175,13 +176,23 @@ export function MobileTimePickerStackedOverlay({
       {/* Body — stacked lists */}
       <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-4">
         {/* Pickup section */}
-        <h3 className="text-base font-bold text-zinc-900 mb-3">Pickup time</h3>
+        <h3 className="text-base font-bold text-zinc-900 mb-1">Pickup time</h3>
+        <p className="text-xs text-zinc-500 mb-3">
+          Collection and delivery run {BUSINESS_OPEN}–{BUSINESS_CLOSE}. Need another
+          time? Message us and we will try to arrange it.
+        </p>
         <div className="grid grid-cols-2 gap-2.5 mb-8">
           {TIME_SLOTS.map((slot) => {
             const isSelected = startTime === slot.value
+            // This list had no disabled handling at all, unlike the
+            // paired overlay -- so the ?layout=stacked route would have
+            // kept offering slots that had already passed.
+            const disabled =
+              startDate instanceof Date && !isSlotSelectable(toDateKey(startDate), slot.value)
             return (
               <button
                 key={`pickup-${slot.value}`}
+                disabled={disabled}
                 ref={isSelected ? pickupSelectedRef : undefined}
                 type="button"
                 onClick={() => pickPickup(slot.value)}
@@ -189,7 +200,7 @@ export function MobileTimePickerStackedOverlay({
                   isSelected
                     ? 'bg-zinc-900 text-white'
                     : 'bg-zinc-50 text-zinc-900 active:bg-zinc-100'
-                }`}
+                } ${disabled ? 'opacity-30 cursor-not-allowed' : ''}`}
               >
                 {slot.label}
               </button>

@@ -8,7 +8,16 @@ import {
 } from '@/lib/pricing/calculator'
 import { NO_DEPOSIT_OPTION_ENABLED, minimumRentalDays } from '@/lib/pricing/constants'
 import { differenceInDays } from 'date-fns'
-import { isDateKey, pickupInstant, hoursUntilPickup, type DateKey } from '@/lib/dates'
+import {
+  isDateKey,
+  pickupInstant,
+  hoursUntilPickup,
+  businessTodayKey,
+  isWithinBusinessHours,
+  BUSINESS_OPEN,
+  BUSINESS_CLOSE,
+  type DateKey,
+} from '@/lib/dates'
 import type { BookingFormValues } from '@/lib/validations/booking'
 // createSetupIntent is deliberately not imported any more: pay-on-delivery
 // now charges the reservation fee through createRentalPaymentIntent, which
@@ -206,8 +215,31 @@ export async function createBooking(
   // day count is the same arithmetic wherever this runs.
   const startDate = new Date(`${formData.startDate}T00:00:00Z`)
   const endDate = new Date(`${formData.endDate}T00:00:00Z`)
-  if (endDate < startDate) {
-    return { error: 'The return date must be on or after the pickup date' }
+  // A rental is at least overnight (owner ruling), matching the 24-hour
+  // billing policy. It also removes the case where a 20:30 pickup has no
+  // return slot left the same day.
+  if (endDate <= startDate) {
+    return { error: 'A rental runs overnight — please choose a return date after your pickup date.' }
+  }
+
+  // Three separate failures, three separate messages. One combined
+  // "business hours" message would be actively wrong for two of them,
+  // and a customer who hits this needs to know whether to pick another
+  // day, another time, or to message the team for an out-of-hours
+  // arrangement.
+  if (formData.startDate < businessTodayKey()) {
+    return { error: 'That pickup date has already passed. Please choose a later date.' }
+  }
+  if (
+    !isWithinBusinessHours(formData.startTime ?? null) ||
+    !isWithinBusinessHours(formData.endTime ?? null)
+  ) {
+    return {
+      error: `Collection and delivery run between ${BUSINESS_OPEN} and ${BUSINESS_CLOSE}. Message us on WhatsApp if you need a time outside that.`,
+    }
+  }
+  if (pickupInstant(formData.startDate, formData.startTime ?? null) <= new Date()) {
+    return { error: 'That pickup time has already passed today. Please choose a later time.' }
   }
 
   // 2. Fetch vehicle from DB (authoritative rates — never trust client)
@@ -450,7 +482,7 @@ export async function updateBookingPaymentMethod(
   const { data: booking, error: fetchError } = await admin
     .from('bookings')
     .select(
-      'id, status, payment_method, user_id, guest_email, total_due, reservation_fee, amount_due_now, reservation_fee_status, stripe_rental_pi_id, nowpayments_invoice_id'
+      'id, status, payment_method, user_id, guest_email, total_due, reservation_fee, amount_due_now, reservation_fee_status, stripe_rental_pi_id, nowpayments_invoice_id, start_date, start_time'
     )
     .eq('id', bookingId)
     .single()
@@ -473,6 +505,13 @@ export async function updateBookingPaymentMethod(
   // Never re-price something already paid for.
   if (booking.reservation_fee_status === 'paid') {
     return { error: 'This booking has already been paid for' }
+  }
+
+  // The pickup can pass while the customer sits on the payment step.
+  // createBooking validated it on the way in, but that was minutes ago --
+  // a booking created at 20:25 could otherwise still be paid at 20:45.
+  if (pickupInstant(booking.start_date, booking.start_time) <= new Date()) {
+    return { error: 'That pickup time has now passed. Please start a new booking.' }
   }
 
   const totalDue = Number(booking.total_due ?? 0)
@@ -953,21 +992,24 @@ export async function requestDateModification(
   }
 
   // New dates must be valid and in the future
-  const newStart = new Date(newStartDate + 'T00:00:00Z')
-  const newEnd = new Date(newEndDate + 'T00:00:00Z')
-  const today = new Date()
-  today.setUTCHours(0, 0, 0, 0)
-
-  if (isNaN(newStart.getTime()) || isNaN(newEnd.getTime())) {
+  if (!isDateKey(newStartDate) || !isDateKey(newEndDate)) {
     return { error: 'Invalid dates provided' }
   }
 
-  if (newStart < today) {
-    return { error: 'New start date must be in the future' }
+  // Measured against Dubai's day, and against the booking's EXISTING
+  // pickup time -- this action receives dates only, so there is no new
+  // time to validate.
+  if (newStartDate < businessTodayKey()) {
+    return { error: 'That pickup date has already passed. Please choose a later date.' }
+  }
+  if (pickupInstant(newStartDate, booking.start_time) <= new Date()) {
+    return { error: 'That pickup time has already passed. Please choose a later date.' }
   }
 
-  if (newEnd < newStart) {
-    return { error: 'End date must be on or after start date' }
+  // Compared as day strings -- 'YYYY-MM-DD' sorts correctly as text.
+  // Overnight minimum, same as a new booking.
+  if (newEndDate <= newStartDate) {
+    return { error: 'A rental runs overnight — please choose a return date after your pickup date.' }
   }
 
   const { error: updateError } = await admin
