@@ -2,6 +2,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { businessTodayKey } from '@/lib/dates'
 
 /**
  * Verify the caller is an admin.
@@ -953,7 +954,7 @@ export async function getDashboardOverview(): Promise<
   if ('error' in auth) return { error: auth.error }
 
   const admin = createAdminClient()
-  const today = new Date().toISOString().split('T')[0]
+  const today = businessTodayKey()
   const startOfMonth = new Date()
   startOfMonth.setDate(1)
   startOfMonth.setHours(0, 0, 0, 0)
@@ -1178,7 +1179,7 @@ export async function getEnhancedAnalytics(
   const previousStart = new Date(currentStart)
   previousStart.setDate(previousStart.getDate() - days)
 
-  const today = now.toISOString().split('T')[0]
+  const today = businessTodayKey(now)
   const activeStatuses = ['confirmed', 'car_on_the_way', 'car_delivered', 'completed']
 
   const [currentResult, previousResult, allBookingsResult, fleetResult, activeResult] = await Promise.all([
@@ -1216,15 +1217,18 @@ export async function getEnhancedAnalytics(
   const previousRevenue = previousBookings.reduce((s, b) => s + (b.total_due ?? 0), 0)
   const avgBookingValue = currentBookings.length > 0 ? Math.round(currentRevenue / currentBookings.length) : 0
 
-  // Daily revenue breakdown
+  // Daily revenue breakdown, bucketed by Dubai day.
+  //
+  // created_at is a timestamptz; splitting its ISO form took the UTC day,
+  // so a booking taken at 1am Dubai landed in the previous day's bar.
   const dailyMap: Record<string, number> = {}
   for (let i = 0; i < days; i++) {
     const d = new Date(currentStart)
     d.setDate(d.getDate() + i)
-    dailyMap[d.toISOString().split('T')[0]] = 0
+    dailyMap[businessTodayKey(d)] = 0
   }
   for (const b of currentBookings) {
-    const day = b.created_at.split('T')[0]
+    const day = businessTodayKey(new Date(b.created_at))
     if (day in dailyMap) {
       dailyMap[day] += b.total_due ?? 0
     }
@@ -1484,7 +1488,7 @@ export async function getAnalyticsSummary(): Promise<
     allTimeStats?.reduce((sum, b) => sum + (b.total_due ?? 0), 0) ?? 0
 
   // Fleet utilization: vehicles with active bookings today
-  const today = new Date().toISOString().split('T')[0]
+  const today = businessTodayKey()
 
   const { data: activeBookings, error: activeError } = await admin
     .from('bookings')

@@ -1,5 +1,7 @@
 'use client'
 
+import { formatDateKey, businessTodayKey } from '@/lib/dates'
+
 import { useState, useTransition, useEffect, useCallback } from 'react'
 import {
   getAllBookings,
@@ -53,34 +55,27 @@ const QUICK_ACTIONS: Partial<Record<BookingStatus, { label: string; next: Bookin
 
 // ─── Helpers ────────────────────────────────────────────────
 
+// Anchored to UTC like every other booking-date formatter, so the day
+// shown is the day stored no matter where the admin is sitting.
 function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  })
+  return formatDateKey(dateStr, 'en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
 }
 
 function formatBookingRef(id: string): string {
   return id.replace(/-/g, '').slice(0, 8).toUpperCase()
 }
 
+// Both compare stored day strings against the business day as plain
+// strings. 'YYYY-MM-DD' sorts correctly as text, so there is no Date to
+// build and therefore no timezone to get wrong -- which is what the old
+// version did, parsing the stored day as UTC and the current day as
+// local, then comparing the two.
 function isToday(dateStr: string): boolean {
-  const d = new Date(dateStr)
-  const now = new Date()
-  return (
-    d.getFullYear() === now.getFullYear() &&
-    d.getMonth() === now.getMonth() &&
-    d.getDate() === now.getDate()
-  )
+  return dateStr === businessTodayKey()
 }
 
 function isPast(dateStr: string): boolean {
-  const d = new Date(dateStr)
-  const now = new Date()
-  d.setHours(0, 0, 0, 0)
-  now.setHours(0, 0, 0, 0)
-  return d < now
+  return dateStr < businessTodayKey()
 }
 
 function customerName(b: AdminBooking): string {

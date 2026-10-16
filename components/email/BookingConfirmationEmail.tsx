@@ -10,6 +10,7 @@ import {
   Link,
 } from '@react-email/components'
 import { DAILY_KM_INCLUDED, EXTRA_KM_RATE_AED } from '@/lib/pricing/constants'
+import { formatDateKey } from '@/lib/dates'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -64,16 +65,6 @@ const OFFICE_ADDRESS = 'Binary Tower, 32 Marasi Drive, Business Bay, Dubai'
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
-function formatDate(isoDate: string): string {
-  const date = new Date(isoDate + 'T00:00:00Z')
-  return date.toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    timeZone: 'UTC',
-  })
-}
 
 function formatTime(hhmm: string | null | undefined, fallback = '10:00'): string {
   const t = hhmm || fallback
@@ -421,7 +412,7 @@ function Itinerary({
 
         <Section style={styles.itineraryRow}>
           <Text style={styles.itineraryDate}>
-            Pickup on {formatDate(startDate)} at {formatTime(startTime)}
+            Pickup on {formatDateKey(startDate)} at {formatTime(startTime)}
           </Text>
           <Text style={styles.itineraryLocation}>{pickupLocation}</Text>
           {pickupHasAddress && (
@@ -433,7 +424,7 @@ function Itinerary({
 
         <Section style={{ paddingTop: '14px' }}>
           <Text style={styles.itineraryDate}>
-            Return on {formatDate(endDate)} at {formatTime(endTime, '20:00')}
+            Return on {formatDateKey(endDate)} at {formatTime(endTime, '20:00')}
           </Text>
           <Text style={styles.itineraryLocation}>{returnLocation}</Text>
         </Section>
@@ -636,7 +627,7 @@ function PaymentDetails({
 
         {/* Free cancellation badge */}
         <Text style={styles.cancelBadge}>
-          ✓ Free cancellation until {formatDate(startDate)}
+          ✓ Free cancellation until {formatDateKey(startDate)}
         </Text>
         <Text style={styles.cancelBody}>
           You can cancel for a full refund of everything you have paid, up to

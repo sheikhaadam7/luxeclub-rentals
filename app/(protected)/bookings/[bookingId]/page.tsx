@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import { pickupInstant, hoursUntilPickup, formatDateKeyRange } from '@/lib/dates'
 import Link from 'next/link'
 import Image from 'next/image'
 import { getBookingDetail } from '@/app/actions/bookings'
@@ -21,20 +22,6 @@ interface PageProps {
 }
 
 const TRACKABLE_STATUSES = new Set(['confirmed', 'car_on_the_way', 'car_delivered'])
-
-function formatDate(isoDate: string): string {
-  const date = new Date(isoDate + 'T00:00:00Z')
-  return date.toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    timeZone: 'UTC',
-  })
-}
-
-function formatDateRange(start: string, end: string): string {
-  return `${formatDate(start)} — ${formatDate(end)}`
-}
 
 function durationTypeKey(type: string): string {
   if (type === 'daily') return 'lookup.daily'
@@ -160,10 +147,10 @@ export default async function BookingDetailPage({ params }: PageProps) {
   }
 
   // Cancellability logic — not allowed once the booking period has started
-  const today = new Date()
-  today.setUTCHours(0, 0, 0, 0)
-  const bookingStartDate = new Date(booking.start_date + 'T00:00:00Z')
-  const hasStarted = today >= bookingStartDate
+  // Measured from the agreed pickup moment in Dubai, matching the server
+  // guards -- a UTC-midnight comparison left this disagreeing with them
+  // for the first four hours of every Dubai day.
+  const hasStarted = pickupInstant(booking.start_date, booking.start_time) <= new Date()
 
   const isCancellable =
     ['draft', 'pending', 'confirmed'].includes(booking.status) && booking.payment_method !== 'cash' && !hasStarted
@@ -171,11 +158,7 @@ export default async function BookingDetailPage({ params }: PageProps) {
 
   let hoursUntilStart = 0
   if (isCancellable || isModifiable) {
-    const startTimeStr = booking.start_time || '10:00'
-    const [h, m] = startTimeStr.split(':').map(Number)
-    const pickupDate = new Date(booking.start_date + 'T00:00:00Z')
-    pickupDate.setUTCHours(h, m, 0, 0)
-    hoursUntilStart = (pickupDate.getTime() - Date.now()) / (1000 * 60 * 60)
+    hoursUntilStart = hoursUntilPickup(booking.start_date, booking.start_time)
   }
 
   return (
@@ -311,7 +294,7 @@ export default async function BookingDetailPage({ params }: PageProps) {
           <div className="px-6">
             <DetailRow
               label={<T k="lookup.dates" />}
-              value={formatDateRange(booking.start_date, booking.end_date)}
+              value={formatDateKeyRange(booking.start_date, booking.end_date)}
             />
             <DetailRow
               label={<T k="lookup.rateType" />}

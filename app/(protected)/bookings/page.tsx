@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { formatDateKeyRange } from '@/lib/dates'
 import Image from 'next/image'
 import { getUserBookings, type UserBooking } from '@/app/actions/bookings'
 import { PriceDisplay } from '@/components/catalogue/PriceDisplay'
@@ -7,20 +8,6 @@ import { T } from '@/components/ui/T'
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
-function formatDate(isoDate: string): string {
-  const date = new Date(isoDate + 'T00:00:00Z')
-  return date.toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    timeZone: 'UTC',
-  })
-}
-
-function formatDateRange(start: string, end: string): string {
-  return `${formatDate(start)} — ${formatDate(end)}`
-}
 
 function durationTypeKey(type: string): string {
   if (type === 'daily') return 'lookup.daily'
@@ -110,7 +97,7 @@ function BookingCard({ booking }: { booking: UserBooking }) {
           {vehicle?.name ?? <T k="bookings.unknownVehicle" />}
         </p>
         <p className="text-xs text-brand-muted mt-0.5">
-          {formatDateRange(booking.start_date, booking.end_date)}
+          {formatDateKeyRange(booking.start_date, booking.end_date)}
         </p>
         <div className="flex items-center gap-2 mt-1.5">
           {/* Duration badge */}

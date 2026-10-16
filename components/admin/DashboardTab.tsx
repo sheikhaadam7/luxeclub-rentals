@@ -1,5 +1,7 @@
 'use client'
 
+import { formatDateKey } from '@/lib/dates'
+
 import { useState, useEffect, useCallback, useTransition } from 'react'
 import {
   getDashboardOverview,
@@ -27,11 +29,10 @@ const STATUS_CONFIG: Record<
 
 // ─── Helpers ─────────────────────────────────────────────────
 
+// Anchored to UTC like every other booking-date formatter, so the day
+// shown is the day stored no matter where the admin is sitting.
 function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-  })
+  return formatDateKey(dateStr, 'en-GB', { day: '2-digit', month: 'short' })
 }
 
 function formatBookingRef(id: string): string {

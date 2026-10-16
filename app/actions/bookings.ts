@@ -8,6 +8,7 @@ import {
 } from '@/lib/pricing/calculator'
 import { NO_DEPOSIT_OPTION_ENABLED, minimumRentalDays } from '@/lib/pricing/constants'
 import { differenceInDays } from 'date-fns'
+import { isDateKey, pickupInstant, hoursUntilPickup, type DateKey } from '@/lib/dates'
 import type { BookingFormValues } from '@/lib/validations/booking'
 // createSetupIntent is deliberately not imported any more: pay-on-delivery
 // now charges the reservation fee through createRentalPaymentIntent, which
@@ -133,8 +134,28 @@ export interface BookingDetail {
  * Email: confirmation email sent via Resend after booking insert. Wrapped in
  * try/catch so email failure never fails the booking.
  */
+/**
+ * The dates arrive as calendar-day keys, NOT Date objects.
+ *
+ * A Date crossing the server-action boundary is only an instant, and this
+ * runs on Vercel in UTC -- so a day the customer picked as the 16th in
+ * Dubai arrives as 2026-10-15T20:00:00Z and reads back as the 15th. That
+ * was the bug. The browser knows the customer's calendar day and is the
+ * only place that can say what it was, so it sends the string.
+ *
+ * Deliberately REPLACING startDate/endDate rather than sitting beside
+ * them: two representations of the same fact means the server can price
+ * from one and store the other. This action is reachable by direct POST,
+ * so that gap would let a caller be charged for one day and reserve
+ * thirty.
+ */
+export type CreateBookingInput = Omit<BookingFormValues, 'startDate' | 'endDate'> & {
+  startDate: DateKey
+  endDate: DateKey
+}
+
 export async function createBooking(
-  formData: BookingFormValues,
+  formData: CreateBookingInput,
   vehicleId: string,
   guestInfo?: { name: string; email: string; phone: string }
 ): Promise<CreateBookingResult | { error: string }> {
@@ -174,6 +195,21 @@ export async function createBooking(
     }
   }
 
+  // Validate the day keys before anything derives from them. Everything
+  // below -- the price, the minimum-rental check, the stored row -- comes
+  // from these two strings, so a malformed one must stop here rather than
+  // turn into an Invalid Date further down.
+  if (!isDateKey(formData.startDate) || !isDateKey(formData.endDate)) {
+    return { error: 'Invalid booking dates' }
+  }
+  // One derivation, used for every calculation. Anchored to UTC so the
+  // day count is the same arithmetic wherever this runs.
+  const startDate = new Date(`${formData.startDate}T00:00:00Z`)
+  const endDate = new Date(`${formData.endDate}T00:00:00Z`)
+  if (endDate < startDate) {
+    return { error: 'The return date must be on or after the pickup date' }
+  }
+
   // 2. Fetch vehicle from DB (authoritative rates — never trust client)
   const { data: vehicle, error: vehicleError } = await admin
     .from('vehicles')
@@ -193,10 +229,7 @@ export async function createBooking(
   // rule for a timely message, but this is the enforcement: the client
   // guard cannot be reached by a stale tab or a direct call.
   const minDays = minimumRentalDays(vehicle.daily_rate)
-  const requestedDays = Math.max(
-    differenceInDays(new Date(formData.endDate), new Date(formData.startDate)),
-    1
-  )
+  const requestedDays = Math.max(differenceInDays(endDate, startDate), 1)
   if (requestedDays < minDays) {
     return {
       error: `${vehicle.name} has a ${minDays}-day minimum rental. Please choose at least ${minDays} days.`,
@@ -205,8 +238,8 @@ export async function createBooking(
 
   // 3. Server-side price recalculation
   const pricingInput: BookingPricingInput = {
-    startDate: new Date(formData.startDate),
-    endDate: new Date(formData.endDate),
+    startDate,
+    endDate,
     durationType: formData.durationType,
     pickupMethod: formData.pickupMethod,
     returnMethod: formData.returnMethod,
@@ -259,8 +292,9 @@ export async function createBooking(
       guest_name: guestInfo?.name || null,
       guest_email: guestInfo?.email || null,
       guest_phone: guestInfo?.phone || null,
-      start_date: formData.startDate.toISOString().split('T')[0],
-      end_date: formData.endDate.toISOString().split('T')[0],
+      // Stored exactly as the customer's browser reported them.
+      start_date: formData.startDate,
+      end_date: formData.endDate,
       duration_type: formData.durationType,
       start_time: formData.startTime || null,
       end_time: formData.endTime || null,
@@ -824,11 +858,10 @@ export async function cancelBooking(
     return { error: 'This booking cannot be cancelled in its current state' }
   }
 
-  // Cannot cancel once the booking period has started
-  const bookingStart = new Date(booking.start_date + 'T00:00:00Z')
-  const now = new Date()
-  now.setUTCHours(0, 0, 0, 0)
-  if (now >= bookingStart) {
+  // Cannot cancel once the rental has actually begun. Measured from the
+  // agreed pickup moment in Dubai, not from UTC midnight -- the old
+  // version left cancellation open until 4am Dubai on the pickup day.
+  if (pickupInstant(booking.start_date, booking.start_time) <= new Date()) {
     return { error: 'Bookings cannot be cancelled once the rental period has started' }
   }
 
@@ -903,11 +936,8 @@ export async function requestDateModification(
     return { error: 'Date changes can only be requested for pending or confirmed bookings' }
   }
 
-  // Cannot modify once the booking period has started
-  const modBookingStart = new Date(booking.start_date + 'T00:00:00Z')
-  const modNow = new Date()
-  modNow.setUTCHours(0, 0, 0, 0)
-  if (modNow >= modBookingStart) {
+  // Same reckoning as cancellation: the real pickup moment in Dubai.
+  if (pickupInstant(booking.start_date, booking.start_time) <= new Date()) {
     return { error: 'Date changes cannot be requested once the rental period has started' }
   }
 
@@ -915,12 +945,8 @@ export async function requestDateModification(
     return { error: 'A date change request is already pending for this booking' }
   }
 
-  // Must be >24hrs before current start
-  const startTimeStr = booking.start_time || '10:00'
-  const [hours, minutes] = startTimeStr.split(':').map(Number)
-  const pickupDate = new Date(booking.start_date + 'T00:00:00Z')
-  pickupDate.setUTCHours(hours, minutes, 0, 0)
-  const hoursUntilStart = (pickupDate.getTime() - Date.now()) / (1000 * 60 * 60)
+  // Must be >24hrs before the agreed pickup, in Dubai terms.
+  const hoursUntilStart = hoursUntilPickup(booking.start_date, booking.start_time)
 
   if (hoursUntilStart <= 24) {
     return { error: 'Date changes cannot be requested within 24 hours of pickup' }

@@ -11,6 +11,7 @@ import { useTranslation } from '@/lib/i18n/context'
 import { useSearchParams } from 'next/navigation'
 import { useOverlayBackButton } from '@/lib/hooks/use-overlay-back-button'
 import { minimumRentalDays } from '@/lib/pricing/constants'
+import { fromDateKey } from '@/lib/dates'
 import { MobileDateRangeOverlay } from '@/components/booking/MobileDateRangeOverlay'
 import { MobileTimePickerOverlay } from '@/components/booking/MobileTimePickerOverlay'
 import { MobileTimePickerStackedOverlay } from '@/components/booking/MobileTimePickerStackedOverlay'
@@ -18,7 +19,9 @@ import { MobileTimePickerStackedOverlay } from '@/components/booking/MobileTimeP
 interface StepDurationProps {
   form: UseFormReturn<BookingFormValues>
   vehicle: Vehicle
-  bookedRanges: Array<{ from: Date; to: Date }>
+  /** Calendar days as stored ('YYYY-MM-DD'), converted to local Dates
+      in the browser -- see disabledMatchers below. */
+  bookedRanges: Array<{ from: string; to: string }>
   /** Navigation buttons (Back / Continue) rendered inside the white card */
   navButtons?: React.ReactNode
   /** Called by the mobile flow's final Continue to advance the wizard to step 2 */
@@ -81,13 +84,20 @@ export function StepDuration({ form, vehicle, bookedRanges, navButtons }: StepDu
   const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1)
   const disabledMatchers = [
     { from: new Date(2020, 0, 1), to: yesterday },
-    ...bookedRanges,
+    // Converted here rather than on the server: these have to be local
+    // midnight to line up with the day cells react-day-picker builds,
+    // and only the browser knows the customer's timezone.
+    ...bookedRanges.map((r) => ({ from: fromDateKey(r.from), to: fromDateKey(r.to) })),
   ]
 
   function applyQuickDuration(days: number) {
     const from = startDate instanceof Date ? startDate : new Date()
     const start = new Date(from.getFullYear(), from.getMonth(), from.getDate())
-    const end = new Date(start.getTime() + days * 24 * 60 * 60 * 1000)
+    // addDays, not epoch arithmetic. Adding days * 24h lands on 23:00 the
+    // previous day across a clock change -- in London, "3 days" from
+    // 24 Oct 2026 produced a 2-day booking. The calendar path already
+    // used addDays; this one did not.
+    const end = addDays(start, days)
     form.setValue('startDate', start, { shouldValidate: true })
     form.setValue('endDate', end, { shouldValidate: true })
   }

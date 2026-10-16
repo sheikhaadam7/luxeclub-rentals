@@ -54,9 +54,13 @@ export default async function BookingPage({ params }: PageProps) {
   })
 
   const bookedRanges = (blockedDatesRaw ?? []).map(
+    // Passed through as calendar-day strings, NOT Dates. This is a
+    // server component running in UTC, so any Date built here would be
+    // UTC midnight and would grey out the wrong day for a customer west
+    // of us. Only the browser can turn a day into a local Date.
     (r: { start_date: string; end_date: string }) => ({
-      from: new Date(r.start_date),
-      to: new Date(r.end_date),
+      from: r.start_date,
+      to: r.end_date,
     })
   )
 

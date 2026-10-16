@@ -1,4 +1,5 @@
 import { RESERVATION_FEE_AED } from '@/lib/pricing/constants'
+import { hoursUntilPickup } from '@/lib/dates'
 
 /**
  * Cancellation settlement — one implementation, two callers.
@@ -39,12 +40,17 @@ export interface CancellationSettlement {
   forfeitReason: 'late_cancel' | null
 }
 
-/** Hours between now and the agreed pickup moment. */
+/**
+ * Hours between now and the agreed pickup moment.
+ *
+ * `start_time` is a Dubai wall clock. This used to apply it with
+ * setUTCHours, which turned a 10:00 pickup into 14:00 Dubai and pushed
+ * the whole 24-hour window four hours late -- a customer cancelling 23
+ * real hours out scored 27 and kept the AED 450 they should have
+ * forfeited.
+ */
 export function hoursUntilStart(booking: CancellableBooking): number {
-  const [hours, minutes] = (booking.start_time || '10:00').split(':').map(Number)
-  const pickup = new Date(booking.start_date + 'T00:00:00Z')
-  pickup.setUTCHours(hours, minutes, 0, 0)
-  return (pickup.getTime() - Date.now()) / (1000 * 60 * 60)
+  return hoursUntilPickup(booking.start_date, booking.start_time)
 }
 
 /**

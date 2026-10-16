@@ -1,11 +1,16 @@
 'use client'
+
+import { fromDateKey } from '@/lib/dates'
 import { DayPicker } from 'react-day-picker'
 import 'react-day-picker/style.css'
 import { useLanguage, useTranslation } from '@/lib/i18n/context'
 import { getDateLocale } from '@/lib/i18n/date-locale'
 
 interface AvailabilityCalendarProps {
-  bookedRanges: Array<{ from: Date; to: Date }>
+  /** Calendar days as stored. Converted to local Dates here, in the
+      viewer's own timezone -- a Date built on the server would be UTC
+      midnight and grey out the wrong day west of us. */
+  bookedRanges: Array<{ from: string; to: string }>
 }
 
 export function AvailabilityCalendar({ bookedRanges }: AvailabilityCalendarProps) {
@@ -22,7 +27,7 @@ export function AvailabilityCalendar({ bookedRanges }: AvailabilityCalendarProps
 
   const disabledMatchers = [
     isPastDay,
-    ...bookedRanges,
+    ...bookedRanges.map((r) => ({ from: fromDateKey(r.from), to: fromDateKey(r.to) })),
   ]
 
   // inline-block sizes the card to its content, so it must also be capped at

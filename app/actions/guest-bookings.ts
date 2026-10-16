@@ -3,6 +3,7 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import type { BookingDetail } from '@/app/actions/bookings'
 import { settleCancellation } from '@/lib/booking/cancellation'
+import { pickupInstant, hoursUntilPickup } from '@/lib/dates'
 
 // ---------------------------------------------------------------------------
 // Shared helpers
@@ -200,11 +201,10 @@ export async function cancelGuestBooking(
     return { error: 'This booking cannot be cancelled in its current state' }
   }
 
-  // Cannot cancel once the booking period has started
-  const bookingStart = new Date(booking.start_date + 'T00:00:00Z')
-  const now = new Date()
-  now.setUTCHours(0, 0, 0, 0)
-  if (now >= bookingStart) {
+  // Cannot cancel once the rental has actually begun. Measured from the
+  // agreed pickup moment in Dubai, not from UTC midnight -- the old
+  // version left cancellation open until 4am Dubai on the pickup day.
+  if (pickupInstant(booking.start_date, booking.start_time) <= new Date()) {
     return { error: 'Bookings cannot be cancelled once the rental period has started' }
   }
 
@@ -276,11 +276,8 @@ export async function requestGuestDateModification(
     return { error: 'Date changes can only be requested for pending or confirmed bookings' }
   }
 
-  // Cannot modify once the booking period has started
-  const modBookingStart = new Date(booking.start_date + 'T00:00:00Z')
-  const modNow = new Date()
-  modNow.setUTCHours(0, 0, 0, 0)
-  if (modNow >= modBookingStart) {
+  // Same reckoning as cancellation: the real pickup moment in Dubai.
+  if (pickupInstant(booking.start_date, booking.start_time) <= new Date()) {
     return { error: 'Date changes cannot be requested once the rental period has started' }
   }
 
@@ -288,12 +285,8 @@ export async function requestGuestDateModification(
     return { error: 'A date change request is already pending for this booking' }
   }
 
-  // Must be >24hrs before current start
-  const startTimeStr = booking.start_time || '10:00'
-  const [hours, minutes] = startTimeStr.split(':').map(Number)
-  const pickupDate = new Date(booking.start_date + 'T00:00:00Z')
-  pickupDate.setUTCHours(hours, minutes, 0, 0)
-  const hoursUntilStart = (pickupDate.getTime() - Date.now()) / (1000 * 60 * 60)
+  // Must be >24hrs before the agreed pickup, in Dubai terms.
+  const hoursUntilStart = hoursUntilPickup(booking.start_date, booking.start_time)
 
   if (hoursUntilStart <= 24) {
     return { error: 'Date changes cannot be requested within 24 hours of pickup' }

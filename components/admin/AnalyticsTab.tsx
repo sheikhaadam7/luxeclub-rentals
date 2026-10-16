@@ -230,8 +230,8 @@ export function AnalyticsTab() {
         <div className="flex items-end h-48 gap-0">
           {data.dailyRevenue.map((day, idx) => {
             const pct = maxDailyRevenue > 0 ? (day.revenue / maxDailyRevenue) * 100 : 0
-            const dayNum = new Date(day.date + 'T00:00:00').getDate()
-            const formattedDate = new Date(day.date + 'T00:00:00').toLocaleDateString('en-AE', {
+            const dayNum = new Date(day.date + 'T00:00:00Z').getUTCDate()
+            const formattedDate = new Date(day.date + 'T00:00:00Z').toLocaleDateString('en-AE', {
               month: 'short',
               day: 'numeric',
             })

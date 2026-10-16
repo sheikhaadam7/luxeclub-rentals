@@ -19,6 +19,7 @@ import { createBooking, updateBookingPaymentMethod } from '@/app/actions/booking
 import { useCurrency } from '@/lib/currency/context'
 import { NO_DEPOSIT_OPTION_ENABLED, minimumRentalDays } from '@/lib/pricing/constants'
 import { differenceInDays } from 'date-fns'
+import { toDateKey } from '@/lib/dates'
 
 const StepDelivery = dynamic(() => import('./StepDelivery').then(m => ({ default: m.StepDelivery })), { ssr: false })
 const StepPayment = dynamic(() => import('./StepPayment').then(m => ({ default: m.StepPayment })), { ssr: false })
@@ -72,7 +73,7 @@ export interface Vehicle {
 
 interface BookingWizardProps {
   vehicle: Vehicle
-  bookedRanges: Array<{ from: Date; to: Date }>
+  bookedRanges: Array<{ from: string; to: string }>
   isAuthenticated?: boolean
 }
 
@@ -305,7 +306,18 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
               phone: formValues.guestPhone ?? '',
             }
           : undefined
-      const result = await createBooking(formValues, vehicle.id, guestInfo)
+      // The browser is the only place that knows which calendar day the
+      // customer actually tapped -- the server runs in UTC and would read
+      // a local-midnight Date back as the previous day. Convert here.
+      const result = await createBooking(
+        {
+          ...formValues,
+          startDate: toDateKey(formValues.startDate),
+          endDate: toDateKey(formValues.endDate),
+        },
+        vehicle.id,
+        guestInfo
+      )
 
       if ('error' in result) {
         setBookingError(result.error)
