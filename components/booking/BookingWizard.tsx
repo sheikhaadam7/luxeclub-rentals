@@ -291,7 +291,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
     try {
       const formValues = form.getValues()
       // Collected for EVERY booking, signed in or not. A signed-in
-      // customer fills the same Renter Information fields; previously their
+      // customer fills the same Driver Information fields; previously their
       // answers were dropped here and the booking ended up with no phone
       // number at all, so nobody could reach them on WhatsApp.
       const contactName =
@@ -353,7 +353,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
         }
       }
 
-      // Step 4: enforce the Renter Information contact fields.
+      // Step 4: enforce the Driver Information contact fields.
       // Step 6 ('contact') is gone, so Step 4 is the last place to validate.
       //
       // Applies to signed-in customers too. Owner ruling: a booking we
