@@ -14,6 +14,27 @@
 export const RESERVATION_FEE_AED = 450
 
 /**
+ * Shortest rental we will accept for a given vehicle.
+ *
+ * A car cheaper per day than the holding fee produces a booking where the
+ * fee is effectively the whole rental -- a one-day GMC Yukon comes to
+ * AED 452 against a 450 fee. Owner ruling: those cars take a two-day
+ * minimum.
+ *
+ * Applied by daily rate rather than by computed total, so the answer is
+ * the same before any dates, zones or add-ons are chosen and the customer
+ * is told at the point they pick dates instead of being refused at
+ * checkout.
+ *
+ * Lives beside the fee it depends on, and is called by BOTH the duration
+ * step and createBooking -- the client decides what to show, the server
+ * decides what to accept.
+ */
+export function minimumRentalDays(dailyRate: number | null | undefined): number {
+  return (dailyRate ?? 0) > 0 && (dailyRate as number) < RESERVATION_FEE_AED ? 2 : 1
+}
+
+/**
  * Daily mileage allowance included in every rental — matches the figure
  * displayed on each vehicle's catalogue page (i18n key vehicle.mileagePerDay).
  */

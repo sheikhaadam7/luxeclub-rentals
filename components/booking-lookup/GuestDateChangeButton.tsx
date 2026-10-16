@@ -1,5 +1,7 @@
 'use client'
 
+import { toDateKey, formatDateKey, fromDateKey, earliestBookableDayKey } from '@/lib/dates'
+
 import { useState } from 'react'
 import { DayPicker, type DateRange } from 'react-day-picker'
 import 'react-day-picker/style.css'
@@ -14,16 +16,6 @@ interface GuestDateChangeButtonProps {
   modificationRequestedStart: string | null
   modificationRequestedEnd: string | null
   onDateChangeRequested: () => void
-}
-
-function formatDate(isoDate: string): string {
-  const date = new Date(isoDate + 'T00:00:00Z')
-  return date.toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    timeZone: 'UTC',
-  })
 }
 
 export default function GuestDateChangeButton({
@@ -49,9 +41,9 @@ export default function GuestDateChangeButton({
         <p className="text-sm font-medium text-amber-300">Date Change Requested</p>
         <p className="text-sm text-brand-muted">
           You have requested to change your dates to{' '}
-          <span className="text-white">{formatDate(modificationRequestedStart)}</span>
+          <span className="text-white">{formatDateKey(modificationRequestedStart)}</span>
           {' '}&mdash;{' '}
-          <span className="text-white">{formatDate(modificationRequestedEnd)}</span>.
+          <span className="text-white">{formatDateKey(modificationRequestedEnd)}</span>.
           This is pending admin review.
         </p>
       </div>
@@ -109,8 +101,10 @@ export default function GuestDateChangeButton({
     setLoading(true)
     setError(null)
 
-    const newStart = range.from.toISOString().split('T')[0]
-    const newEnd = range.to.toISOString().split('T')[0]
+    // Local calendar components, not UTC -- the picker hands back local
+    // midnight, and toISOString() would send the previous day.
+    const newStart = toDateKey(range.from)
+    const newEnd = toDateKey(range.to)
 
     const result = await requestGuestDateModification(bookingId, guestEmail, newStart, newEnd)
 
@@ -126,8 +120,10 @@ export default function GuestDateChangeButton({
   }
 
   function renderPicker() {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
+    // Dubai's earliest bookable day, not the browser's midnight -- a
+    // customer an hour behind would otherwise be offered a day the
+    // business has already finished.
+    const today = fromDateKey(earliestBookableDayKey())
 
     return (
       <div className="space-y-4 mt-4">
@@ -138,9 +134,9 @@ export default function GuestDateChangeButton({
         )}
 
         <p className="text-sm text-brand-muted">
-          Current dates: <span className="text-white">{formatDate(currentStartDate)}</span>
+          Current dates: <span className="text-white">{formatDateKey(currentStartDate)}</span>
           {' '}&mdash;{' '}
-          <span className="text-white">{formatDate(currentEndDate)}</span>
+          <span className="text-white">{formatDateKey(currentEndDate)}</span>
         </p>
 
         <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-4 inline-block">
@@ -181,9 +177,9 @@ export default function GuestDateChangeButton({
 
         {range?.from && range?.to && (
           <p className="text-sm text-brand-muted">
-            New dates: <span className="text-white">{formatDate(range.from.toISOString().split('T')[0])}</span>
+            New dates: <span className="text-white">{formatDateKey(toDateKey(range.from))}</span>
             {' '}&mdash;{' '}
-            <span className="text-white">{formatDate(range.to.toISOString().split('T')[0])}</span>
+            <span className="text-white">{formatDateKey(toDateKey(range.to))}</span>
           </p>
         )}
 

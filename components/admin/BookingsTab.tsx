@@ -1,5 +1,7 @@
 'use client'
 
+import { formatDateKey, businessTodayKey } from '@/lib/dates'
+
 import { useState, useTransition, useEffect, useCallback } from 'react'
 import {
   getAllBookings,
@@ -53,38 +55,55 @@ const QUICK_ACTIONS: Partial<Record<BookingStatus, { label: string; next: Bookin
 
 // ─── Helpers ────────────────────────────────────────────────
 
+// Anchored to UTC like every other booking-date formatter, so the day
+// shown is the day stored no matter where the admin is sitting.
 function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  })
+  return formatDateKey(dateStr, 'en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
 }
 
 function formatBookingRef(id: string): string {
   return id.replace(/-/g, '').slice(0, 8).toUpperCase()
 }
 
+// Both compare stored day strings against the business day as plain
+// strings. 'YYYY-MM-DD' sorts correctly as text, so there is no Date to
+// build and therefore no timezone to get wrong -- which is what the old
+// version did, parsing the stored day as UTC and the current day as
+// local, then comparing the two.
 function isToday(dateStr: string): boolean {
-  const d = new Date(dateStr)
-  const now = new Date()
-  return (
-    d.getFullYear() === now.getFullYear() &&
-    d.getMonth() === now.getMonth() &&
-    d.getDate() === now.getDate()
-  )
+  return dateStr === businessTodayKey()
 }
 
 function isPast(dateStr: string): boolean {
-  const d = new Date(dateStr)
-  const now = new Date()
-  d.setHours(0, 0, 0, 0)
-  now.setHours(0, 0, 0, 0)
-  return d < now
+  return dateStr < businessTodayKey()
 }
 
 function customerName(b: AdminBooking): string {
   return b.guest_name || b.guest_email || b.user_email || 'Walk-in'
+}
+
+/**
+ * Turn a customer-typed number into a wa.me link, or null if it does not
+ * look like a phone number at all.
+ *
+ * The field is free text, so we take it as typed and only normalise what
+ * is unambiguous: a leading 00 or + is the international prefix, and a
+ * leading 0 on a 9-or-10-digit number is the UAE trunk code. Anything we
+ * cannot read confidently is left for a human rather than guessed at.
+ */
+function whatsappLink(raw: string | null): string | null {
+  if (!raw) return null
+  let digits = raw.replace(/[^\d]/g, '')
+  if (raw.trim().startsWith('+')) {
+    // already international
+  } else if (digits.startsWith('00')) {
+    digits = digits.slice(2)
+  } else if (digits.startsWith('0')) {
+    digits = `971${digits.slice(1)}`
+  }
+  // Shortest valid international number is 8 digits, longest is 15 (E.164).
+  if (digits.length < 8 || digits.length > 15) return null
+  return `https://wa.me/${digits}`
 }
 
 // ─── Booking Card ─────────────────────────────────────────────
@@ -102,6 +121,8 @@ function BookingCard({
 }) {
   const [isPending, startTransition] = useTransition()
   const [cardError, setCardError] = useState<string | null>(null)
+  const [refundOpen, setRefundOpen] = useState(false)
+  const [refundInput, setRefundInput] = useState('')
   const [cashMethod, setCashMethod] = useState<'cash' | 'bank_transfer'>('cash')
 
   const statusCfg = STATUS_CONFIG[booking.status] ?? {
@@ -250,16 +271,35 @@ function BookingCard({
     })
   }
 
-  function handleRefundFee(e: React.MouseEvent) {
+  // Refund takes a typed amount rather than a yes/no prompt: a no-show is
+  // settled by hand and the team decides what to give back. Pre-filled
+  // with everything the customer paid, which is the common case.
+  function openRefund(e: React.MouseEvent) {
     e.stopPropagation()
     setCardError(null)
-    if (!confirm('Refund the reservation fee to the customer? This will issue a Stripe refund for card bookings.')) return
+    setRefundInput(String(booking.amount_paid ?? booking.reservation_fee ?? 0))
+    setRefundOpen(true)
+  }
+
+  function submitRefund(e: React.MouseEvent) {
+    e.stopPropagation()
+    setCardError(null)
+    const amount = Number(refundInput)
+    if (!Number.isFinite(amount) || amount <= 0) {
+      setCardError('Enter a refund amount greater than zero')
+      return
+    }
     startTransition(async () => {
-      const result = await refundReservationFee(booking.id)
+      const result = await refundReservationFee(booking.id, amount)
       if (result.error) {
         setCardError(result.error)
       } else {
-        onBookingUpdate({ id: booking.id, reservation_fee_status: 'refunded' })
+        const paid = Number(booking.amount_paid ?? booking.reservation_fee ?? 0)
+        onBookingUpdate({
+          id: booking.id,
+          reservation_fee_status: amount >= paid ? 'refunded' : 'partially_refunded',
+        })
+        setRefundOpen(false)
       }
     })
   }
@@ -391,6 +431,32 @@ function BookingCard({
                     </span>
                   </div>
                 )}
+                {/* Without these three the panel does not add up: protection,
+                    add-ons and the 3% card fee are all inside Total Due. */}
+                {(booking.protection_surcharge ?? 0) > 0 && (
+                  <div className="flex justify-between text-xs">
+                    <span className="text-brand-muted">Protection</span>
+                    <span className="text-white">
+                      AED {booking.protection_surcharge!.toLocaleString()}
+                    </span>
+                  </div>
+                )}
+                {(booking.addons_total ?? 0) > 0 && (
+                  <div className="flex justify-between text-xs">
+                    <span className="text-brand-muted">Add-ons</span>
+                    <span className="text-white">
+                      AED {booking.addons_total!.toLocaleString()}
+                    </span>
+                  </div>
+                )}
+                {(booking.card_surcharge ?? 0) > 0 && (
+                  <div className="flex justify-between text-xs">
+                    <span className="text-brand-muted">Card Surcharge (3%)</span>
+                    <span className="text-white">
+                      AED {booking.card_surcharge!.toLocaleString()}
+                    </span>
+                  </div>
+                )}
                 <div className="flex justify-between text-xs font-semibold pt-1 border-t border-brand-border">
                   <span className="text-white">Total Due</span>
                   <span className="text-white">
@@ -411,6 +477,41 @@ function BookingCard({
                         </span>
                       </span>
                     </div>
+                    {/* What we asked for and what turned up. Separate rows
+                        on purpose: the fee above is only the slice kept on a
+                        late cancellation, and reading it as "what they paid"
+                        is the mistake this change exists to stop. */}
+                    <div className="flex justify-between text-xs">
+                      <span className="text-brand-muted">Charged Online</span>
+                      <span className="text-white">
+                        {booking.amount_due_now != null
+                          ? `AED ${booking.amount_due_now.toLocaleString()}`
+                          : '—'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-brand-muted">Actually Paid</span>
+                      <span className="text-white">
+                        {booking.amount_paid != null
+                          ? `AED ${booking.amount_paid.toLocaleString()}`
+                          : '—'}
+                      </span>
+                    </div>
+                    {booking.amount_paid != null &&
+                      booking.amount_due_now != null &&
+                      Math.abs(booking.amount_paid - booking.amount_due_now) > 0.01 && (
+                        <div className="flex justify-between gap-2 text-xs">
+                          <span className="text-amber-400 shrink-0">Amount mismatch</span>
+                          {/* min-w-0 + text-right: without it this long
+                              string pushes the row past the card on a
+                              phone, which is the one place staff read
+                              these. */}
+                          <span className="text-amber-400 min-w-0 text-right break-words">
+                            paid AED {booking.amount_paid.toLocaleString()} vs AED{' '}
+                            {booking.amount_due_now.toLocaleString()} expected — check Stripe
+                          </span>
+                        </div>
+                      )}
                     <div className="flex justify-between text-xs">
                       <span className="text-brand-muted">Balance Due on Pickup</span>
                       <span className="text-white">
@@ -446,11 +547,11 @@ function BookingCard({
                     <>
                       <button
                         type="button"
-                        onClick={handleRefundFee}
+                        onClick={openRefund}
                         disabled={isPending}
                         className="text-[11px] px-2.5 py-1 rounded font-medium transition-colors disabled:opacity-40 border border-brand-cyan/40 text-brand-cyan hover:bg-brand-cyan/10"
                       >
-                        Refund Fee
+                        Refund Payment
                       </button>
                       <button
                         type="button"
@@ -462,6 +563,47 @@ function BookingCard({
                       </button>
                     </>
                   )}
+                </div>
+              )}
+
+              {refundOpen && (
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  className="mt-2 rounded border border-brand-cyan/30 bg-brand-cyan/5 p-2.5 space-y-2"
+                >
+                  <p className="text-[11px] text-brand-muted leading-relaxed">
+                    Refund amount in AED. Capped at what was actually charged
+                    — Stripe is asked, not this screen.
+                  </p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      inputMode="decimal"
+                      value={refundInput}
+                      onChange={(e) => setRefundInput(e.target.value)}
+                      className="w-28 rounded border border-brand-border bg-brand-black px-2 py-1 text-xs text-white focus:outline-none focus:border-brand-cyan"
+                    />
+                    <button
+                      type="button"
+                      onClick={submitRefund}
+                      disabled={isPending}
+                      className="text-[11px] px-2.5 py-1 rounded font-medium border border-brand-cyan/40 text-brand-cyan hover:bg-brand-cyan/10 disabled:opacity-40"
+                    >
+                      {isPending ? 'Refunding…' : 'Confirm refund'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setRefundOpen(false)
+                      }}
+                      className="text-[11px] px-2.5 py-1 rounded font-medium border border-brand-border text-brand-muted hover:text-white"
+                    >
+                      Cancel
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
@@ -484,6 +626,47 @@ function BookingCard({
                     <span className="text-white text-right">{booking.delivery_address}</span>
                   </div>
                 )}
+                {/* A customer can book delivery without giving an address --
+                    a tourist may not have one yet. Flag it so someone chases
+                    it, rather than discovering it on the morning. */}
+                {booking.pickup_method === 'delivery' && !booking.delivery_address && (
+                  <div className="flex justify-between gap-2">
+                    <span className="text-brand-muted shrink-0">Delivery To</span>
+                    <span className="text-amber-400 text-right font-medium">
+                      Address needed — chase customer
+                    </span>
+                  </div>
+                )}
+                {booking.delivery_location && (
+                  <div className="flex justify-between gap-2">
+                    <span className="text-brand-muted shrink-0">Zone</span>
+                    <span className="text-white text-right">{booking.delivery_location}</span>
+                  </div>
+                )}
+                {booking.protection_package && (
+                  <div className="flex justify-between gap-2">
+                    <span className="text-brand-muted shrink-0">Protection</span>
+                    <span className="text-white text-right capitalize">
+                      {booking.protection_package}
+                    </span>
+                  </div>
+                )}
+                {/* What to actually prepare — a driver, a seat. Until now
+                    this was recorded nowhere in the business. */}
+                {booking.addons &&
+                  Object.entries(booking.addons).some(([, on]) => on) && (
+                    <div className="flex justify-between gap-2">
+                      <span className="text-brand-muted shrink-0">Add-ons</span>
+                      <span className="text-amber-300 text-right font-medium">
+                        {Object.entries(booking.addons)
+                          .filter(([, on]) => on)
+                          .map(([k]) =>
+                            k.replace(/([A-Z])/g, ' $1').replace(/^./, (c) => c.toUpperCase()),
+                          )
+                          .join(', ')}
+                      </span>
+                    </div>
+                  )}
                 <div className="flex justify-between">
                   <span className="text-brand-muted">Return</span>
                   <span className="text-white capitalize">
@@ -600,12 +783,29 @@ function BookingCard({
                     {booking.guest_email || booking.user_email || '—'}
                   </span>
                 </div>
-                {booking.guest_phone && (
-                  <div className="flex justify-between">
-                    <span className="text-brand-muted">Phone</span>
-                    <span className="text-white">{booking.guest_phone}</span>
-                  </div>
-                )}
+                {/* Always rendered, even when empty: a missing number is
+                    something staff need to SEE and chase, not an absent row
+                    they never notice. Bookings taken before the number was
+                    made mandatory are the ones this catches. */}
+                <div className="flex justify-between">
+                  <span className="text-brand-muted">Phone</span>
+                  {booking.guest_phone ? (
+                    whatsappLink(booking.guest_phone) ? (
+                      <a
+                        href={whatsappLink(booking.guest_phone)!}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-white underline decoration-white/30 underline-offset-2 hover:decoration-white"
+                      >
+                        {booking.guest_phone}
+                      </a>
+                    ) : (
+                      <span className="text-white">{booking.guest_phone}</span>
+                    )
+                  ) : (
+                    <span className="text-amber-400">No number — chase customer</span>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -738,6 +938,9 @@ export function BookingsTab() {
 
   // Filtered bookings
   const filtered = bookings.filter((b) => {
+    // 'all' means every REAL booking. A draft is an unpaid attempt that
+    // Stripe needed a row for -- it is only visible via its own pill.
+    if (statusFilter === 'all' && b.status === 'draft') return false
     if (statusFilter !== 'all' && b.status !== statusFilter) return false
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase()
@@ -773,7 +976,7 @@ export function BookingsTab() {
               : 'bg-brand-surface text-brand-muted border-brand-border hover:text-white hover:border-brand-cyan/30'
           }`}
         >
-          All ({bookings.length})
+          All ({bookings.filter((b) => b.status !== 'draft').length})
         </button>
         {ALL_STATUSES.map((s) => (
           <button
@@ -790,6 +993,30 @@ export function BookingsTab() {
           </button>
         ))}
       </div>
+
+      {/* ── Drafts explainer ──
+          Shown only on the Draft filter. Without it "Draft" reads like a
+          real booking in an odd state, when it is the opposite: an
+          abandoned attempt where no money ever moved. */}
+      {statusFilter === 'draft' && (
+        <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface px-4 py-3">
+          <p className="text-xs text-white font-semibold mb-1">
+            What drafts are
+          </p>
+          <p className="text-xs text-brand-muted leading-relaxed">
+            Abandoned bookings. A row is created the moment someone reaches
+            the payment step, because the card payment has to attach to
+            something — if they never pay, it stays a draft.{' '}
+            <span className="text-white">
+              No money was taken, no confirmation was sent, and nothing needs
+              doing.
+            </span>{' '}
+            They are hidden from every other view and excluded from revenue.
+            One created in the last few minutes may still be a customer part
+            way through paying.
+          </p>
+        </div>
+      )}
 
       {/* ── Search Bar ── */}
       <input

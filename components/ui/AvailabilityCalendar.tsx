@@ -1,28 +1,34 @@
 'use client'
+
+import { fromDateKey, toDateKey, businessTodayKey } from '@/lib/dates'
 import { DayPicker } from 'react-day-picker'
 import 'react-day-picker/style.css'
 import { useLanguage, useTranslation } from '@/lib/i18n/context'
 import { getDateLocale } from '@/lib/i18n/date-locale'
 
 interface AvailabilityCalendarProps {
-  bookedRanges: Array<{ from: Date; to: Date }>
+  /** Calendar days as stored. Converted to local Dates here, in the
+      viewer's own timezone -- a Date built on the server would be UTC
+      midnight and grey out the wrong day west of us. */
+  bookedRanges: Array<{ from: string; to: string }>
 }
 
 export function AvailabilityCalendar({ bookedRanges }: AvailabilityCalendarProps) {
   const { language } = useLanguage()
   const { t } = useTranslation()
   const dateLocale = getDateLocale(language)
-  const now = new Date()
-  const todayNum = now.getFullYear() * 10000 + now.getMonth() * 100 + now.getDate()
-
-  const isPastDay = (date: Date) => {
-    const dateNum = date.getFullYear() * 10000 + date.getMonth() * 100 + date.getDate()
-    return dateNum < todayNum
-  }
+  // Compared as calendar-day strings against Dubai's today. The old
+  // version built a bespoke y*10000 + month*100 + day number from the
+  // VIEWER's clock -- and with a 0-based month, so it was not even a
+  // sortable YYYYMMDD. This is display-only, so it greys past days but
+  // not today's gone slots: the car is still available today even once
+  // it can no longer be collected today.
+  const todayKey = businessTodayKey()
+  const isPastDay = (date: Date) => toDateKey(date) < todayKey
 
   const disabledMatchers = [
     isPastDay,
-    ...bookedRanges,
+    ...bookedRanges.map((r) => ({ from: fromDateKey(r.from), to: fromDateKey(r.to) })),
   ]
 
   // inline-block sizes the card to its content, so it must also be capped at

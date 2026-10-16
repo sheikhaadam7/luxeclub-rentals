@@ -6,15 +6,26 @@ import {
   calculateBookingTotal,
   type BookingPricingInput,
 } from '@/lib/pricing/calculator'
-import { NO_DEPOSIT_OPTION_ENABLED } from '@/lib/pricing/constants'
+import { NO_DEPOSIT_OPTION_ENABLED, minimumRentalDays } from '@/lib/pricing/constants'
+import { differenceInDays } from 'date-fns'
+import {
+  isDateKey,
+  pickupInstant,
+  hoursUntilPickup,
+  businessTodayKey,
+  isWithinBusinessHours,
+  BUSINESS_OPEN,
+  BUSINESS_CLOSE,
+  type DateKey,
+} from '@/lib/dates'
 import type { BookingFormValues } from '@/lib/validations/booking'
 // createSetupIntent is deliberately not imported any more: pay-on-delivery
 // now charges the reservation fee through createRentalPaymentIntent, which
 // also stores the card. The action itself is kept in payments.ts for any
 // booking created before this change.
 import { createRentalPaymentIntent } from '@/app/actions/payments'
-import { sendEmail } from '@/lib/email/send'
-import { BookingConfirmationEmail } from '@/components/email/BookingConfirmationEmail'
+import { DELIVERY_ZONE_LABELS } from '@/lib/pricing/calculator'
+import { settleCancellation } from '@/lib/booking/cancellation'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -26,11 +37,16 @@ export interface CreateBookingResult {
   rentalClientSecret: string | null
   /** Client secret for the SetupIntent (card-on-file for cash bookings) */
   setupClientSecret: string | null
-  /** Full customer obligation (reservation fee + pickup balance) */
+  /** Full customer obligation (amount charged now + pickup balance) */
   totalDue: number
-  /** Amount charged now to secure the booking */
+  /**
+   * The non-refundable slice a late cancellation forfeits. NOT the amount
+   * charged -- see amountDueNow.
+   */
   reservationFee: number
-  /** Amount owed in person on pickup day */
+  /** What is actually charged online now. Drives the Stripe amount. */
+  amountDueNow: number
+  /** Amount owed in person at handover */
   balanceDueOnPickup: number
   depositAmount: number
 }
@@ -71,10 +87,20 @@ export interface BookingDetail {
   delivery_fee: number
   return_fee: number
   no_deposit_surcharge: number
+  protection_package: string | null
+  addons: Record<string, boolean> | null
+  delivery_location: string | null
+  protection_surcharge: number | null
+  addons_total: number | null
+  card_surcharge: number | null
   deposit_amount: number
   total_due: number
   reservation_fee: number
   reservation_fee_status: string
+  /** What we asked for online. Null on bookings taken before this existed. */
+  amount_due_now: number | null
+  /** What actually arrived. Null until a payment webhook lands. */
+  amount_paid: number | null
   balance_due_on_pickup: number
   forfeit_reason: string | null
   payment_method: string
@@ -117,8 +143,28 @@ export interface BookingDetail {
  * Email: confirmation email sent via Resend after booking insert. Wrapped in
  * try/catch so email failure never fails the booking.
  */
+/**
+ * The dates arrive as calendar-day keys, NOT Date objects.
+ *
+ * A Date crossing the server-action boundary is only an instant, and this
+ * runs on Vercel in UTC -- so a day the customer picked as the 16th in
+ * Dubai arrives as 2026-10-15T20:00:00Z and reads back as the 15th. That
+ * was the bug. The browser knows the customer's calendar day and is the
+ * only place that can say what it was, so it sends the string.
+ *
+ * Deliberately REPLACING startDate/endDate rather than sitting beside
+ * them: two representations of the same fact means the server can price
+ * from one and store the other. This action is reachable by direct POST,
+ * so that gap would let a caller be charged for one day and reserve
+ * thirty.
+ */
+export type CreateBookingInput = Omit<BookingFormValues, 'startDate' | 'endDate'> & {
+  startDate: DateKey
+  endDate: DateKey
+}
+
 export async function createBooking(
-  formData: BookingFormValues,
+  formData: CreateBookingInput,
   vehicleId: string,
   guestInfo?: { name: string; email: string; phone: string }
 ): Promise<CreateBookingResult | { error: string }> {
@@ -158,6 +204,44 @@ export async function createBooking(
     }
   }
 
+  // Validate the day keys before anything derives from them. Everything
+  // below -- the price, the minimum-rental check, the stored row -- comes
+  // from these two strings, so a malformed one must stop here rather than
+  // turn into an Invalid Date further down.
+  if (!isDateKey(formData.startDate) || !isDateKey(formData.endDate)) {
+    return { error: 'Invalid booking dates' }
+  }
+  // One derivation, used for every calculation. Anchored to UTC so the
+  // day count is the same arithmetic wherever this runs.
+  const startDate = new Date(`${formData.startDate}T00:00:00Z`)
+  const endDate = new Date(`${formData.endDate}T00:00:00Z`)
+  // A rental is at least overnight (owner ruling), matching the 24-hour
+  // billing policy. It also removes the case where a 20:30 pickup has no
+  // return slot left the same day.
+  if (endDate <= startDate) {
+    return { error: 'A rental runs overnight — please choose a return date after your pickup date.' }
+  }
+
+  // Three separate failures, three separate messages. One combined
+  // "business hours" message would be actively wrong for two of them,
+  // and a customer who hits this needs to know whether to pick another
+  // day, another time, or to message the team for an out-of-hours
+  // arrangement.
+  if (formData.startDate < businessTodayKey()) {
+    return { error: 'That pickup date has already passed. Please choose a later date.' }
+  }
+  if (
+    !isWithinBusinessHours(formData.startTime ?? null) ||
+    !isWithinBusinessHours(formData.endTime ?? null)
+  ) {
+    return {
+      error: `Collection and delivery run between ${BUSINESS_OPEN} and ${BUSINESS_CLOSE}. Message us on WhatsApp if you need a time outside that.`,
+    }
+  }
+  if (pickupInstant(formData.startDate, formData.startTime ?? null) <= new Date()) {
+    return { error: 'That pickup time has already passed today. Please choose a later time.' }
+  }
+
   // 2. Fetch vehicle from DB (authoritative rates — never trust client)
   const { data: vehicle, error: vehicleError } = await admin
     .from('vehicles')
@@ -173,10 +257,21 @@ export async function createBooking(
     return { error: 'This vehicle is not currently available for booking' }
   }
 
+  // Minimum rental length, from the DB rate. The wizard checks the same
+  // rule for a timely message, but this is the enforcement: the client
+  // guard cannot be reached by a stale tab or a direct call.
+  const minDays = minimumRentalDays(vehicle.daily_rate)
+  const requestedDays = Math.max(differenceInDays(endDate, startDate), 1)
+  if (requestedDays < minDays) {
+    return {
+      error: `${vehicle.name} has a ${minDays}-day minimum rental. Please choose at least ${minDays} days.`,
+    }
+  }
+
   // 3. Server-side price recalculation
   const pricingInput: BookingPricingInput = {
-    startDate: new Date(formData.startDate),
-    endDate: new Date(formData.endDate),
+    startDate,
+    endDate,
     durationType: formData.durationType,
     pickupMethod: formData.pickupMethod,
     returnMethod: formData.returnMethod,
@@ -185,9 +280,37 @@ export async function createBooking(
     // cannot reach it. This is the enforcement point.
     depositChoice: NO_DEPOSIT_OPTION_ENABLED ? formData.depositChoice : 'deposit',
     paymentMethod: formData.paymentMethod,
+    // These three were missing, so every booking was priced without the
+    // protection package, the add-ons and the delivery zone -- short by up
+    // to AED 450/day. The client always passed them; the server did not.
+    // Safe: the client chooses WHAT, the server prices it from its own
+    // constants, and an unknown zone key falls back to 0.
+    deliveryLocation: formData.deliveryLocation,
+    protectionPackage: formData.protectionPackage,
+    addons: formData.addons,
   }
 
   const pricing = calculateBookingTotal(vehicle, pricingInput)
+
+  // The customer's typed address lands in deliveryNotes and was never
+  // persisted, so the confirmation email fell back to the office address --
+  // telling a delivery customer to come and collect.
+  //
+  // Keyed off the ZONE, never off emptiness: nothing clears deliveryNotes
+  // when the zone changes, so a Dubai address left in state after switching
+  // to Abu Dhabi would otherwise be stored and send a driver to the wrong
+  // emirate.
+  //
+  // Blank Dubai notes stay null on purpose. A tourist may not have an
+  // address yet and must not be blocked from booking; the email says "to be
+  // confirmed" and admin flags it, rather than asserting the wrong address.
+  const isDelivery = formData.pickupMethod === 'delivery'
+  const zoneKey = formData.deliveryLocation ?? ''
+  const resolvedAddress = !isDelivery
+    ? null
+    : zoneKey === 'within_dubai'
+      ? (formData.deliveryNotes?.trim() || null)
+      : (DELIVERY_ZONE_LABELS[zoneKey] ?? null)
 
   // 4. Insert booking row
   const { data: booking, error: insertError } = await admin
@@ -195,23 +318,50 @@ export async function createBooking(
     .insert({
       vehicle_id: vehicleId,
       user_id: userId,
-      guest_name: guestInfo?.name ?? null,
-      guest_email: guestInfo?.email ?? null,
-      guest_phone: guestInfo?.phone ?? null,
-      start_date: formData.startDate.toISOString().split('T')[0],
-      end_date: formData.endDate.toISOString().split('T')[0],
+      // Stored for signed-in customers as well. The columns are named
+      // guest_* for historical reasons; they hold the contact details for
+      // this booking whoever made it.
+      guest_name: guestInfo?.name || null,
+      guest_email: guestInfo?.email || null,
+      guest_phone: guestInfo?.phone || null,
+      // Stored exactly as the customer's browser reported them.
+      start_date: formData.startDate,
+      end_date: formData.endDate,
       duration_type: formData.durationType,
       start_time: formData.startTime || null,
       end_time: formData.endTime || null,
       pickup_method: formData.pickupMethod,
-      delivery_address: formData.deliveryAddress ?? null,
+      delivery_address: resolvedAddress,
       delivery_lat: formData.deliveryLat ?? null,
       delivery_lng: formData.deliveryLng ?? null,
       return_method: formData.returnMethod,
-      collection_address: formData.collectionAddress ?? null,
+      // Same spot for collection -- the form's own copy says so.
+      collection_address:
+        formData.returnMethod === 'collection'
+          ? resolvedAddress
+          : (formData.collectionAddress ?? null),
       collection_lat: formData.collectionLat ?? null,
       collection_lng: formData.collectionLng ?? null,
       deposit_choice: NO_DEPOSIT_OPTION_ENABLED ? formData.depositChoice : 'deposit',
+      // What the customer chose, so the business can actually see it.
+      // protection_package is coerced with the same test the calculator
+      // uses, so the row can never disagree with the price it was charged.
+      protection_package:
+        formData.protectionPackage === 'inclusive' ? 'inclusive' : 'basic',
+      // Narrowed to the four booleans rather than storing the raw client
+      // object, and never null -- null would defeat the column default.
+      addons: {
+        additionalDriver: !!formData.addons?.additionalDriver,
+        personalDriver: !!formData.addons?.personalDriver,
+        babySeat: !!formData.addons?.babySeat,
+        childSeat: !!formData.addons?.childSeat,
+      },
+      delivery_location: isDelivery ? (formData.deliveryLocation ?? null) : null,
+      // Amounts, so the breakdown pages reconcile instead of showing
+      // hundreds of dirhams unaccounted for.
+      protection_surcharge: pricing.protectionSurcharge,
+      addons_total: pricing.addonBreakdown.total,
+      card_surcharge: pricing.creditCardSurcharge,
       deposit_amount: pricing.depositAmount,
       rental_subtotal: pricing.rentalSubtotal,
       delivery_fee: pricing.deliveryFee,
@@ -219,6 +369,9 @@ export async function createBooking(
       no_deposit_surcharge: pricing.noDepositSurcharge,
       total_due: pricing.totalDue,
       reservation_fee: pricing.reservationFeeWithSurcharge,
+      // What we are about to ask Stripe for. Stored so the webhook can
+      // check the money that arrives against the money we asked for.
+      amount_due_now: pricing.amountDueNow,
       balance_due_on_pickup: pricing.balanceDueOnPickup,
       reservation_fee_status: 'pending',
       payment_method: formData.paymentMethod,
@@ -245,55 +398,36 @@ export async function createBooking(
     bookingId,
     totalDue: pricing.totalDue,
     reservationFee: pricing.reservationFeeWithSurcharge,
+    amountDueNow: pricing.amountDueNow,
     balanceDueOnPickup: pricing.balanceDueOnPickup,
     depositAmount: pricing.depositAmount,
   }
 
-  // 6. Crypto path — NOWPayments invoice is created separately on the client.
-  //    Only the reservation fee is collected via crypto; the balance is
-  //    settled in person on pickup day.
+  // 6. Crypto — the NOWPayments invoice is created separately on the
+  //    client, for amount_due_now, which is the full total.
   if (formData.paymentMethod === 'crypto') {
     return { ...commonResult, rentalClientSecret: null, setupClientSecret: null }
   }
 
-  // 6b. Pay-on-delivery — the reservation fee is charged NOW, exactly as on
-  //     the card path; only the balance is settled in person. This used to
-  //     create a SetupIntent, which has no amount: the card was stored, no
-  //     money moved, and the booking was confirmed and emailed anyway. The
-  //     PaymentIntent also stores the card (setup_future_usage), so the
-  //     card-on-file guarantee is preserved.
-  if (formData.paymentMethod === 'cash') {
-    if (!process.env.STRIPE_SECRET_KEY) {
-      // Test mode — no Stripe key configured
-      return { ...commonResult, rentalClientSecret: null, setupClientSecret: null }
-    }
-
-    const cashFeeResult = await createRentalPaymentIntent(
-      bookingId,
-      pricing.reservationFeeWithSurcharge,
-      userId ?? 'guest'
-    )
-    if ('error' in cashFeeResult) {
-      return { error: cashFeeResult.error }
-    }
-
-    return {
-      ...commonResult,
-      rentalClientSecret: cashFeeResult.clientSecret,
-      setupClientSecret: null,
-    }
-  }
-
-  // 7. Card / wallet path — create a PaymentIntent for the reservation fee
-  //    only (not the full rental). The rest is paid in person on pickup day.
-  // Test mode: skip Stripe when key is not configured
+  // 7. Everything else goes through one PaymentIntent for amountDueNow.
+  //
+  //    Card, Apple Pay and Google Pay charge the whole rental; pay-on-
+  //    delivery charges the holding fee and settles the balance at
+  //    handover. That difference is decided in the calculator, so the two
+  //    paths used to be byte-identical code and are now genuinely one --
+  //    two copies of a Stripe call is how the amounts drift apart.
+  //
+  //    The intent also stores the card (setup_future_usage), which is what
+  //    preserves the card-on-file guarantee pay-on-delivery relies on for
+  //    cancellation and no-show charges.
   if (!process.env.STRIPE_SECRET_KEY) {
+    // Test mode — no Stripe key configured
     return { ...commonResult, rentalClientSecret: null, setupClientSecret: null }
   }
 
   const rentalResult = await createRentalPaymentIntent(
     bookingId,
-    pricing.reservationFeeWithSurcharge,
+    pricing.amountDueNow,
     userId ?? 'guest'
   )
   if ('error' in rentalResult) {
@@ -312,16 +446,32 @@ export async function createBooking(
 // ---------------------------------------------------------------------------
 
 /**
- * Server Action — updates the payment method on an existing booking.
+ * Server Action — change the payment method on an existing booking, and
+ * move the money with it.
  *
- * Called when the user goes back in the wizard and changes payment method
- * after the booking was already created. Updates payment_method and
- * payment_status to match the new choice.
+ * Called when the customer goes Back from the payment step and picks a
+ * different method. It used to write two columns and stop there, which
+ * was harmless only while every method charged the same flat fee. Now
+ * that card charges the whole rental and pay-on-delivery charges the
+ * holding fee, leaving the original PaymentIntent in place would charge
+ * a card customer the holding fee, or a pay-on-delivery customer the
+ * entire rental.
+ *
+ * Deliberately does NOT re-run the pricing calculator. Since the 3%
+ * applies to every method, `total_due` no longer depends on the payment
+ * method at all -- so re-pricing could not change the total, but WOULD
+ * re-read the vehicle's current daily rate. A mastersheet push between
+ * booking and switch would then silently move the price the customer
+ * already agreed to. The stored total is the agreed total; only the split
+ * between "now" and "at handover" is recalculated here.
  */
 export async function updateBookingPaymentMethod(
   bookingId: string,
   paymentMethod: 'card' | 'apple_pay' | 'google_pay' | 'cash' | 'crypto'
-): Promise<{ success: true } | { error: string }> {
+): Promise<
+  | { success: true; totalDue: number; amountDueNow: number; balanceDueOnPickup: number; rentalClientSecret: string | null }
+  | { error: string }
+> {
   const supabase = await createClient()
   const { data: claimsData } = await supabase.auth.getClaims()
   const claims = claimsData?.claims
@@ -331,7 +481,9 @@ export async function updateBookingPaymentMethod(
   // Fetch booking — verify it exists and is still pending
   const { data: booking, error: fetchError } = await admin
     .from('bookings')
-    .select('id, status, payment_method, user_id, guest_email')
+    .select(
+      'id, status, payment_method, user_id, guest_email, total_due, reservation_fee, amount_due_now, reservation_fee_status, stripe_rental_pi_id, nowpayments_invoice_id, start_date, start_time'
+    )
     .eq('id', bookingId)
     .single()
 
@@ -350,9 +502,39 @@ export async function updateBookingPaymentMethod(
     }
   }
 
-  // Already set — no update needed
-  if (booking.payment_method === paymentMethod) {
-    return { success: true }
+  // Never re-price something already paid for.
+  if (booking.reservation_fee_status === 'paid') {
+    return { error: 'This booking has already been paid for' }
+  }
+
+  // The pickup can pass while the customer sits on the payment step.
+  // createBooking validated it on the way in, but that was minutes ago --
+  // a booking created at 20:25 could otherwise still be paid at 20:45.
+  if (pickupInstant(booking.start_date, booking.start_time) <= new Date()) {
+    return { error: 'That pickup time has now passed. Please start a new booking.' }
+  }
+
+  const totalDue = Number(booking.total_due ?? 0)
+  const nonRefundable = Number(booking.reservation_fee ?? 0)
+  // Same split rule as the calculator, applied to the agreed total.
+  const amountDueNow = paymentMethod === 'cash' ? nonRefundable : totalDue
+  const balanceDueOnPickup = Math.round((totalDue - amountDueNow) * 100) / 100
+
+  // Already on this method AND the stored split already matches — nothing
+  // to do. Checked on the split too, not just the method, so a booking
+  // left inconsistent by an earlier failure gets repaired rather than
+  // skipped.
+  if (
+    booking.payment_method === paymentMethod &&
+    Number(booking.amount_due_now ?? -1) === amountDueNow
+  ) {
+    return {
+      success: true,
+      totalDue,
+      amountDueNow,
+      balanceDueOnPickup,
+      rentalClientSecret: null,
+    }
   }
 
   const paymentStatus =
@@ -360,11 +542,76 @@ export async function updateBookingPaymentMethod(
     : paymentMethod === 'crypto' ? 'pending_crypto'
     : 'unpaid'
 
+  // ---- Stripe first, database second ---------------------------------
+  //
+  // If the row were written first and Stripe then failed, the booking
+  // would claim the full rental while the intent still held the holding
+  // fee -- and the customer would be charged the smaller figure against a
+  // receipt showing the larger one. Any Stripe failure below returns
+  // without touching the row, leaving the booking consistent and
+  // retryable.
+  let newClientSecret: string | null = null
+  const stripeEnabled = !!process.env.STRIPE_SECRET_KEY
+
+  if (stripeEnabled && booking.stripe_rental_pi_id) {
+    const { stripe } = await import('@/lib/stripe/server')
+    if (stripe) {
+      try {
+        const pi = await stripe.paymentIntents.retrieve(booking.stripe_rental_pi_id)
+
+        if (paymentMethod === 'crypto') {
+          // Crypto settles through NOWPayments, so the Stripe intent is
+          // dead weight. Cancel it rather than leave a live intent for an
+          // amount nobody will collect.
+          if (pi.status !== 'succeeded' && pi.status !== 'canceled') {
+            await stripe.paymentIntents.cancel(booking.stripe_rental_pi_id)
+          }
+        } else if (Math.round(amountDueNow * 100) !== pi.amount) {
+          // Stripe only allows an amount change while the intent is still
+          // waiting to be paid. An abandoned 3-D Secure leaves it in
+          // requires_action and a slow bank leaves it processing -- in
+          // those states the update is rejected, so replace the intent
+          // and hand the browser a fresh client secret.
+          if (
+            pi.status === 'requires_payment_method' ||
+            pi.status === 'requires_confirmation'
+          ) {
+            await stripe.paymentIntents.update(booking.stripe_rental_pi_id, {
+              amount: Math.round(amountDueNow * 100),
+            })
+          } else if (pi.status === 'succeeded' || pi.status === 'processing') {
+            // Money is already moving. Re-pricing now would mean charging
+            // twice; the status guard above should have caught this, but
+            // the webhook may simply not have landed yet.
+            return { error: 'This booking is already being paid for' }
+          } else {
+            await stripe.paymentIntents.cancel(booking.stripe_rental_pi_id)
+            const fresh = await createRentalPaymentIntent(
+              bookingId,
+              amountDueNow,
+              booking.user_id ?? 'guest'
+            )
+            if ('error' in fresh) return { error: fresh.error }
+            newClientSecret = fresh.clientSecret
+          }
+        }
+      } catch (err) {
+        console.error('updateBookingPaymentMethod: stripe error', err)
+        return { error: 'Could not update the payment. Please try again.' }
+      }
+    }
+  }
+
   const { error: updateError } = await admin
     .from('bookings')
     .update({
       payment_method: paymentMethod,
       payment_status: paymentStatus,
+      amount_due_now: amountDueNow,
+      balance_due_on_pickup: balanceDueOnPickup,
+      // A stored invoice short-circuits createCryptoInvoice, which would
+      // otherwise re-serve the old URL at the pre-switch amount.
+      ...(paymentMethod === 'crypto' ? { nowpayments_invoice_id: null } : {}),
     })
     .eq('id', bookingId)
 
@@ -373,7 +620,13 @@ export async function updateBookingPaymentMethod(
     return { error: 'Failed to update payment method' }
   }
 
-  return { success: true }
+  return {
+    success: true,
+    totalDue,
+    amountDueNow,
+    balanceDueOnPickup,
+    rentalClientSecret: newClientSecret,
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -424,7 +677,7 @@ export async function getUserBookings(): Promise<UserBooking[] | { error: string
 
 // ---------------------------------------------------------------------------
 // getLatestBookingForUser — used by the Step 4 sign-in modal to auto-fill
-// the Renter Information form with the customer's saved contact details.
+// the Driver Information form with the customer's saved contact details.
 // ---------------------------------------------------------------------------
 
 export interface LatestBookingGuestInfo {
@@ -498,10 +751,18 @@ export async function getBookingDetail(
       delivery_fee,
       return_fee,
       no_deposit_surcharge,
+      protection_package,
+      addons,
+      delivery_location,
+      protection_surcharge,
+      addons_total,
+      card_surcharge,
       deposit_amount,
       total_due,
       reservation_fee,
       reservation_fee_status,
+      amount_due_now,
+      amount_paid,
       balance_due_on_pickup,
       forfeit_reason,
       payment_method,
@@ -623,7 +884,7 @@ export async function cancelBooking(
   // Fetch booking with ownership check
   const { data: booking, error: fetchError } = await admin
     .from('bookings')
-    .select('id, status, payment_method, start_date, start_time, reservation_fee, reservation_fee_status, stripe_rental_pi_id')
+    .select('id, status, payment_method, start_date, start_time, reservation_fee, amount_paid, amount_due_now, reservation_fee_status, stripe_rental_pi_id')
     .eq('id', bookingId)
     .eq('user_id', claims.sub)
     .single()
@@ -636,64 +897,28 @@ export async function cancelBooking(
     return { error: 'This booking cannot be cancelled in its current state' }
   }
 
-  // Cannot cancel once the booking period has started
-  const bookingStart = new Date(booking.start_date + 'T00:00:00Z')
-  const now = new Date()
-  now.setUTCHours(0, 0, 0, 0)
-  if (now >= bookingStart) {
+  // Cannot cancel once the rental has actually begun. Measured from the
+  // agreed pickup moment in Dubai, not from UTC midnight -- the old
+  // version left cancellation open until 4am Dubai on the pickup day.
+  if (pickupInstant(booking.start_date, booking.start_time) <= new Date()) {
     return { error: 'Bookings cannot be cancelled once the rental period has started' }
   }
 
-  // Calculate hours until pickup start
-  const startDateStr = booking.start_date
-  const startTimeStr = booking.start_time || '10:00'
-  const [hours, minutes] = startTimeStr.split(':').map(Number)
-  const pickupDate = new Date(startDateStr + 'T00:00:00Z')
-  pickupDate.setUTCHours(hours, minutes, 0, 0)
-  const hoursUntilStart = (pickupDate.getTime() - Date.now()) / (1000 * 60 * 60)
-
-  const reservationFee = Number(booking.reservation_fee ?? 0)
-  const lateCancel = hoursUntilStart <= 24
-
-  const refundAmount = lateCancel ? 0 : reservationFee
-  const newReservationFeeStatus = lateCancel ? 'forfeited' : 'refunded'
-  const forfeitReason = lateCancel ? 'late_cancel' : null
-
-  // Stripe refund — only for non-late cancels where the fee was actually
-  // paid via Stripe (card/wallet). Cash/crypto refunds are handled manually.
-  let stripeRefundId: string | null = null
-  if (
-    !lateCancel &&
-    refundAmount > 0 &&
-    booking.reservation_fee_status === 'paid' &&
-    booking.stripe_rental_pi_id
-  ) {
-    const { stripe } = await import('@/lib/stripe/server')
-    if (stripe) {
-      try {
-        const refund = await stripe.refunds.create({
-          payment_intent: booking.stripe_rental_pi_id,
-          amount: Math.round(refundAmount * 100),
-        })
-        stripeRefundId = refund.id
-      } catch (err) {
-        console.error('cancelBooking: stripe refund error', err)
-        return { error: 'Failed to process refund. Please try again or contact support.' }
-      }
-    }
-  }
+  const settlement = await settleCancellation(booking)
+  if ('error' in settlement) return { error: settlement.error }
+  const { lateCancel, refundAmount } = settlement
 
   const { error: updateError } = await admin
     .from('bookings')
     .update({
       status: 'cancelled',
-      payment_status: lateCancel ? 'forfeited' : 'refunded',
-      reservation_fee_status: newReservationFeeStatus,
-      forfeit_reason: forfeitReason,
+      payment_status: settlement.paymentStatus,
+      reservation_fee_status: settlement.reservationFeeStatus,
+      forfeit_reason: settlement.forfeitReason,
       cancelled_at: new Date().toISOString(),
-      cancellation_fee: lateCancel ? reservationFee : 0,
+      cancellation_fee: settlement.cancellationFee,
       cancellation_refund_amount: refundAmount,
-      stripe_refund_id: stripeRefundId,
+      stripe_refund_id: settlement.stripeRefundId,
       updated_at: new Date().toISOString(),
     })
     .eq('id', bookingId)
@@ -750,11 +975,8 @@ export async function requestDateModification(
     return { error: 'Date changes can only be requested for pending or confirmed bookings' }
   }
 
-  // Cannot modify once the booking period has started
-  const modBookingStart = new Date(booking.start_date + 'T00:00:00Z')
-  const modNow = new Date()
-  modNow.setUTCHours(0, 0, 0, 0)
-  if (modNow >= modBookingStart) {
+  // Same reckoning as cancellation: the real pickup moment in Dubai.
+  if (pickupInstant(booking.start_date, booking.start_time) <= new Date()) {
     return { error: 'Date changes cannot be requested once the rental period has started' }
   }
 
@@ -762,33 +984,32 @@ export async function requestDateModification(
     return { error: 'A date change request is already pending for this booking' }
   }
 
-  // Must be >24hrs before current start
-  const startTimeStr = booking.start_time || '10:00'
-  const [hours, minutes] = startTimeStr.split(':').map(Number)
-  const pickupDate = new Date(booking.start_date + 'T00:00:00Z')
-  pickupDate.setUTCHours(hours, minutes, 0, 0)
-  const hoursUntilStart = (pickupDate.getTime() - Date.now()) / (1000 * 60 * 60)
+  // Must be >24hrs before the agreed pickup, in Dubai terms.
+  const hoursUntilStart = hoursUntilPickup(booking.start_date, booking.start_time)
 
   if (hoursUntilStart <= 24) {
     return { error: 'Date changes cannot be requested within 24 hours of pickup' }
   }
 
   // New dates must be valid and in the future
-  const newStart = new Date(newStartDate + 'T00:00:00Z')
-  const newEnd = new Date(newEndDate + 'T00:00:00Z')
-  const today = new Date()
-  today.setUTCHours(0, 0, 0, 0)
-
-  if (isNaN(newStart.getTime()) || isNaN(newEnd.getTime())) {
+  if (!isDateKey(newStartDate) || !isDateKey(newEndDate)) {
     return { error: 'Invalid dates provided' }
   }
 
-  if (newStart < today) {
-    return { error: 'New start date must be in the future' }
+  // Measured against Dubai's day, and against the booking's EXISTING
+  // pickup time -- this action receives dates only, so there is no new
+  // time to validate.
+  if (newStartDate < businessTodayKey()) {
+    return { error: 'That pickup date has already passed. Please choose a later date.' }
+  }
+  if (pickupInstant(newStartDate, booking.start_time) <= new Date()) {
+    return { error: 'That pickup time has already passed. Please choose a later date.' }
   }
 
-  if (newEnd < newStart) {
-    return { error: 'End date must be on or after start date' }
+  // Compared as day strings -- 'YYYY-MM-DD' sorts correctly as text.
+  // Overnight minimum, same as a new booking.
+  if (newEndDate <= newStartDate) {
+    return { error: 'A rental runs overnight — please choose a return date after your pickup date.' }
   }
 
   const { error: updateError } = await admin

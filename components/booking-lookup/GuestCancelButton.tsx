@@ -7,7 +7,12 @@ import { useCurrency } from '@/lib/currency/context'
 interface GuestCancelButtonProps {
   bookingId: string
   guestEmail: string
+  /** The non-refundable slice kept on a late cancellation. */
   reservationFee: number
+  /** What the customer actually paid. On a prepaid card booking this is
+      the whole rental, not the fee -- quoting the fee here would tell
+      someone owed thousands that they are getting 450 back. */
+  amountPaid: number
   hoursUntilStart: number
   onCancelled: () => void
 }
@@ -16,6 +21,7 @@ export default function GuestCancelButton({
   bookingId,
   guestEmail,
   reservationFee,
+  amountPaid,
   hoursUntilStart,
   onCancelled,
 }: GuestCancelButtonProps) {
@@ -52,11 +58,13 @@ export default function GuestCancelButton({
         <p className="text-sm font-medium text-green-300">Booking cancelled</p>
         {resultData.forfeited ? (
           <p className="text-sm text-yellow-300/80">
-            Because this cancellation is within 24 hours of the booking start, the {formatPrice(reservationFee)} reservation fee has been forfeited as per our policy.
+            Because this cancellation is within 24 hours of the booking start, {formatPrice(Math.min(reservationFee, amountPaid))} has been retained as per our policy.{' '}
+            {resultData.refundAmount > 0 &&
+              `The remaining ${formatPrice(resultData.refundAmount)} will be refunded to your original payment method within 5-10 business days.`}
           </p>
         ) : (
           <p className="text-sm text-green-300/80">
-            Your {formatPrice(resultData.refundAmount)} reservation fee will be refunded to your original payment method within 5–10 business days.
+            {formatPrice(resultData.refundAmount)} will be refunded to your original payment method within 5–10 business days.
           </p>
         )}
       </div>
@@ -78,21 +86,27 @@ export default function GuestCancelButton({
           {isFreeRefund ? (
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-brand-muted">Reservation fee refund</span>
-                <span className="text-green-400">{formatPrice(reservationFee)}</span>
+                <span className="text-brand-muted">Refund</span>
+                <span className="text-green-400">{formatPrice(amountPaid)}</span>
               </div>
               <p className="text-xs text-brand-muted/70">
-                You are cancelling more than 24 hours before the booking start, so your full reservation fee will be refunded.
+                You are cancelling more than 24 hours before the booking start, so everything you have paid is refunded in full.
               </p>
             </div>
           ) : (
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-brand-muted">Reservation fee</span>
-                <span className="text-red-400">Forfeited ({formatPrice(reservationFee)})</span>
+                <span className="text-brand-muted">Non-refundable</span>
+                <span className="text-red-400">{formatPrice(Math.min(reservationFee, amountPaid))}</span>
               </div>
+              {amountPaid > reservationFee && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-brand-muted">Refund</span>
+                  <span className="text-green-400">{formatPrice(amountPaid - reservationFee)}</span>
+                </div>
+              )}
               <p className="text-xs text-red-300/80 leading-relaxed">
-                You are cancelling within 24 hours of the booking start. As per our policy, your {formatPrice(reservationFee)} reservation fee is non-refundable and will NOT be returned. Proceed only if you are sure.
+                You are cancelling within 24 hours of the booking start. As per our policy, {formatPrice(Math.min(reservationFee, amountPaid))} is non-refundable and will NOT be returned. Proceed only if you are sure.
               </p>
             </div>
           )}

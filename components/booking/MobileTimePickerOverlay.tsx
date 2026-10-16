@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { format, isSameDay } from 'date-fns'
 import { TIME_SLOTS } from '@/components/booking/StepDuration'
+import { isSlotSelectable, toDateKey, BUSINESS_OPEN, BUSINESS_CLOSE } from '@/lib/dates'
 
 interface MobileTimePickerOverlayProps {
   open: boolean
@@ -94,10 +95,14 @@ export function MobileTimePickerOverlay({
 
   // For Return mode on same-day rentals, disable chips ≤ startTime
   const returnMinMinutes = sameDay ? toMinutes(startTime) : -1
+  // Plus: a slot on today that has already been and gone. Without this
+  // the picker happily offers 09:30 at three in the afternoon.
+  const activeDay = activeMode === 'pickup' ? startDate : endDate
   const isDisabledForActive = (value: string) =>
-    activeMode === 'return' && toMinutes(value) <= returnMinMinutes
+    (activeMode === 'return' && toMinutes(value) <= returnMinMinutes) ||
+    (activeDay instanceof Date && !isSlotSelectable(toDateKey(activeDay), value))
 
-  // Split slots into morning–afternoon (< 17:30) and evening–night (>= 17:30)
+  // Split slots into morning–afternoon (< 17:30) and evening (>= 17:30)
   const eveningCutoff = toMinutes('17:30')
   const morning = TIME_SLOTS.filter((s) => toMinutes(s.value) < eveningCutoff)
   const evening = TIME_SLOTS.filter((s) => toMinutes(s.value) >= eveningCutoff)
@@ -169,6 +174,15 @@ export function MobileTimePickerOverlay({
           </svg>
         </button>
         <h2 className="font-display text-xl font-semibold text-zinc-900 text-center">{title}</h2>
+      </div>
+      {/* Stated plainly. Without it, a customer who finds half the day
+          greyed out has no idea why and no reason to ask us about an
+          out-of-hours arrangement. */}
+      <div className="px-4 pb-1">
+        <p className="text-xs text-zinc-500 text-center">
+          Collection and delivery run {BUSINESS_OPEN}–{BUSINESS_CLOSE}. Need another
+          time? Message us and we will try to arrange it.
+        </p>
         <button
           type="button"
           onClick={onBack}
@@ -262,7 +276,7 @@ export function MobileTimePickerOverlay({
           })}
         </div>
 
-        <h3 className="text-base font-bold text-zinc-900 mb-3">Evening – night</h3>
+        <h3 className="text-base font-bold text-zinc-900 mb-3">Evening</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
           {evening.map((slot) => {
             const disabled = isDisabledForActive(slot.value)

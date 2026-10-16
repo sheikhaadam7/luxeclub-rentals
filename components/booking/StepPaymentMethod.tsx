@@ -67,6 +67,7 @@ const PAYMENT_OPTIONS = [
 
 export function StepPaymentMethod({ form, navButtons, onBack }: StepPaymentMethodProps) {
   const { t } = useTranslation()
+  const { formatPrice } = useCurrency()
   const paymentMethod = form.watch('paymentMethod')
   /** The 'cash' option requires explicit acknowledgement of the holding
       deposit (RESERVATION_FEE_AED) before the selection is committed. */
@@ -144,7 +145,13 @@ export function StepPaymentMethod({ form, navButtons, onBack }: StepPaymentMetho
                   </p>
                 </div>
                 <p className="text-sm text-zinc-600 mt-1.5 leading-relaxed">
-                  {t(option.descKey)}
+                  {/* Pay-on-delivery names the holding deposit, so the
+                      chooser states the actual difference between the
+                      options rather than leaving the customer to guess. */}
+                  {t(option.descKey).replace(
+                    '{amount}',
+                    formatPrice(RESERVATION_FEE_AED, { exact: true })
+                  )}
                 </p>
                 {option.fee && (
                   <p className={`text-sm mt-1 font-medium ${'feeColor' in option && option.feeColor ? option.feeColor : 'text-amber-600'}`}>

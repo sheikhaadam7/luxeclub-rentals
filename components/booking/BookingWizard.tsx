@@ -17,7 +17,9 @@ import { StepPaymentMethod } from '@/components/booking/StepPaymentMethod'
 import { StepAuth } from '@/components/booking/StepAuth'
 import { createBooking, updateBookingPaymentMethod } from '@/app/actions/bookings'
 import { useCurrency } from '@/lib/currency/context'
-import { NO_DEPOSIT_OPTION_ENABLED } from '@/lib/pricing/constants'
+import { NO_DEPOSIT_OPTION_ENABLED, minimumRentalDays } from '@/lib/pricing/constants'
+import { differenceInDays } from 'date-fns'
+import { toDateKey, earliestBookableDayKey } from '@/lib/dates'
 
 const StepDelivery = dynamic(() => import('./StepDelivery').then(m => ({ default: m.StepDelivery })), { ssr: false })
 const StepPayment = dynamic(() => import('./StepPayment').then(m => ({ default: m.StepPayment })), { ssr: false })
@@ -71,7 +73,7 @@ export interface Vehicle {
 
 interface BookingWizardProps {
   vehicle: Vehicle
-  bookedRanges: Array<{ from: Date; to: Date }>
+  bookedRanges: Array<{ from: string; to: string }>
   isAuthenticated?: boolean
 }
 
@@ -87,6 +89,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
   const [rentalClientSecret, setRentalClientSecret] = useState<string | null>(null)
   const [bookingTotalDue, setBookingTotalDue] = useState<number>(0)
   const [bookingReservationFee, setBookingReservationFee] = useState<number>(0)
+  const [bookingAmountDueNow, setBookingAmountDueNow] = useState<number>(0)
   const [bookingBalanceDueOnPickup, setBookingBalanceDueOnPickup] = useState<number>(0)
   const [bookingDepositAmount, setBookingDepositAmount] = useState<number>(0)
   const [bookingError, setBookingError] = useState<string | null>(null)
@@ -103,6 +106,15 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
   const currentStep = steps[step]
 
   const wizardRef = useRef<HTMLDivElement>(null)
+  const errorRef = useRef<HTMLDivElement>(null)
+
+  // The error block sits below the step content and the payment block, so
+  // a customer who hits a server guard presses Continue and sees nothing
+  // move -- the explanation is off-screen underneath the wizard.
+  useEffect(() => {
+    if (!bookingError) return
+    errorRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+  }, [bookingError])
 
   const scrollToTop = () => {
     setTimeout(() => {
@@ -167,6 +179,17 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
         const v = { ...saved.values }
         if (typeof v.startDate === 'string') v.startDate = new Date(v.startDate)
         if (typeof v.endDate === 'string') v.endDate = new Date(v.endDate)
+        // A session saved at 20:25 and resumed at 20:45 -- or resumed the
+        // next morning -- holds a date that can no longer be booked. The
+        // calendar would refuse it if reopened, but the form still holds
+        // it and the summary still shows it, so the first the customer
+        // hears is a rejection at the payment step. Drop it instead and
+        // let them pick again.
+        const earliest = earliestBookableDayKey()
+        if (v.startDate instanceof Date && toDateKey(v.startDate) < earliest) {
+          delete v.startDate
+          delete v.endDate
+        }
         // A session saved before the No Deposit Option was withdrawn can
         // still hold 'no_deposit', with no row on screen to turn it off.
         // Forced inside the reset payload deliberately -- a later
@@ -243,12 +266,13 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
         setRentalClientSecret(null)
         setBookingTotalDue(0)
         setBookingReservationFee(0)
+        setBookingAmountDueNow(0)
         setBookingBalanceDueOnPickup(0)
         setBookingDepositAmount(0)
         setBookingError(null)
         // Fall through to fresh creation below — DO NOT return.
       } else {
-        // Same Intent type — fast path: just sync the method.
+        // Same Intent type — re-split the booking for the new method.
         setIsCreatingBooking(true)
         setBookingError(null)
         try {
@@ -257,6 +281,18 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
             setBookingError(syncResult.error)
             setIsCreatingBooking(false)
             return
+          }
+          // Apply what the server decided. Discarding this is what let the
+          // payment screen show the pre-switch figures while Stripe held
+          // the new ones.
+          setBookingTotalDue(syncResult.totalDue)
+          setBookingAmountDueNow(syncResult.amountDueNow)
+          setBookingBalanceDueOnPickup(syncResult.balanceDueOnPickup)
+          // Only present when the old intent could not be amended and had
+          // to be replaced. Keeping the stale secret would mean charging
+          // the old amount.
+          if (syncResult.rentalClientSecret) {
+            setRentalClientSecret(syncResult.rentalClientSecret)
           }
         } catch {
           setBookingError(t('booking.somethingWentWrong'))
@@ -275,10 +311,33 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
 
     try {
       const formValues = form.getValues()
-      const guestInfo = !isAuthed && formValues.guestName
-        ? { name: formValues.guestName, email: formValues.guestEmail!, phone: formValues.guestPhone! }
-        : undefined
-      const result = await createBooking(formValues, vehicle.id, guestInfo)
+      // Collected for EVERY booking, signed in or not. A signed-in
+      // customer fills the same Driver Information fields; previously their
+      // answers were dropped here and the booking ended up with no phone
+      // number at all, so nobody could reach them on WhatsApp.
+      const contactName =
+        formValues.guestName ||
+        [formValues.guestFirstName, formValues.guestSurname].filter(Boolean).join(' ').trim()
+      const guestInfo =
+        formValues.guestPhone || formValues.guestEmail || contactName
+          ? {
+              name: contactName,
+              email: formValues.guestEmail ?? '',
+              phone: formValues.guestPhone ?? '',
+            }
+          : undefined
+      // The browser is the only place that knows which calendar day the
+      // customer actually tapped -- the server runs in UTC and would read
+      // a local-midnight Date back as the previous day. Convert here.
+      const result = await createBooking(
+        {
+          ...formValues,
+          startDate: toDateKey(formValues.startDate),
+          endDate: toDateKey(formValues.endDate),
+        },
+        vehicle.id,
+        guestInfo
+      )
 
       if ('error' in result) {
         setBookingError(result.error)
@@ -289,6 +348,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
       setRentalClientSecret(result.rentalClientSecret)
       setBookingTotalDue(result.totalDue)
       setBookingReservationFee(result.reservationFee)
+      setBookingAmountDueNow(result.amountDueNow)
       setBookingBalanceDueOnPickup(result.balanceDueOnPickup)
       setBookingDepositAmount(result.depositAmount)
       setStep(paymentIndex)
@@ -298,7 +358,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
     } finally {
       setIsCreatingBooking(false)
     }
-  }, [bookingId, form, isAuthed, steps, vehicle.id, t, rentalClientSecret])
+  }, [bookingId, form, steps, vehicle.id, t, rentalClientSecret])
 
   const advance = () => {
     startTransition(async () => {
@@ -306,27 +366,57 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
       const valid = await form.trigger(fields)
       if (!valid) return
 
-      // Step 4: enforce the Renter Information contact fields for guests.
+      // Minimum rental length. Lives here rather than in the zod schema
+      // because the rule depends on the vehicle's daily rate, which the
+      // form never carries. createBooking enforces the same rule from the
+      // DB rate -- this is only the courtesy of saying so early.
+      if (currentStep === 'duration') {
+        const { startDate, endDate } = form.getValues()
+        if (startDate instanceof Date && endDate instanceof Date) {
+          const days = Math.max(differenceInDays(endDate, startDate), 1)
+          const minDays = minimumRentalDays(vehicle.daily_rate)
+          if (days < minDays) {
+            form.setError('endDate', {
+              type: 'min',
+              message: `${vehicle.name} has a ${minDays}-day minimum rental.`,
+            })
+            return
+          }
+        }
+      }
+
+      // Step 4: enforce the Driver Information contact fields.
       // Step 6 ('contact') is gone, so Step 4 is the last place to validate.
-      if (currentStep === 'delivery' && !isAuthed) {
+      //
+      // Applies to signed-in customers too. Owner ruling: a booking we
+      // cannot phone is a booking we cannot service, and WhatsApp is the
+      // main channel. Unlike the delivery address, which a tourist may
+      // genuinely not know yet, everyone has a number.
+      if (currentStep === 'delivery') {
         const v = form.getValues()
         const missing: string[] = []
-        if (!v.guestFirstName || v.guestFirstName.trim() === '') {
-          form.setError('guestFirstName', { type: 'required', message: 'First name is required' })
-          missing.push('First name')
-        }
-        if (!v.guestSurname || v.guestSurname.trim() === '') {
-          form.setError('guestSurname', { type: 'required', message: 'Surname is required' })
-          missing.push('Surname')
-        }
-        // Email — empty OR missing @ symbol
-        const email = (v.guestEmail ?? '').trim()
-        if (!email) {
-          form.setError('guestEmail', { type: 'required', message: 'Email is required' })
-          missing.push('Email')
-        } else if (!email.includes('@') || !email.includes('.') || email.length < 5) {
-          form.setError('guestEmail', { type: 'pattern', message: 'Please enter a valid email address' })
-          missing.push('Valid email address')
+        // Name and email are only demanded of guests. A signed-in customer
+        // already gave both at signup, and admin resolves them from the
+        // account -- re-typing them is friction for nothing. The phone is
+        // the one thing we hold nowhere, so it is required of everyone.
+        if (!isAuthed) {
+          if (!v.guestFirstName || v.guestFirstName.trim() === '') {
+            form.setError('guestFirstName', { type: 'required', message: 'First name is required' })
+            missing.push('First name')
+          }
+          if (!v.guestSurname || v.guestSurname.trim() === '') {
+            form.setError('guestSurname', { type: 'required', message: 'Surname is required' })
+            missing.push('Surname')
+          }
+          // Email — empty OR missing @ symbol
+          const email = (v.guestEmail ?? '').trim()
+          if (!email) {
+            form.setError('guestEmail', { type: 'required', message: 'Email is required' })
+            missing.push('Email')
+          } else if (!email.includes('@') || !email.includes('.') || email.length < 5) {
+            form.setError('guestEmail', { type: 'pattern', message: 'Please enter a valid email address' })
+            missing.push('Valid email address')
+          }
         }
         // Phone — already stripped to digits by the controlled input.
         // Empty OR fewer than 7 digits both count as invalid.
@@ -638,6 +728,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
               bookingId={bookingId ?? ''}
               totalDue={bookingTotalDue}
               reservationFee={bookingReservationFee}
+              amountDueNow={bookingAmountDueNow}
               balanceDueOnPickup={bookingBalanceDueOnPickup}
               depositAmount={bookingDepositAmount}
               depositChoice={form.getValues('depositChoice') ?? 'deposit'}
@@ -650,7 +741,11 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
 
         {/* Booking creation error */}
         {bookingError && (
-          <div className="rounded-lg border border-red-800 bg-red-950/40 p-4 text-sm text-red-300">
+          <div
+            ref={errorRef}
+            role="alert"
+            className="rounded-lg border border-red-800 bg-red-950/40 p-4 text-sm text-red-300"
+          >
             {bookingError}
           </div>
         )}

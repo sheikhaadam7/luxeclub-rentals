@@ -10,6 +10,7 @@ import {
   Link,
 } from '@react-email/components'
 import { DAILY_KM_INCLUDED, EXTRA_KM_RATE_AED } from '@/lib/pricing/constants'
+import { formatDateKey } from '@/lib/dates'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -32,11 +33,21 @@ export interface BookingConfirmationEmailProps {
     depositChoice: 'deposit' | 'no_deposit'
     depositAmount: number
     totalDue: number
-    /** Flat fee collected at booking time to secure the reservation */
+    /** The non-refundable slice a late cancellation forfeits. */
     reservationFee: number
-    /** Amount owed in person on pickup day */
+    /** What the customer was actually charged. Optional so the preview
+     *  script and older callers keep compiling; falls back to the fee. */
+    amountPaid?: number | null
+    /** Amount owed in person at handover */
     balanceDueOnPickup: number
     paymentMethod: 'card' | 'apple_pay' | 'google_pay' | 'cash' | 'crypto'
+    /** What the customer actually chose. Optional so the preview script and
+     *  any older caller keep compiling; absent simply renders nothing. */
+    protectionPackage?: string | null
+    addons?: Record<string, boolean> | null
+    protectionSurcharge?: number | null
+    addonsTotal?: number | null
+    cardSurcharge?: number | null
     status: string
     /** First name to greet the customer with */
     firstName: string
@@ -54,16 +65,6 @@ const OFFICE_ADDRESS = 'Binary Tower, 32 Marasi Drive, Business Bay, Dubai'
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
-function formatDate(isoDate: string): string {
-  const date = new Date(isoDate + 'T00:00:00Z')
-  return date.toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    timeZone: 'UTC',
-  })
-}
 
 function formatTime(hhmm: string | null | undefined, fallback = '10:00'): string {
   const t = hhmm || fallback
@@ -384,14 +385,25 @@ function Itinerary({
   collectionAddress?: string | null
   isLoggedIn: boolean
 }) {
+  // A tourist may not have an address yet, and must not be blocked from
+  // booking over it. But the email must not then assert the office address
+  // as their pickup point -- that actively tells a delivery customer to come
+  // and collect. Say it is outstanding instead; admin flags it for chasing.
+  const ADDRESS_PENDING = 'To be confirmed — we will be in touch'
+
   const pickupLocation =
-    pickupMethod === 'delivery' && deliveryAddress
-      ? deliveryAddress
+    pickupMethod === 'delivery'
+      ? (deliveryAddress || ADDRESS_PENDING)
       : OFFICE_ADDRESS
   const returnLocation =
-    returnMethod === 'collection' && collectionAddress
-      ? collectionAddress
+    returnMethod === 'collection'
+      ? (collectionAddress || ADDRESS_PENDING)
       : OFFICE_ADDRESS
+
+  // "See directions" on a placeholder would open a Maps search for the
+  // placeholder text.
+  const pickupHasAddress = pickupLocation !== ADDRESS_PENDING
+  const returnHasAddress = returnLocation !== ADDRESS_PENDING
 
   return (
     <Section style={styles.cardOuter}>
@@ -400,17 +412,19 @@ function Itinerary({
 
         <Section style={styles.itineraryRow}>
           <Text style={styles.itineraryDate}>
-            Pickup on {formatDate(startDate)} at {formatTime(startTime)}
+            Pickup on {formatDateKey(startDate)} at {formatTime(startTime)}
           </Text>
           <Text style={styles.itineraryLocation}>{pickupLocation}</Text>
-          <Link href={googleMapsHref(pickupLocation)} style={styles.itineraryLink}>
-            See directions
-          </Link>
+          {pickupHasAddress && (
+            <Link href={googleMapsHref(pickupLocation)} style={styles.itineraryLink}>
+              See directions
+            </Link>
+          )}
         </Section>
 
         <Section style={{ paddingTop: '14px' }}>
           <Text style={styles.itineraryDate}>
-            Return on {formatDate(endDate)} at {formatTime(endTime, '20:00')}
+            Return on {formatDateKey(endDate)} at {formatTime(endTime, '20:00')}
           </Text>
           <Text style={styles.itineraryLocation}>{returnLocation}</Text>
         </Section>
@@ -473,7 +487,28 @@ function WhatToBring() {
   )
 }
 
-function IncludedInBooking({ depositAmount }: { depositAmount: number }) {
+
+// Customer-facing names for the add-ons, keyed as they are stored.
+const ADDON_LABELS: Record<string, string> = {
+  additionalDriver: 'Additional driver',
+  personalDriver: 'Personal driver',
+  babySeat: 'Baby seat',
+  childSeat: 'Child seat',
+}
+
+function IncludedInBooking({
+  depositAmount,
+  protectionPackage,
+  addons,
+}: {
+  depositAmount: number
+  protectionPackage?: string | null
+  addons?: Record<string, boolean> | null
+}) {
+  const chosenAddons = Object.entries(addons ?? {})
+    .filter(([, on]) => on)
+    .map(([key]) => ADDON_LABELS[key] ?? key)
+
   return (
     <Section style={styles.cardOuter}>
       <Section style={styles.card}>
@@ -497,6 +532,20 @@ function IncludedInBooking({ depositAmount }: { depositAmount: number }) {
             </Text>
           </Section>
         )}
+
+        {protectionPackage === 'inclusive' && (
+          <Section style={styles.includedRow}>
+            <Text style={styles.includedText}>
+              All Inclusive Protection — no excess on collision damage or theft.
+            </Text>
+          </Section>
+        )}
+
+        {chosenAddons.map((name) => (
+          <Section key={name} style={styles.includedRow}>
+            <Text style={styles.includedText}>{name}.</Text>
+          </Section>
+        ))}
       </Section>
     </Section>
   )
@@ -505,6 +554,7 @@ function IncludedInBooking({ depositAmount }: { depositAmount: number }) {
 function PaymentDetails({
   totalDue,
   reservationFee,
+  amountPaid,
   balanceDueOnPickup,
   depositChoice,
   depositAmount,
@@ -512,6 +562,7 @@ function PaymentDetails({
 }: {
   totalDue: number
   reservationFee: number
+  amountPaid: number
   balanceDueOnPickup: number
   depositChoice: 'deposit' | 'no_deposit'
   depositAmount: number
@@ -528,9 +579,11 @@ function PaymentDetails({
         <table width="100%" cellPadding="0" cellSpacing="0" style={styles.paymentRow}>
           <tbody>
             <tr>
-              <td style={styles.paymentLabel}>Paid today (reservation fee)</td>
+              <td style={styles.paymentLabel}>
+                {balanceDueOnPickup > 0 ? 'Paid today (holding deposit)' : 'Paid today'}
+              </td>
               <td style={{ ...styles.paymentValue, textAlign: 'right' }}>
-                {formatAED(reservationFee)}
+                {formatAED(amountPaid)}
               </td>
             </tr>
           </tbody>
@@ -541,7 +594,7 @@ function PaymentDetails({
           <table width="100%" cellPadding="0" cellSpacing="0" style={styles.paymentRow}>
             <tbody>
               <tr>
-                <td style={styles.paymentLabel}>Rental amount to pay at pickup</td>
+                <td style={styles.paymentLabel}>Balance to pay at handover</td>
                 <td style={{ ...styles.paymentValue, textAlign: 'right' }}>
                   {formatAED(balanceDueOnPickup)}
                 </td>
@@ -574,12 +627,15 @@ function PaymentDetails({
 
         {/* Free cancellation badge */}
         <Text style={styles.cancelBadge}>
-          ✓ Free cancellation until {formatDate(startDate)}
+          ✓ Free cancellation until {formatDateKey(startDate)}
         </Text>
         <Text style={styles.cancelBody}>
-          You can cancel or modify your booking for a full refund up to 24 hours
-          before pickup. Cancellations within 24 hours of the start time, or
-          no-shows, forfeit the {formatAED(reservationFee)} reservation fee.
+          You can cancel for a full refund of everything you have paid, up to
+          24 hours before pickup. Cancel within 24 hours of the start time and
+          {' '}{formatAED(Math.min(reservationFee, amountPaid))} is retained
+          {amountPaid > reservationFee
+            ? `, with the remaining ${formatAED(amountPaid - reservationFee)} refunded.`
+            : '.'}
         </Text>
       </Section>
     </Section>
@@ -620,11 +676,16 @@ export function BookingConfirmationEmail({ booking }: BookingConfirmationEmailPr
 
           <WhatToBring />
 
-          <IncludedInBooking depositAmount={booking.depositAmount} />
+          <IncludedInBooking
+            depositAmount={booking.depositAmount}
+            protectionPackage={booking.protectionPackage}
+            addons={booking.addons}
+          />
 
           <PaymentDetails
             totalDue={booking.totalDue}
             reservationFee={booking.reservationFee}
+            amountPaid={booking.amountPaid ?? booking.reservationFee}
             balanceDueOnPickup={booking.balanceDueOnPickup}
             depositChoice={booking.depositChoice}
             depositAmount={booking.depositAmount}

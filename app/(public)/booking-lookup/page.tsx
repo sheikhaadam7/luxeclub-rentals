@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import { pickupInstant, hoursUntilPickup, formatDateKeyRange } from '@/lib/dates'
 import Image from 'next/image'
 import Link from 'next/link'
 import { lookupGuestBooking } from '@/app/actions/guest-bookings'
@@ -13,20 +14,6 @@ import { useTranslation } from '@/lib/i18n/context'
 // ---------------------------------------------------------------------------
 // Helpers (locale-independent)
 // ---------------------------------------------------------------------------
-
-function formatDate(isoDate: string): string {
-  const date = new Date(isoDate + 'T00:00:00Z')
-  return date.toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    timeZone: 'UTC',
-  })
-}
-
-function formatDateRange(start: string, end: string): string {
-  return `${formatDate(start)} — ${formatDate(end)}`
-}
 
 // ---------------------------------------------------------------------------
 // Detail row component
@@ -243,10 +230,10 @@ export default function BookingLookupPage() {
   const bookingRef = booking.id.replace(/-/g, '').substring(0, 8).toUpperCase()
 
   // Cancellability logic
-  const today = new Date()
-  today.setUTCHours(0, 0, 0, 0)
-  const bookingStartDate = new Date(booking.start_date + 'T00:00:00Z')
-  const hasStarted = today >= bookingStartDate
+  // Measured from the agreed pickup moment in Dubai, matching the server
+  // guards -- a UTC-midnight comparison left this disagreeing with them
+  // for the first four hours of every Dubai day.
+  const hasStarted = pickupInstant(booking.start_date, booking.start_time) <= new Date()
 
   const isCancellable =
     ['draft', 'pending', 'confirmed'].includes(booking.status) && booking.payment_method !== 'cash' && !hasStarted
@@ -254,11 +241,7 @@ export default function BookingLookupPage() {
 
   let hoursUntilStart = 0
   if (isCancellable || isModifiable) {
-    const startTimeStr = booking.start_time || '10:00'
-    const [h, m] = startTimeStr.split(':').map(Number)
-    const pickupDate = new Date(booking.start_date + 'T00:00:00Z')
-    pickupDate.setUTCHours(h, m, 0, 0)
-    hoursUntilStart = (pickupDate.getTime() - Date.now()) / (1000 * 60 * 60)
+    hoursUntilStart = hoursUntilPickup(booking.start_date, booking.start_time)
   }
 
   return (
@@ -330,6 +313,7 @@ export default function BookingLookupPage() {
                   bookingId={booking.id}
                   guestEmail={lookupEmail}
                   reservationFee={booking.reservation_fee ?? 0}
+                  amountPaid={booking.amount_paid ?? booking.reservation_fee ?? 0}
                   hoursUntilStart={hoursUntilStart}
                   onCancelled={handleRefresh}
                 />
@@ -362,7 +346,7 @@ export default function BookingLookupPage() {
           <div className="px-6">
             <DetailRow
               label={t('lookup.dates')}
-              value={formatDateRange(booking.start_date, booking.end_date)}
+              value={formatDateKeyRange(booking.start_date, booking.end_date)}
             />
             <DetailRow
               label={t('lookup.rateType')}
@@ -418,6 +402,15 @@ export default function BookingLookupPage() {
             )}
             {booking.no_deposit_surcharge > 0 && (
               <PricingRow label={t('lookup.noDepositSurcharge')} value={<PriceDisplay amount={booking.no_deposit_surcharge} />} />
+            )}
+            {(booking.protection_surcharge ?? 0) > 0 && (
+              <PricingRow label={t('lookup.protection')} value={<PriceDisplay amount={booking.protection_surcharge ?? 0} />} />
+            )}
+            {(booking.addons_total ?? 0) > 0 && (
+              <PricingRow label={t('lookup.addons')} value={<PriceDisplay amount={booking.addons_total ?? 0} />} />
+            )}
+            {(booking.card_surcharge ?? 0) > 0 && (
+              <PricingRow label={t('lookup.cardSurcharge')} value={<PriceDisplay amount={booking.card_surcharge ?? 0} />} />
             )}
             <div className="border-t border-brand-border mt-2 pt-2">
               <PricingRow label={t('lookup.totalDue')} value={<PriceDisplay amount={booking.total_due} />} bold />

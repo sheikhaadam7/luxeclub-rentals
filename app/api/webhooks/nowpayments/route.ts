@@ -89,14 +89,23 @@ export async function POST(req: Request): Promise<Response> {
   // 6. Handle payment statuses
   try {
     if (paymentStatus === 'finished' || paymentStatus === 'confirmed') {
-      // Crypto reservation fee received — mark the fee as paid and promote
-      // the booking to confirmed. The rest is still owed on pickup day.
+      // Crypto settles the whole rental, not a holding fee -- nothing is
+      // left owing at handover. Record what arrived so cancellations and
+      // the admin screen have a figure to work from, the same as the
+      // Stripe path.
+      const { data: current } = await admin
+        .from('bookings')
+        .select('amount_due_now, total_due')
+        .eq('id', bookingId)
+        .maybeSingle()
+
       await admin
         .from('bookings')
         .update({
           payment_status: 'paid',
           reservation_fee_status: 'paid',
           status: 'confirmed',
+          amount_paid: Number(current?.amount_due_now ?? current?.total_due ?? 0),
           nowpayments_payment_id: paymentIdStr,
         })
         .eq('id', bookingId)

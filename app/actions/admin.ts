@@ -2,6 +2,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { businessTodayKey } from '@/lib/dates'
 
 /**
  * Verify the caller is an admin.
@@ -471,6 +472,12 @@ export interface AdminBooking {
   delivery_fee: number | null
   return_fee: number | null
   no_deposit_surcharge: number | null
+  protection_package: string | null
+  addons: Record<string, boolean> | null
+  delivery_location: string | null
+  protection_surcharge: number | null
+  addons_total: number | null
+  card_surcharge: number | null
   deposit_choice: string | null
   deposit_amount: number | null
   deposit_status: string | null
@@ -482,6 +489,8 @@ export interface AdminBooking {
   stripe_rental_pi_id: string | null
   reservation_fee: number | null
   reservation_fee_status: string | null
+  amount_due_now: number | null
+  amount_paid: number | null
   balance_due_on_pickup: number | null
   forfeit_reason: string | null
   modification_status: string | null
@@ -510,7 +519,7 @@ export async function getAllBookings(): Promise<
   const { data: bookings, error: bookingsError } = await admin
     .from('bookings')
     .select(
-      'id, vehicle_id, user_id, start_date, end_date, duration_type, status, payment_status, payment_method, total_due, pickup_method, delivery_address, created_at, updated_at, guest_name, guest_email, guest_phone, rental_subtotal, delivery_fee, return_fee, no_deposit_surcharge, deposit_choice, deposit_amount, deposit_status, return_method, collection_address, start_time, end_time, stripe_deposit_pi_id, stripe_rental_pi_id, reservation_fee, reservation_fee_status, balance_due_on_pickup, forfeit_reason, modification_status, modification_requested_start, modification_requested_end, vehicles(name, slug)'
+      'id, vehicle_id, user_id, start_date, end_date, duration_type, status, payment_status, payment_method, total_due, pickup_method, delivery_address, created_at, updated_at, guest_name, guest_email, guest_phone, rental_subtotal, delivery_fee, return_fee, no_deposit_surcharge, protection_package, addons, delivery_location, protection_surcharge, addons_total, card_surcharge, deposit_choice, deposit_amount, deposit_status, return_method, collection_address, start_time, end_time, stripe_deposit_pi_id, stripe_rental_pi_id, reservation_fee, reservation_fee_status, amount_due_now, amount_paid, balance_due_on_pickup, forfeit_reason, modification_status, modification_requested_start, modification_requested_end, vehicles(name, slug)'
     )
     .order('created_at', { ascending: false })
 
@@ -566,6 +575,12 @@ export async function getAllBookings(): Promise<
       delivery_fee: b.delivery_fee ?? null,
       return_fee: b.return_fee ?? null,
       no_deposit_surcharge: b.no_deposit_surcharge ?? null,
+      protection_package: b.protection_package ?? null,
+      addons: b.addons ?? null,
+      delivery_location: b.delivery_location ?? null,
+      protection_surcharge: b.protection_surcharge ?? null,
+      addons_total: b.addons_total ?? null,
+      card_surcharge: b.card_surcharge ?? null,
       deposit_choice: b.deposit_choice ?? null,
       deposit_amount: b.deposit_amount ?? null,
       deposit_status: b.deposit_status ?? null,
@@ -577,6 +592,8 @@ export async function getAllBookings(): Promise<
       stripe_rental_pi_id: b.stripe_rental_pi_id ?? null,
       reservation_fee: b.reservation_fee ?? null,
       reservation_fee_status: b.reservation_fee_status ?? null,
+      amount_due_now: b.amount_due_now ?? null,
+      amount_paid: b.amount_paid ?? null,
       balance_due_on_pickup: b.balance_due_on_pickup ?? null,
       forfeit_reason: b.forfeit_reason ?? null,
       modification_status: b.modification_status ?? null,
@@ -619,20 +636,29 @@ export async function markReservationFeeReceived(
 }
 
 /**
- * Refund the reservation fee back to the customer. For card/wallet paths
- * this issues a Stripe refund against the rental PI; for cash/crypto the
- * refund is marked in the DB only and the admin handles it manually.
+ * Refund a customer, in whole or in part.
+ *
+ * Takes an explicit amount because a no-show is settled by hand: the team
+ * decides what to return, which is not a figure any rule here can derive.
+ * Omit the amount to refund everything that was captured.
+ *
+ * The ceiling comes from STRIPE, not from our own row -- a signed-in
+ * customer can currently edit their own booking, so a figure read from
+ * the database is not a safe basis for moving money.
  */
 export async function refundReservationFee(
-  bookingId: string
-): Promise<{ error: string | null }> {
+  bookingId: string,
+  amountAed?: number
+): Promise<{ error: string | null; refunded?: number }> {
   const auth = await verifyAdmin()
   if ('error' in auth) return { error: auth.error }
 
   const admin = createAdminClient()
   const { data: booking, error: fetchError } = await admin
     .from('bookings')
-    .select('id, reservation_fee, reservation_fee_status, stripe_rental_pi_id, payment_method')
+    .select(
+      'id, reservation_fee, amount_paid, reservation_fee_status, stripe_rental_pi_id, payment_method'
+    )
     .eq('id', bookingId)
     .single()
 
@@ -641,13 +667,38 @@ export async function refundReservationFee(
   }
 
   if (booking.reservation_fee_status !== 'paid') {
-    return { error: 'Reservation fee is not in a refundable state' }
+    return { error: 'This booking is not in a refundable state' }
   }
 
-  const amount = Number(booking.reservation_fee ?? 0)
+  let captured = Number(booking.amount_paid ?? booking.reservation_fee ?? 0)
+  let stripeAvailable = false
 
-  // Card / wallet — issue Stripe refund
-  if (amount > 0 && booking.stripe_rental_pi_id) {
+  if (booking.stripe_rental_pi_id) {
+    try {
+      const { stripe } = await import('@/lib/stripe/server')
+      if (stripe) {
+        stripeAvailable = true
+        const pi = await stripe.paymentIntents.retrieve(booking.stripe_rental_pi_id)
+        captured = (pi.amount_received ?? 0) / 100
+      }
+    } catch (err) {
+      console.error('refundReservationFee: could not read the payment', err)
+      return { error: 'Could not read the payment from Stripe. Please try again.' }
+    }
+  }
+
+  const amount = Math.round((amountAed ?? captured) * 100) / 100
+
+  if (amount <= 0) {
+    return { error: 'Enter an amount greater than zero' }
+  }
+  if (amount > captured) {
+    return {
+      error: `Cannot refund more than the ${captured.toFixed(2)} AED actually charged`,
+    }
+  }
+
+  if (stripeAvailable && booking.stripe_rental_pi_id) {
     try {
       const { stripe } = await import('@/lib/stripe/server')
       if (stripe) {
@@ -662,10 +713,16 @@ export async function refundReservationFee(
     }
   }
 
+  // Partial refunds keep the booking distinguishable from a full one --
+  // "refunded" against a part-refund would tell the next person looking
+  // that the customer got everything back.
+  const fullyRefunded = amount >= captured
   const { error: updateError } = await admin
     .from('bookings')
     .update({
-      reservation_fee_status: 'refunded',
+      reservation_fee_status: fullyRefunded ? 'refunded' : 'partially_refunded',
+      payment_status: fullyRefunded ? 'refunded' : 'partially_refunded',
+      cancellation_refund_amount: amount,
       updated_at: new Date().toISOString(),
     })
     .eq('id', bookingId)
@@ -674,7 +731,7 @@ export async function refundReservationFee(
     console.error('refundReservationFee update error:', updateError)
     return { error: updateError.message }
   }
-  return { error: null }
+  return { error: null, refunded: amount }
 }
 
 /**
@@ -897,7 +954,7 @@ export async function getDashboardOverview(): Promise<
   if ('error' in auth) return { error: auth.error }
 
   const admin = createAdminClient()
-  const today = new Date().toISOString().split('T')[0]
+  const today = businessTodayKey()
   const startOfMonth = new Date()
   startOfMonth.setDate(1)
   startOfMonth.setHours(0, 0, 0, 0)
@@ -956,8 +1013,11 @@ export async function getDashboardOverview(): Promise<
     admin
       .from('bookings')
       .select(
-        'id, vehicle_id, user_id, start_date, end_date, duration_type, status, payment_status, payment_method, total_due, pickup_method, delivery_address, created_at, updated_at, guest_name, guest_email, guest_phone, rental_subtotal, delivery_fee, return_fee, no_deposit_surcharge, deposit_choice, deposit_amount, deposit_status, return_method, collection_address, start_time, end_time, stripe_deposit_pi_id, stripe_rental_pi_id, reservation_fee, reservation_fee_status, balance_due_on_pickup, forfeit_reason, modification_status, modification_requested_start, modification_requested_end, vehicles(name, slug)'
+        'id, vehicle_id, user_id, start_date, end_date, duration_type, status, payment_status, payment_method, total_due, pickup_method, delivery_address, created_at, updated_at, guest_name, guest_email, guest_phone, rental_subtotal, delivery_fee, return_fee, no_deposit_surcharge, protection_package, addons, delivery_location, protection_surcharge, addons_total, card_surcharge, deposit_choice, deposit_amount, deposit_status, return_method, collection_address, start_time, end_time, stripe_deposit_pi_id, stripe_rental_pi_id, reservation_fee, reservation_fee_status, amount_due_now, amount_paid, balance_due_on_pickup, forfeit_reason, modification_status, modification_requested_start, modification_requested_end, vehicles(name, slug)'
       )
+      // Drafts are unpaid attempts that Stripe needed a row for. They are
+      // not bookings anyone acts on, so they do not belong on the dashboard.
+      .neq('status', 'draft')
       .order('created_at', { ascending: false })
       .limit(10),
     // Total active vehicles
@@ -1030,6 +1090,12 @@ export async function getDashboardOverview(): Promise<
       delivery_fee: b.delivery_fee ?? null,
       return_fee: b.return_fee ?? null,
       no_deposit_surcharge: b.no_deposit_surcharge ?? null,
+      protection_package: b.protection_package ?? null,
+      addons: b.addons ?? null,
+      delivery_location: b.delivery_location ?? null,
+      protection_surcharge: b.protection_surcharge ?? null,
+      addons_total: b.addons_total ?? null,
+      card_surcharge: b.card_surcharge ?? null,
       deposit_choice: b.deposit_choice ?? null,
       deposit_amount: b.deposit_amount ?? null,
       deposit_status: b.deposit_status ?? null,
@@ -1041,6 +1107,8 @@ export async function getDashboardOverview(): Promise<
       stripe_rental_pi_id: b.stripe_rental_pi_id ?? null,
       reservation_fee: b.reservation_fee ?? null,
       reservation_fee_status: b.reservation_fee_status ?? null,
+      amount_due_now: b.amount_due_now ?? null,
+      amount_paid: b.amount_paid ?? null,
       balance_due_on_pickup: b.balance_due_on_pickup ?? null,
       forfeit_reason: b.forfeit_reason ?? null,
       modification_status: b.modification_status ?? null,
@@ -1111,7 +1179,7 @@ export async function getEnhancedAnalytics(
   const previousStart = new Date(currentStart)
   previousStart.setDate(previousStart.getDate() - days)
 
-  const today = now.toISOString().split('T')[0]
+  const today = businessTodayKey(now)
   const activeStatuses = ['confirmed', 'car_on_the_way', 'car_delivered', 'completed']
 
   const [currentResult, previousResult, allBookingsResult, fleetResult, activeResult] = await Promise.all([
@@ -1149,15 +1217,18 @@ export async function getEnhancedAnalytics(
   const previousRevenue = previousBookings.reduce((s, b) => s + (b.total_due ?? 0), 0)
   const avgBookingValue = currentBookings.length > 0 ? Math.round(currentRevenue / currentBookings.length) : 0
 
-  // Daily revenue breakdown
+  // Daily revenue breakdown, bucketed by Dubai day.
+  //
+  // created_at is a timestamptz; splitting its ISO form took the UTC day,
+  // so a booking taken at 1am Dubai landed in the previous day's bar.
   const dailyMap: Record<string, number> = {}
   for (let i = 0; i < days; i++) {
     const d = new Date(currentStart)
     d.setDate(d.getDate() + i)
-    dailyMap[d.toISOString().split('T')[0]] = 0
+    dailyMap[businessTodayKey(d)] = 0
   }
   for (const b of currentBookings) {
-    const day = b.created_at.split('T')[0]
+    const day = businessTodayKey(new Date(b.created_at))
     if (day in dailyMap) {
       dailyMap[day] += b.total_due ?? 0
     }
@@ -1417,7 +1488,7 @@ export async function getAnalyticsSummary(): Promise<
     allTimeStats?.reduce((sum, b) => sum + (b.total_due ?? 0), 0) ?? 0
 
   // Fleet utilization: vehicles with active bookings today
-  const today = new Date().toISOString().split('T')[0]
+  const today = businessTodayKey()
 
   const { data: activeBookings, error: activeError } = await admin
     .from('bookings')

@@ -120,8 +120,12 @@ const jsonLd = {
   openingHoursSpecification: {
     '@type': 'OpeningHoursSpecification',
     dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-    opens: '00:00',
-    closes: '23:59',
+    // The real collection and delivery window. This previously said
+    // 00:00-23:59, which told Google the business is open around the
+    // clock -- a 24/7 claim the owner has said is not true, and now also
+    // contradicted by the booking form, which only offers these hours.
+    opens: '08:30',
+    closes: '20:30',
   },
   priceRange: '$$$',
   sameAs: socialSameAs(),

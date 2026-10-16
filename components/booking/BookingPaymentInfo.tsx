@@ -97,14 +97,25 @@ export function BookingPaymentInfo({ className = '' }: BookingPaymentInfoProps) 
                       complete the booking.
                     </p>
 
+                    {/* Shown on every Book Now button, before a payment
+                        method has been chosen -- so it has to describe both
+                        routes. It previously promised "nothing else is taken
+                        online", which is the opposite of what happens when
+                        the customer picks card. */}
                     <ul className="mt-5 space-y-3 list-disc pl-5 text-sm sm:text-base text-zinc-700 leading-[1.7] break-words">
                       <li>
-                        <span className="font-semibold text-zinc-900">{fee}</span> is taken at
-                        the end of the booking steps to reserve your car on your dates.
+                        <span className="font-semibold text-zinc-900">Pay by card</span> and the
+                        rental is paid in full at the end of the booking steps. Nothing further
+                        is due when you collect the car.
                       </li>
                       <li>
-                        The rest of the rental is paid in person on pickup day — nothing else is
-                        taken online.
+                        <span className="font-semibold text-zinc-900">Pay on delivery</span> and
+                        only <span className="font-semibold text-zinc-900">{fee}</span> is taken
+                        now to hold the car on your dates. The balance is paid when we hand it
+                        over.
+                      </li>
+                      <li>
+                        The price is the same either way — only the timing changes.
                       </li>
                     </ul>
                   </div>

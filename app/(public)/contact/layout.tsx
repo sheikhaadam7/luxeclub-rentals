@@ -4,7 +4,7 @@ import { PHONE_CALL_E164 } from '@/lib/contact'
 export const metadata: Metadata = {
   title: 'Contact Us',
   description:
-    'Get in touch with LuxeClub Rentals Dubai. Call, WhatsApp, or visit us at Binary Tower, Business Bay. 24/7 support during your rental.',
+    'Get in touch with LuxeClub Rentals Dubai. Call, WhatsApp or email us — we deliver across Dubai, so there is no need to come to us. 24/7 support during your rental.',
   openGraph: {
     title: 'Contact LuxeClub Rentals — Dubai Luxury Car Hire',
     description:
@@ -37,8 +37,9 @@ const jsonLd = {
     openingHoursSpecification: {
       '@type': 'OpeningHoursSpecification',
       dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      opens: '00:00',
-      closes: '23:59',
+      // See app/layout.tsx -- the real collection and delivery window.
+      opens: '08:30',
+      closes: '20:30',
     },
   },
 }

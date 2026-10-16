@@ -10,7 +10,10 @@ import { DeliveryZonePickerOverlay } from '@/components/booking/DeliveryZonePick
 import { SignInModal } from '@/components/booking/SignInModal'
 import { getLatestBookingForUser } from '@/app/actions/bookings'
 import { useCurrency } from '@/lib/currency/context'
-import { DELIVERY_ZONE_FEES as CHARGED_ZONE_FEES } from '@/lib/pricing/calculator'
+import {
+  DELIVERY_ZONE_FEES as CHARGED_ZONE_FEES,
+  DELIVERY_ZONE_LABELS as SHARED_ZONE_LABELS,
+} from '@/lib/pricing/calculator'
 
 // Delivery zones — label + AED fee. Fee covers both delivery and collection.
 type ZoneKey =
@@ -24,20 +27,15 @@ type ZoneKey =
   | 'fujairah'
   | 'ras_al_khaimah'
 
-// Labels only. The fee is READ from the pricing calculator below -- the
-// picker must never carry its own copy of a number the customer is
-// charged, or the two drift apart silently.
-const DELIVERY_ZONE_LABEL_LIST: { value: ZoneKey; label: string }[] = [
-  { value: 'within_dubai', label: 'Dubai Delivery & Collection Fee' },
-  { value: 'al_maktoum_airport', label: 'Al Maktoum Airport' },
-  { value: 'sharjah_airport', label: 'Sharjah Airport' },
-  { value: 'sharjah_city', label: 'Sharjah City' },
-  { value: 'ajman', label: 'Ajman' },
-  { value: 'abu_dhabi', label: 'Abu Dhabi' },
-  { value: 'al_ain', label: 'Al Ain' },
-  { value: 'fujairah', label: 'Fujairah' },
-  { value: 'ras_al_khaimah', label: 'Ras Al Khaimah' },
-]
+// Both the label and the fee come from lib/pricing -- this picker carries
+// no copy of either. The server needs the same labels (a non-Dubai zone's
+// name is stored as the delivery address), and a second copy would drift.
+const DELIVERY_ZONE_LABEL_LIST: { value: ZoneKey; label: string }[] = (
+  [
+    'within_dubai', 'al_maktoum_airport', 'sharjah_airport', 'sharjah_city',
+    'ajman', 'abu_dhabi', 'al_ain', 'fujairah', 'ras_al_khaimah',
+  ] as ZoneKey[]
+).map((value) => ({ value, label: SHARED_ZONE_LABELS[value] }))
 
 const DELIVERY_ZONE_OPTIONS: { value: ZoneKey; label: string; fee: number }[] =
   DELIVERY_ZONE_LABEL_LIST.map((o) => ({
@@ -164,7 +162,7 @@ interface StepDeliveryProps {
   navButtons?: React.ReactNode
   /** Called when the user taps the back chevron on the card (mobile) */
   onBack?: () => void
-  /** Auth state — controls whether the Renter Information section + sign-in link render */
+  /** Auth state — controls whether the Driver Information section + sign-in link render */
   isAuthed?: boolean
   /** Called after a successful sign-in via the modal. Should set isAuthed = true. */
   onAuthenticated?: () => void
@@ -206,7 +204,7 @@ export function StepDelivery({ form, navButtons, onBack, isAuthed = false, onAut
   }, [guestFirstName, guestSurname, form])
 
   // When the user signs in via the modal, fetch their latest booking and
-  // pre-fill the Renter Information fields so they don't re-type details.
+  // pre-fill the Driver Information fields so they don't re-type details.
   useEffect(() => {
     if (!isAuthed) return
     let cancelled = false
@@ -391,10 +389,10 @@ export function StepDelivery({ form, navButtons, onBack, isAuthed = false, onAut
         </div>
       )}
 
-      {/* ---------------- Renter Information ---------------- */}
+      {/* ---------------- Driver Information ---------------- */}
       <div className="pt-6 border-t border-zinc-200 space-y-4">
         <div className="flex items-baseline justify-between gap-3 flex-wrap">
-          <h3 className="text-xl font-bold text-zinc-900">Renter Information</h3>
+          <h3 className="text-xl font-bold text-zinc-900">Driver Information</h3>
           {!isAuthed && (
             <button
               type="button"
@@ -435,7 +433,11 @@ export function StepDelivery({ form, navButtons, onBack, isAuthed = false, onAut
           />
         </div>
 
-        <div className="grid grid-cols-[170px_1fr] gap-3">
+        {/* The country column is only ever a flag, a dial code and a
+            chevron, so it does not need much room. At 170px it was eating
+            half a phone screen and the number scrolled out of sight as it
+            was typed -- on the one field we now require of everyone. */}
+        <div className="grid grid-cols-[116px_1fr] sm:grid-cols-[150px_1fr] gap-3">
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-bold text-zinc-900">Country</label>
             {(() => {
@@ -444,11 +446,15 @@ export function StepDelivery({ form, navButtons, onBack, isAuthed = false, onAut
                 <button
                   type="button"
                   onClick={() => setCountryPickerOpen(true)}
-                  className="relative flex items-center px-4 py-3 border-2 border-black rounded-xl bg-white hover:bg-zinc-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan cursor-pointer text-left"
+                  className="relative flex items-center gap-1.5 px-3 py-3 border-2 border-black rounded-xl bg-white hover:bg-zinc-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan cursor-pointer text-left"
                 >
-                  <span className="text-xl mr-2">{country.flag}</span>
-                  <span className="text-base font-semibold text-zinc-900">{country.code}</span>
-                  <svg className="w-4 h-4 text-zinc-700 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                  {/* leading-6 matches the input's line box. Without it the
+                      flag's taller line-height made this button a few px
+                      taller than the phone field beside it, which is the
+                      misalignment you could see. */}
+                  <span className="text-lg leading-6 shrink-0">{country.flag}</span>
+                  <span className="text-base leading-6 font-semibold text-zinc-900 truncate">{country.code}</span>
+                  <svg className="w-4 h-4 shrink-0 text-zinc-700 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>

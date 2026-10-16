@@ -6,6 +6,7 @@ import { differenceInDays } from 'date-fns'
 import { DayPicker, type DateRange, type Matcher } from 'react-day-picker'
 import { useLanguage } from '@/lib/i18n/context'
 import { getDateLocale } from '@/lib/i18n/date-locale'
+import { fromDateKey, businessTodayKey } from '@/lib/dates'
 
 const MIN_RENTAL_DAYS = 2
 
@@ -84,7 +85,7 @@ export function MobileDateRangeOverlay({
     const t = setTimeout(() => {
       const body = bodyRef.current
       if (!body) return
-      const target = range?.from ?? new Date()
+      const target = range?.from ?? fromDateKey(businessTodayKey())
       const monthLabel = target.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
       const captions = body.querySelectorAll<HTMLElement>('.rdp-caption_label, [class*="caption_label"]')
       for (const el of captions) {
@@ -100,7 +101,11 @@ export function MobileDateRangeOverlay({
 
   if (!mounted) return null
 
-  const currentMonthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+  // Anchored to Dubai's today, not the browser's. A customer an hour
+  // behind at a month boundary would otherwise open the calendar on a
+  // month that is entirely disabled.
+  const businessToday = fromDateKey(businessTodayKey())
+  const currentMonthStart = new Date(businessToday.getFullYear(), businessToday.getMonth(), 1)
   // Continue lights up as soon as the pickup date is picked. If the user
   // hasn't picked a return date by the time they hit Continue, the parent
   // (StepDuration) auto-fills it as pickup + 2 days (the rental minimum).
@@ -170,6 +175,11 @@ export function MobileDateRangeOverlay({
               disabled={disabledMatchers}
               excludeDisabled
               startMonth={currentMonthStart}
+              // Which day gets the red "today" ring. Left to the browser,
+              // a London customer at 01:14 Dubai saw 16 Oct marked today
+              // AND struck through as unavailable -- the exact confusion
+              // this whole change started from.
+              today={businessToday}
               numberOfMonths={isDesktop ? 2 : 6}
               pagedNavigation={isDesktop}
               locale={dateLocale}

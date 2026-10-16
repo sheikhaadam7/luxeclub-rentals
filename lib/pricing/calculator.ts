@@ -37,10 +37,44 @@ export const DELIVERY_ZONE_FEES: Record<string, number> = {
   ras_al_khaimah: 1000,
 }
 
+/**
+ * Customer-facing name for each delivery zone.
+ *
+ * Lives here, beside the fees, because the SERVER needs it: for any zone
+ * other than Dubai there is no free-text address field, so the zone name is
+ * what gets stored as the delivery address. It previously existed only
+ * inside two 'use client' components, where server code cannot reach it.
+ *
+ * One copy. Two drifting copies of a delivery constant is exactly how the
+ * picker came to show AED 100 while the calculator charged something else.
+ */
+export const DELIVERY_ZONE_LABELS: Record<string, string> = {
+  within_dubai: 'Dubai Delivery & Collection Fee',
+  al_maktoum_airport: 'Al Maktoum Airport',
+  sharjah_airport: 'Sharjah Airport',
+  sharjah_city: 'Sharjah City',
+  ajman: 'Ajman',
+  abu_dhabi: 'Abu Dhabi',
+  al_ain: 'Al Ain',
+  fujairah: 'Fujairah',
+  ras_al_khaimah: 'Ras Al Khaimah',
+}
+
 /** Daily surcharge for the All Inclusive Protection package (AED). */
 export const ALL_INCLUSIVE_PROTECTION_PER_DAY = 72.8
 
-/** Credit-card surcharge rate applied when paymentMethod !== 'cash'. */
+/**
+ * Processing surcharge rate, applied to every booking.
+ *
+ * It is NOT waived on pay-on-delivery, only deferred: the 450 is taken by
+ * card either way, and the balance settled at handover carries the rest of
+ * the 3%. Zeroing it for `cash` made that option genuinely 3% cheaper,
+ * which rewarded the path we least want a customer to take.
+ *
+ * Shown to customers as "Booking & processing fee" -- calling it a card
+ * surcharge while charging it to someone paying on delivery is the kind of
+ * thing a UAE consumer complaint is made of.
+ */
 export const CREDIT_CARD_SURCHARGE_PCT = 3
 
 /**
@@ -109,9 +143,18 @@ export interface BookingPriceBreakdown {
   creditCardSurcharge: number
   /** Final amount the customer pays for the booking (excludes the depositAmount hold). */
   totalDue: number
-  /** Flat fee secured online at booking time (the reservation hold). */
+  /**
+   * The non-refundable slice forfeited by a late cancellation, capped at
+   * totalDue. A bookkeeping marker, NOT the amount charged — see
+   * amountDueNow.
+   */
   reservationFee: number
-  /** What's owed in-person on pickup day (totalDue - reservationFee). */
+  /**
+   * What is actually taken online at checkout. Full totalDue for card,
+   * wallet and crypto; the capped holding fee for pay-on-delivery.
+   */
+  amountDueNow: number
+  /** What's owed in person at handover (totalDue - amountDueNow). */
   balanceDueOnPickup: number
   /** Same field kept for backwards compat with older code paths. Always 0 now. */
   paymentSurchargePercent: number
@@ -210,15 +253,28 @@ export function calculateBookingTotal(
       returnFee
   )
 
-  // 3% credit-card surcharge unless cash
-  const creditCardSurcharge =
-    paymentMethod === 'cash' ? 0 : round2(preCardTotal * (CREDIT_CARD_SURCHARGE_PCT / 100))
+  // 3% processing surcharge, on every method. Pay-on-delivery defers it
+  // into the balance rather than escaping it.
+  const creditCardSurcharge = round2(preCardTotal * (CREDIT_CARD_SURCHARGE_PCT / 100))
 
   const totalDue = round2(preCardTotal + creditCardSurcharge)
 
-  // Reservation fee — flat, capped at totalDue
+  // The non-refundable slice a late cancellation forfeits. Capped at the
+  // total, so a short cheap rental can never forfeit more than it cost.
+  // This is NOT the amount charged -- see amountDueNow.
   const reservationFee = Math.min(RESERVATION_FEE_AED, totalDue)
-  const balanceDueOnPickup = round2(totalDue - reservationFee)
+
+  // What we actually take online at checkout.
+  //
+  // Card, wallet and crypto pay the whole rental now; pay-on-delivery pays
+  // the holding fee and settles the rest at handover. Capped at totalDue
+  // via reservationFee, because charging a flat 450 on a cheaper booking
+  // would overcharge and push the balance negative.
+  //
+  // The 450 is a SLICE of the total, never an addition to it:
+  // amountDueNow + balanceDueOnPickup === totalDue on every path.
+  const amountDueNow = paymentMethod === 'cash' ? reservationFee : totalDue
+  const balanceDueOnPickup = round2(totalDue - amountDueNow)
 
   return {
     baseRate,
@@ -235,6 +291,7 @@ export function calculateBookingTotal(
     creditCardSurcharge,
     totalDue,
     reservationFee,
+    amountDueNow,
     balanceDueOnPickup,
     // Legacy fields — kept for backwards compatibility with older callers.
     paymentSurchargePercent: 0,
