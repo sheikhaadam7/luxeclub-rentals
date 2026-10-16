@@ -25,8 +25,12 @@ export function AvailabilityCalendar({ bookedRanges }: AvailabilityCalendarProps
     ...bookedRanges,
   ]
 
+  // inline-block sizes the card to its content, so it must also be capped at
+  // the available width — otherwise a narrow phone gets a card wider than the
+  // screen and the whole page scrolls sideways. overflow-x-auto keeps the grid
+  // scrollable inside the card on very small screens.
   return (
-    <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-4 inline-block">
+    <div className="bg-brand-surface border border-brand-border rounded-[var(--radius-card)] p-4 inline-block max-w-full overflow-x-auto">
       <DayPicker
         disabled={disabledMatchers}
         numberOfMonths={2}
@@ -34,7 +38,7 @@ export function AvailabilityCalendar({ bookedRanges }: AvailabilityCalendarProps
         classNames={{
           root: 'text-white select-none',
           months: 'relative flex flex-wrap gap-6 justify-center',
-          month: 'space-y-3 w-[calc(9*2.25rem)]',
+          month: 'space-y-3 w-[calc(7*2.25rem)] max-w-full',
           month_caption: 'flex items-center pl-16',
           caption_label: 'font-display text-base font-medium text-white',
           nav: 'absolute top-0 left-0 flex items-center gap-1 z-10',
