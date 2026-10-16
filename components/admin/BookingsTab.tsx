@@ -505,9 +505,13 @@ function BookingCard({
                     {booking.amount_paid != null &&
                       booking.amount_due_now != null &&
                       Math.abs(booking.amount_paid - booking.amount_due_now) > 0.01 && (
-                        <div className="flex justify-between text-xs">
-                          <span className="text-amber-400">Amount mismatch</span>
-                          <span className="text-amber-400">
+                        <div className="flex justify-between gap-2 text-xs">
+                          <span className="text-amber-400 shrink-0">Amount mismatch</span>
+                          {/* min-w-0 + text-right: without it this long
+                              string pushes the row past the card on a
+                              phone, which is the one place staff read
+                              these. */}
+                          <span className="text-amber-400 min-w-0 text-right break-words">
                             paid AED {booking.amount_paid.toLocaleString()} vs AED{' '}
                             {booking.amount_due_now.toLocaleString()} expected — check Stripe
                           </span>
