@@ -115,6 +115,10 @@ export async function createRentalPaymentIntent(
       amount: Math.round(amountAed * 100), // AED → fils
       currency: 'aed',
       capture_method: 'automatic',
+      // Stores the card at the same time as taking the reservation fee, so
+      // pay-on-delivery keeps its card-on-file guarantee without a second
+      // Stripe object. A SetupIntent has no amount and moves no money.
+      setup_future_usage: 'off_session',
       metadata: {
         booking_id: bookingId,
         user_id: userId ?? 'guest',

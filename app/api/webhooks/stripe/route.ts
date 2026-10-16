@@ -86,10 +86,22 @@ export async function POST(req: Request): Promise<Response> {
           // Reservation fee charge succeeded — mark the fee as paid and
           // promote the booking from draft to pending. The remaining
           // balance is still owed on pickup day.
+          //
+          // payment_status tracks the BALANCE, not the fee. On a
+          // pay-on-delivery booking the balance is still owed in cash, so it
+          // must stay 'pending_cash' — an admin marks it paid at handover.
+          const { data: existing } = await admin
+            .from('bookings')
+            .select('payment_method')
+            .eq('id', bookingId)
+            .maybeSingle()
+
           await admin
             .from('bookings')
             .update({
-              payment_status: 'paid',
+              ...(existing?.payment_method === 'cash'
+                ? {}
+                : { payment_status: 'paid' }),
               reservation_fee_status: 'paid',
               status: 'pending',
             })

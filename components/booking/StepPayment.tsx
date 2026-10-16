@@ -45,7 +45,6 @@ const stripePromise = STRIPE_KEY ? loadStripe(STRIPE_KEY) : null
 
 interface StepPaymentProps {
   clientSecret: string | null
-  setupClientSecret?: string | null
   cashSelected: boolean
   cryptoSelected: boolean
   applePaySelected?: boolean
@@ -519,16 +518,25 @@ function CashCardForm({
   const { formatPrice } = useCurrency()
   const [isProcessing, setIsProcessing] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [cardSaved, setCardSaved] = useState(false)
 
-  async function handleSaveCard(e: React.FormEvent) {
+  /**
+   * Takes the reservation fee now — same confirmPayment call as the card
+   * flow. This used to be confirmSetup, which stores a card and moves no
+   * money, so a booking could be confirmed and emailed without a dirham
+   * being paid. The PaymentIntent carries setup_future_usage, so the card
+   * is still kept on file for the balance.
+   *
+   * Charging while the customer is present also means 3-D Secure is handled
+   * here, rather than failing later against a card nobody can authenticate.
+   */
+  async function handlePayDeposit(e: React.FormEvent) {
     e.preventDefault()
     if (!stripe || !elements) return
 
     setIsProcessing(true)
     setErrorMessage(null)
 
-    const { error } = await stripe.confirmSetup({
+    const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
         return_url: window.location.origin + '/bookings/confirmation',
@@ -542,66 +550,42 @@ function CashCardForm({
       return
     }
 
-    setCardSaved(true)
     setIsProcessing(false)
+    onSuccess(bookingId)
   }
 
   return (
-    <form onSubmit={handleSaveCard} className="space-y-6">
-      {!cardSaved && (
-        <PaymentElement options={{ layout: 'tabs', wallets: { link: 'never' } }} />
-      )}
+    <form onSubmit={handlePayDeposit} className="space-y-6">
+      <PaymentElement options={{ layout: 'tabs', wallets: { link: 'never' } }} />
 
       {/* Renter's name notice — directly below the card field */}
-      {!cardSaved && <RentersNameNotice />}
+      <RentersNameNotice />
 
-      {/* Summary + policy block — same structure as Card flow, just different
-          totals: today the customer is charged RESERVATION_FEE_AED, the
-          balance is paid in cash at delivery. */}
-      {!cardSaved && (
-        <PaymentSummaryAndPolicies
-          payNowAmount={CASH_HOLDING_DEPOSIT_AED}
-          amountSubLabel={`Holding deposit — paid today. Balance of ${formatPrice(balanceDueOnPickup, { exact: true })} paid at delivery.`}
-          depositAmount={depositAmount}
-          depositChoice={depositChoice}
-          onOpenPriceDetails={onOpenPriceDetails}
-        />
-      )}
+      {/* Summary + policy block — same structure as the Card flow, just
+          different totals: the customer is charged RESERVATION_FEE_AED now,
+          the balance is paid in cash at delivery. */}
+      <PaymentSummaryAndPolicies
+        payNowAmount={CASH_HOLDING_DEPOSIT_AED}
+        amountSubLabel={`Holding deposit — paid today. Balance of ${formatPrice(balanceDueOnPickup, { exact: true })} paid at delivery.`}
+        depositAmount={depositAmount}
+        depositChoice={depositChoice}
+        onOpenPriceDetails={onOpenPriceDetails}
+      />
 
       {errorMessage && (
         <p className="text-sm text-red-600 text-center">{errorMessage}</p>
       )}
 
-      {cardSaved ? (
-        <div className="space-y-4">
-          <div className="flex items-center gap-2 text-sm text-emerald-600">
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-            {t('booking.cardSavedSuccess')}
-          </div>
-          <button
-            type="button"
-            onClick={() => onSuccess(bookingId)}
-            className="w-full rounded-[var(--radius-card)] bg-black py-3.5 text-base font-bold text-white cursor-pointer hover:bg-black/80 transition-colors"
-          >
-            {t('booking.confirmBooking')}
-          </button>
-        </div>
-      ) : (
-        <div className="space-y-2">
-          <button
-            type="submit"
-            disabled={!stripe || !elements || isProcessing}
-            className="w-full rounded-[var(--radius-card)] bg-black py-3.5 text-base font-bold text-white cursor-pointer hover:bg-black/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isProcessing
-              ? t('booking.savingCard')
-              : 'Pay and Book'}
-          </button>
-          <ChargeCurrencyDisclaimer />
-        </div>
-      )}
+      <div className="space-y-2">
+        <button
+          type="submit"
+          disabled={!stripe || !elements || isProcessing}
+          className="w-full rounded-[var(--radius-card)] bg-black py-3.5 text-base font-bold text-white cursor-pointer hover:bg-black/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isProcessing ? t('booking.processing') : 'Pay and Book'}
+        </button>
+        <ChargeCurrencyDisclaimer />
+      </div>
     </form>
   )
 }
@@ -622,7 +606,6 @@ function CashCardForm({
  */
 export function StepPayment({
   clientSecret,
-  setupClientSecret,
   cashSelected,
   cryptoSelected,
   applePaySelected = false,
@@ -665,12 +648,15 @@ export function StepPayment({
         {/* Security deposit info now lives in the "Refundable deposit" line of
             the summary block below — no separate box needed at the top. */}
 
-        {/* Card-on-file collection */}
-        {setupClientSecret && stripePromise ? (
+        {/* Reservation-fee charge. Uses the rental PaymentIntent, not a
+            SetupIntent — pay-on-delivery pays the fee now and the balance
+            at handover. The card is still retained for the balance via
+            setup_future_usage on that PaymentIntent. */}
+        {clientSecret && stripePromise ? (
           <Elements
             stripe={stripePromise}
             options={{
-              clientSecret: setupClientSecret,
+              clientSecret,
               appearance: {
                 theme: 'stripe',
                 variables: {
