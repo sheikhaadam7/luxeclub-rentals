@@ -433,7 +433,11 @@ export function StepDelivery({ form, navButtons, onBack, isAuthed = false, onAut
           />
         </div>
 
-        <div className="grid grid-cols-[170px_1fr] gap-3">
+        {/* The country column is only ever a flag, a dial code and a
+            chevron, so it does not need much room. At 170px it was eating
+            half a phone screen and the number scrolled out of sight as it
+            was typed -- on the one field we now require of everyone. */}
+        <div className="grid grid-cols-[116px_1fr] sm:grid-cols-[150px_1fr] gap-3">
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-bold text-zinc-900">Country</label>
             {(() => {
@@ -442,11 +446,15 @@ export function StepDelivery({ form, navButtons, onBack, isAuthed = false, onAut
                 <button
                   type="button"
                   onClick={() => setCountryPickerOpen(true)}
-                  className="relative flex items-center px-4 py-3 border-2 border-black rounded-xl bg-white hover:bg-zinc-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan cursor-pointer text-left"
+                  className="relative flex items-center gap-1.5 px-3 py-3 border-2 border-black rounded-xl bg-white hover:bg-zinc-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan cursor-pointer text-left"
                 >
-                  <span className="text-xl mr-2">{country.flag}</span>
-                  <span className="text-base font-semibold text-zinc-900">{country.code}</span>
-                  <svg className="w-4 h-4 text-zinc-700 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                  {/* leading-6 matches the input's line box. Without it the
+                      flag's taller line-height made this button a few px
+                      taller than the phone field beside it, which is the
+                      misalignment you could see. */}
+                  <span className="text-lg leading-6 shrink-0">{country.flag}</span>
+                  <span className="text-base leading-6 font-semibold text-zinc-900 truncate">{country.code}</span>
+                  <svg className="w-4 h-4 shrink-0 text-zinc-700 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
