@@ -391,6 +391,32 @@ function BookingCard({
                     </span>
                   </div>
                 )}
+                {/* Without these three the panel does not add up: protection,
+                    add-ons and the 3% card fee are all inside Total Due. */}
+                {(booking.protection_surcharge ?? 0) > 0 && (
+                  <div className="flex justify-between text-xs">
+                    <span className="text-brand-muted">Protection</span>
+                    <span className="text-white">
+                      AED {booking.protection_surcharge!.toLocaleString()}
+                    </span>
+                  </div>
+                )}
+                {(booking.addons_total ?? 0) > 0 && (
+                  <div className="flex justify-between text-xs">
+                    <span className="text-brand-muted">Add-ons</span>
+                    <span className="text-white">
+                      AED {booking.addons_total!.toLocaleString()}
+                    </span>
+                  </div>
+                )}
+                {(booking.card_surcharge ?? 0) > 0 && (
+                  <div className="flex justify-between text-xs">
+                    <span className="text-brand-muted">Card Surcharge (3%)</span>
+                    <span className="text-white">
+                      AED {booking.card_surcharge!.toLocaleString()}
+                    </span>
+                  </div>
+                )}
                 <div className="flex justify-between text-xs font-semibold pt-1 border-t border-brand-border">
                   <span className="text-white">Total Due</span>
                   <span className="text-white">
@@ -484,6 +510,47 @@ function BookingCard({
                     <span className="text-white text-right">{booking.delivery_address}</span>
                   </div>
                 )}
+                {/* A customer can book delivery without giving an address --
+                    a tourist may not have one yet. Flag it so someone chases
+                    it, rather than discovering it on the morning. */}
+                {booking.pickup_method === 'delivery' && !booking.delivery_address && (
+                  <div className="flex justify-between gap-2">
+                    <span className="text-brand-muted shrink-0">Delivery To</span>
+                    <span className="text-amber-400 text-right font-medium">
+                      Address needed — chase customer
+                    </span>
+                  </div>
+                )}
+                {booking.delivery_location && (
+                  <div className="flex justify-between gap-2">
+                    <span className="text-brand-muted shrink-0">Zone</span>
+                    <span className="text-white text-right">{booking.delivery_location}</span>
+                  </div>
+                )}
+                {booking.protection_package && (
+                  <div className="flex justify-between gap-2">
+                    <span className="text-brand-muted shrink-0">Protection</span>
+                    <span className="text-white text-right capitalize">
+                      {booking.protection_package}
+                    </span>
+                  </div>
+                )}
+                {/* What to actually prepare — a driver, a seat. Until now
+                    this was recorded nowhere in the business. */}
+                {booking.addons &&
+                  Object.entries(booking.addons).some(([, on]) => on) && (
+                    <div className="flex justify-between gap-2">
+                      <span className="text-brand-muted shrink-0">Add-ons</span>
+                      <span className="text-amber-300 text-right font-medium">
+                        {Object.entries(booking.addons)
+                          .filter(([, on]) => on)
+                          .map(([k]) =>
+                            k.replace(/([A-Z])/g, ' $1').replace(/^./, (c) => c.toUpperCase()),
+                          )
+                          .join(', ')}
+                      </span>
+                    </div>
+                  )}
                 <div className="flex justify-between">
                   <span className="text-brand-muted">Return</span>
                   <span className="text-white capitalize">

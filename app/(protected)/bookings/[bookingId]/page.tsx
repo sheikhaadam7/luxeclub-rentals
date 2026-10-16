@@ -367,6 +367,15 @@ export default async function BookingDetailPage({ params }: PageProps) {
             {booking.no_deposit_surcharge > 0 && (
               <PricingRow label={<T k="lookup.noDepositSurcharge" />} value={<PriceDisplay amount={booking.no_deposit_surcharge} />} />
             )}
+            {(booking.protection_surcharge ?? 0) > 0 && (
+              <PricingRow label={<T k="lookup.protection" />} value={<PriceDisplay amount={booking.protection_surcharge ?? 0} />} />
+            )}
+            {(booking.addons_total ?? 0) > 0 && (
+              <PricingRow label={<T k="lookup.addons" />} value={<PriceDisplay amount={booking.addons_total ?? 0} />} />
+            )}
+            {(booking.card_surcharge ?? 0) > 0 && (
+              <PricingRow label={<T k="lookup.cardSurcharge" />} value={<PriceDisplay amount={booking.card_surcharge ?? 0} />} />
+            )}
             <div className="border-t border-brand-border mt-2 pt-2">
               <PricingRow label={<T k="lookup.totalDue" />} value={<PriceDisplay amount={booking.total_due} />} bold />
             </div>

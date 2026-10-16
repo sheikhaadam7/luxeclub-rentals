@@ -10,7 +10,10 @@ import { DeliveryZonePickerOverlay } from '@/components/booking/DeliveryZonePick
 import { SignInModal } from '@/components/booking/SignInModal'
 import { getLatestBookingForUser } from '@/app/actions/bookings'
 import { useCurrency } from '@/lib/currency/context'
-import { DELIVERY_ZONE_FEES as CHARGED_ZONE_FEES } from '@/lib/pricing/calculator'
+import {
+  DELIVERY_ZONE_FEES as CHARGED_ZONE_FEES,
+  DELIVERY_ZONE_LABELS as SHARED_ZONE_LABELS,
+} from '@/lib/pricing/calculator'
 
 // Delivery zones — label + AED fee. Fee covers both delivery and collection.
 type ZoneKey =
@@ -24,20 +27,15 @@ type ZoneKey =
   | 'fujairah'
   | 'ras_al_khaimah'
 
-// Labels only. The fee is READ from the pricing calculator below -- the
-// picker must never carry its own copy of a number the customer is
-// charged, or the two drift apart silently.
-const DELIVERY_ZONE_LABEL_LIST: { value: ZoneKey; label: string }[] = [
-  { value: 'within_dubai', label: 'Dubai Delivery & Collection Fee' },
-  { value: 'al_maktoum_airport', label: 'Al Maktoum Airport' },
-  { value: 'sharjah_airport', label: 'Sharjah Airport' },
-  { value: 'sharjah_city', label: 'Sharjah City' },
-  { value: 'ajman', label: 'Ajman' },
-  { value: 'abu_dhabi', label: 'Abu Dhabi' },
-  { value: 'al_ain', label: 'Al Ain' },
-  { value: 'fujairah', label: 'Fujairah' },
-  { value: 'ras_al_khaimah', label: 'Ras Al Khaimah' },
-]
+// Both the label and the fee come from lib/pricing -- this picker carries
+// no copy of either. The server needs the same labels (a non-Dubai zone's
+// name is stored as the delivery address), and a second copy would drift.
+const DELIVERY_ZONE_LABEL_LIST: { value: ZoneKey; label: string }[] = (
+  [
+    'within_dubai', 'al_maktoum_airport', 'sharjah_airport', 'sharjah_city',
+    'ajman', 'abu_dhabi', 'al_ain', 'fujairah', 'ras_al_khaimah',
+  ] as ZoneKey[]
+).map((value) => ({ value, label: SHARED_ZONE_LABELS[value] }))
 
 const DELIVERY_ZONE_OPTIONS: { value: ZoneKey; label: string; fee: number }[] =
   DELIVERY_ZONE_LABEL_LIST.map((o) => ({

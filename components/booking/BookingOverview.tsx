@@ -4,21 +4,11 @@ import { UseFormReturn } from 'react-hook-form'
 import type { BookingFormValues } from '@/lib/validations/booking'
 import type { Vehicle } from '@/components/booking/BookingWizard'
 import { useCurrency } from '@/lib/currency/context'
+import { DELIVERY_ZONE_LABELS } from '@/lib/pricing/calculator'
 
 const KM_PER_DAY = 250
 const EXTRA_KM_RATE_AED = 2.55
 
-const DELIVERY_ZONE_LABELS: Record<string, string> = {
-  within_dubai: 'Dubai Delivery & Collection Fee',
-  al_maktoum_airport: 'Al Maktoum Airport',
-  sharjah_airport: 'Sharjah Airport',
-  sharjah_city: 'Sharjah City',
-  ajman: 'Ajman',
-  abu_dhabi: 'Abu Dhabi',
-  al_ain: 'Al Ain',
-  fujairah: 'Fujairah',
-  ras_al_khaimah: 'Ras Al Khaimah',
-}
 
 interface BookingOverviewProps {
   form: UseFormReturn<BookingFormValues>

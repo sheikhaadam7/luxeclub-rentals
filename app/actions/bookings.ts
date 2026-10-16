@@ -13,8 +13,7 @@ import type { BookingFormValues } from '@/lib/validations/booking'
 // also stores the card. The action itself is kept in payments.ts for any
 // booking created before this change.
 import { createRentalPaymentIntent } from '@/app/actions/payments'
-import { sendEmail } from '@/lib/email/send'
-import { BookingConfirmationEmail } from '@/components/email/BookingConfirmationEmail'
+import { DELIVERY_ZONE_LABELS } from '@/lib/pricing/calculator'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -71,6 +70,12 @@ export interface BookingDetail {
   delivery_fee: number
   return_fee: number
   no_deposit_surcharge: number
+  protection_package: string | null
+  addons: Record<string, boolean> | null
+  delivery_location: string | null
+  protection_surcharge: number | null
+  addons_total: number | null
+  card_surcharge: number | null
   deposit_amount: number
   total_due: number
   reservation_fee: number
@@ -185,9 +190,37 @@ export async function createBooking(
     // cannot reach it. This is the enforcement point.
     depositChoice: NO_DEPOSIT_OPTION_ENABLED ? formData.depositChoice : 'deposit',
     paymentMethod: formData.paymentMethod,
+    // These three were missing, so every booking was priced without the
+    // protection package, the add-ons and the delivery zone -- short by up
+    // to AED 450/day. The client always passed them; the server did not.
+    // Safe: the client chooses WHAT, the server prices it from its own
+    // constants, and an unknown zone key falls back to 0.
+    deliveryLocation: formData.deliveryLocation,
+    protectionPackage: formData.protectionPackage,
+    addons: formData.addons,
   }
 
   const pricing = calculateBookingTotal(vehicle, pricingInput)
+
+  // The customer's typed address lands in deliveryNotes and was never
+  // persisted, so the confirmation email fell back to the office address --
+  // telling a delivery customer to come and collect.
+  //
+  // Keyed off the ZONE, never off emptiness: nothing clears deliveryNotes
+  // when the zone changes, so a Dubai address left in state after switching
+  // to Abu Dhabi would otherwise be stored and send a driver to the wrong
+  // emirate.
+  //
+  // Blank Dubai notes stay null on purpose. A tourist may not have an
+  // address yet and must not be blocked from booking; the email says "to be
+  // confirmed" and admin flags it, rather than asserting the wrong address.
+  const isDelivery = formData.pickupMethod === 'delivery'
+  const zoneKey = formData.deliveryLocation ?? ''
+  const resolvedAddress = !isDelivery
+    ? null
+    : zoneKey === 'within_dubai'
+      ? (formData.deliveryNotes?.trim() || null)
+      : (DELIVERY_ZONE_LABELS[zoneKey] ?? null)
 
   // 4. Insert booking row
   const { data: booking, error: insertError } = await admin
@@ -204,14 +237,37 @@ export async function createBooking(
       start_time: formData.startTime || null,
       end_time: formData.endTime || null,
       pickup_method: formData.pickupMethod,
-      delivery_address: formData.deliveryAddress ?? null,
+      delivery_address: resolvedAddress,
       delivery_lat: formData.deliveryLat ?? null,
       delivery_lng: formData.deliveryLng ?? null,
       return_method: formData.returnMethod,
-      collection_address: formData.collectionAddress ?? null,
+      // Same spot for collection -- the form's own copy says so.
+      collection_address:
+        formData.returnMethod === 'collection'
+          ? resolvedAddress
+          : (formData.collectionAddress ?? null),
       collection_lat: formData.collectionLat ?? null,
       collection_lng: formData.collectionLng ?? null,
       deposit_choice: NO_DEPOSIT_OPTION_ENABLED ? formData.depositChoice : 'deposit',
+      // What the customer chose, so the business can actually see it.
+      // protection_package is coerced with the same test the calculator
+      // uses, so the row can never disagree with the price it was charged.
+      protection_package:
+        formData.protectionPackage === 'inclusive' ? 'inclusive' : 'basic',
+      // Narrowed to the four booleans rather than storing the raw client
+      // object, and never null -- null would defeat the column default.
+      addons: {
+        additionalDriver: !!formData.addons?.additionalDriver,
+        personalDriver: !!formData.addons?.personalDriver,
+        babySeat: !!formData.addons?.babySeat,
+        childSeat: !!formData.addons?.childSeat,
+      },
+      delivery_location: isDelivery ? (formData.deliveryLocation ?? null) : null,
+      // Amounts, so the breakdown pages reconcile instead of showing
+      // hundreds of dirhams unaccounted for.
+      protection_surcharge: pricing.protectionSurcharge,
+      addons_total: pricing.addonBreakdown.total,
+      card_surcharge: pricing.creditCardSurcharge,
       deposit_amount: pricing.depositAmount,
       rental_subtotal: pricing.rentalSubtotal,
       delivery_fee: pricing.deliveryFee,
@@ -498,6 +554,12 @@ export async function getBookingDetail(
       delivery_fee,
       return_fee,
       no_deposit_surcharge,
+      protection_package,
+      addons,
+      delivery_location,
+      protection_surcharge,
+      addons_total,
+      card_surcharge,
       deposit_amount,
       total_due,
       reservation_fee,

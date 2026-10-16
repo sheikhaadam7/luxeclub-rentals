@@ -471,6 +471,12 @@ export interface AdminBooking {
   delivery_fee: number | null
   return_fee: number | null
   no_deposit_surcharge: number | null
+  protection_package: string | null
+  addons: Record<string, boolean> | null
+  delivery_location: string | null
+  protection_surcharge: number | null
+  addons_total: number | null
+  card_surcharge: number | null
   deposit_choice: string | null
   deposit_amount: number | null
   deposit_status: string | null
@@ -510,7 +516,7 @@ export async function getAllBookings(): Promise<
   const { data: bookings, error: bookingsError } = await admin
     .from('bookings')
     .select(
-      'id, vehicle_id, user_id, start_date, end_date, duration_type, status, payment_status, payment_method, total_due, pickup_method, delivery_address, created_at, updated_at, guest_name, guest_email, guest_phone, rental_subtotal, delivery_fee, return_fee, no_deposit_surcharge, deposit_choice, deposit_amount, deposit_status, return_method, collection_address, start_time, end_time, stripe_deposit_pi_id, stripe_rental_pi_id, reservation_fee, reservation_fee_status, balance_due_on_pickup, forfeit_reason, modification_status, modification_requested_start, modification_requested_end, vehicles(name, slug)'
+      'id, vehicle_id, user_id, start_date, end_date, duration_type, status, payment_status, payment_method, total_due, pickup_method, delivery_address, created_at, updated_at, guest_name, guest_email, guest_phone, rental_subtotal, delivery_fee, return_fee, no_deposit_surcharge, protection_package, addons, delivery_location, protection_surcharge, addons_total, card_surcharge, deposit_choice, deposit_amount, deposit_status, return_method, collection_address, start_time, end_time, stripe_deposit_pi_id, stripe_rental_pi_id, reservation_fee, reservation_fee_status, balance_due_on_pickup, forfeit_reason, modification_status, modification_requested_start, modification_requested_end, vehicles(name, slug)'
     )
     .order('created_at', { ascending: false })
 
@@ -566,6 +572,12 @@ export async function getAllBookings(): Promise<
       delivery_fee: b.delivery_fee ?? null,
       return_fee: b.return_fee ?? null,
       no_deposit_surcharge: b.no_deposit_surcharge ?? null,
+      protection_package: b.protection_package ?? null,
+      addons: b.addons ?? null,
+      delivery_location: b.delivery_location ?? null,
+      protection_surcharge: b.protection_surcharge ?? null,
+      addons_total: b.addons_total ?? null,
+      card_surcharge: b.card_surcharge ?? null,
       deposit_choice: b.deposit_choice ?? null,
       deposit_amount: b.deposit_amount ?? null,
       deposit_status: b.deposit_status ?? null,
@@ -956,7 +968,7 @@ export async function getDashboardOverview(): Promise<
     admin
       .from('bookings')
       .select(
-        'id, vehicle_id, user_id, start_date, end_date, duration_type, status, payment_status, payment_method, total_due, pickup_method, delivery_address, created_at, updated_at, guest_name, guest_email, guest_phone, rental_subtotal, delivery_fee, return_fee, no_deposit_surcharge, deposit_choice, deposit_amount, deposit_status, return_method, collection_address, start_time, end_time, stripe_deposit_pi_id, stripe_rental_pi_id, reservation_fee, reservation_fee_status, balance_due_on_pickup, forfeit_reason, modification_status, modification_requested_start, modification_requested_end, vehicles(name, slug)'
+        'id, vehicle_id, user_id, start_date, end_date, duration_type, status, payment_status, payment_method, total_due, pickup_method, delivery_address, created_at, updated_at, guest_name, guest_email, guest_phone, rental_subtotal, delivery_fee, return_fee, no_deposit_surcharge, protection_package, addons, delivery_location, protection_surcharge, addons_total, card_surcharge, deposit_choice, deposit_amount, deposit_status, return_method, collection_address, start_time, end_time, stripe_deposit_pi_id, stripe_rental_pi_id, reservation_fee, reservation_fee_status, balance_due_on_pickup, forfeit_reason, modification_status, modification_requested_start, modification_requested_end, vehicles(name, slug)'
       )
       .order('created_at', { ascending: false })
       .limit(10),
@@ -1030,6 +1042,12 @@ export async function getDashboardOverview(): Promise<
       delivery_fee: b.delivery_fee ?? null,
       return_fee: b.return_fee ?? null,
       no_deposit_surcharge: b.no_deposit_surcharge ?? null,
+      protection_package: b.protection_package ?? null,
+      addons: b.addons ?? null,
+      delivery_location: b.delivery_location ?? null,
+      protection_surcharge: b.protection_surcharge ?? null,
+      addons_total: b.addons_total ?? null,
+      card_surcharge: b.card_surcharge ?? null,
       deposit_choice: b.deposit_choice ?? null,
       deposit_amount: b.deposit_amount ?? null,
       deposit_status: b.deposit_status ?? null,

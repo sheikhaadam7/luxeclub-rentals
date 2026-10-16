@@ -419,6 +419,15 @@ export default function BookingLookupPage() {
             {booking.no_deposit_surcharge > 0 && (
               <PricingRow label={t('lookup.noDepositSurcharge')} value={<PriceDisplay amount={booking.no_deposit_surcharge} />} />
             )}
+            {(booking.protection_surcharge ?? 0) > 0 && (
+              <PricingRow label={t('lookup.protection')} value={<PriceDisplay amount={booking.protection_surcharge ?? 0} />} />
+            )}
+            {(booking.addons_total ?? 0) > 0 && (
+              <PricingRow label={t('lookup.addons')} value={<PriceDisplay amount={booking.addons_total ?? 0} />} />
+            )}
+            {(booking.card_surcharge ?? 0) > 0 && (
+              <PricingRow label={t('lookup.cardSurcharge')} value={<PriceDisplay amount={booking.card_surcharge ?? 0} />} />
+            )}
             <div className="border-t border-brand-border mt-2 pt-2">
               <PricingRow label={t('lookup.totalDue')} value={<PriceDisplay amount={booking.total_due} />} bold />
             </div>

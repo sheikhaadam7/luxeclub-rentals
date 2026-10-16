@@ -37,6 +37,29 @@ export const DELIVERY_ZONE_FEES: Record<string, number> = {
   ras_al_khaimah: 1000,
 }
 
+/**
+ * Customer-facing name for each delivery zone.
+ *
+ * Lives here, beside the fees, because the SERVER needs it: for any zone
+ * other than Dubai there is no free-text address field, so the zone name is
+ * what gets stored as the delivery address. It previously existed only
+ * inside two 'use client' components, where server code cannot reach it.
+ *
+ * One copy. Two drifting copies of a delivery constant is exactly how the
+ * picker came to show AED 100 while the calculator charged something else.
+ */
+export const DELIVERY_ZONE_LABELS: Record<string, string> = {
+  within_dubai: 'Dubai Delivery & Collection Fee',
+  al_maktoum_airport: 'Al Maktoum Airport',
+  sharjah_airport: 'Sharjah Airport',
+  sharjah_city: 'Sharjah City',
+  ajman: 'Ajman',
+  abu_dhabi: 'Abu Dhabi',
+  al_ain: 'Al Ain',
+  fujairah: 'Fujairah',
+  ras_al_khaimah: 'Ras Al Khaimah',
+}
+
 /** Daily surcharge for the All Inclusive Protection package (AED). */
 export const ALL_INCLUSIVE_PROTECTION_PER_DAY = 72.8
 
