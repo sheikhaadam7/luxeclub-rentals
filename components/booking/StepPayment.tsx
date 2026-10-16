@@ -17,12 +17,6 @@ import { PriceDetailsModal } from '@/components/booking/PriceDetailsModal'
 import type { BookingPriceBreakdown } from '@/lib/pricing/calculator'
 import { RESERVATION_FEE_AED } from '@/lib/pricing/constants'
 
-// Charged today when paying cash on collection. Reads the constant
-// rather than copying it -- the previous version held its own 495 and
-// a comment asking a human to keep the two in sync, which is how the
-// site came to charge 495 while Amanda quoted 450.
-const CASH_HOLDING_DEPOSIT_AED = RESERVATION_FEE_AED
-
 // Shown on Step 6 only when the customer is viewing a non-AED currency —
 // avoids "why does my email say AED 1,800 when I paid £400?" support tickets.
 function ChargeCurrencyDisclaimer() {
@@ -51,9 +45,19 @@ interface StepPaymentProps {
   onSuccess: (bookingId: string) => void
   bookingId: string
   totalDue: number
-  /** Flat reservation fee collected now to secure the booking */
+  /**
+   * The non-refundable slice a late cancellation forfeits. A bookkeeping
+   * figure -- it is NOT what gets charged. Use amountDueNow for that.
+   */
   reservationFee: number
-  /** Remaining amount owed on pickup day (in person) */
+  /**
+   * What Stripe is actually about to take. Full total on card, wallet and
+   * crypto; the capped holding fee on pay-on-delivery. Every amount shown
+   * on this screen must come from here, because this is the one the
+   * PaymentIntent was built with.
+   */
+  amountDueNow: number
+  /** Remaining amount owed at handover (in person) */
   balanceDueOnPickup: number
   depositAmount: number
   /** Whether the customer kept the default deposit or chose no-deposit add-on.
@@ -150,7 +154,7 @@ function ImportantInfoCollapsible() {
   )
 }
 
-function TermsAcknowledgement() {
+function TermsAcknowledgement({ payingInFull }: { payingInFull: boolean }) {
   return (
     <p className="text-sm text-zinc-700 leading-relaxed">
       I have read and accept the{' '}
@@ -180,17 +184,26 @@ function TermsAcknowledgement() {
       >
         Privacy Policy
       </Link>
-      , and I acknowledge that I am booking a prepaid rate, where the total
-      booking price is immediately charged to the payment method I provided.
+      , and I acknowledge that{' '}
+      {payingInFull
+        ? 'I am booking a prepaid rate, where the total booking price is immediately charged to the payment method I provided.'
+        : 'the holding deposit shown above is charged to the payment method I provided today, and the remaining balance is due when the vehicle is handed over.'}
     </p>
   )
 }
 
 interface PaymentSummaryProps {
-  /** Big amount shown today (Card: totalDue, Cash: RESERVATION_FEE_AED) */
+  /** The amount Stripe is about to take. Always the PaymentIntent figure. */
   payNowAmount: number
   /** Sub-line under the amount. Card: "Amount you will pay". Cash: balance split. */
   amountSubLabel: string
+  /**
+   * True when this payment settles the whole rental. Drives the terms
+   * wording, which claims the total is charged immediately -- true of
+   * card, wallet and crypto, false of pay-on-delivery, and rendered on
+   * both forms.
+   */
+  payingInFull?: boolean
   /** Vehicle security-deposit pickup-hold amount. Hidden if 0 or depositChoice = no_deposit. */
   depositAmount: number
   depositChoice: 'deposit' | 'no_deposit'
@@ -200,6 +213,7 @@ interface PaymentSummaryProps {
 function PaymentSummaryAndPolicies({
   payNowAmount,
   amountSubLabel,
+  payingInFull = false,
   depositAmount,
   depositChoice,
   onOpenPriceDetails,
@@ -252,7 +266,7 @@ function PaymentSummaryAndPolicies({
       <ImportantInfoCollapsible />
 
       {/* T&C acknowledgement */}
-      <TermsAcknowledgement />
+      <TermsAcknowledgement payingInFull={payingInFull} />
     </div>
   )
 }
@@ -266,7 +280,7 @@ interface PaymentFormProps {
   bookingId: string
   /** Show Apple Pay / Google Pay express row at the top — only when applePaySelected */
   showExpressCheckout: boolean
-  totalDue: number
+  amountDueNow: number
   depositAmount: number
   depositChoice: 'deposit' | 'no_deposit'
   onOpenPriceDetails: () => void
@@ -276,7 +290,7 @@ function PaymentForm({
   onSuccess,
   bookingId,
   showExpressCheckout,
-  totalDue,
+  amountDueNow,
   depositAmount,
   depositChoice,
   onOpenPriceDetails,
@@ -372,8 +386,9 @@ function PaymentForm({
 
       {/* Summary + policy block */}
       <PaymentSummaryAndPolicies
-        payNowAmount={totalDue}
+        payNowAmount={amountDueNow}
         amountSubLabel="Amount you will pay"
+        payingInFull
         depositAmount={depositAmount}
         depositChoice={depositChoice}
         onOpenPriceDetails={onOpenPriceDetails}
@@ -405,6 +420,9 @@ function PaymentForm({
 
 interface CryptoPaymentProps {
   bookingId: string
+  /** Crypto settles the whole rental, so this is the full total. */
+  amountDueNow: number
+  /** The non-refundable slice named in the forfeit policy below. */
   reservationFee: number
   balanceDueOnPickup: number
   isGuest: boolean
@@ -412,7 +430,7 @@ interface CryptoPaymentProps {
   onSuccess: (bookingId: string) => void
 }
 
-function CryptoPayment({ bookingId, reservationFee, balanceDueOnPickup, isGuest, guestEmail, onSuccess }: CryptoPaymentProps) {
+function CryptoPayment({ bookingId, amountDueNow, reservationFee, balanceDueOnPickup, isGuest, guestEmail, onSuccess }: CryptoPaymentProps) {
   const { formatPrice } = useCurrency()
   const { t } = useTranslation()
   const [isProcessing, setIsProcessing] = useState(false)
@@ -455,7 +473,7 @@ function CryptoPayment({ bookingId, reservationFee, balanceDueOnPickup, isGuest,
           </h3>
         </div>
         <p className="text-sm text-zinc-700 leading-relaxed">
-          {t('booking.cryptoReservationFeeDesc').replace('{amount}', formatPrice(reservationFee))}
+          {t('booking.cryptoAmountDueDesc').replace('{amount}', formatPrice(amountDueNow))}
         </p>
         {balanceDueOnPickup > 0 && (
           <p className="text-sm text-zinc-700 leading-relaxed">
@@ -470,7 +488,10 @@ function CryptoPayment({ bookingId, reservationFee, balanceDueOnPickup, isGuest,
           {t('booking.forfeitPolicyTitle')}
         </p>
         <p className="text-red-700/80 leading-relaxed">
-          {t('booking.forfeitPolicyBody')}
+          {t('booking.forfeitPolicyBody').replace(
+            '{amount}',
+            formatPrice(Math.min(reservationFee, amountDueNow), { exact: true })
+          )}
         </p>
       </div>
 
@@ -498,6 +519,7 @@ function CryptoPayment({ bookingId, reservationFee, balanceDueOnPickup, isGuest,
 interface CashCardFormProps {
   onSuccess: (bookingId: string) => void
   bookingId: string
+  amountDueNow: number
   balanceDueOnPickup: number
   depositAmount: number
   depositChoice: 'deposit' | 'no_deposit'
@@ -507,6 +529,7 @@ interface CashCardFormProps {
 function CashCardForm({
   onSuccess,
   bookingId,
+  amountDueNow,
   balanceDueOnPickup,
   depositAmount,
   depositChoice,
@@ -561,11 +584,13 @@ function CashCardForm({
       {/* Renter's name notice — directly below the card field */}
       <RentersNameNotice />
 
-      {/* Summary + policy block — same structure as the Card flow, just
-          different totals: the customer is charged RESERVATION_FEE_AED now,
-          the balance is paid in cash at delivery. */}
+      {/* Summary + policy block — same structure as the Card flow, just a
+          different split: the holding deposit now, the balance at
+          delivery. Reads amountDueNow rather than the flat constant,
+          because on a cheap short rental the capped figure is lower than
+          450 and the screen must match what Stripe was asked for. */}
       <PaymentSummaryAndPolicies
-        payNowAmount={CASH_HOLDING_DEPOSIT_AED}
+        payNowAmount={amountDueNow}
         amountSubLabel={`Holding deposit — paid today. Balance of ${formatPrice(balanceDueOnPickup, { exact: true })} paid at delivery.`}
         depositAmount={depositAmount}
         depositChoice={depositChoice}
@@ -613,6 +638,7 @@ export function StepPayment({
   bookingId,
   totalDue,
   reservationFee,
+  amountDueNow,
   balanceDueOnPickup,
   depositAmount,
   depositChoice = 'deposit',
@@ -632,6 +658,7 @@ export function StepPayment({
     return (
       <CryptoPayment
         bookingId={bookingId}
+        amountDueNow={amountDueNow}
         reservationFee={reservationFee}
         balanceDueOnPickup={balanceDueOnPickup}
         isGuest={isGuest}
@@ -654,6 +681,12 @@ export function StepPayment({
             setup_future_usage on that PaymentIntent. */}
         {clientSecret && stripePromise ? (
           <Elements
+            // Remount when the amount moves. Elements reads the figure
+            // from the PaymentIntent at mount, so after a method switch
+            // amends the intent it would otherwise keep painting the old
+            // one -- "shows 450, charges 8,000" is the worst failure
+            // available here.
+            key={amountDueNow}
             stripe={stripePromise}
             options={{
               clientSecret,
@@ -678,6 +711,7 @@ export function StepPayment({
             <CashCardForm
               onSuccess={onSuccess}
               bookingId={bookingId}
+              amountDueNow={amountDueNow}
               balanceDueOnPickup={balanceDueOnPickup}
               depositAmount={depositAmount}
               depositChoice={depositChoice}
@@ -763,6 +797,7 @@ export function StepPayment({
   return (
     <div className="space-y-6">
       <Elements
+        key={amountDueNow}
         stripe={stripePromise}
         options={{
           clientSecret,
@@ -788,7 +823,7 @@ export function StepPayment({
           onSuccess={onSuccess}
           bookingId={bookingId}
           showExpressCheckout={applePaySelected}
-          totalDue={totalDue}
+          amountDueNow={amountDueNow}
           depositAmount={depositAmount}
           depositChoice={depositChoice}
           onOpenPriceDetails={openPriceDetails}

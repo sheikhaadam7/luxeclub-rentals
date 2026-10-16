@@ -6,7 +6,8 @@ import {
   calculateBookingTotal,
   type BookingPricingInput,
 } from '@/lib/pricing/calculator'
-import { NO_DEPOSIT_OPTION_ENABLED } from '@/lib/pricing/constants'
+import { NO_DEPOSIT_OPTION_ENABLED, minimumRentalDays } from '@/lib/pricing/constants'
+import { differenceInDays } from 'date-fns'
 import type { BookingFormValues } from '@/lib/validations/booking'
 // createSetupIntent is deliberately not imported any more: pay-on-delivery
 // now charges the reservation fee through createRentalPaymentIntent, which
@@ -14,6 +15,7 @@ import type { BookingFormValues } from '@/lib/validations/booking'
 // booking created before this change.
 import { createRentalPaymentIntent } from '@/app/actions/payments'
 import { DELIVERY_ZONE_LABELS } from '@/lib/pricing/calculator'
+import { settleCancellation } from '@/lib/booking/cancellation'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -25,11 +27,16 @@ export interface CreateBookingResult {
   rentalClientSecret: string | null
   /** Client secret for the SetupIntent (card-on-file for cash bookings) */
   setupClientSecret: string | null
-  /** Full customer obligation (reservation fee + pickup balance) */
+  /** Full customer obligation (amount charged now + pickup balance) */
   totalDue: number
-  /** Amount charged now to secure the booking */
+  /**
+   * The non-refundable slice a late cancellation forfeits. NOT the amount
+   * charged -- see amountDueNow.
+   */
   reservationFee: number
-  /** Amount owed in person on pickup day */
+  /** What is actually charged online now. Drives the Stripe amount. */
+  amountDueNow: number
+  /** Amount owed in person at handover */
   balanceDueOnPickup: number
   depositAmount: number
 }
@@ -80,6 +87,10 @@ export interface BookingDetail {
   total_due: number
   reservation_fee: number
   reservation_fee_status: string
+  /** What we asked for online. Null on bookings taken before this existed. */
+  amount_due_now: number | null
+  /** What actually arrived. Null until a payment webhook lands. */
+  amount_paid: number | null
   balance_due_on_pickup: number
   forfeit_reason: string | null
   payment_method: string
@@ -176,6 +187,20 @@ export async function createBooking(
 
   if (!vehicle.is_available) {
     return { error: 'This vehicle is not currently available for booking' }
+  }
+
+  // Minimum rental length, from the DB rate. The wizard checks the same
+  // rule for a timely message, but this is the enforcement: the client
+  // guard cannot be reached by a stale tab or a direct call.
+  const minDays = minimumRentalDays(vehicle.daily_rate)
+  const requestedDays = Math.max(
+    differenceInDays(new Date(formData.endDate), new Date(formData.startDate)),
+    1
+  )
+  if (requestedDays < minDays) {
+    return {
+      error: `${vehicle.name} has a ${minDays}-day minimum rental. Please choose at least ${minDays} days.`,
+    }
   }
 
   // 3. Server-side price recalculation
@@ -278,6 +303,9 @@ export async function createBooking(
       no_deposit_surcharge: pricing.noDepositSurcharge,
       total_due: pricing.totalDue,
       reservation_fee: pricing.reservationFeeWithSurcharge,
+      // What we are about to ask Stripe for. Stored so the webhook can
+      // check the money that arrives against the money we asked for.
+      amount_due_now: pricing.amountDueNow,
       balance_due_on_pickup: pricing.balanceDueOnPickup,
       reservation_fee_status: 'pending',
       payment_method: formData.paymentMethod,
@@ -304,55 +332,36 @@ export async function createBooking(
     bookingId,
     totalDue: pricing.totalDue,
     reservationFee: pricing.reservationFeeWithSurcharge,
+    amountDueNow: pricing.amountDueNow,
     balanceDueOnPickup: pricing.balanceDueOnPickup,
     depositAmount: pricing.depositAmount,
   }
 
-  // 6. Crypto path — NOWPayments invoice is created separately on the client.
-  //    Only the reservation fee is collected via crypto; the balance is
-  //    settled in person on pickup day.
+  // 6. Crypto — the NOWPayments invoice is created separately on the
+  //    client, for amount_due_now, which is the full total.
   if (formData.paymentMethod === 'crypto') {
     return { ...commonResult, rentalClientSecret: null, setupClientSecret: null }
   }
 
-  // 6b. Pay-on-delivery — the reservation fee is charged NOW, exactly as on
-  //     the card path; only the balance is settled in person. This used to
-  //     create a SetupIntent, which has no amount: the card was stored, no
-  //     money moved, and the booking was confirmed and emailed anyway. The
-  //     PaymentIntent also stores the card (setup_future_usage), so the
-  //     card-on-file guarantee is preserved.
-  if (formData.paymentMethod === 'cash') {
-    if (!process.env.STRIPE_SECRET_KEY) {
-      // Test mode — no Stripe key configured
-      return { ...commonResult, rentalClientSecret: null, setupClientSecret: null }
-    }
-
-    const cashFeeResult = await createRentalPaymentIntent(
-      bookingId,
-      pricing.reservationFeeWithSurcharge,
-      userId ?? 'guest'
-    )
-    if ('error' in cashFeeResult) {
-      return { error: cashFeeResult.error }
-    }
-
-    return {
-      ...commonResult,
-      rentalClientSecret: cashFeeResult.clientSecret,
-      setupClientSecret: null,
-    }
-  }
-
-  // 7. Card / wallet path — create a PaymentIntent for the reservation fee
-  //    only (not the full rental). The rest is paid in person on pickup day.
-  // Test mode: skip Stripe when key is not configured
+  // 7. Everything else goes through one PaymentIntent for amountDueNow.
+  //
+  //    Card, Apple Pay and Google Pay charge the whole rental; pay-on-
+  //    delivery charges the holding fee and settles the balance at
+  //    handover. That difference is decided in the calculator, so the two
+  //    paths used to be byte-identical code and are now genuinely one --
+  //    two copies of a Stripe call is how the amounts drift apart.
+  //
+  //    The intent also stores the card (setup_future_usage), which is what
+  //    preserves the card-on-file guarantee pay-on-delivery relies on for
+  //    cancellation and no-show charges.
   if (!process.env.STRIPE_SECRET_KEY) {
+    // Test mode — no Stripe key configured
     return { ...commonResult, rentalClientSecret: null, setupClientSecret: null }
   }
 
   const rentalResult = await createRentalPaymentIntent(
     bookingId,
-    pricing.reservationFeeWithSurcharge,
+    pricing.amountDueNow,
     userId ?? 'guest'
   )
   if ('error' in rentalResult) {
@@ -371,16 +380,32 @@ export async function createBooking(
 // ---------------------------------------------------------------------------
 
 /**
- * Server Action — updates the payment method on an existing booking.
+ * Server Action — change the payment method on an existing booking, and
+ * move the money with it.
  *
- * Called when the user goes back in the wizard and changes payment method
- * after the booking was already created. Updates payment_method and
- * payment_status to match the new choice.
+ * Called when the customer goes Back from the payment step and picks a
+ * different method. It used to write two columns and stop there, which
+ * was harmless only while every method charged the same flat fee. Now
+ * that card charges the whole rental and pay-on-delivery charges the
+ * holding fee, leaving the original PaymentIntent in place would charge
+ * a card customer the holding fee, or a pay-on-delivery customer the
+ * entire rental.
+ *
+ * Deliberately does NOT re-run the pricing calculator. Since the 3%
+ * applies to every method, `total_due` no longer depends on the payment
+ * method at all -- so re-pricing could not change the total, but WOULD
+ * re-read the vehicle's current daily rate. A mastersheet push between
+ * booking and switch would then silently move the price the customer
+ * already agreed to. The stored total is the agreed total; only the split
+ * between "now" and "at handover" is recalculated here.
  */
 export async function updateBookingPaymentMethod(
   bookingId: string,
   paymentMethod: 'card' | 'apple_pay' | 'google_pay' | 'cash' | 'crypto'
-): Promise<{ success: true } | { error: string }> {
+): Promise<
+  | { success: true; totalDue: number; amountDueNow: number; balanceDueOnPickup: number; rentalClientSecret: string | null }
+  | { error: string }
+> {
   const supabase = await createClient()
   const { data: claimsData } = await supabase.auth.getClaims()
   const claims = claimsData?.claims
@@ -390,7 +415,9 @@ export async function updateBookingPaymentMethod(
   // Fetch booking — verify it exists and is still pending
   const { data: booking, error: fetchError } = await admin
     .from('bookings')
-    .select('id, status, payment_method, user_id, guest_email')
+    .select(
+      'id, status, payment_method, user_id, guest_email, total_due, reservation_fee, amount_due_now, reservation_fee_status, stripe_rental_pi_id, nowpayments_invoice_id'
+    )
     .eq('id', bookingId)
     .single()
 
@@ -409,9 +436,32 @@ export async function updateBookingPaymentMethod(
     }
   }
 
-  // Already set — no update needed
-  if (booking.payment_method === paymentMethod) {
-    return { success: true }
+  // Never re-price something already paid for.
+  if (booking.reservation_fee_status === 'paid') {
+    return { error: 'This booking has already been paid for' }
+  }
+
+  const totalDue = Number(booking.total_due ?? 0)
+  const nonRefundable = Number(booking.reservation_fee ?? 0)
+  // Same split rule as the calculator, applied to the agreed total.
+  const amountDueNow = paymentMethod === 'cash' ? nonRefundable : totalDue
+  const balanceDueOnPickup = Math.round((totalDue - amountDueNow) * 100) / 100
+
+  // Already on this method AND the stored split already matches — nothing
+  // to do. Checked on the split too, not just the method, so a booking
+  // left inconsistent by an earlier failure gets repaired rather than
+  // skipped.
+  if (
+    booking.payment_method === paymentMethod &&
+    Number(booking.amount_due_now ?? -1) === amountDueNow
+  ) {
+    return {
+      success: true,
+      totalDue,
+      amountDueNow,
+      balanceDueOnPickup,
+      rentalClientSecret: null,
+    }
   }
 
   const paymentStatus =
@@ -419,11 +469,76 @@ export async function updateBookingPaymentMethod(
     : paymentMethod === 'crypto' ? 'pending_crypto'
     : 'unpaid'
 
+  // ---- Stripe first, database second ---------------------------------
+  //
+  // If the row were written first and Stripe then failed, the booking
+  // would claim the full rental while the intent still held the holding
+  // fee -- and the customer would be charged the smaller figure against a
+  // receipt showing the larger one. Any Stripe failure below returns
+  // without touching the row, leaving the booking consistent and
+  // retryable.
+  let newClientSecret: string | null = null
+  const stripeEnabled = !!process.env.STRIPE_SECRET_KEY
+
+  if (stripeEnabled && booking.stripe_rental_pi_id) {
+    const { stripe } = await import('@/lib/stripe/server')
+    if (stripe) {
+      try {
+        const pi = await stripe.paymentIntents.retrieve(booking.stripe_rental_pi_id)
+
+        if (paymentMethod === 'crypto') {
+          // Crypto settles through NOWPayments, so the Stripe intent is
+          // dead weight. Cancel it rather than leave a live intent for an
+          // amount nobody will collect.
+          if (pi.status !== 'succeeded' && pi.status !== 'canceled') {
+            await stripe.paymentIntents.cancel(booking.stripe_rental_pi_id)
+          }
+        } else if (Math.round(amountDueNow * 100) !== pi.amount) {
+          // Stripe only allows an amount change while the intent is still
+          // waiting to be paid. An abandoned 3-D Secure leaves it in
+          // requires_action and a slow bank leaves it processing -- in
+          // those states the update is rejected, so replace the intent
+          // and hand the browser a fresh client secret.
+          if (
+            pi.status === 'requires_payment_method' ||
+            pi.status === 'requires_confirmation'
+          ) {
+            await stripe.paymentIntents.update(booking.stripe_rental_pi_id, {
+              amount: Math.round(amountDueNow * 100),
+            })
+          } else if (pi.status === 'succeeded' || pi.status === 'processing') {
+            // Money is already moving. Re-pricing now would mean charging
+            // twice; the status guard above should have caught this, but
+            // the webhook may simply not have landed yet.
+            return { error: 'This booking is already being paid for' }
+          } else {
+            await stripe.paymentIntents.cancel(booking.stripe_rental_pi_id)
+            const fresh = await createRentalPaymentIntent(
+              bookingId,
+              amountDueNow,
+              booking.user_id ?? 'guest'
+            )
+            if ('error' in fresh) return { error: fresh.error }
+            newClientSecret = fresh.clientSecret
+          }
+        }
+      } catch (err) {
+        console.error('updateBookingPaymentMethod: stripe error', err)
+        return { error: 'Could not update the payment. Please try again.' }
+      }
+    }
+  }
+
   const { error: updateError } = await admin
     .from('bookings')
     .update({
       payment_method: paymentMethod,
       payment_status: paymentStatus,
+      amount_due_now: amountDueNow,
+      balance_due_on_pickup: balanceDueOnPickup,
+      // A stored invoice short-circuits createCryptoInvoice, which would
+      // otherwise re-serve the old URL at the pre-switch amount.
+      ...(paymentMethod === 'crypto' ? { nowpayments_invoice_id: null } : {}),
     })
     .eq('id', bookingId)
 
@@ -432,7 +547,13 @@ export async function updateBookingPaymentMethod(
     return { error: 'Failed to update payment method' }
   }
 
-  return { success: true }
+  return {
+    success: true,
+    totalDue,
+    amountDueNow,
+    balanceDueOnPickup,
+    rentalClientSecret: newClientSecret,
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -567,6 +688,8 @@ export async function getBookingDetail(
       total_due,
       reservation_fee,
       reservation_fee_status,
+      amount_due_now,
+      amount_paid,
       balance_due_on_pickup,
       forfeit_reason,
       payment_method,
@@ -688,7 +811,7 @@ export async function cancelBooking(
   // Fetch booking with ownership check
   const { data: booking, error: fetchError } = await admin
     .from('bookings')
-    .select('id, status, payment_method, start_date, start_time, reservation_fee, reservation_fee_status, stripe_rental_pi_id')
+    .select('id, status, payment_method, start_date, start_time, reservation_fee, amount_paid, amount_due_now, reservation_fee_status, stripe_rental_pi_id')
     .eq('id', bookingId)
     .eq('user_id', claims.sub)
     .single()
@@ -709,56 +832,21 @@ export async function cancelBooking(
     return { error: 'Bookings cannot be cancelled once the rental period has started' }
   }
 
-  // Calculate hours until pickup start
-  const startDateStr = booking.start_date
-  const startTimeStr = booking.start_time || '10:00'
-  const [hours, minutes] = startTimeStr.split(':').map(Number)
-  const pickupDate = new Date(startDateStr + 'T00:00:00Z')
-  pickupDate.setUTCHours(hours, minutes, 0, 0)
-  const hoursUntilStart = (pickupDate.getTime() - Date.now()) / (1000 * 60 * 60)
-
-  const reservationFee = Number(booking.reservation_fee ?? 0)
-  const lateCancel = hoursUntilStart <= 24
-
-  const refundAmount = lateCancel ? 0 : reservationFee
-  const newReservationFeeStatus = lateCancel ? 'forfeited' : 'refunded'
-  const forfeitReason = lateCancel ? 'late_cancel' : null
-
-  // Stripe refund — only for non-late cancels where the fee was actually
-  // paid via Stripe (card/wallet). Cash/crypto refunds are handled manually.
-  let stripeRefundId: string | null = null
-  if (
-    !lateCancel &&
-    refundAmount > 0 &&
-    booking.reservation_fee_status === 'paid' &&
-    booking.stripe_rental_pi_id
-  ) {
-    const { stripe } = await import('@/lib/stripe/server')
-    if (stripe) {
-      try {
-        const refund = await stripe.refunds.create({
-          payment_intent: booking.stripe_rental_pi_id,
-          amount: Math.round(refundAmount * 100),
-        })
-        stripeRefundId = refund.id
-      } catch (err) {
-        console.error('cancelBooking: stripe refund error', err)
-        return { error: 'Failed to process refund. Please try again or contact support.' }
-      }
-    }
-  }
+  const settlement = await settleCancellation(booking)
+  if ('error' in settlement) return { error: settlement.error }
+  const { lateCancel, refundAmount } = settlement
 
   const { error: updateError } = await admin
     .from('bookings')
     .update({
       status: 'cancelled',
-      payment_status: lateCancel ? 'forfeited' : 'refunded',
-      reservation_fee_status: newReservationFeeStatus,
-      forfeit_reason: forfeitReason,
+      payment_status: settlement.paymentStatus,
+      reservation_fee_status: settlement.reservationFeeStatus,
+      forfeit_reason: settlement.forfeitReason,
       cancelled_at: new Date().toISOString(),
-      cancellation_fee: lateCancel ? reservationFee : 0,
+      cancellation_fee: settlement.cancellationFee,
       cancellation_refund_amount: refundAmount,
-      stripe_refund_id: stripeRefundId,
+      stripe_refund_id: settlement.stripeRefundId,
       updated_at: new Date().toISOString(),
     })
     .eq('id', bookingId)

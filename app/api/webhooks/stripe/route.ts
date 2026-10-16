@@ -92,9 +92,27 @@ export async function POST(req: Request): Promise<Response> {
           // must stay 'pending_cash' — an admin marks it paid at handover.
           const { data: existing } = await admin
             .from('bookings')
-            .select('payment_method')
+            .select('payment_method, amount_due_now')
             .eq('id', bookingId)
             .maybeSingle()
+
+          // What actually arrived, from Stripe's own figure. Nothing
+          // recorded this before, so "what did this customer pay" was
+          // unanswerable from the row -- fine when the answer was always
+          // 450, not fine once it varies per booking. Taken inside the
+          // 'rental' branch deliberately: the same event fires for
+          // deposits, and writing it unconditionally would stamp a
+          // captured deposit over the rental figure.
+          const amountPaid = (pi.amount_received ?? 0) / 100
+          const expected = Number(existing?.amount_due_now ?? 0)
+          if (expected > 0 && Math.abs(expected - amountPaid) > 0.01) {
+            // Recorded, not rejected. A customer whose card succeeded
+            // must never be left in limbo by our bookkeeping -- the
+            // admin screen flags the discrepancy for a human instead.
+            console.error(
+              `stripe webhook: amount mismatch on booking ${bookingId} — expected ${expected} AED, received ${amountPaid} AED`
+            )
+          }
 
           await admin
             .from('bookings')
@@ -103,6 +121,7 @@ export async function POST(req: Request): Promise<Response> {
                 ? {}
                 : { payment_status: 'paid' }),
               reservation_fee_status: 'paid',
+              amount_paid: amountPaid,
               status: 'pending',
             })
             .eq('id', bookingId)
@@ -133,7 +152,14 @@ export async function POST(req: Request): Promise<Response> {
           .update({ deposit_status: 'held' })
           .eq('id', bookingId)
       }
-    } else if (eventType === 'payment_intent.canceled') {
+    } else if (
+      eventType === 'payment_intent.canceled' &&
+      // Deposits only. Switching payment method now cancels the RENTAL
+      // intent, and without this check that would mark a deposit voided
+      // on a booking whose deposit was never taken.
+      (event as Stripe.Event & { data: { object: Stripe.PaymentIntent } }).data.object.metadata
+        ?.type === 'deposit'
+    ) {
       // PaymentIntent canceled — deposit voided
       const pi = (event as Stripe.Event & { data: { object: Stripe.PaymentIntent } }).data.object
       const bookingId = pi.metadata?.booking_id
@@ -180,6 +206,16 @@ export async function POST(req: Request): Promise<Response> {
     // All other event types — acknowledge receipt without processing
   } catch (err) {
     console.error('stripe webhook: event processing error', err)
+    // Release the idempotency claim so Stripe's retry is actually
+    // processed. The claim is taken BEFORE the handler runs, so without
+    // this a mid-handler failure is permanent: the retry sees the row,
+    // answers "already processed", and the booking is never promoted --
+    // while the customer has been charged and is looking at a
+    // confirmation page. Survivable at AED 450; not at AED 20,000.
+    await admin
+      .from('stripe_webhook_events')
+      .delete()
+      .eq('stripe_event_id', event.id)
     return new Response('Internal Server Error', { status: 500 })
   }
 
@@ -201,6 +237,7 @@ async function sendBookingConfirmationEmail(
       pickup_method, return_method,
       delivery_address, collection_address,
       deposit_choice, deposit_amount, total_due, reservation_fee,
+      amount_due_now, amount_paid,
       protection_package, addons, protection_surcharge, addons_total,
       card_surcharge, delivery_location,
       balance_due_on_pickup, payment_method, status,
@@ -261,6 +298,11 @@ async function sendBookingConfirmationEmail(
         depositAmount: booking.deposit_amount,
         totalDue: booking.total_due,
         reservationFee: booking.reservation_fee,
+        // What the customer was actually charged. Sending reservation_fee
+        // here would print "Paid today: AED 450" on a receipt for an
+        // AED 8,000 card payment -- a receipt that contradicts their bank
+        // statement is how a chargeback starts.
+        amountPaid: booking.amount_paid ?? booking.amount_due_now ?? booking.reservation_fee,
         balanceDueOnPickup: booking.balance_due_on_pickup,
         paymentMethod: booking.payment_method as 'card' | 'apple_pay' | 'google_pay' | 'cash' | 'crypto',
         status: booking.status,

@@ -126,6 +126,8 @@ function BookingCard({
 }) {
   const [isPending, startTransition] = useTransition()
   const [cardError, setCardError] = useState<string | null>(null)
+  const [refundOpen, setRefundOpen] = useState(false)
+  const [refundInput, setRefundInput] = useState('')
   const [cashMethod, setCashMethod] = useState<'cash' | 'bank_transfer'>('cash')
 
   const statusCfg = STATUS_CONFIG[booking.status] ?? {
@@ -274,16 +276,35 @@ function BookingCard({
     })
   }
 
-  function handleRefundFee(e: React.MouseEvent) {
+  // Refund takes a typed amount rather than a yes/no prompt: a no-show is
+  // settled by hand and the team decides what to give back. Pre-filled
+  // with everything the customer paid, which is the common case.
+  function openRefund(e: React.MouseEvent) {
     e.stopPropagation()
     setCardError(null)
-    if (!confirm('Refund the reservation fee to the customer? This will issue a Stripe refund for card bookings.')) return
+    setRefundInput(String(booking.amount_paid ?? booking.reservation_fee ?? 0))
+    setRefundOpen(true)
+  }
+
+  function submitRefund(e: React.MouseEvent) {
+    e.stopPropagation()
+    setCardError(null)
+    const amount = Number(refundInput)
+    if (!Number.isFinite(amount) || amount <= 0) {
+      setCardError('Enter a refund amount greater than zero')
+      return
+    }
     startTransition(async () => {
-      const result = await refundReservationFee(booking.id)
+      const result = await refundReservationFee(booking.id, amount)
       if (result.error) {
         setCardError(result.error)
       } else {
-        onBookingUpdate({ id: booking.id, reservation_fee_status: 'refunded' })
+        const paid = Number(booking.amount_paid ?? booking.reservation_fee ?? 0)
+        onBookingUpdate({
+          id: booking.id,
+          reservation_fee_status: amount >= paid ? 'refunded' : 'partially_refunded',
+        })
+        setRefundOpen(false)
       }
     })
   }
@@ -461,6 +482,37 @@ function BookingCard({
                         </span>
                       </span>
                     </div>
+                    {/* What we asked for and what turned up. Separate rows
+                        on purpose: the fee above is only the slice kept on a
+                        late cancellation, and reading it as "what they paid"
+                        is the mistake this change exists to stop. */}
+                    <div className="flex justify-between text-xs">
+                      <span className="text-brand-muted">Charged Online</span>
+                      <span className="text-white">
+                        {booking.amount_due_now != null
+                          ? `AED ${booking.amount_due_now.toLocaleString()}`
+                          : '—'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-brand-muted">Actually Paid</span>
+                      <span className="text-white">
+                        {booking.amount_paid != null
+                          ? `AED ${booking.amount_paid.toLocaleString()}`
+                          : '—'}
+                      </span>
+                    </div>
+                    {booking.amount_paid != null &&
+                      booking.amount_due_now != null &&
+                      Math.abs(booking.amount_paid - booking.amount_due_now) > 0.01 && (
+                        <div className="flex justify-between text-xs">
+                          <span className="text-amber-400">Amount mismatch</span>
+                          <span className="text-amber-400">
+                            paid AED {booking.amount_paid.toLocaleString()} vs AED{' '}
+                            {booking.amount_due_now.toLocaleString()} expected — check Stripe
+                          </span>
+                        </div>
+                      )}
                     <div className="flex justify-between text-xs">
                       <span className="text-brand-muted">Balance Due on Pickup</span>
                       <span className="text-white">
@@ -496,11 +548,11 @@ function BookingCard({
                     <>
                       <button
                         type="button"
-                        onClick={handleRefundFee}
+                        onClick={openRefund}
                         disabled={isPending}
                         className="text-[11px] px-2.5 py-1 rounded font-medium transition-colors disabled:opacity-40 border border-brand-cyan/40 text-brand-cyan hover:bg-brand-cyan/10"
                       >
-                        Refund Fee
+                        Refund Payment
                       </button>
                       <button
                         type="button"
@@ -512,6 +564,47 @@ function BookingCard({
                       </button>
                     </>
                   )}
+                </div>
+              )}
+
+              {refundOpen && (
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  className="mt-2 rounded border border-brand-cyan/30 bg-brand-cyan/5 p-2.5 space-y-2"
+                >
+                  <p className="text-[11px] text-brand-muted leading-relaxed">
+                    Refund amount in AED. Capped at what was actually charged
+                    — Stripe is asked, not this screen.
+                  </p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      inputMode="decimal"
+                      value={refundInput}
+                      onChange={(e) => setRefundInput(e.target.value)}
+                      className="w-28 rounded border border-brand-border bg-brand-black px-2 py-1 text-xs text-white focus:outline-none focus:border-brand-cyan"
+                    />
+                    <button
+                      type="button"
+                      onClick={submitRefund}
+                      disabled={isPending}
+                      className="text-[11px] px-2.5 py-1 rounded font-medium border border-brand-cyan/40 text-brand-cyan hover:bg-brand-cyan/10 disabled:opacity-40"
+                    >
+                      {isPending ? 'Refunding…' : 'Confirm refund'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setRefundOpen(false)
+                      }}
+                      className="text-[11px] px-2.5 py-1 rounded font-medium border border-brand-border text-brand-muted hover:text-white"
+                    >
+                      Cancel
+                    </button>
+                  </div>
                 </div>
               )}
             </div>

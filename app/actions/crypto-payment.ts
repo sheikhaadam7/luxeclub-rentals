@@ -33,7 +33,7 @@ export async function createCryptoInvoice(
   // Fetch the booking
   const { data: booking, error: fetchError } = await admin
     .from('bookings')
-    .select('id, reservation_fee, payment_status, payment_method, user_id, guest_email, nowpayments_invoice_id, vehicles (name)')
+    .select('id, reservation_fee, amount_due_now, total_due, payment_status, payment_method, user_id, guest_email, nowpayments_invoice_id, vehicles (name)')
     .eq('id', bookingId)
     .single()
 
@@ -102,9 +102,12 @@ export async function createCryptoInvoice(
   const vehicleName = (booking.vehicles as unknown as { name: string } | null)?.name ?? 'Vehicle'
 
   try {
-    // Only the reservation fee is collected via crypto at booking time.
-    // The rest of the booking total is settled in person on pickup day.
-    const reservationFeeAed = Number(booking.reservation_fee ?? 0)
+    // Crypto settles the whole rental. Reads amount_due_now rather than
+    // the reservation fee, which is now only the non-refundable slice of
+    // a cancellation and is far smaller than what is owed.
+    const reservationFeeAed = Number(
+      booking.amount_due_now ?? booking.total_due ?? booking.reservation_fee ?? 0
+    )
     const invoice = await nowpayments.createInvoice({
       // Sandbox doesn't support AED — convert to USD (1 AED ≈ 0.2723 USD)
       price_amount: process.env.NOWPAYMENTS_SANDBOX === 'true'

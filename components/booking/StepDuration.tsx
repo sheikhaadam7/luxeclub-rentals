@@ -10,6 +10,7 @@ import { Vehicle } from '@/components/booking/BookingWizard'
 import { useTranslation } from '@/lib/i18n/context'
 import { useSearchParams } from 'next/navigation'
 import { useOverlayBackButton } from '@/lib/hooks/use-overlay-back-button'
+import { minimumRentalDays } from '@/lib/pricing/constants'
 import { MobileDateRangeOverlay } from '@/components/booking/MobileDateRangeOverlay'
 import { MobileTimePickerOverlay } from '@/components/booking/MobileTimePickerOverlay'
 import { MobileTimePickerStackedOverlay } from '@/components/booking/MobileTimePickerStackedOverlay'
@@ -39,7 +40,7 @@ export const TIME_SLOTS = Array.from({ length: 36 }, (_, i) => {
   return { value, label: value }
 })
 
-export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons }: StepDurationProps) {
+export function StepDuration({ form, vehicle, bookedRanges, navButtons }: StepDurationProps) {
   const { t } = useTranslation()
   const startDate = form.watch('startDate')
   const endDate = form.watch('endDate')
@@ -100,6 +101,12 @@ export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons
 
   const startDateError = form.formState.errors.startDate
   const endDateError = form.formState.errors.endDate
+
+  // Cars cheaper per day than the holding fee take a two-day minimum.
+  // Surfaced here, where the dates are chosen, rather than as a refusal at
+  // checkout five steps later.
+  const minDays = minimumRentalDays(vehicle.daily_rate)
+  const belowMinimum = rentalDays > 0 && rentalDays < minDays
 
   const fmtDate = (d?: Date) => (d ? format(d, 'd MMM') : t('booking.selectDate'))
 
@@ -273,6 +280,15 @@ export function StepDuration({ form, vehicle: _vehicle, bookedRanges, navButtons
       {(startDateError || endDateError) && (
         <p className="text-xs text-red-500">
           {startDateError?.message ?? endDateError?.message}
+        </p>
+      )}
+
+      {/* Minimum rental. Stated as a fact about the car, not as the
+          customer having done something wrong. */}
+      {belowMinimum && (
+        <p className="text-xs text-red-500">
+          {vehicle.name} has a {minDays}-day minimum rental. Please choose at
+          least {minDays} days.
         </p>
       )}
 

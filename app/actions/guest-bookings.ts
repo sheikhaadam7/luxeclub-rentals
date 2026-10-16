@@ -2,6 +2,7 @@
 
 import { createAdminClient } from '@/lib/supabase/admin'
 import type { BookingDetail } from '@/app/actions/bookings'
+import { settleCancellation } from '@/lib/booking/cancellation'
 
 // ---------------------------------------------------------------------------
 // Shared helpers
@@ -181,7 +182,7 @@ export async function cancelGuestBooking(
   // Fetch booking
   const { data: booking, error: fetchError } = await admin
     .from('bookings')
-    .select('id, status, payment_method, start_date, start_time, reservation_fee, reservation_fee_status, stripe_rental_pi_id, guest_email, user_id')
+    .select('id, status, payment_method, start_date, start_time, reservation_fee, amount_paid, amount_due_now, reservation_fee_status, stripe_rental_pi_id, guest_email, user_id')
     .eq('id', bookingId)
     .single()
 
@@ -207,59 +208,22 @@ export async function cancelGuestBooking(
     return { error: 'Bookings cannot be cancelled once the rental period has started' }
   }
 
-  // Calculate hours until pickup start (using booked start time)
-  const startDateStr = booking.start_date
-  const startTimeStr = booking.start_time || '10:00'
-  const [hours, minutes] = startTimeStr.split(':').map(Number)
-  const pickupDate = new Date(startDateStr + 'T00:00:00Z')
-  pickupDate.setUTCHours(hours, minutes, 0, 0)
-  const hoursUntilStart = (pickupDate.getTime() - Date.now()) / (1000 * 60 * 60)
-
-  const reservationFee = Number(booking.reservation_fee ?? 0)
-  const lateCancel = hoursUntilStart <= 24
-
-  // Determine outcome
-  const refundAmount = lateCancel ? 0 : reservationFee
-  const newReservationFeeStatus = lateCancel ? 'forfeited' : 'refunded'
-  const forfeitReason = lateCancel ? 'late_cancel' : null
-
-  // Issue Stripe refund on the rental PI (only for non-late cancels and
-  // only if the fee was actually paid via Stripe). Cash/crypto paths are
-  // handled manually by admin.
-  let stripeRefundId: string | null = null
-  if (
-    !lateCancel &&
-    refundAmount > 0 &&
-    booking.reservation_fee_status === 'paid' &&
-    booking.stripe_rental_pi_id
-  ) {
-    const { stripe } = await import('@/lib/stripe/server')
-    if (stripe) {
-      try {
-        const refund = await stripe.refunds.create({
-          payment_intent: booking.stripe_rental_pi_id,
-          amount: Math.round(refundAmount * 100), // AED -> fils
-        })
-        stripeRefundId = refund.id
-      } catch (err) {
-        console.error('cancelGuestBooking: stripe refund error', err)
-        return { error: 'Failed to process refund. Please try again or contact support.' }
-      }
-    }
-  }
+  const settlement = await settleCancellation(booking)
+  if ('error' in settlement) return { error: settlement.error }
+  const { lateCancel, refundAmount } = settlement
 
   // Update booking record
   const { error: updateError } = await admin
     .from('bookings')
     .update({
       status: 'cancelled',
-      payment_status: lateCancel ? 'forfeited' : 'refunded',
-      reservation_fee_status: newReservationFeeStatus,
-      forfeit_reason: forfeitReason,
+      payment_status: settlement.paymentStatus,
+      reservation_fee_status: settlement.reservationFeeStatus,
+      forfeit_reason: settlement.forfeitReason,
       cancelled_at: new Date().toISOString(),
-      cancellation_fee: lateCancel ? reservationFee : 0,
+      cancellation_fee: settlement.cancellationFee,
       cancellation_refund_amount: refundAmount,
-      stripe_refund_id: stripeRefundId,
+      stripe_refund_id: settlement.stripeRefundId,
       updated_at: new Date().toISOString(),
     })
     .eq('id', bookingId)

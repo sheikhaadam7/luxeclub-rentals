@@ -180,11 +180,14 @@ export function PriceDetailsModal({ open, onClose, breakdown }: PriceDetailsModa
             </button>
             {taxesOpen && (
               <div className="pl-3 border-l-2 border-zinc-100 space-y-1.5">
+                {/* Applies to every method. Pay-on-delivery defers it into
+                    the balance rather than escaping it, so the old "no fees
+                    on payment-on-delivery" line was both unreachable and
+                    untrue. Named neutrally -- billing a cash payer
+                    something called a card surcharge reads as a bait and
+                    switch even when the total is identical. */}
                 {creditCardSurcharge > 0 && (
-                  <Line label="Booking fees (3% card surcharge)" amount={creditCardSurcharge} />
-                )}
-                {creditCardSurcharge === 0 && (
-                  <p className="text-xs text-zinc-500">No fees on payment-on-delivery bookings.</p>
+                  <Line label="Booking & processing fee (3%)" amount={creditCardSurcharge} />
                 )}
               </div>
             )}

@@ -281,6 +281,7 @@ export default async function BookingDetailPage({ params }: PageProps) {
                 <CancelBookingButton
                   bookingId={booking.id}
                   reservationFee={booking.reservation_fee ?? 0}
+                  amountPaid={booking.amount_paid ?? booking.reservation_fee ?? 0}
                   hoursUntilStart={hoursUntilStart}
                 />
               </section>

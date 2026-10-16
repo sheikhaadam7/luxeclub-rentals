@@ -17,7 +17,8 @@ import { StepPaymentMethod } from '@/components/booking/StepPaymentMethod'
 import { StepAuth } from '@/components/booking/StepAuth'
 import { createBooking, updateBookingPaymentMethod } from '@/app/actions/bookings'
 import { useCurrency } from '@/lib/currency/context'
-import { NO_DEPOSIT_OPTION_ENABLED } from '@/lib/pricing/constants'
+import { NO_DEPOSIT_OPTION_ENABLED, minimumRentalDays } from '@/lib/pricing/constants'
+import { differenceInDays } from 'date-fns'
 
 const StepDelivery = dynamic(() => import('./StepDelivery').then(m => ({ default: m.StepDelivery })), { ssr: false })
 const StepPayment = dynamic(() => import('./StepPayment').then(m => ({ default: m.StepPayment })), { ssr: false })
@@ -87,6 +88,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
   const [rentalClientSecret, setRentalClientSecret] = useState<string | null>(null)
   const [bookingTotalDue, setBookingTotalDue] = useState<number>(0)
   const [bookingReservationFee, setBookingReservationFee] = useState<number>(0)
+  const [bookingAmountDueNow, setBookingAmountDueNow] = useState<number>(0)
   const [bookingBalanceDueOnPickup, setBookingBalanceDueOnPickup] = useState<number>(0)
   const [bookingDepositAmount, setBookingDepositAmount] = useState<number>(0)
   const [bookingError, setBookingError] = useState<string | null>(null)
@@ -243,12 +245,13 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
         setRentalClientSecret(null)
         setBookingTotalDue(0)
         setBookingReservationFee(0)
+        setBookingAmountDueNow(0)
         setBookingBalanceDueOnPickup(0)
         setBookingDepositAmount(0)
         setBookingError(null)
         // Fall through to fresh creation below — DO NOT return.
       } else {
-        // Same Intent type — fast path: just sync the method.
+        // Same Intent type — re-split the booking for the new method.
         setIsCreatingBooking(true)
         setBookingError(null)
         try {
@@ -257,6 +260,18 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
             setBookingError(syncResult.error)
             setIsCreatingBooking(false)
             return
+          }
+          // Apply what the server decided. Discarding this is what let the
+          // payment screen show the pre-switch figures while Stripe held
+          // the new ones.
+          setBookingTotalDue(syncResult.totalDue)
+          setBookingAmountDueNow(syncResult.amountDueNow)
+          setBookingBalanceDueOnPickup(syncResult.balanceDueOnPickup)
+          // Only present when the old intent could not be amended and had
+          // to be replaced. Keeping the stale secret would mean charging
+          // the old amount.
+          if (syncResult.rentalClientSecret) {
+            setRentalClientSecret(syncResult.rentalClientSecret)
           }
         } catch {
           setBookingError(t('booking.somethingWentWrong'))
@@ -301,6 +316,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
       setRentalClientSecret(result.rentalClientSecret)
       setBookingTotalDue(result.totalDue)
       setBookingReservationFee(result.reservationFee)
+      setBookingAmountDueNow(result.amountDueNow)
       setBookingBalanceDueOnPickup(result.balanceDueOnPickup)
       setBookingDepositAmount(result.depositAmount)
       setStep(paymentIndex)
@@ -317,6 +333,25 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
       const fields = STEP_FIELDS[currentStep] ?? []
       const valid = await form.trigger(fields)
       if (!valid) return
+
+      // Minimum rental length. Lives here rather than in the zod schema
+      // because the rule depends on the vehicle's daily rate, which the
+      // form never carries. createBooking enforces the same rule from the
+      // DB rate -- this is only the courtesy of saying so early.
+      if (currentStep === 'duration') {
+        const { startDate, endDate } = form.getValues()
+        if (startDate instanceof Date && endDate instanceof Date) {
+          const days = Math.max(differenceInDays(endDate, startDate), 1)
+          const minDays = minimumRentalDays(vehicle.daily_rate)
+          if (days < minDays) {
+            form.setError('endDate', {
+              type: 'min',
+              message: `${vehicle.name} has a ${minDays}-day minimum rental.`,
+            })
+            return
+          }
+        }
+      }
 
       // Step 4: enforce the Renter Information contact fields.
       // Step 6 ('contact') is gone, so Step 4 is the last place to validate.
@@ -661,6 +696,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
               bookingId={bookingId ?? ''}
               totalDue={bookingTotalDue}
               reservationFee={bookingReservationFee}
+              amountDueNow={bookingAmountDueNow}
               balanceDueOnPickup={bookingBalanceDueOnPickup}
               depositAmount={bookingDepositAmount}
               depositChoice={form.getValues('depositChoice') ?? 'deposit'}
