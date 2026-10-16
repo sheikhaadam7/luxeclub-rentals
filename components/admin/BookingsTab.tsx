@@ -87,6 +87,30 @@ function customerName(b: AdminBooking): string {
   return b.guest_name || b.guest_email || b.user_email || 'Walk-in'
 }
 
+/**
+ * Turn a customer-typed number into a wa.me link, or null if it does not
+ * look like a phone number at all.
+ *
+ * The field is free text, so we take it as typed and only normalise what
+ * is unambiguous: a leading 00 or + is the international prefix, and a
+ * leading 0 on a 9-or-10-digit number is the UAE trunk code. Anything we
+ * cannot read confidently is left for a human rather than guessed at.
+ */
+function whatsappLink(raw: string | null): string | null {
+  if (!raw) return null
+  let digits = raw.replace(/[^\d]/g, '')
+  if (raw.trim().startsWith('+')) {
+    // already international
+  } else if (digits.startsWith('00')) {
+    digits = digits.slice(2)
+  } else if (digits.startsWith('0')) {
+    digits = `971${digits.slice(1)}`
+  }
+  // Shortest valid international number is 8 digits, longest is 15 (E.164).
+  if (digits.length < 8 || digits.length > 15) return null
+  return `https://wa.me/${digits}`
+}
+
 // ─── Booking Card ─────────────────────────────────────────────
 
 function BookingCard({
@@ -667,12 +691,29 @@ function BookingCard({
                     {booking.guest_email || booking.user_email || '—'}
                   </span>
                 </div>
-                {booking.guest_phone && (
-                  <div className="flex justify-between">
-                    <span className="text-brand-muted">Phone</span>
-                    <span className="text-white">{booking.guest_phone}</span>
-                  </div>
-                )}
+                {/* Always rendered, even when empty: a missing number is
+                    something staff need to SEE and chase, not an absent row
+                    they never notice. Bookings taken before the number was
+                    made mandatory are the ones this catches. */}
+                <div className="flex justify-between">
+                  <span className="text-brand-muted">Phone</span>
+                  {booking.guest_phone ? (
+                    whatsappLink(booking.guest_phone) ? (
+                      <a
+                        href={whatsappLink(booking.guest_phone)!}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-white underline decoration-white/30 underline-offset-2 hover:decoration-white"
+                      >
+                        {booking.guest_phone}
+                      </a>
+                    ) : (
+                      <span className="text-white">{booking.guest_phone}</span>
+                    )
+                  ) : (
+                    <span className="text-amber-400">No number — chase customer</span>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -805,6 +846,9 @@ export function BookingsTab() {
 
   // Filtered bookings
   const filtered = bookings.filter((b) => {
+    // 'all' means every REAL booking. A draft is an unpaid attempt that
+    // Stripe needed a row for -- it is only visible via its own pill.
+    if (statusFilter === 'all' && b.status === 'draft') return false
     if (statusFilter !== 'all' && b.status !== statusFilter) return false
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase()
@@ -840,7 +884,7 @@ export function BookingsTab() {
               : 'bg-brand-surface text-brand-muted border-brand-border hover:text-white hover:border-brand-cyan/30'
           }`}
         >
-          All ({bookings.length})
+          All ({bookings.filter((b) => b.status !== 'draft').length})
         </button>
         {ALL_STATUSES.map((s) => (
           <button
@@ -857,6 +901,30 @@ export function BookingsTab() {
           </button>
         ))}
       </div>
+
+      {/* ── Drafts explainer ──
+          Shown only on the Draft filter. Without it "Draft" reads like a
+          real booking in an odd state, when it is the opposite: an
+          abandoned attempt where no money ever moved. */}
+      {statusFilter === 'draft' && (
+        <div className="rounded-[var(--radius-card)] border border-brand-border bg-brand-surface px-4 py-3">
+          <p className="text-xs text-white font-semibold mb-1">
+            What drafts are
+          </p>
+          <p className="text-xs text-brand-muted leading-relaxed">
+            Abandoned bookings. A row is created the moment someone reaches
+            the payment step, because the card payment has to attach to
+            something — if they never pay, it stays a draft.{' '}
+            <span className="text-white">
+              No money was taken, no confirmation was sent, and nothing needs
+              doing.
+            </span>{' '}
+            They are hidden from every other view and excluded from revenue.
+            One created in the last few minutes may still be a customer part
+            way through paying.
+          </p>
+        </div>
+      )}
 
       {/* ── Search Bar ── */}
       <input

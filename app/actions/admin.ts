@@ -970,6 +970,9 @@ export async function getDashboardOverview(): Promise<
       .select(
         'id, vehicle_id, user_id, start_date, end_date, duration_type, status, payment_status, payment_method, total_due, pickup_method, delivery_address, created_at, updated_at, guest_name, guest_email, guest_phone, rental_subtotal, delivery_fee, return_fee, no_deposit_surcharge, protection_package, addons, delivery_location, protection_surcharge, addons_total, card_surcharge, deposit_choice, deposit_amount, deposit_status, return_method, collection_address, start_time, end_time, stripe_deposit_pi_id, stripe_rental_pi_id, reservation_fee, reservation_fee_status, balance_due_on_pickup, forfeit_reason, modification_status, modification_requested_start, modification_requested_end, vehicles(name, slug)'
       )
+      // Drafts are unpaid attempts that Stripe needed a row for. They are
+      // not bookings anyone acts on, so they do not belong on the dashboard.
+      .neq('status', 'draft')
       .order('created_at', { ascending: false })
       .limit(10),
     // Total active vehicles

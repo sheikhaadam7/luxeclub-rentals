@@ -275,9 +275,21 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
 
     try {
       const formValues = form.getValues()
-      const guestInfo = !isAuthed && formValues.guestName
-        ? { name: formValues.guestName, email: formValues.guestEmail!, phone: formValues.guestPhone! }
-        : undefined
+      // Collected for EVERY booking, signed in or not. A signed-in
+      // customer fills the same Renter Information fields; previously their
+      // answers were dropped here and the booking ended up with no phone
+      // number at all, so nobody could reach them on WhatsApp.
+      const contactName =
+        formValues.guestName ||
+        [formValues.guestFirstName, formValues.guestSurname].filter(Boolean).join(' ').trim()
+      const guestInfo =
+        formValues.guestPhone || formValues.guestEmail || contactName
+          ? {
+              name: contactName,
+              email: formValues.guestEmail ?? '',
+              phone: formValues.guestPhone ?? '',
+            }
+          : undefined
       const result = await createBooking(formValues, vehicle.id, guestInfo)
 
       if ('error' in result) {
@@ -298,7 +310,7 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
     } finally {
       setIsCreatingBooking(false)
     }
-  }, [bookingId, form, isAuthed, steps, vehicle.id, t, rentalClientSecret])
+  }, [bookingId, form, steps, vehicle.id, t, rentalClientSecret])
 
   const advance = () => {
     startTransition(async () => {
@@ -306,27 +318,38 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
       const valid = await form.trigger(fields)
       if (!valid) return
 
-      // Step 4: enforce the Renter Information contact fields for guests.
+      // Step 4: enforce the Renter Information contact fields.
       // Step 6 ('contact') is gone, so Step 4 is the last place to validate.
-      if (currentStep === 'delivery' && !isAuthed) {
+      //
+      // Applies to signed-in customers too. Owner ruling: a booking we
+      // cannot phone is a booking we cannot service, and WhatsApp is the
+      // main channel. Unlike the delivery address, which a tourist may
+      // genuinely not know yet, everyone has a number.
+      if (currentStep === 'delivery') {
         const v = form.getValues()
         const missing: string[] = []
-        if (!v.guestFirstName || v.guestFirstName.trim() === '') {
-          form.setError('guestFirstName', { type: 'required', message: 'First name is required' })
-          missing.push('First name')
-        }
-        if (!v.guestSurname || v.guestSurname.trim() === '') {
-          form.setError('guestSurname', { type: 'required', message: 'Surname is required' })
-          missing.push('Surname')
-        }
-        // Email — empty OR missing @ symbol
-        const email = (v.guestEmail ?? '').trim()
-        if (!email) {
-          form.setError('guestEmail', { type: 'required', message: 'Email is required' })
-          missing.push('Email')
-        } else if (!email.includes('@') || !email.includes('.') || email.length < 5) {
-          form.setError('guestEmail', { type: 'pattern', message: 'Please enter a valid email address' })
-          missing.push('Valid email address')
+        // Name and email are only demanded of guests. A signed-in customer
+        // already gave both at signup, and admin resolves them from the
+        // account -- re-typing them is friction for nothing. The phone is
+        // the one thing we hold nowhere, so it is required of everyone.
+        if (!isAuthed) {
+          if (!v.guestFirstName || v.guestFirstName.trim() === '') {
+            form.setError('guestFirstName', { type: 'required', message: 'First name is required' })
+            missing.push('First name')
+          }
+          if (!v.guestSurname || v.guestSurname.trim() === '') {
+            form.setError('guestSurname', { type: 'required', message: 'Surname is required' })
+            missing.push('Surname')
+          }
+          // Email — empty OR missing @ symbol
+          const email = (v.guestEmail ?? '').trim()
+          if (!email) {
+            form.setError('guestEmail', { type: 'required', message: 'Email is required' })
+            missing.push('Email')
+          } else if (!email.includes('@') || !email.includes('.') || email.length < 5) {
+            form.setError('guestEmail', { type: 'pattern', message: 'Please enter a valid email address' })
+            missing.push('Valid email address')
+          }
         }
         // Phone — already stripped to digits by the controlled input.
         // Empty OR fewer than 7 digits both count as invalid.

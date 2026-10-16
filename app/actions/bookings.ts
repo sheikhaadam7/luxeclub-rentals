@@ -228,9 +228,12 @@ export async function createBooking(
     .insert({
       vehicle_id: vehicleId,
       user_id: userId,
-      guest_name: guestInfo?.name ?? null,
-      guest_email: guestInfo?.email ?? null,
-      guest_phone: guestInfo?.phone ?? null,
+      // Stored for signed-in customers as well. The columns are named
+      // guest_* for historical reasons; they hold the contact details for
+      // this booking whoever made it.
+      guest_name: guestInfo?.name || null,
+      guest_email: guestInfo?.email || null,
+      guest_phone: guestInfo?.phone || null,
       start_date: formData.startDate.toISOString().split('T')[0],
       end_date: formData.endDate.toISOString().split('T')[0],
       duration_type: formData.durationType,
