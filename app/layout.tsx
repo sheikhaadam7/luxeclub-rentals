@@ -8,6 +8,29 @@ import './globals.css'
 
 const GA_ID = 'G-CS2EKLJYJ5'
 
+/**
+ * Analytics loads on the real site only.
+ *
+ * These tags had no environment check at all, so every `npm run dev`
+ * session and every preview deployment reported page views into the one
+ * live property, indistinguishable from customers. Every test booking
+ * made while building the payment work landed in there.
+ *
+ * Written to FAIL SAFE. The obvious form -- enable only when
+ * NEXT_PUBLIC_VERCEL_ENV === 'production' -- silently kills analytics on
+ * the real site if Vercel is not exposing that system variable, which is
+ * a worse outcome than the problem being fixed. So:
+ *
+ *   NODE_ENV          stops local dev        (reliable, always set)
+ *   NEXT_PUBLIC_VERCEL_ENV stops previews    (only if exposed)
+ *
+ * If the Vercel variable is missing, previews leak page views and
+ * production keeps working. The wrong way round would be the reverse.
+ */
+const ANALYTICS_ENABLED =
+  process.env.NODE_ENV === 'production' &&
+  process.env.NEXT_PUBLIC_VERCEL_ENV !== 'preview'
+
 const playfair = Playfair_Display({
   subsets: ['latin'],
   variable: '--font-display',
@@ -137,29 +160,33 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
       <head>
-        <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${GA_ID}');
-          `}
-        </Script>
-        <Script
-          defer
-          src="https://cloud.umami.is/script.js"
-          data-website-id="41add71a-f455-468d-8960-8a615bc0ca51"
-          strategy="afterInteractive"
-        />
-        <script
-          src="https://analytics.ahrefs.com/analytics.js"
-          data-key="9Hsq7/2s59QpUoR2SSSOkA"
-          async
-        />
+        {ANALYTICS_ENABLED && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${GA_ID}');
+              `}
+            </Script>
+            <Script
+              defer
+              src="https://cloud.umami.is/script.js"
+              data-website-id="41add71a-f455-468d-8960-8a615bc0ca51"
+              strategy="afterInteractive"
+            />
+            <script
+              src="https://analytics.ahrefs.com/analytics.js"
+              data-key="9Hsq7/2s59QpUoR2SSSOkA"
+              async
+            />
+          </>
+        )}
       </head>
       <body className="bg-black text-white antialiased font-body">
         <script
