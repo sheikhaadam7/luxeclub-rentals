@@ -58,16 +58,37 @@ export function trackPurchase({
 }: PurchaseInput): boolean {
   if (typeof window === 'undefined') return false
 
+  /**
+   * Say what would have been sent, whenever it is not sent.
+   *
+   * Without this the event is unverifiable: it is suppressed on test
+   * keys, production runs test keys, so the first time anyone could
+   * observe it working would be with a real customer's money. Logging
+   * the decision means the wiring and the value can be checked now,
+   * with nothing reaching Google.
+   */
+  const explain = (sent: boolean, reason: string) => {
+    if (process.env.NODE_ENV !== 'production' || isTestPayments()) {
+      console.info(
+        `[analytics] purchase ${sent ? 'SENT' : 'suppressed'} — ${reason}`,
+        { bookingId, totalDue, currency: 'AED', vehicleSlug },
+      )
+    }
+    return sent
+  }
+
   // A rehearsal, not a sale.
-  if (isTestPayments()) return false
+  if (isTestPayments()) return explain(false, 'Stripe is on test keys')
 
   // Guards against the paths that reach a "success" handler without a
   // payment: crypto fires on invoice open, and two fallback buttons
   // confirm a booking with no money at all. Those arrive with an empty
   // id or a zero total. A purchase reported as AED 0 is worse than none
   // — it drags down the average conversion value Google bids against.
-  if (!bookingId) return false
-  if (!Number.isFinite(totalDue) || totalDue <= 0) return false
+  if (!bookingId) return explain(false, 'no booking id — not a real payment')
+  if (!Number.isFinite(totalDue) || totalDue <= 0) {
+    return explain(false, 'total is zero or invalid')
+  }
 
   const key = purchaseEventKey(bookingId)
 
@@ -75,7 +96,9 @@ export function trackPurchase({
   // confirmation URL can be reopened in a NEW tab from history, which
   // starts a fresh session and would report the sale twice.
   try {
-    if (window.localStorage.getItem(key)) return false
+    if (window.localStorage.getItem(key)) {
+      return explain(false, 'already reported for this booking')
+    }
   } catch {
     // Storage blocked. Fire anyway and let the Ads conversion's
     // "Count: One" setting absorb a duplicate — under-reporting a real
@@ -115,5 +138,5 @@ export function trackPurchase({
     // Non-fatal — see above.
   }
 
-  return true
+  return explain(true, 'booking completed')
 }
