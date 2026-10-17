@@ -16,6 +16,7 @@ import { createCryptoInvoice } from '@/app/actions/crypto-payment'
 import { PriceDetailsModal } from '@/components/booking/PriceDetailsModal'
 import type { BookingPriceBreakdown } from '@/lib/pricing/calculator'
 import { RESERVATION_FEE_AED } from '@/lib/pricing/constants'
+import { trackPurchase } from '@/lib/analytics'
 
 // Shown on Step 6 only when the customer is viewing a non-AED currency —
 // avoids "why does my email say AED 1,800 when I paid £400?" support tickets.
@@ -68,6 +69,9 @@ interface StepPaymentProps {
   breakdown?: BookingPriceBreakdown
   isGuest?: boolean
   guestEmail?: string
+  /** For the GA4 purchase item — which car was sold. */
+  vehicleSlug?: string
+  vehicleName?: string
 }
 
 // ---------------------------------------------------------------------------
@@ -645,10 +649,38 @@ export function StepPayment({
   breakdown,
   isGuest = false,
   guestEmail,
+  vehicleSlug,
+  vehicleName,
 }: StepPaymentProps) {
   const { formatPrice } = useCurrency()
   const { t } = useTranslation()
   // Shared Price-details modal open state — opened from inside either the
+  /**
+   * Success AND a confirmed payment.
+   *
+   * `onSuccess` is a NAVIGATION callback -- six things call it, and
+   * three of them involve no money: crypto fires when the invoice merely
+   * opens, and two fallback buttons confirm a booking outright. Reporting
+   * a sale from there would tell Google about revenue that never
+   * existed.
+   *
+   * So only the three paths where Stripe's confirmPayment actually
+   * resolved use this wrapper. The others keep the plain callback, and
+   * the difference is visible at the call site rather than buried in a
+   * list of exclusions.
+   */
+  const handleConfirmedPayment = (confirmedBookingId: string) => {
+    trackPurchase({
+      bookingId: confirmedBookingId,
+      // The full rental, never amountDueNow -- pay-on-delivery collects
+      // AED 450 now and the rest at handover.
+      totalDue,
+      vehicleSlug,
+      vehicleName,
+    })
+    onSuccess(confirmedBookingId)
+  }
+
   // Card or Cash form via the lifted handler.
   const [priceDetailsOpen, setPriceDetailsOpen] = useState(false)
   const openPriceDetails = () => setPriceDetailsOpen(true)
@@ -663,6 +695,10 @@ export function StepPayment({
         balanceDueOnPickup={balanceDueOnPickup}
         isGuest={isGuest}
         guestEmail={guestEmail}
+        // Plain callback on purpose: crypto reports success when the
+        // invoice OPENS, before the customer has paid. Reporting a sale
+        // here would be a lie. Crypto bookings go unreported until a
+        // server-side event exists.
         onSuccess={onSuccess}
       />
     )
@@ -709,7 +745,7 @@ export function StepPayment({
             }}
           >
             <CashCardForm
-              onSuccess={onSuccess}
+              onSuccess={handleConfirmedPayment}
               bookingId={bookingId}
               amountDueNow={amountDueNow}
               balanceDueOnPickup={balanceDueOnPickup}
@@ -820,7 +856,7 @@ export function StepPayment({
         }}
       >
         <PaymentForm
-          onSuccess={onSuccess}
+          onSuccess={handleConfirmedPayment}
           bookingId={bookingId}
           showExpressCheckout={applePaySelected}
           amountDueNow={amountDueNow}

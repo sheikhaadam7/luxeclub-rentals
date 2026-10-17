@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { PurchaseEvent } from './PurchaseEvent'
 
 /**
  * Stripe redirect target for 3DS / SCA flows. After the bank's 3DS step,
@@ -25,20 +26,35 @@ async function lookupCustomer(intentId: string | undefined, type: 'pi' | 'si') {
   if (!intentId) return null
   const admin = createAdminClient()
   const column = type === 'pi' ? 'stripe_rental_pi_id' : 'stripe_setup_intent_id'
+  // Also returns what the purchase event needs. Kept deliberately narrow:
+  // this runs with the service-role client on a page anyone can reach
+  // with a payment-intent id, so only the booking id, the value and the
+  // car are added -- nothing else.
   const { data: booking } = await admin
     .from('bookings')
-    .select('guest_name, guest_email, user_id')
+    .select('id, total_due, guest_name, guest_email, user_id, vehicles(name, slug)')
     .eq(column, intentId)
     .maybeSingle()
   if (!booking) return null
+
+  const vehiclesRaw = booking.vehicles as unknown
+  const vehicle = Array.isArray(vehiclesRaw)
+    ? (vehiclesRaw[0] as { name: string; slug: string } | undefined)
+    : (vehiclesRaw as { name: string; slug: string } | null)
+  const purchase = {
+    bookingId: booking.id as string,
+    totalDue: Number(booking.total_due ?? 0),
+    vehicleSlug: vehicle?.slug ?? null,
+    vehicleName: vehicle?.name ?? null,
+  }
 
   if (booking.user_id) {
     const { data: { user } } = await admin.auth.admin.getUserById(booking.user_id)
     const meta = (user?.user_metadata ?? {}) as { full_name?: string; first_name?: string; name?: string }
     const fullName = meta.full_name ?? meta.name ?? meta.first_name ?? null
-    return { name: fullName, email: user?.email ?? null }
+    return { name: fullName, email: user?.email ?? null, purchase }
   }
-  return { name: booking.guest_name ?? null, email: booking.guest_email ?? null }
+  return { name: booking.guest_name ?? null, email: booking.guest_email ?? null, purchase }
 }
 
 export default async function BookingConfirmationPage({ searchParams }: PageProps) {
@@ -84,6 +100,17 @@ export default async function BookingConfirmationPage({ searchParams }: PageProp
 
   return (
     <main className="min-h-screen bg-luxury flex items-center justify-center">
+      {/* Reports the sale for 3DS customers, who never pass through the
+          wizard's success handler. Renders nothing; fires at most once
+          per booking, so a refresh of this URL cannot double count. */}
+      {customer?.purchase && customer.purchase.totalDue > 0 && (
+        <PurchaseEvent
+          bookingId={customer.purchase.bookingId}
+          totalDue={customer.purchase.totalDue}
+          vehicleSlug={customer.purchase.vehicleSlug}
+          vehicleName={customer.purchase.vehicleName}
+        />
+      )}
       <div className="max-w-3xl mx-auto px-4 py-12 text-center space-y-8">
         {/* Green tick circle */}
         <div className="flex h-20 w-20 items-center justify-center rounded-full bg-green-500 mx-auto shadow-lg">
