@@ -200,6 +200,20 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
           depositChoice: NO_DEPOSIT_OPTION_ENABLED
             ? (v.depositChoice ?? 'deposit')
             : 'deposit',
+          // Apple Pay used to be its own row; it is now a tab inside the
+          // card form. A session saved before that change restores a
+          // method the chooser can no longer show, which renders Step 5
+          // with nothing selected -- and still validates, because the zod
+          // enum deliberately still accepts the value. Same reasoning as
+          // depositChoice above.
+          //
+          // Spread conditionally, not a ternary: writing the key
+          // unconditionally would set it to undefined when the saved
+          // session has no paymentMethod, clobbering the 'card' default
+          // and causing the very bug this is here to prevent.
+          ...(v.paymentMethod === 'apple_pay' || v.paymentMethod === 'google_pay'
+            ? { paymentMethod: 'card' as const }
+            : {}),
         })
       }
       // Bounds-check the saved step against the current steps array length.
@@ -723,7 +737,6 @@ export function BookingWizard({ vehicle, bookedRanges, isAuthenticated: initialA
               clientSecret={rentalClientSecret}
               cashSelected={form.getValues('paymentMethod') === 'cash'}
               cryptoSelected={form.getValues('paymentMethod') === 'crypto'}
-              applePaySelected={form.getValues('paymentMethod') === 'apple_pay'}
               onSuccess={handlePaymentSuccess}
               bookingId={bookingId ?? ''}
               totalDue={bookingTotalDue}

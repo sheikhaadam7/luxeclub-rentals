@@ -6,7 +6,6 @@ import { loadStripe } from '@stripe/stripe-js'
 import {
   Elements,
   PaymentElement,
-  ExpressCheckoutElement,
   useStripe,
   useElements,
 } from '@stripe/react-stripe-js'
@@ -42,7 +41,6 @@ interface StepPaymentProps {
   clientSecret: string | null
   cashSelected: boolean
   cryptoSelected: boolean
-  applePaySelected?: boolean
   onSuccess: (bookingId: string) => void
   bookingId: string
   totalDue: number
@@ -82,8 +80,9 @@ interface StepPaymentProps {
 function RentersNameNotice() {
   return (
     <p className="text-sm text-zinc-700 leading-relaxed">
-      The payment method must be under the renter&apos;s name and physically presented
-      at pickup. See{' '}
+      Pay here by card or wallet. At handover, please have a physical credit or
+      debit card in the renter&apos;s name — it is needed for the refundable
+      security deposit. See{' '}
       <Link
         href="/rental-terms"
         target="_blank"
@@ -282,8 +281,6 @@ function PaymentSummaryAndPolicies({
 interface PaymentFormProps {
   onSuccess: (bookingId: string) => void
   bookingId: string
-  /** Show Apple Pay / Google Pay express row at the top — only when applePaySelected */
-  showExpressCheckout: boolean
   amountDueNow: number
   depositAmount: number
   depositChoice: 'deposit' | 'no_deposit'
@@ -293,7 +290,6 @@ interface PaymentFormProps {
 function PaymentForm({
   onSuccess,
   bookingId,
-  showExpressCheckout,
   amountDueNow,
   depositAmount,
   depositChoice,
@@ -333,54 +329,19 @@ function PaymentForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Express checkout (Apple Pay / Google Pay) — only when customer picked
-          Apple Pay on Step 5. Card-flow customers don't see this. */}
-      {showExpressCheckout && (
-        <>
-          <div>
-            <ExpressCheckoutElement
-              onConfirm={async () => {
-                if (!stripe || !elements) return
-                setIsProcessing(true)
-                setErrorMessage(null)
-
-                const { error } = await stripe.confirmPayment({
-                  elements,
-                  confirmParams: {
-                    return_url: window.location.origin + '/bookings/confirmation',
-                  },
-                  redirect: 'if_required',
-                })
-
-                if (error) {
-                  setErrorMessage(error.message ?? t('booking.paymentFailed'))
-                  setIsProcessing(false)
-                } else {
-                  setIsProcessing(false)
-                  onSuccess(bookingId)
-                }
-              }}
-            />
-          </div>
-
-          {/* Divider */}
-          <div className="flex items-center gap-3">
-            <div className="h-px flex-1 bg-zinc-200" />
-            <span className="text-xs text-zinc-500 uppercase tracking-widest">
-              {t('booking.orPayWithCard')}
-            </span>
-            <div className="h-px flex-1 bg-zinc-200" />
-          </div>
-        </>
-      )}
-
-      {/* Card input */}
+      {/* Card input.
+          Apple Pay and Google Pay appear here as tabs, chosen by the
+          customer's device — there is no separate express row and no
+          separate chooser option. They are not configured below because
+          `wallets.applePay` and `wallets.googlePay` already default to
+          'auto'; what actually makes them render is the domain being
+          registered with Stripe. */}
       <PaymentElement
         options={{
           layout: 'tabs',
-          // Disable Stripe Link — the "Secure, fast checkout with Link" prompt
-          // adds clutter without benefit for our customer base. Apple Pay /
-          // Google Pay are still available via the express checkout row above.
+          // Disable Stripe Link — the "Secure, fast checkout with Link"
+          // prompt adds clutter without benefit for our customer base.
+          // Deliberately the ONLY wallet suppressed here.
           wallets: { link: 'never' },
         }}
       />
@@ -628,8 +589,9 @@ function CashCardForm({
  *
  * Renders:
  *  - Payment on Delivery: confirmation card + "Confirm Booking" button
- *  - Card/wallet: Stripe Elements with ExpressCheckoutElement (Apple/Google Pay)
- *    + PaymentElement (card input) + cancellation policy + optional deposit notice
+ *  - Card/wallet: Stripe Elements with a PaymentElement whose tabs include
+ *    Apple Pay / Google Pay where the device offers them, plus the
+ *    cancellation policy and optional deposit notice
  *
  * The Stripe Elements are wrapped with a dark luxury theme matching the brand.
  */
@@ -637,7 +599,6 @@ export function StepPayment({
   clientSecret,
   cashSelected,
   cryptoSelected,
-  applePaySelected = false,
   onSuccess,
   bookingId,
   totalDue,
@@ -858,7 +819,6 @@ export function StepPayment({
         <PaymentForm
           onSuccess={handleConfirmedPayment}
           bookingId={bookingId}
-          showExpressCheckout={applePaySelected}
           amountDueNow={amountDueNow}
           depositAmount={depositAmount}
           depositChoice={depositChoice}

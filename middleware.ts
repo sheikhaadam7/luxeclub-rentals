@@ -125,11 +125,24 @@ export const config = {
      * - _next/image (image optimization)
      * - favicon.ico, and common image/font extensions
      * - forms/ (static rental agreement + invoice pages in public/forms, opened by customers from WhatsApp)
+     * - .well-known/ (IETF-reserved: domain verification, security.txt,
+     *   ACME challenges, Apple Pay). These files have no extension, so the
+     *   extension rule below never caught them and every one of them was
+     *   answered with a 307 to /sign-in.
+     * - opengraph-image (Next's generated social preview). Also
+     *   extensionless, so it was auth-walled too: every crawler fetching
+     *   the homepage preview got a login page, and links pasted into
+     *   WhatsApp rendered with no image. Verified against production.
+     *
+     * Both must be excluded HERE rather than added to publicPaths: the
+     * www -> apex redirect at the top of this file runs before the auth
+     * check, and checkers that do not follow redirects (Apple's among
+     * them) would still fail.
      *
      * NOTE: Route group folders like (protected) are stripped from URLs.
      * The URL /dashboard is NOT /(protected)/dashboard.
      * This matcher protects ALL routes including /dashboard, /catalogue, etc.
      */
-    '/((?!_next/static|_next/image|favicon\\.ico|forms/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|webm|mp4|mp3|woff2?)$).*)',
+    '/((?!_next/static|_next/image|favicon\\.ico|forms/|\\.well-known/|opengraph-image|.*\\.(?:svg|png|jpg|jpeg|gif|webp|webm|mp4|mp3|woff2?)$).*)',
   ],
 }

@@ -117,6 +117,40 @@ export async function POST(req: Request): Promise<Response> {
             )
           }
 
+          // Which wallet actually paid, from Stripe rather than the browser.
+          //
+          // Apple Pay and Google Pay are tabs inside the card form now, so
+          // the booking row says 'card' for both and for a plain card. The
+          // brand is only knowable here, on the charge.
+          //
+          // It goes in payment_wallet, never payment_method: that column
+          // means "what the customer chose" and drives the cash/card split
+          // ten lines below, the Cancel button and the admin payments
+          // queue. Overwriting it would tell a pay-on-delivery customer
+          // they paid by Apple Pay while they still owe cash at handover.
+          //
+          // Isolated try/catch on purpose. This handler made no outbound
+          // Stripe calls before; a transient API error must not reach the
+          // outer catch, which would 500, drop the idempotency claim and
+          // block both the promotion and the confirmation email -- for a
+          // customer whose money has already moved. A missing label is the
+          // cheapest possible failure here.
+          let paymentWallet: string | null = null
+          try {
+            const charged = await stripe.paymentIntents.retrieve(pi.id, {
+              expand: ['latest_charge'],
+            })
+            const charge = charged.latest_charge as Stripe.Charge | null
+            // null for a plain typed card — which is the common case.
+            paymentWallet =
+              charge?.payment_method_details?.card?.wallet?.type ?? null
+          } catch (walletErr) {
+            console.error(
+              `stripe webhook: could not resolve wallet for booking ${bookingId} (non-fatal)`,
+              walletErr
+            )
+          }
+
           const amountPaid = (pi.amount_received ?? 0) / 100
           const expected = Number(existing?.amount_due_now ?? 0)
           if (expected > 0 && Math.abs(expected - amountPaid) > 0.01) {
@@ -128,7 +162,12 @@ export async function POST(req: Request): Promise<Response> {
             )
           }
 
-          await admin
+          // The error was never checked here. supabase-js returns { error }
+          // rather than throwing, so a failed update silently no-opped:
+          // the booking stayed draft and unpaid, the email below went out
+          // anyway, and Stripe saw 200 and never retried. The customer got
+          // a confirmation for a booking the admin showed as unpaid.
+          const { error: promoteError } = await admin
             .from('bookings')
             .update({
               ...(existing?.payment_method === 'cash'
@@ -136,9 +175,20 @@ export async function POST(req: Request): Promise<Response> {
                 : { payment_status: 'paid' }),
               reservation_fee_status: 'paid',
               amount_paid: amountPaid,
+              ...(paymentWallet ? { payment_wallet: paymentWallet } : {}),
               status: 'pending',
             })
             .eq('id', bookingId)
+
+          if (promoteError) {
+            // Fail loudly so Stripe retries. Sending a confirmation for a
+            // booking that is still a draft is the worse outcome.
+            console.error(
+              `stripe webhook: FAILED to promote paid booking ${bookingId}`,
+              promoteError
+            )
+            throw new Error(`booking promotion failed: ${promoteError.message}`)
+          }
 
           // Send confirmation email (non-blocking)
           try {
