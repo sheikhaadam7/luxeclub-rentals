@@ -109,7 +109,7 @@ const fr: Record<string, string> = {
   'faq.q2': 'Comment fonctionne la livraison et la recuperation ?',
   'faq.a2': 'Vous pouvez recuperer votre vehicule gratuitement a notre bureau de Downtown Dubai, ou choisir "Livraison" lors de la reservation et entrer votre adresse — nous amenons la voiture a votre emplacement pour un forfait de 50 AED. Pour les retours, deposez-la a notre bureau gratuitement, ou nous pouvons la recuperer chez vous pour 50 AED.',
   'faq.q3': 'Quels modes de paiement acceptez-vous ?',
-  'faq.a3': 'Nous acceptons les cartes de credit/debit, Apple Pay, Google Pay, les cryptomonnaies et le paiement a la livraison.',
+  'faq.a3': 'Nous acceptons les cartes de credit/debit, Apple Pay, Google Pay et le paiement a la livraison.',
   'faq.q4': 'Qu\'est-ce que le depot de garantie ?',
   'faq.a4': 'Une retenue remboursable sur votre carte pour couvrir les dommages eventuels. Le montant varie selon le vehicule. Vous pouvez vous en dispenser moyennant un leger supplement.',
   'faq.q5': 'Quelle est la politique d\'annulation ?',
@@ -293,10 +293,8 @@ const fr: Record<string, string> = {
   // Step Payment Method
   'booking.paymentMethod': 'Mode de paiement',
   'booking.paymentMethodDesc': 'Choisissez comment vous souhaitez payer votre location.',
-  'booking.creditDebitCard': 'Carte bancaire',
+  'booking.creditDebitCard': 'Carte, Apple Pay ou Google Pay',
   'booking.creditDebitCardDesc': 'Payez en toute sécurité avec Visa, Mastercard ou d\'autres cartes via Stripe.',
-  'booking.applePay': 'Apple Pay',
-  'booking.applePayDesc': 'Payez instantanément avec Apple Pay.',
   'booking.cashOnDelivery': 'Paiement à la livraison',
   'booking.cashOnDeliveryDesc': 'Payez à la livraison ou au retrait du véhicule.',
   'booking.cryptocurrency': 'Cryptomonnaie',
@@ -332,7 +330,6 @@ const fr: Record<string, string> = {
   'booking.selectDatesForPricing': 'Sélectionnez les dates pour voir les tarifs',
   // Step Payment
   'booking.paymentFailed': 'Échec du paiement. Veuillez réessayer.',
-  'booking.orPayWithCard': 'ou payer par carte',
   'booking.cancellationPolicy': 'Politique d\'annulation',
   'booking.cancellationPolicyText': 'Annulation gratuite jusqu\'à 24 heures avant le début de la location. Les annulations dans les 24 heures sont soumises à des frais d\'une journée de location. Les non-présentations sont facturées le montant total de la location.',
   'booking.processing': 'Traitement en cours...',
